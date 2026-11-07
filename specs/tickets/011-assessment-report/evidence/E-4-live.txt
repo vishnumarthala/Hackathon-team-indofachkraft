@@ -1,0 +1,7 @@
+$ (extra) fixture report.json removed from the per-worker copy
+[{"updated_at":"2026-11-07T13:25:31.615Z"}]
+{"error":"Report could not be generated"} 502
+[{"updated_at":"2026-11-07T13:25:31.615Z"}]
+after restore: 200
+ ✓ tests/report.test.ts > POST /api/sessions/:id/report > 502 on Gemini failure; no draft created or overwritten 1ms
+      Tests  30 passed (30)
