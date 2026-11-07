@@ -27,8 +27,8 @@
   4. `agent-browser find role link click --name "Open the demo"` then `agent-browser get url`
   5. `agent-browser screenshot evidence/E-1.png` (taken after step 1)
 - **Expected:** step 2 contains the exact subtitle, `1. Intake call`, `2. Online session`,
-  `3. Specialist handoff`, `AI documents, the clinician decides.`,
-  `Pilot pricing: Rs 3,000 (India) / EUR 199 (Germany) per clinician per month` and `Join the pilot`;
+  `3. Specialist handoff`, `AI documents, the clinician decides.` and `Join the pilot`, and does not
+  contain `Pilot pricing`;
   step 3 `CareThread - AI assistant for early intervention therapists`; step 4 ends with `/dashboard`.
 
 ### E-2: Sign up through the form (covers FR-2, FR-3, FR-4)
