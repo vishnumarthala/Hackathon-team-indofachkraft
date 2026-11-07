@@ -1,0 +1,8 @@
+$ npm run -s seed:demo -- --new --confirmed
+seeded case=60fbe8f3-f156-4bc1-b2e3-566fd5bdb3e2 session=8f57d557-d439-4db2-b13b-06a5d7f3330b intake=733e9a8e-655a-4fa6-9eb4-261a81e288d8 token=<redacted>
+$ step 2
+[{"n":40,"at":40,"edited":24}]
+$ npm run -s seed:demo -- --new --stage transcribed
+seeded case=c854b3d7-d99b-4ded-9dee-79bcb02c4488 session=40ff0215-efea-4ed5-bc11-afe85d820663 intake=10b1b831-ebd6-4a6d-8b4e-ea0a7736397d token=<redacted>
+$ step 4
+[{"status":"transcribed","facts":0}]
