@@ -1,6 +1,6 @@
 # 003: Scoring and routing
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 001: needs schemas/isaa.json, schemas/facp.json, lib/types.ts and the Vitest setup
 

@@ -3,6 +3,8 @@ import { z } from "zod";
 import { loadFixture } from "@/lib/demo";
 import { env } from "@/lib/env";
 
+const GEMINI_TIMEOUT_MS = 60_000;
+
 export class GeminiError extends Error {
   constructor(message: string) {
     super(message);
@@ -18,6 +20,7 @@ type GenerateRequest = {
     responseMimeType: "application/json";
     responseJsonSchema?: unknown;
     temperature: number;
+    httpOptions?: { timeout?: number };
   };
 };
 
@@ -81,6 +84,8 @@ export async function generateJson<T>({ task, system, prompt, schema, client }: 
       systemInstruction: system,
       responseMimeType: "application/json" as const,
       temperature: 0.2,
+      // Fail fast (route answers 502) instead of hanging while the model is overloaded.
+      httpOptions: { timeout: GEMINI_TIMEOUT_MS },
       ...(useSchema ? { responseJsonSchema: jsonSchema } : {}),
     };
     try {

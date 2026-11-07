@@ -6,8 +6,8 @@ function read(name: string): string | undefined {
   return value === undefined || value === "" ? undefined : value;
 }
 
-function required(name: string): string {
-  const value = read(name);
+function required(name: string, ...aliases: string[]): string {
+  const value = [name, ...aliases].map(read).find((v) => v !== undefined);
   if (value === undefined) throw new Error(`Missing env var: ${name}`);
   return value;
 }
@@ -24,10 +24,12 @@ export const env = {
     return required("NEXT_PUBLIC_SUPABASE_URL");
   },
   get NEXT_PUBLIC_SUPABASE_ANON_KEY() {
-    return required("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+    // Newer Supabase projects call the anon key the publishable key.
+    return required("NEXT_PUBLIC_SUPABASE_ANON_KEY", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
   },
   get SUPABASE_SERVICE_ROLE_KEY() {
-    return required("SUPABASE_SERVICE_ROLE_KEY");
+    // Newer Supabase projects call the service role key the secret key.
+    return required("SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY");
   },
   get DATABASE_URL() {
     return required("DATABASE_URL");
