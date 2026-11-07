@@ -226,8 +226,11 @@ export function HeroReel({ subtitle }: { subtitle: string }) {
                 Book a demo
                 <Arrow />
               </ButtonLink>
-              <ButtonLink href="#how" variant="outlineLight" className="w-full sm:w-auto">
-                See how it works
+              <ButtonLink href="#voice-demo" variant="outlineLight" className="w-full sm:w-auto">
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3ZM19 11a7 7 0 0 1-14 0M12 18v3" />
+                </svg>
+                Hear the AI intake call
               </ButtonLink>
             </div>
           </div>

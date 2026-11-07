@@ -294,6 +294,17 @@
   box-shadow: 0 24px 48px -24px rgba(11, 31, 29, 0.3);
 }
 
+/* Used by VoiceDemo (ticket 015 / landing story) */
+.lp-press {
+  transition:
+    transform 150ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease;
+}
+.lp-press:active {
+  transform: scale(0.97);
+}
+
 .lp-btn {
   transition:
     transform 150ms ease,

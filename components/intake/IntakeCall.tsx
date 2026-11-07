@@ -37,8 +37,10 @@ export function statusText(status: SdkStatus, wasConnected: boolean): string | n
   return null;
 }
 
-type SessionOptions = {
-  conversationToken: string;
+// Private agent: server-issued conversation token. Public agent: started by its ID (no token available).
+type SessionTarget = { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
+
+type SessionOptions = SessionTarget & {
   dynamicVariables: Record<string, string>;
   overrides: { agent: { language: Language } };
   onError: () => void;
@@ -68,12 +70,18 @@ export async function startIntakeCall(token: string, language: Language, deps: S
   const body = (await res.json().catch(() => ({}))) as {
     demo?: boolean;
     error?: string;
-    conversation_token?: string;
+    conversation_token?: string | null;
+    agent_id?: string;
     dynamic_variables?: Record<string, string>;
   };
   if (!res.ok) return { kind: "error", message: body.error ?? MESSAGES.startFailed };
   if (body.demo === true) return { kind: "demo" };
-  if (!body.conversation_token) return { kind: "error", message: MESSAGES.startFailed };
+  const target: SessionTarget | null = body.conversation_token
+    ? { conversationToken: body.conversation_token }
+    : body.agent_id
+      ? { agentId: body.agent_id, connectionType: "webrtc" }
+      : null;
+  if (!target) return { kind: "error", message: MESSAGES.startFailed };
 
   try {
     const stream = await deps.getMicrophone();
@@ -85,7 +93,7 @@ export async function startIntakeCall(token: string, language: Language, deps: S
 
   try {
     deps.startSession({
-      conversationToken: body.conversation_token,
+      ...target,
       dynamicVariables: body.dynamic_variables ?? {},
       overrides: { agent: { language } },
       onError: deps.onSdkError,

@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { audit } from "@/lib/audit";
 import { isDemoMode } from "@/lib/demo";
-import { getConversationToken } from "@/lib/elevenlabs/agent";
-import { env } from "@/lib/env";
+import { DEMO_CENTRE_NAME, startAgentSession, type AgentStart } from "@/lib/elevenlabs/agent";
 import { fail, ok, parseJson } from "@/lib/http";
 import { getCaseByToken, hasIntakeRecording } from "@/lib/queries/intake";
 import { LanguageSchema } from "@/lib/types";
@@ -37,9 +36,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     return ok({ demo: true });
   }
 
-  let conversationToken: string;
+  let session: AgentStart;
   try {
-    conversationToken = await getConversationToken();
+    session = await startAgentSession();
   } catch (err) {
     console.error(`intake start failed: ${err instanceof Error ? err.message : String(err)}`);
     return fail(502, "Could not start the call");
@@ -47,9 +46,15 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
 
   await started(false);
   return ok({
-    conversation_token: conversationToken,
-    agent_id: env.ELEVENLABS_AGENT_ID,
+    conversation_token: session.conversation_token,
+    agent_id: session.agent_id,
     dynamic_variables: {
+      // Required by the published CareThread intake agent (docs/elevenlabs-agent.md).
+      parent_name: caseRow.parent_alias,
+      child_name: caseRow.child_alias,
+      centre_name: DEMO_CENTRE_NAME,
+      case_id: caseRow.id,
+      // Used by our completion/webhook processing to find the case (010).
       intake_token: token,
       child_alias: caseRow.child_alias,
       parent_alias: caseRow.parent_alias,

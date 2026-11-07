@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import { Arrow, Logo } from "./ui";
 
 const LINKS = [
+  { href: "/#problem", label: "The problem" },
+  { href: "/#voice-demo", label: "AI intake call" },
   { href: "/#how", label: "How it works" },
   { href: "/#who", label: "Who it's for" },
-  { href: "/#features", label: "Features" },
-  { href: "/#trust", label: "Trust" },
   { href: "/#faq", label: "FAQ" },
 ];
 
