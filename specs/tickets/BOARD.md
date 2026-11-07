@@ -31,7 +31,7 @@ All tickets remain draft until their requirements and evaluations have been revi
 | 003 | Scoring and routing | done | solo | waits for 001: needs schemas/*.json, lib/types.ts and the Vitest setup | MUST | CP1 13:30 |
 | 004 | Cases dashboard and case pages | done | solo | waits for 001: needs the scaffold, lib/db.ts, lib/http.ts and the cases table | MUST | CP1 13:30 |
 | 007 | Therapist review screen | done | solo | waits for 002, 003, 004: needs seeded sessions, lib/scoring.ts and the case layout | MUST | CP2 14:15 |
-| 008 | Upload and process panel, speaker swap | draft | solo | waits for 005, 006, 007: calls their APIs and edits 007's review page | MUST | CP3 15:00 |
+| 008 | Upload and process panel, speaker swap | done | solo | waits for 005, 006, 007: calls their APIs and edits 007's review page | MUST | CP3 15:00 |
 
 ## A. Voice - `int/a-voice`
 
