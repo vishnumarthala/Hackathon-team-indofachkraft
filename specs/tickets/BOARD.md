@@ -41,7 +41,7 @@ All tickets remain draft until their requirements and evaluations have been revi
 | 009 | Intake link and browser voice call | done | solo | waits for 004: replaces the Brief tab placeholder | SHOULD | CP2 14:15 |
 | 010 | Intake completion and pre-session brief | draft | solo | waits for 002, 009: needs post-call/brief fixtures and edits 009's pages | SHOULD | CP3 15:00 |
 | 011 | Draft assessment report | done | solo | waits for 002, 003, 004: needs seed --confirmed, lib/scoring.ts and the Report tab | SHOULD | CP3 15:00 |
-| 015 | Parent voice note (Telugu TTS + email) | draft | solo | waits for 011: adds a section to the Report tab | NICE | CP4 15:30 |
+| 015 | Parent voice note (Telugu TTS + email) | done | solo | waits for 011: adds a section to the Report tab | NICE | CP4 15:30 |
 
 ## D. Founder and pitch - `int/d-pitch`
 

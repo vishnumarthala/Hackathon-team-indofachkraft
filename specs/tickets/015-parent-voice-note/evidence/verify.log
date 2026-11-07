@@ -1,0 +1,82 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.12 /home/marthalv/Documents/vishnu/ct-011-assessment-report
+
+
+ Test Files  19 passed (19)
+      Tests  220 passed (220)
+   Start at  14:30:02
+   Duration  963ms (transform 2.78s, setup 0ms, import 5.49s, tests 668ms, environment 2ms)
+
+▲ Next.js 16.4.5 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 21ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.5s
+  Running TypeScript ...
+  Finished TypeScript in 4.1s ...
+  Collecting page data using 13 workers ...
+  Generating static pages using 13 workers (0/5) ...
+  Generating static pages using 13 workers (1/5) 
+  Generating static pages using 13 workers (2/5) 
+  Generating static pages using 13 workers (3/5) 
+✓ Generating static pages using 13 workers (5/5) in 232ms
+Turbopack build encountered 1 warning:
+./lib/demo.ts:12:16
+Warning: Dynamic filesystem access causes tracing of the whole project
+  10 | .../ Read from disk on every call (no cache) so evals can break one fixture in a per-worke...
+  11 | ...xport function loadFixture<T = unknown>(relPath: string, schema?: z.ZodType<T>): T {
+> 12 | ... const file = path.resolve(process.cwd(), env.DEMO_FIXTURES_DIR, relPath);
+     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | ... let raw: string;
+  14 | ... try {
+  15 | ...   raw = readFileSync(file, "utf8");
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: path.resolve(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./lib/demo.ts
+    ./app/api/intake/[token]/start/route.ts
+
+
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/cases
+├ ƒ /api/cases/[id]
+├ ƒ /api/cases/[id]/intake-link
+├ ƒ /api/cases/[id]/sessions
+├ ƒ /api/facts/[id]
+├ ƒ /api/intake/[token]/start
+├ ƒ /api/reports/[id]
+├ ƒ /api/reports/[id]/parent-voice-note
+├ ƒ /api/sessions/[id]/bulk
+├ ƒ /api/sessions/[id]/report
+├ ƒ /api/sessions/[id]/transcribe
+├ ƒ /cases/[id]
+├ ƒ /cases/[id]/brief
+├ ƒ /cases/[id]/referral
+├ ƒ /cases/[id]/report
+├ ƒ /cases/[id]/sessions
+├ ƒ /cases/[id]/sessions/[recordingId]
+├ ○ /cases/new
+├ ƒ /dashboard
+└ ƒ /intake/[token]
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
