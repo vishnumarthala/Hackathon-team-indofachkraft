@@ -1,6 +1,6 @@
 "use client";
 
-import type { RefObject } from "react";
+import type { ReactNode, RefObject } from "react";
 import type { Segment } from "@/lib/types";
 import { formatClock } from "./time";
 
@@ -18,6 +18,7 @@ export function AudioTranscript({
   segments,
   activeSegmentId,
   onSelect,
+  headerAction,
 }: {
   sessionNumber: number | null;
   audioUrl: string | null;
@@ -25,10 +26,14 @@ export function AudioTranscript({
   segments: Segment[];
   activeSegmentId: string | null;
   onSelect: (segmentId: string, startSec: number) => void;
+  headerAction?: ReactNode;
 }) {
   return (
     <div className="min-w-0 space-y-3 lg:sticky lg:top-4 lg:self-start">
-      <h2 className="text-lg font-semibold">Session {sessionNumber}</h2>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <h2 className="text-lg font-semibold">Session {sessionNumber}</h2>
+        {headerAction}
+      </div>
       {audioUrl ? (
         <audio ref={audioRef} controls preload="metadata" src={audioUrl} className="w-full" />
       ) : (

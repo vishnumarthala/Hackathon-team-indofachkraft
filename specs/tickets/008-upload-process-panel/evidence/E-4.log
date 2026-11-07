@@ -1,0 +1,1 @@
+step3 200; step4 409 {"error":"Speakers can't be swapped after items are confirmed"}; step6 same 409; step7 {"error":"Session not found"} 404; extra {} -> 400 {"error":"Invalid request","details":{"swap":"swap must be true"}}; extra {"swap":false} -> same 400
