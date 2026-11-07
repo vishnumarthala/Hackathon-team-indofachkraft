@@ -1,0 +1,352 @@
+{
+  "items": [
+    {
+      "item_id": 1,
+      "rating": 4,
+      "segment_id": "s4",
+      "quote": "he does not look at us when we talk",
+      "confidence": 0.85,
+      "rationale": "Parent-reported: the child does not look at the parents when they talk, even during feeding."
+    },
+    {
+      "item_id": 2,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 3,
+      "rating": 3,
+      "segment_id": "s8",
+      "quote": "he is in his own world",
+      "confidence": 0.55,
+      "rationale": "Parent-reported: family describes the child as being in his own world."
+    },
+    {
+      "item_id": 4,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 5,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 6,
+      "rating": 4,
+      "segment_id": "s6",
+      "quote": "He does not turn when we call his name",
+      "confidence": 0.85,
+      "rationale": "Parent-reported: no response when called by name, even after many calls."
+    },
+    {
+      "item_id": 7,
+      "rating": 4,
+      "segment_id": "s14",
+      "quote": "He lines up his toys in one long line",
+      "confidence": 0.8,
+      "rationale": "Parent-reported: lines up toys and plays alone."
+    },
+    {
+      "item_id": 8,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 9,
+      "rating": 3,
+      "segment_id": "s14",
+      "quote": "he does not play with his cousins",
+      "confidence": 0.7,
+      "rationale": "Parent-reported: does not play with cousins of a similar age."
+    },
+    {
+      "item_id": 10,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 11,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 12,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 13,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 14,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 15,
+      "rating": 4,
+      "segment_id": "s10",
+      "quote": "at age 2 he said a few words, amma, nanna, ball. Then slowly he stopped talking",
+      "confidence": 0.9,
+      "rationale": "Parent-reported: had a few words at age 2, then stopped talking and has no words now."
+    },
+    {
+      "item_id": 16,
+      "rating": 4,
+      "segment_id": "s20",
+      "quote": "he does not point",
+      "confidence": 0.85,
+      "rationale": "Parent-reported: does not point; pulls the parent's hand to get water."
+    },
+    {
+      "item_id": 17,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 18,
+      "rating": 4,
+      "segment_id": "s18",
+      "quote": "He repeats lines from cartoons, the same line again and again",
+      "confidence": 0.8,
+      "rationale": "Parent-reported: repeats cartoon lines, not used to talk to the family."
+    },
+    {
+      "item_id": 19,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 20,
+      "rating": 3,
+      "segment_id": "s32",
+      "quote": "he never comes to tell us anything",
+      "confidence": 0.65,
+      "rationale": "Parent-reported: does not start communication except to get something."
+    },
+    {
+      "item_id": 21,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 22,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 23,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 24,
+      "rating": 3,
+      "segment_id": "s24",
+      "quote": "He flaps his hands very fast",
+      "confidence": 0.75,
+      "rationale": "Parent-reported: hand flapping and toe walking when excited."
+    },
+    {
+      "item_id": 25,
+      "rating": 3,
+      "segment_id": "s16",
+      "quote": "one small red car. He takes it to bed, to the bathroom, everywhere",
+      "confidence": 0.7,
+      "rationale": "Parent-reported: carries one small toy car everywhere."
+    },
+    {
+      "item_id": 26,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 27,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 28,
+      "rating": 3,
+      "segment_id": "s28",
+      "quote": "Big tantrum.",
+      "confidence": 0.7,
+      "rationale": "Parent-reported: big tantrum when the route to school changed."
+    },
+    {
+      "item_id": 29,
+      "rating": 4,
+      "segment_id": "s30",
+      "quote": "He hits his own head with his hand when he is upset",
+      "confidence": 0.9,
+      "rationale": "Parent-reported: hits own head when upset; parent holds his hands to keep him safe."
+    },
+    {
+      "item_id": 30,
+      "rating": 4,
+      "segment_id": "s28",
+      "quote": "One day we changed the route to school because of traffic. He screamed and kicked for half an hour.",
+      "confidence": 0.8,
+      "rationale": "Parent-reported: strong distress when the usual route to school changed."
+    },
+    {
+      "item_id": 31,
+      "rating": 4,
+      "segment_id": "s22",
+      "quote": "He covers his ears at the mixer and the pressure cooker whistle",
+      "confidence": 0.85,
+      "rationale": "Parent-reported: covers ears at kitchen sounds and hides."
+    },
+    {
+      "item_id": 32,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 33,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 34,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 35,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 36,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 37,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 38,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 39,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    },
+    {
+      "item_id": 40,
+      "rating": null,
+      "segment_id": null,
+      "quote": null,
+      "confidence": 0,
+      "rationale": "No direct evidence in this session."
+    }
+  ],
+  "red_flags": [
+    {
+      "type": "lost_speech",
+      "segment_id": "s10",
+      "quote": "Then slowly he stopped talking",
+      "note": "Parent-reported loss of words after age 2."
+    },
+    {
+      "type": "self_injury",
+      "segment_id": "s30",
+      "quote": "He hits his own head with his hand when he is upset",
+      "note": "Parent-reported head hitting when upset."
+    }
+  ],
+  "therapist_notes": [
+    {
+      "segment_id": "s7",
+      "item_id": 5,
+      "rating": 4,
+      "text": "Note: child did not respond to name in three attempts, rate item 5 as 4."
+    },
+    {
+      "segment_id": "s25",
+      "item_id": 24,
+      "rating": 4,
+      "text": "Note: child flapped hands twice during play today, rate item 24 as 4."
+    }
+  ]
+}
