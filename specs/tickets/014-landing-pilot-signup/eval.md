@@ -19,6 +19,9 @@
 
 ### E-1: Landing content (covers FR-1, FR-5)
 
+> Updated by D-6: step 4 now uses the link `Book a demo` and expects `/book-demo`. E-2 starts at
+> `/book-demo`: choose `Therapist`, click `Continue`, then fill the same labelled fields and submit `Book my demo`.
+
 - **Type:** Browser
 - **Steps:**
   1. `agent-browser open http://localhost:<port>/`

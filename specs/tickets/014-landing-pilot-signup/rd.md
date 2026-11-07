@@ -68,6 +68,7 @@ count them for slide 3.
 | D-3 | Spam | Hidden honeypot field | no CAPTCHA dependency |
 | D-4 | Phase 1 wording | "talks to the parent" (browser call), not "calls" | no phone calls today (team plan) |
 | D-5 | Show prices? (replaces D-1) | No pricing on the landing page; languages listed English and German first, then Hindi and Telugu | Role D decision 2026-11-07: focus the page on the product; price is tested in the validation calls instead |
+| D-6 | Landing redesign (replaces FR-1 links and FR-2 placement) | Full-screen video hero, top nav with `Log in` (-> `/login`) and `Book a demo` (-> `/book-demo`); no `Open the demo` link; the sign-up form moves to `/book-demo` as a 2-step form (role first, then details) with the same fields, labels, API and messages; `#pilot` is now a call-to-action section; app header and banner hidden on `/`, `/book-demo`, `/login` only; German shown as "soon"; keeps the deck story from main (the problem, Step 1 AI intake call with `VoiceDemo`, After the call with `TherapistView`, evidence and the four roles) in the new design | Role D decision 2026-11-07: therapists are the users, the page should read as a real product, and visitors were confused by a form with no context |
 
 ## Open questions
 
