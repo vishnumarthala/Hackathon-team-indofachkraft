@@ -38,7 +38,7 @@ All tickets remain draft until their requirements and evaluations have been revi
 | # | Title | Status | Mode | Runs | Priority | Checkpoint |
 |---|-------|--------|------|------|----------|------------|
 | 005 | Session upload and Scribe v2 transcription | done | solo | waits for 002: needs the Scribe fixture, role-play segments, test audio and seed | MUST | CP2 14:15 |
-| 009 | Intake link and browser voice call | draft | solo | waits for 004: replaces the Brief tab placeholder | SHOULD | CP2 14:15 |
+| 009 | Intake link and browser voice call | done | solo | waits for 004: replaces the Brief tab placeholder | SHOULD | CP2 14:15 |
 | 010 | Intake completion and pre-session brief | draft | solo | waits for 002, 009: needs post-call/brief fixtures and edits 009's pages | SHOULD | CP3 15:00 |
 | 011 | Draft assessment report | draft | solo | waits for 002, 003, 004: needs seed --confirmed, lib/scoring.ts and the Report tab | SHOULD | CP3 15:00 |
 | 015 | Parent voice note (Telugu TTS + email) | draft | solo | waits for 011: adds a section to the Report tab | NICE | CP4 15:30 |

@@ -1,0 +1,33 @@
+E1 heading: Intake call
+E1 create button: true
+E1 status: Waiting for the parent to complete the call
+E1 brief-section: 1
+E1 url: http://localhost:3001/intake/BWCGbrxsQ18FUHPIsK-h7anxMnmcxIW0JwiQywWwFtk
+E1 readonly: 
+E1 copied label: true
+E1 clipboard == url: true
+E1 wa target: _blank
+E1 wa href: https://wa.me/919000000000?text=Hello%20a009%20Lakshmi%2C%20this%20is%20Demo%20Therapist's%20team%20at%20CareThread.%20Before%20a009%20Ravi's%20first%20session%2C%20please%20take%20a%20short%20voice%20call%20(about%2015%20minutes)%20with%20our%20AI%20assistant%20in%20Telugu%2C%20Hindi%20or%20English%3A%20http%3A%2F%2Flocalhost%3A3001%2Fintake%2FBWCGbrxsQ18FUHPIsK-h7anxMnmcxIW0JwiQywWwFtk
+E1 wa text: Hello a009 Lakshmi, this is Demo Therapist's team at CareThread. Before a009 Ravi's first session, please take a short voice call (about 15 minutes) with our AI assistant in Telugu, Hindi or English: http://localhost:3001/intake/BWCGbrxsQ18FUHPIsK-h7anxMnmcxIW0JwiQywWwFtk
+E1 email disabled (no email): true
+E1 email title: Add a parent email on the case first
+E1 url after reload same: true
+E1 email enabled (with email): true
+E1 email status (demo): Email not sent (demo mode)
+E2 h1: Intake call for a009 Ravi's family
+E2 select value: te
+E2 options: ["en=English","hi=हिन्दी (Hindi)","te=తెలుగు (Telugu)"]
+E2 no horizontal scroll: true
+E2 start height px: 48
+E2 start disabled before consent: true
+E2 start enabled after consent: true
+E3 demo text: true
+E3 #demo-actions: 1
+E3 mic requested: false
+E2 posted: ["{\"language\":\"hi\"}"]
+E2 posted en: ["{\"language\":\"en\"}"]
+E2 posted te: ["{\"language\":\"te\"}"]
+E2 unknown status: 404
+E2 unknown text: This link is not valid.
+E2 completed body: Thank you, your intake call is complete.
+E2 completed has Start: 0
