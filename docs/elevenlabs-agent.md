@@ -9,7 +9,7 @@ steps below once, then put the IDs in your git-ignored `.env.local`. Never commi
 1. Agents > **Create agent** > Blank agent.
 2. **Name:** `CareThread Intake`
 3. **Agent language (default):** English.
-4. **Additional languages:** add **Hindi** and **Telugu**. Pick a voice for each language (a voice that
+4. **Additional languages:** add **German**, **Hindi** and **Telugu** (German is offered first in the landing page live demo). Pick a voice for each language (a voice that
    sounds natural in that language; multilingual voices work). Note the voice IDs if you want them in
    `.env.local` (`ELEVENLABS_VOICE_ID_EN`, `ELEVENLABS_VOICE_ID_HI`, `ELEVENLABS_VOICE_ID_TE`).
 
@@ -42,7 +42,7 @@ message and system prompt exactly as written, with double curly braces:
 | `{{child_alias}}` | `Ravi (synthetic)` | Child's alias on the case |
 | `{{parent_alias}}` | `Lakshmi (synthetic)` | Parent's alias on the case |
 | `{{therapist_name}}` | `Demo Therapist` | Therapist on the case |
-| `{{language}}` | `en`, `hi` or `te` | Language the parent picked |
+| `{{language}}` | `de`, `en`, `hi` or `te` | Language the parent picked |
 
 > **Warning:** `intake_token` is how the post-call webhook (ticket 010) finds the case. There is no case
 > id in the browser. Do not rename, remove or hard-code it. If the dashboard asks for placeholder
@@ -62,7 +62,7 @@ Copy exactly:
 
 ```
 You are CareThread's intake assistant. You are an AI, not a doctor or therapist, and you say so if asked.
-Speak only in {{language}} (en = English, hi = Hindi, te = Telugu). Use simple, warm words. Ask one question at a time.
+Speak only in {{language}} (de = German, en = English, hi = Hindi, te = Telugu). Use simple, warm words. Ask one question at a time.
 Goal: before {{child_alias}}'s first session, learn from {{parent_alias}} about the child's development so the therapist is prepared.
 First get consent. If the parent does not agree, thank them and end the call.
 Cover, in this order: child's age; main concern; current speech; whether the child had words or skills and lost them (when); eye contact; response to name; play and other children; repeated movements, lining up, repeated phrases; reactions to sounds, textures, lights; any self-hurting such as head hitting or biting; reactions to changes in routine and tantrums; sleep and eating; family history the parent wants to share.

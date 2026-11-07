@@ -4,9 +4,10 @@ import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef, useState } from "react";
 import { SAMPLE_CALL, SAMPLE_CALL_SRC, type SampleTurn } from "@/components/landing/sampleCall";
 
-export type DemoLanguage = "en" | "hi" | "te";
+export type DemoLanguage = "de" | "en" | "hi" | "te";
 
 export const DEMO_LANGUAGES: Array<{ value: DemoLanguage; label: string }> = [
+  { value: "de", label: "Deutsch (German)" },
   { value: "en", label: "English" },
   { value: "hi", label: "हिन्दी (Hindi)" },
   { value: "te", label: "తెలుగు (Telugu)" },
@@ -175,7 +176,7 @@ function SamplePlayer() {
 }
 
 function LivePanel() {
-  const [language, setLanguage] = useState<DemoLanguage>("en");
+  const [language, setLanguage] = useState<DemoLanguage>("de");
   const [consent, setConsent] = useState(false);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
