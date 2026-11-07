@@ -1,0 +1,12 @@
+# E-1 browser run (Playwright, chromium-1248) on case e9726c3a-d36f-40d9-8571-ff9403f977d5, fresh referral I0PLHNJh8Hd8SmaiOEtgksp9433vDPYUtvvUqLvsTY0 (session audio: demo/audio/sample-short.wav attached)
+textarea after suggestion: "When did speech regress?"
+answer after 868 ms; showed Asking…: true
+has 'Ask the case': true
+has fixture answer: true
+chip label: Session 1 · 01:00 disabled: false
+audio after chip click: {"rec":"52162757-2640-41ad-b18d-8e2cff3306cf","t":10.208813,"duration":10.208813,"paused":true,"ended":true,"signedUrl":true}
+chip pressed: false
+error shown: Invalid request: Question must be at least 3 characters
+after reload shows earlier question: true
+
+# First E-1 run on referral JA0p8hMvnILGhohW6geB-EjPtqrNEIpmfvafYgQ0Bgo (no audio attached yet): chip 'Session 1 · 01:00' rendered disabled (no audio); step 5 output in E-1-db.json

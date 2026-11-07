@@ -1,0 +1,13 @@
+# E-3 on case e9726c3a-d36f-40d9-8571-ff9403f977d5, referral token K=JA0p8hMvnILGhohW6geB-EjPtqrNEIpmfvafYgQ0Bgo (dev server :3002, DEMO_MODE=true)
+## step 1
+{"error":"Not found"} 404
+## step 2
+{"error":"Invalid request","details":{"question":"Question must be at least 3 characters"}} 400
+## step 3 (50 sequential requests, then one more; node loop instead of the bash loop)
+50 requests -> statuses {"200":49,"429":1}
+{"error":"Question limit reached for this referral"} 429
+## stored questions for K
+[{"n":"50","pending":"0"}]
+## step 4
+[{"status":"revoked"}]
+{"error":"Not found"} 404

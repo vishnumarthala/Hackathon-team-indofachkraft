@@ -1,0 +1,45 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/HT-012
+
+ ✓ tests/ask.test.ts > ask citations (FR-3) > keeps a valid fact id and labels it with its evidence moment 1ms
+ ✓ tests/ask.test.ts > ask citations (FR-3) > accepts a fact id written with its fact: prefix 0ms
+ ✓ tests/ask.test.ts > ask citations (FR-3) > drops unknown fact ids, facts that were not sent, and ids of the wrong kind 0ms
+ ✓ tests/ask.test.ts > ask citations (FR-3) > labels session segments `1:s<k>` and intake turns `intake:t<k>` 0ms
+ ✓ tests/ask.test.ts > ask citations (FR-3) > drops segment ids that do not exist or use the wrong recording prefix 0ms
+ ✓ tests/ask.test.ts > ask citations (FR-3) > labels a CASE_SHEET fact without evidence `Intake answers` at 0 s 0ms
+ ✓ tests/ask.test.ts > ask citations (FR-3) > turns found-without-citations into Not documented 0ms
+ ✓ tests/ask.test.ts > ask citations (FR-3) > never returns citations for a found:false answer 0ms
+ ✓ tests/ask.test.ts > ask citations (FR-3) > resolves facts and segments of an unknown recording without crashing 0ms
+ ✓ tests/ask.test.ts > ask audio playability > never treats a recording without audio as playable 0ms
+ ✓ tests/ask.test.ts > ask audio playability > never treats an expired signed URL as playable 0ms
+ ✓ tests/ask.test.ts > ask audio playability > plays audio that exists and has not expired 0ms
+ ✓ tests/ask.test.ts > ask context (FR-2) > formats facts, intake answers, the brief and transcript lines 0ms
+ ✓ tests/ask.test.ts > ask context (FR-2) > puts the specialist's question after the case record 0ms
+ ✓ tests/ask.test.ts > ask context (FR-2) > cuts to 60,000 characters by default and keeps a small case whole 0ms
+ ✓ tests/ask.test.ts > ask context (FR-2) > cuts intake segments first, then the oldest session, and never more than needed 1ms
+ ✓ tests/ask.test.ts > ask context (FR-2) > validates citations against the truncated context, not the full case 0ms
+ ✓ tests/ask.test.ts > ask context (FR-2) > drops the brief and facts only after every transcript line is gone 0ms
+ ✓ tests/ask.test.ts > ask context (FR-2) > uses the latest intake call and session numbers, skipping recordings without segments 0ms
+ ✓ tests/ask.test.ts > ask prompt (FR-5) > contains the section 10 rules 0ms
+ ✓ tests/ask.test.ts > ask route (database) > exports maxDuration = 60 0ms
+ ✓ tests/ask.test.ts > ask route (database) > answers from the fixture, stores the question and audits it (FR-4) 920ms
+ ✓ tests/ask.test.ts > ask route (database) > drops a citation the model invents and answers Not documented (NFR-2) 600ms
+ ✓ tests/ask.test.ts > ask route (database) > returns 404 for a wrong token, a token of another case and a malformed case id (FR-1) 152ms
+ ✓ tests/ask.test.ts > ask route (database) > returns 400 with a field message for a bad question (FR-1) 279ms
+stderr | tests/ask.test.ts > ask route (database) > answers 502 on Gemini failure and stores nothing (E-4)
+ask failed: Gemini request failed: synthetic
+
+ ✓ tests/ask.test.ts > ask route (database) > answers 502 on Gemini failure and stores nothing (E-4) 1011ms
+ ✓ tests/ask.test.ts > ask route (database) > never lets concurrent requests exceed 50 questions per referral 3334ms
+stderr | tests/ask.test.ts > ask route (database) > holds the last slot while generating and releases it when Gemini fails
+ask failed: Gemini request failed: synthetic
+
+ ✓ tests/ask.test.ts > ask route (database) > holds the last slot while generating and releases it when Gemini fails 2016ms
+ ✓ tests/ask.test.ts > ask route (database) > returns 404 once the referral is revoked (FR-1) 757ms
+ ✓ tests/ask.test.ts > ask route (database) > lists only answered questions, oldest first, for the specialist page 718ms
+
+ Test Files  1 passed (1)
+      Tests  30 passed (30)
+   Start at  14:24:57
+   Duration  11.61s (transform 91ms, setup 0ms, import 130ms, tests 11.41s, environment 0ms)
+

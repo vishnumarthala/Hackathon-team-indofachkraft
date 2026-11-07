@@ -8,6 +8,7 @@ describe("env", () => {
     vi.stubEnv("GEMINI_API_KEY", "");
     expect(() => env.GEMINI_API_KEY).toThrow("Missing env var: GEMINI_API_KEY");
     vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", undefined as unknown as string);
+    vi.stubEnv("SUPABASE_SECRET_KEY", "");
     expect(() => env.SUPABASE_SERVICE_ROLE_KEY).toThrow("Missing env var: SUPABASE_SERVICE_ROLE_KEY");
   });
 
