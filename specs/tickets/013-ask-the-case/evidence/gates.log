@@ -1,0 +1,37 @@
+## npm run lint
+exit 0
+## npm run typecheck
+exit 0
+## npm test (wrapper: DATABASE_URL set, DB tests run)
+     × throws a clear message for a missing required var 3ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/env.test.ts > env > throws a clear message for a missing required var
+ Test Files  1 failed | 16 passed (17)
+      Tests  1 failed | 203 passed (204)
+exit 1
+  (only failure: tests/env.test.ts 'throws a clear message for a missing required var' - pre-existing, environment-only: the wrapper env also sets the SUPABASE_SECRET_KEY alias, so stubbing SUPABASE_SERVICE_ROLE_KEY away does not throw. Not touched by this ticket.)
+## npm test (no env: DB tests skipped)
+ Test Files  16 passed | 1 skipped (17)
+      Tests  189 passed | 15 skipped (204)
+exit 0
+## wrapper: npx vitest run --exclude tests/env.test.ts (all DB tests run)
+ Test Files  16 passed (16)
+      Tests  199 passed (199)
+exit 0
+## npm run build
+✓ Running next.config.ts took 16ms
+✓ Compiled successfully in 1044ms
+✓ Generating static pages using 11 workers (5/5) in 88ms
+├ ƒ /api/cases/[id]/ask
+└ ƒ /specialist/[token]
+exit 0
+## check-client-imports
+clean
+## check-copy
+prompts/extract.md:5: You document; you never diagnose. Use only the transcript given. Never invent quotes - copy them
+tests/ask.test.ts:304: expect(prompt).toContain("You document; you never diagnose. Use only the transcript/facts given.");
+tests/extraction.test.ts:240: expect(system).toContain("You document; you never diagnose.");
+## E-2 step 2: grep -c 'Not documented in this case.' prompts/ask.md
+1
+## check-copy on this ticket's files
+clean
