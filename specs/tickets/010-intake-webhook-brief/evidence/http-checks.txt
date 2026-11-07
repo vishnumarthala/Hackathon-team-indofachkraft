@@ -1,0 +1,61 @@
+## E-1 signed webhook and persistence
+PASS webhook missing signature -> 401 - 401 {"error":"Invalid signature"}
+PASS webhook bad hex signature -> 401 - 401 {"error":"Invalid signature"}
+PASS webhook old signature -> 401 - 401 {"error":"Invalid signature"}
+PASS webhook future signature -> 401 - 401 {"error":"Invalid signature"}
+PASS webhook malformed signature -> 401 - 401 {"error":"Invalid signature"}
+PASS webhook mismatched secret signature -> 401 - 401 {"error":"Invalid signature"}
+PASS no writes after bad signatures - {"recordings":0,"facts":0,"reports":0,"received":0,"status":"booked"}
+PASS valid signed webhook -> 200 brief:true - 200 {"received":true,"case_id":"a3a9e3c1-286b-4e57-b551-a08b3b1a7c04","recording_id":"fc84b722-49a2-423b-af67-0645e58cc633","brief":true}
+PASS NFR-1 webhook answers < 10 s in DEMO_MODE - 749 ms
+PASS 1 recording, 15 facts, 1 brief, intake_done, 1 receipt audit - {"recordings":1,"facts":15,"reports":1,"received":1,"status":"intake_done"}
+PASS brief Markdown has FR-4 headings and parent-reported wording
+content_md:
+## Pre-session brief (parent-reported)
+
+Parent-reported: Lakshmi describes Ravi, age 40 months, who used a few words at age 2 and then stopped talking; he has no words now. She reports little eye contact, no turning to his name, solitary play with lining up of cars, repeated cartoon lines, hand flapping when excited, covering his ears at kitchen sounds, big tantrums when the school route changes and hitting his own head when upset. Sleep is late and he eats only rice and curd. A younger uncle also started talking late. Everything here is parent-reported and needs to be checked in the session.
+
+### Red flags
+
+- Lost speech: "at age 2 he said a few words like amma and ball, then he stopped talking" (00:57)
+- Self-injury: "he hits his own head with his hand when he is upset" (02:26)
+
+### Questions to verify
+
+1. Which words did Ravi use before he stopped talking, and how did the loss happen?
+2. Does Ravi respond to his name in the session when called from behind?
+3. How often does the head hitting happen, and has he ever been injured?
+4. Does Ravi use any gestures, such as pulling a hand, to ask for things?
+5. How does Ravi react to sudden sounds in the clinic?
+
+### What the parent reported
+
+| Topic | Answer |
+| --- | --- |
+| Age (months) | 40 |
+| Main concern | He is not talking, does not look at us and does not turn when we call his name. |
+| When speech was lost | Said a few words like amma and ball at about age 2, then stopped talking. |
+| Eye contact | Does not look at the parents when they talk. |
+| Play and other children | Plays alone, lines up his cars, does not play with his cousins. |
+| Repetitive behaviours | Lines up cars, repeats lines from cartoons, flaps hands when excited. |
+| Sensory reactions | Covers his ears at the mixer and the pressure cooker. |
+| Routines and tantrums | Big tantrum when the route to school changes. |
+| Sleep and eating | Sleeps late; eats only rice and curd. |
+| Family history | The parent's younger brother started talking late. |
+
+PASS repeat delivery -> 200 duplicate:true - {"received":true,"duplicate":true}
+PASS no additional facts or reports - {"recordings":1,"facts":15,"reports":1,"received":1,"status":"intake_done"}
+PASS unrelated signed event -> 200 ignored - {"received":true,"ignored":"post_call_audio"}
+PASS unknown token -> 200 ignored 'unknown token' - {"received":true,"ignored":"unknown token"}
+PASS intake.unknown_token audited with case null - [{"case_id":null,"actor":"system"}]
+## E-2 completion endpoint (demo mode path)
+PASS invalid body -> 400
+PASS unknown token -> 404
+PASS demo complete -> 200 brief:true from fixture - {"received":true,"case_id":"52ee995c-ca22-44ac-b53e-f46ce035b63f","recording_id":"d77e6655-500d-4546-ab41-5f0030188e57","brief":true}
+PASS same persisted output as the webhook - {"recordings":1,"facts":15,"reports":1,"received":1,"status":"intake_done"}
+## E-4 review endpoint
+PASS review without brief -> 404 No brief for this case - {"error":"No brief for this case"}
+## E-5 no provider key in responses
+PASS no key-like strings in API responses
+cleanup: deleted 3 a010 cases
+ALL PASS

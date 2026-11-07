@@ -1,0 +1,45 @@
+$ npm run verify  (exit 0)
+> carethread@0.1.0 verify
+> npm run lint && npm run typecheck && npm test && npm run build
+> carethread@0.1.0 lint
+> eslint .
+> carethread@0.1.0 typecheck
+> tsc --noEmit
+> carethread@0.1.0 test
+> vitest run
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+ Test Files  18 passed (18)
+      Tests  246 passed | 10 skipped (256)
+> carethread@0.1.0 build
+> next build
+✓ Running next.config.ts took 20ms
+✓ Compiled successfully in 3.5s
+✓ Generating static pages using 13 workers (5/5) in 250ms
+Turbopack build encountered 1 warning:
+  App Route:
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/cases
+├ ƒ /api/cases/[id]
+├ ƒ /api/cases/[id]/brief/reviewed
+├ ƒ /api/cases/[id]/intake-link
+├ ƒ /api/cases/[id]/sessions
+├ ƒ /api/dev/simulate-intake/[token]
+├ ƒ /api/facts/[id]
+├ ƒ /api/intake/[token]/complete
+├ ƒ /api/intake/[token]/start
+├ ƒ /api/sessions/[id]/bulk
+├ ƒ /api/sessions/[id]/transcribe
+├ ƒ /api/webhooks/elevenlabs
+├ ƒ /cases/[id]
+├ ƒ /cases/[id]/brief
+├ ƒ /cases/[id]/referral
+├ ƒ /cases/[id]/report
+├ ƒ /cases/[id]/sessions
+├ ƒ /cases/[id]/sessions/[recordingId]
+├ ○ /cases/new
+├ ƒ /dashboard
+└ ƒ /intake/[token]
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
