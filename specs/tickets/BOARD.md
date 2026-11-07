@@ -19,7 +19,7 @@ All tickets remain draft until their requirements and evaluations have been revi
 | # | Title | Status | Mode | Runs | Priority | Checkpoint |
 |---|-------|--------|------|------|----------|------------|
 | 001 | Foundations - scaffold, schema, shared contracts | draft | solo | alongside | MUST | express (target ~13:15) |
-| 002 | Demo fixtures and seed | draft | solo | waits for 001: needs lib/types.ts, lib/db.ts, the migration and npm scripts | MUST | CP1 13:30 |
+| 002 | Demo fixtures and seed | done | solo | waits for 001: needs lib/types.ts, lib/db.ts, the migration and npm scripts | MUST | CP1 13:30 |
 | 006 | ISAA extraction with Gemini | draft | solo | waits for 002: needs the extract fixture and seed --stage transcribed | MUST | CP2 14:15 |
 | 012 | Referral packet, specialist page and email | draft | solo | waits for 002, 003, 004: needs seed --confirmed, lib/scoring.ts and the Referral tab | SHOULD | CP3 15:00 |
 | 013 | Ask the case | draft | solo | waits for 012: adds the chat to the specialist page and reuses EvidencePlayer | SHOULD | CP4 15:30 |

@@ -1,6 +1,6 @@
 # 002: Demo fixtures and seed
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 001: needs lib/types.ts schemas, lib/db.ts, the migration and the npm scripts
 

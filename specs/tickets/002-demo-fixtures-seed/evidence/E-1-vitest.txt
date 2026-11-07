@@ -1,0 +1,37 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/Hackathon-team-indofachkraft
+
+ ✓ tests/fixtures.test.ts > fixture schemas > every fixture parses with its schema 3ms
+ ✓ tests/fixtures.test.ts > role-play segments > has ids s1..sN in order with N >= 30 0ms
+ ✓ tests/fixtures.test.ts > role-play segments > alternates therapist (speaker_0) and parent (speaker_1), starting with the therapist 0ms
+ ✓ tests/fixtures.test.ts > role-play segments > has gaps >= 2.0 s between segments 0ms
+ ✓ tests/fixtures.test.ts > role-play segments > has segments of 3-25 s and ends between 200 and 260 s 0ms
+ ✓ tests/fixtures.test.ts > role-play segments > has more than 300 words and only single spaces 0ms
+ ✓ tests/fixtures.test.ts > role-play segments > contains both therapist Note: lines with the exact rating instructions 0ms
+ ✓ tests/fixtures.test.ts > role-play segments > covers all 10 signs from the team plan 0ms
+ ✓ tests/fixtures.test.ts > Scribe fixture > make-scribe-fixture output equals the committed scribe-response.json and is deterministic 1ms
+ ✓ tests/fixtures.test.ts > Scribe fixture > spreads words across each segment with spacing entries in between 8ms
+ ✓ tests/fixtures.test.ts > extract fixture > has item ids 1..40 exactly once 0ms
+ ✓ tests/fixtures.test.ts > extract fixture > quotes are verbatim substrings of their cited segments (>= 12 rated items) 0ms
+ ✓ tests/fixtures.test.ts > extract fixture > has >= 5 null items with no evidence and confidence 0 0ms
+ ✓ tests/fixtures.test.ts > extract fixture > rates items 15 and 29 >= 3 and cites the right red flags and therapist notes 0ms
+ ✓ tests/fixtures.test.ts > ElevenLabs post-call fixture > has >= 12 turns, an AI disclosure with consent first, and one null tool-call turn in the middle 0ms
+ ✓ tests/fixtures.test.ts > ElevenLabs post-call fixture > post-call aliases, age and ids match the seed values 0ms
+ ✓ tests/fixtures.test.ts > ElevenLabs post-call fixture > collects every case-sheet field, agreeing with the role-play 0ms
+ ✓ tests/fixtures.test.ts > Gemini fixtures > brief turn ids exist and their messages contain the quotes 0ms
+ ✓ tests/fixtures.test.ts > Gemini fixtures > ask citations exist and point at the lost-speech segment of session 1 0ms
+ ✓ tests/fixtures.test.ts > Gemini fixtures > parent-summary is Telugu, has no digits or ISAA and ends with the next-steps sentence 0ms
+ ✓ tests/fixtures.test.ts > Gemini fixtures > copy rules: no diagnosis wording, no HIPAA compliant, no score in any Gemini fixture 0ms
+ ✓ tests/fixtures.test.ts > demo folder rules > JSON fixtures total <= 300 KB 0ms
+ ✓ tests/fixtures.test.ts > demo folder rules > contains no real-looking emails or phone numbers 1ms
+ ✓ tests/fixtures.test.ts > seed helpers > parses seed options 0ms
+ ✓ tests/fixtures.test.ts > seed helpers > builds intake segments from the post-call transcript, skipping the null turn 0ms
+ ✓ tests/fixtures.test.ts > seed helpers > maps every case-sheet field to a suggested parent_call fact 0ms
+ ✓ tests/fixtures.test.ts > seed helpers > builds 40 ISAA facts with voice-note overrides and the --confirmed rules 0ms
+ ✓ tests/fixtures.test.ts > seed helpers > renders the brief as Markdown with the expected headings 0ms
+
+ Test Files  1 passed (1)
+      Tests  28 passed (28)
+   Start at  13:48:21
+   Duration  151ms (transform 31ms, setup 0ms, import 68ms, tests 20ms, environment 0ms)
+
