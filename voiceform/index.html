@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VoiceForm – speak, AI fills the form</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1c2230;--mute:#667085;--line:#e3e6ec;--accent:#3b5bdb;--ai:#e7f5ec;--ailine:#2f9e60;--warn:#fff4e0;--rec:#d6336c}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+h1{font-size:20px;margin:0}
+.sub{color:var(--mute);font-size:13px}
+main{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:16px;padding:0 20px 40px;max-width:1200px;margin:auto}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card h2{font-size:15px;margin:0 0 10px}
+button,select,input,textarea{font:inherit}
+button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 12px;cursor:pointer}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.rec{background:var(--rec);color:#fff;border-color:var(--rec);width:100%;padding:14px;font-size:16px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+textarea,input[type=text],input[type=date],input[type=email],input[type=password],select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+textarea{resize:vertical;min-height:90px}
+#transcript{min-height:220px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+.field.ai input,.field.ai textarea,.field.ai select{background:var(--ai);border-color:var(--ailine)}
+.field.missing input,.field.missing textarea,.field.missing select{background:var(--warn)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+.status{font-size:13px;color:var(--mute);margin-top:8px;min-height:20px}
+.status.err{color:#c92a2a}
+.interim{color:var(--mute);font-style:italic}
+.legend{font-size:12px;color:var(--mute);display:flex;gap:12px;margin-bottom:10px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
+.edit-row{display:grid;grid-template-columns:1fr 130px auto;gap:6px;margin-bottom:6px}
+.pulse{animation:p 1.2s infinite}
+@keyframes p{50%{opacity:.6}}
+dialog{border:1px solid var(--line);border-radius:12px;max-width:560px;width:92%;padding:18px}
+.printhead{display:none}
+@media print{
+ body{background:#fff}header,#left,.noprint,.legend{display:none!important}
+ main{display:block;padding:0}.card{border:none;padding:0}
+ .printhead{display:block;margin-bottom:12px}
+ .field.ai input,.field.ai textarea,.field.ai select,.field.missing input,.field.missing textarea,.field.missing select{background:#fff;border-color:#ccc}
+}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>🎙️ VoiceForm</h1>
+    <div class="sub">Speak naturally → text → AI fills the form → send</div>
+  </div>
+  <div class="row">
+    <button id="btnFields">Edit form fields</button>
+    <button id="btnSettings">Settings</button>
+  </div>
+</header>
+
+<main>
+  <section id="left" class="card">
+    <h2>1. Speak</h2>
+    <div class="row" style="margin-bottom:10px">
+      <select id="lang" style="flex:1">
+        <option value="en-IN">English (India)</option>
+        <option value="en-US">English (US)</option>
+        <option value="en-GB">English (UK)</option>
+        <option value="de-DE">Deutsch</option>
+        <option value="te-IN">తెలుగు (Telugu)</option>
+        <option value="hi-IN">हिन्दी (Hindi)</option>
+        <option value="ta-IN">தமிழ் (Tamil)</option>
+      </select>
+    </div>
+    <button id="btnRec" class="rec">● Start recording</button>
+    <div class="status" id="recStatus"></div>
+    <div class="field" style="margin-top:12px">
+      <label>Live transcript (you can edit it)</label>
+      <textarea id="transcript" placeholder="Your words appear here. You can also type or paste."></textarea>
+      <div class="interim" id="interim"></div>
+    </div>
+    <div class="row">
+      <button id="btnFill" class="primary" style="flex:1">2. Fill form with AI ✨</button>
+      <button id="btnClear">Clear</button>
+    </div>
+    <div class="status" id="aiStatus"></div>
+  </section>
+
+  <section class="card" id="formCard">
+    <div class="printhead"><h2 id="printTitle"></h2></div>
+    <div class="row noprint" style="justify-content:space-between;margin-bottom:8px">
+      <h2 style="margin:0">3. Review &amp; send</h2>
+      <input type="text" id="formTitle" style="max-width:260px" aria-label="Form title">
+    </div>
+    <div class="legend noprint">
+      <span><span class="dot" style="background:var(--ai);border:1px solid var(--ailine)"></span>Filled by AI</span>
+      <span><span class="dot" style="background:var(--warn);border:1px solid #f0c36d"></span>Not mentioned – check</span>
+    </div>
+    <div class="grid" id="form"></div>
+
+    <div class="noprint" style="border-top:1px solid var(--line);margin-top:8px;padding-top:12px">
+      <div class="grid">
+        <div class="field"><label>Send to (email)</label><input type="email" id="to" placeholder="doctor@example.com"></div>
+        <div class="field"><label>Subject</label><input type="text" id="subject"></div>
+      </div>
+      <div class="row">
+        <button class="primary" id="btnMail">✉️ Send by email</button>
+        <button id="btnCopy">Copy as text</button>
+        <button id="btnPrint">Print / Save PDF</button>
+        <button id="btnTxt">Download .txt</button>
+      </div>
+      <div class="status" id="sendStatus"></div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlgSettings">
+  <h2 style="margin-top:0">Settings</h2>
+  <div class="field"><label>AI provider</label>
+    <select id="provider"><option value="gemini">Google Gemini (AI Studio key)</option><option value="claude">Anthropic Claude</option></select></div>
+  <div class="field"><label>API key</label>
+    <input type="password" id="apiKey" placeholder="Gemini or Anthropic key">
+    <div class="sub">Stored only in this browser. Demo use only: for a real product the key must live on a server.</div></div>
+  <div class="field"><label>Model</label><input type="text" id="model"></div>
+  <div class="row" style="justify-content:flex-end"><button id="saveSettings" class="primary">Save</button></div>
+</dialog>
+
+<dialog id="dlgFields">
+  <h2 style="margin-top:0">Form fields</h2>
+  <div class="sub" style="margin-bottom:8px">Add, rename or remove fields. The AI fills whatever fields you define here.</div>
+  <div id="fieldEditor"></div>
+  <div class="row" style="margin-top:8px">
+    <button id="addField">+ Add field</button>
+    <button id="resetFields">Reset to default</button>
+    <span style="flex:1"></span>
+    <button id="saveFields" class="primary">Save</button>
+  </div>
+</dialog>
+
+<script>
+const DEFAULT_FIELDS = [
+  {id:"patient_name",label:"Patient name",type:"text"},
+  {id:"dob_age",label:"Date of birth / age",type:"text"},
+  {id:"gender",label:"Gender",type:"text"},
+  {id:"guardian",label:"Parent / guardian name",type:"text"},
+  {id:"contact",label:"Contact phone / email",type:"text"},
+  {id:"diagnosis",label:"Diagnosis & support level (e.g. ASD level 1/2/3), date diagnosed",type:"textarea"},
+  {id:"concerns",label:"Main concerns today",type:"textarea"},
+  {id:"communication",label:"Communication (verbal, non-verbal, speech level, devices)",type:"textarea"},
+  {id:"sensory",label:"Sensory sensitivities (sound, light, touch, food textures)",type:"textarea"},
+  {id:"behaviour",label:"Behaviours, triggers & meltdowns",type:"textarea"},
+  {id:"sleep_eating",label:"Sleep & eating",type:"textarea"},
+  {id:"medication",label:"Current medication",type:"textarea"},
+  {id:"allergies",label:"Allergies",type:"text"},
+  {id:"therapies",label:"Current therapies (speech, OT, ABA, etc.)",type:"textarea"},
+  {id:"school",label:"School / daycare support",type:"textarea"},
+  {id:"strengths",label:"Strengths & interests",type:"textarea"},
+  {id:"goals",label:"Goals / what help is needed",type:"textarea"},
+  {id:"notes",label:"Other notes",type:"textarea"}
+];
+const $ = id => document.getElementById(id);
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let fields = store.get("vf_fields", DEFAULT_FIELDS);
+let aiFilled = new Set(), missing = new Set();
+
+/* ---------- Form rendering ---------- */
+function renderForm(){
+  const f = $("form"); f.innerHTML = "";
+  fields.forEach(fd=>{
+    const w = document.createElement("div");
+    w.className = "field" + (fd.type==="textarea"?" full":"") + (aiFilled.has(fd.id)?" ai":"") + (missing.has(fd.id)?" missing":"");
+    const l = document.createElement("label"); l.textContent = fd.label; l.htmlFor = "f_"+fd.id;
+    let el;
+    if(fd.type==="textarea"){ el = document.createElement("textarea"); el.style.minHeight="64px"; }
+    else { el = document.createElement("input"); el.type = fd.type==="date"?"date":"text"; }
+    el.id = "f_"+fd.id; el.value = (values[fd.id]||"");
+    el.addEventListener("input",()=>{ values[fd.id]=el.value; w.classList.remove("ai","missing"); aiFilled.delete(fd.id); missing.delete(fd.id); });
+    w.append(l,el); f.append(w);
+  });
+  $("printTitle").textContent = $("formTitle").value;
+}
+let values = {};
+$("formTitle").value = store.get("vf_title","Autism patient intake form");
+$("formTitle").addEventListener("input",()=>{store.set("vf_title",$("formTitle").value);$("printTitle").textContent=$("formTitle").value});
+$("subject").value = $("formTitle").value;
+renderForm();
+
+/* ---------- Speech recognition ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec=null, recording=false;
+function setRec(on){
+  recording = on;
+  $("btnRec").textContent = on ? "■ Stop recording" : "● Start recording";
+  $("btnRec").classList.toggle("pulse", on);
+}
+$("btnRec").onclick = ()=>{
+  if(!SR){ $("recStatus").className="status err"; $("recStatus").textContent="Voice recording needs Chrome, Edge or Safari. You can still type or paste text."; return; }
+  if(recording){ recording=false; rec&&rec.stop(); setRec(false); $("recStatus").textContent="Stopped."; return; }
+  rec = new SR(); rec.lang = $("lang").value; rec.continuous = true; rec.interimResults = true;
+  rec.onresult = e=>{
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t = e.results[i][0].transcript;
+      if(e.results[i].isFinal){ const ta=$("transcript"); ta.value += (ta.value && !/\s$/.test(ta.value)?" ":"") + t.trim(); }
+      else interim += t;
+    }
+    $("interim").textContent = interim;
+  };
+  rec.onerror = e=>{ $("recStatus").className="status err"; $("recStatus").textContent = e.error==="not-allowed" ? "Microphone blocked. Allow it in the browser address bar and open this page via http://localhost, not as a file." : "Mic error: "+e.error; if(e.error==="not-allowed"){recording=false;setRec(false)} };
+  rec.onend = ()=>{ if(recording){ try{rec.start()}catch(e){} } else setRec(false); $("interim").textContent=""; };
+  try{ rec.start(); setRec(true); $("recStatus").className="status"; $("recStatus").textContent="Listening… speak naturally."; }
+  catch(e){ $("recStatus").className="status err"; $("recStatus").textContent="Could not start: "+e.message; }
+};
+$("btnClear").onclick = ()=>{ $("transcript").value=""; values={}; aiFilled.clear(); missing.clear(); renderForm(); $("aiStatus").textContent=""; };
+
+/* ---------- AI filling ---------- */
+$("btnFill").onclick = async ()=>{
+  const text = $("transcript").value.trim();
+  const key = store.get("vf_key","");
+  const st = $("aiStatus"); st.className="status";
+  if(!text){ st.className="status err"; st.textContent="Nothing to process yet. Record or type something first."; return; }
+  if(!key){ st.className="status err"; st.textContent="Add your API key in Settings first."; $("dlgSettings").showModal(); return; }
+  $("btnFill").disabled = true; st.textContent = "AI is reading what you said…";
+  const schema = fields.map(f=>`- "${f.id}": ${f.label}`).join("\n");
+  const prompt = `You fill in a form from a spoken transcript. The speaker may use any language, may ramble, correct themselves, or mix languages. Write the field values in English unless the field is a name.
+
+FORM FIELDS (use these exact keys):
+${schema}
+
+RULES
+- Use ONLY information stated in the transcript. Never guess or invent. If a field was not mentioned, use an empty string "".
+- If the speaker corrected themselves, use the final version.
+- Write values clearly and concisely, like a person completing a form. Keep medical wording faithful to what was said.
+- Output ONLY one JSON object with exactly those keys. No explanation, no markdown.
+
+TRANSCRIPT
+"""${text}"""`;
+  try{
+    const provider = store.get("vf_provider","gemini");
+    const model = store.get("vf_model", MODEL_DEFAULT[provider]);
+    let r, j, out;
+    if(provider==="gemini"){
+      r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{
+        method:"POST", headers:{"content-type":"application/json"},
+        body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseMimeType:"application/json",temperature:0}})
+      });
+      j = await r.json();
+      if(!r.ok) throw new Error(j.error?.message || r.statusText);
+      out = (j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("");
+    } else {
+      r = await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model,max_tokens:2000,messages:[{role:"user",content:prompt}]})
+      });
+      j = await r.json();
+      if(!r.ok) throw new Error(j.error?.message || r.statusText);
+      out = j.content.map(c=>c.text||"").join("");
+    }
+    const m = out.match(/\{[\s\S]*\}/); if(!m) throw new Error("AI did not return a form.");
+    const data = JSON.parse(m[0]);
+    aiFilled.clear(); missing.clear();
+    fields.forEach(f=>{
+      const v = (data[f.id]==null?"":String(data[f.id])).trim();
+      if(v){ values[f.id]=v; aiFilled.add(f.id); } else if(!values[f.id]) missing.add(f.id);
+    });
+    renderForm();
+    st.textContent = `Done: ${aiFilled.size} fields filled, ${missing.size} not mentioned. Please review before sending.`;
+  }catch(e){ st.className="status err"; st.textContent="Error: "+e.message; }
+  $("btnFill").disabled = false;
+};
+
+/* ---------- Sending ---------- */
+function asText(){
+  let t = $("formTitle").value + "\n" + "=".repeat(Math.min(40,$("formTitle").value.length||10)) + "\n\n";
+  fields.forEach(f=>{ t += f.label + ":\n" + (values[f.id]||"—") + "\n\n"; });
+  return t.trim();
+}
+$("btnMail").onclick = ()=>{
+  const to=$("to").value.trim(), s=$("subject").value||$("formTitle").value;
+  const url = "mailto:"+encodeURIComponent(to)+"?subject="+encodeURIComponent(s)+"&body="+encodeURIComponent(asText());
+  location.href = url;
+  $("sendStatus").textContent = "Your email app should open with the form filled in. If the text is cut off (long forms), use Copy or PDF instead.";
+};
+$("btnCopy").onclick = async ()=>{ try{await navigator.clipboard.writeText(asText()); $("sendStatus").textContent="Copied. Paste into WhatsApp, email or anywhere.";}catch(e){$("sendStatus").textContent="Copy blocked by the browser."} };
+$("btnPrint").onclick = ()=>window.print();
+$("btnTxt").onclick = ()=>{
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([asText()],{type:"text/plain"}));
+  a.download=($("formTitle").value||"form").replace(/\W+/g,"_")+".txt"; a.click();
+};
+
+/* ---------- Settings & field editor ---------- */
+const MODEL_DEFAULT = {gemini:"gemini-2.5-flash", claude:"claude-sonnet-5-5"};
+$("provider").value = store.get("vf_provider","gemini");
+$("apiKey").value = store.get("vf_key",""); $("model").value = store.get("vf_model", MODEL_DEFAULT[$("provider").value]);
+$("provider").onchange = ()=>{ $("model").value = MODEL_DEFAULT[$("provider").value]; };
+$("btnSettings").onclick = ()=>$("dlgSettings").showModal();
+$("saveSettings").onclick = ()=>{ const p=$("provider").value; store.set("vf_provider",p); store.set("vf_key",$("apiKey").value.trim()); store.set("vf_model",$("model").value.trim()||MODEL_DEFAULT[p]); $("dlgSettings").close(); };
+
+function drawEditor(list){
+  const box=$("fieldEditor"); box.innerHTML="";
+  list.forEach((f,i)=>{
+    const r=document.createElement("div"); r.className="edit-row";
+    const l=document.createElement("input"); l.type="text"; l.value=f.label; l.oninput=()=>f.label=l.value;
+    const t=document.createElement("select"); [["text","Short text"],["textarea","Long text"],["date","Date"]].forEach(([v,n])=>{const o=document.createElement("option");o.value=v;o.textContent=n;if(f.type===v)o.selected=true;t.append(o)}); t.onchange=()=>f.type=t.value;
+    const d=document.createElement("button"); d.textContent="✕"; d.onclick=()=>{list.splice(i,1);drawEditor(list)};
+    r.append(l,t,d); box.append(r);
+  });
+}
+let editing=[];
+$("btnFields").onclick = ()=>{ editing = fields.map(f=>({...f})); drawEditor(editing); $("dlgFields").showModal(); };
+$("addField").onclick = ()=>{ editing.push({id:"c_"+Date.now(),label:"New field",type:"text"}); drawEditor(editing); };
+$("resetFields").onclick = ()=>{ editing = DEFAULT_FIELDS.map(f=>({...f})); drawEditor(editing); };
+$("saveFields").onclick = ()=>{ fields = editing.filter(f=>f.label.trim()); store.set("vf_fields",fields); aiFilled.clear(); missing.clear(); renderForm(); $("dlgFields").close(); };
+</script>
+</body>
+</html>
