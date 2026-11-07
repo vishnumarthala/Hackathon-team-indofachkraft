@@ -124,3 +124,26 @@ Set `DEMO_MODE=false` to make real calls; with `DEMO_MODE=true` the intake page 
    counts as a secure page for the microphone; a phone needs an HTTPS tunnel or the deployed URL).
 2. Tick consent, pick Telugu, tap `Start call`: the agent greets in Telugu with the AI disclosure.
 3. `End call` shows `Call ended. Thank you! You can close this page.`
+
+## Published agent used by the app (Nov 7)
+
+The team published **CareThread Intake Assistant**, `agent_3701m6tv55eyenhsp1qj9jwjwqf5` (voice "Madhavi",
+English / Hindi / Telugu, consent-first AI disclosure). Put the ID in `.env.local` and in Vercel as
+`ELEVENLABS_AGENT_ID`.
+
+- **Required dynamic variables:** `parent_name`, `child_name`, `centre_name`, `therapist_name`, `case_id`
+  (a missing one fails the session start). `/api/intake/<token>/start` sends them from the case
+  (centre `CareThread Demo Centre`), plus `intake_token`, which our completion and webhook processing use
+  to find the case. The landing page demo (`/api/demo/voice-token`) sends fixed synthetic values (Lakshmi,
+  Ravi, Demo Therapist, `case_id: landing-demo`).
+- **Token or public start:** `startAgentSession()` (`lib/elevenlabs/agent.ts`) asks for a WebRTC
+  conversation token. If the server's key may not mint one for this agent (HTTP 401/403/404, for example
+  the agent lives in a teammate's workspace) or no key is set, it returns the agent ID and the browser
+  starts the **public** agent by ID. Once authentication is turned on for the agent, the server key must
+  belong to the agent's workspace.
+- **Landing page live demo:** limited to 3 starts per visitor per 10 minutes and 30 per hour per server
+  instance, with an automatic end after 3 minutes. It spends credits from the agent owner's account.
+- **Follow-up:** the agent's data-collection identifiers (`child_age`, `speech_regression`,
+  `self_injury_details`, …) differ from `schemas/case-sheet.json` (`child_age_months`, `lost_speech`, …).
+  Until they match, a real call stores mostly empty case-sheet facts. Either rename the agent's fields to
+  the case-sheet IDs in the dashboard, or map them in `lib/intake/process.ts`.
