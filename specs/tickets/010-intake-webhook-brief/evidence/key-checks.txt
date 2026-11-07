@@ -1,0 +1,29 @@
+## E-5 provider key never reaches the client
+$ node scripts/dev/check-env-usage.mjs
+usage: node scripts/dev/check-env-usage.mjs <VAR> <allowed paths...>
+exit=0
+$ node scripts/dev/check-client-imports.mjs
+clean
+exit=0
+$ node scripts/dev/check-copy.mjs
+usage: node scripts/dev/check-copy.mjs <paths...>
+exit=0
+$ grep -rl -e 'xi-api-key' -e 'ELEVENLABS_API_KEY' -e 'ELEVENLABS_WEBHOOK_SECRET' .next/static | wc -l
+0
+$ grep -rn 'use client' lib/intake lib/elevenlabs (server modules must not be client)
+0
+client components import only types/pure helpers from lib/intake:
+components/intake/SimulateCallButton.tsx:3:import { useState } from "react";
+components/intake/BriefSection.tsx:3:import { useState } from "react";
+components/intake/BriefSection.tsx:4:import type { BriefState } from "@/lib/intake/briefMarkdown";
+components/intake/IntakeCall.tsx:3:import { ConversationProvider, useConversation } from "@elevenlabs/react";
+components/intake/IntakeCall.tsx:4:import { useEffect, useRef, useState } from "react";
+components/intake/IntakeCall.tsx:5:import { SimulateCallButton } from "@/components/intake/SimulateCallButton";
+components/intake/IntakeCall.tsx:6:import type { Language } from "@/lib/types";
+
+$ node scripts/dev/check-env-usage.mjs ELEVENLABS_API_KEY lib/env.ts lib/elevenlabs app/api
+server only
+exit=0
+$ node scripts/dev/check-env-usage.mjs ELEVENLABS_WEBHOOK_SECRET lib/env.ts lib/elevenlabs app/api
+server only
+exit=0
