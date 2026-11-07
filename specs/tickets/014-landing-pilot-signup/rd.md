@@ -15,8 +15,7 @@ count them for slide 3.
 - **FR-1** - `/` replaces the placeholder: `<h1>CareThread</h1>`; subtitle exactly
   `CareThread is the AI assistant for early intervention therapists. It talks to the parent before the first session, documents the online session and fills the assessment form, and hands the complete case to the specialist.`;
   three cards `1. Intake call`, `2. Online session`, `3. Specialist handoff` with one sentence each;
-  the line `AI documents, the clinician decides.`; the line
-  `Pilot pricing: Rs 3,000 (India) / EUR 199 (Germany) per clinician per month`; a button-styled link
+  the line `AI documents, the clinician decides.`; no pricing on the page (see D-5); a button-styled link
   `Join the pilot` to `#pilot`; a link `Open the demo` to `/dashboard`.
 - **FR-2** - Form in `<section id="pilot">` with labelled fields: `Name` (required), `Email` (required),
   `I am a` (select: `Therapist`, `Child psychologist`, `Centre owner`, `Parent`, `Other` -> values
@@ -68,6 +67,7 @@ count them for slide 3.
 | D-2 | Duplicate email | Same success message, no update | no account enumeration, no errors for repeat visitors |
 | D-3 | Spam | Hidden honeypot field | no CAPTCHA dependency |
 | D-4 | Phase 1 wording | "talks to the parent" (browser call), not "calls" | no phone calls today (team plan) |
+| D-5 | Show prices? (replaces D-1) | No pricing on the landing page; languages listed English and German first, then Hindi and Telugu | Role D decision 2026-11-07: focus the page on the product; price is tested in the validation calls instead |
 
 ## Open questions
 

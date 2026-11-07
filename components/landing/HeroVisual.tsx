@@ -38,7 +38,7 @@ export function HeroVisual() {
           <span style={{ animationDelay: "300ms" }} />
           <span style={{ animationDelay: "450ms" }} />
         </span>
-        Intake call · Telugu
+        Intake call · Deutsch
       </div>
 
       <div className="rounded-3xl border border-white/60 bg-white/80 p-5 shadow-2xl shadow-teal-900/15 backdrop-blur-xl">

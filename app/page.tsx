@@ -19,7 +19,7 @@ const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
 const STATS = [
   { value: "40", label: "ISAA items, each with an evidence quote and timestamp" },
-  { value: "3", label: "languages for the parent: Telugu, Hindi and English" },
+  { value: "4", label: "languages for the parent: English and German, plus Hindi and Telugu" },
   { value: "1", label: "thread from the first call to the specialist" },
 ];
 
@@ -27,12 +27,12 @@ const TRUST = [
   { title: "Consent first", text: "Parents agree before any call or recording starts." },
   { title: "Evidence on every item", text: "Each suggestion links to the exact moment in the session." },
   { title: "Clinician confirms", text: "Nothing reaches the report until the therapist confirms or edits it." },
-  { title: "Built for HIPAA and GDPR", text: "Consent, encryption, audit log, EU or India data residency." },
+  { title: "Built for HIPAA and GDPR", text: "Consent, encryption, audit log, EU data residency." },
 ];
 
 const PILOT_PERKS = [
   "Help shape the product with direct access to the team",
-  "Parent calls in Telugu, Hindi and English",
+  "Parent calls in English and German, plus Hindi and Telugu",
   "Try it first on synthetic role-play sessions, no real patients",
 ];
 
@@ -81,7 +81,7 @@ export default function Home() {
               style={delay(0)}
             >
               <span className={`lp-pulse h-2 w-2 rounded-full bg-teal-500`} />
-              Pilot open for centres in India and Germany
+              Pilot open for centres in Germany and India
             </p>
 
             <h1
@@ -198,13 +198,6 @@ export default function Home() {
             <p className="mb-6 text-lg leading-relaxed text-slate-600">
               For early intervention therapists, child psychologists, centres and parents.
             </p>
-
-            <div className="mb-8 rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-amber-800">Pricing</p>
-              <p className="font-semibold text-slate-900">
-                Pilot pricing: Rs 3,000 (India) / EUR 199 (Germany) per clinician per month
-              </p>
-            </div>
 
             <ul className="space-y-3">
               {PILOT_PERKS.map((p) => (
