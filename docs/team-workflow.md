@@ -214,9 +214,8 @@ fails, stop checkpoint merging and tell the team rather than claim `main` is pro
 The repo is public: never commit API keys, real patient data, recordings or private logs. Use synthetic
 demo data and keep local Supabase data and `.env.local` off GitHub.
 
-The current local planning branch and `origin/main` have diverged and both contain setup files. Before
-opening the plan PR, the captain must reconcile `origin/main` into the planning branch without
-overwriting teammate changes, review the resulting diff, and resolve conflicts; do not force-push.
+Before opening or updating a plan PR, merge the latest `origin/main` into the planning branch, review
+the resulting diff and resolve conflicts without discarding teammate work; do not force-push.
 
 ## Cheat sheet
 

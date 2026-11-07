@@ -12,6 +12,8 @@ Every agent reads this file. Keep it short and exact.
   Package manager: npm. Node 20+. No n8n, no Twilio.
 - Source of truth for shapes: `docs/system-design.md` (DDL, types, API contracts, prompts, env vars).
 - Team rules (branches, checkpoints, no pushes to main): `docs/team-workflow.md`.
+- Never use real patient or child data in the public repository, tests, fixtures or logs; use
+  synthetic role-play data only.
 - **Main branch: main** - GitHub's target branch, never push to it. Each builder checks out their own
   `int/<role>` branch and gives that branch explicitly to their worker as its base. Do not run the
   router's automatic merger: it checks out the configured branch and has a destructive recovery path.
