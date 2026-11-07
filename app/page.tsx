@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import briefFixture from "@/demo/fixtures/gemini/brief.json";
 import { HeroVisual } from "@/components/landing/HeroVisual";
-import { IntakeBriefPreview } from "@/components/landing/IntakeBriefPreview";
 import "@/components/landing/landing.css";
 import { PhaseCards } from "@/components/landing/PhaseCards";
 import { PilotForm } from "@/components/landing/PilotForm";
 import { Reveal } from "@/components/landing/Reveal";
+import { TherapistView } from "@/components/landing/TherapistView";
 import { VoiceDemo } from "@/components/landing/VoiceDemo";
 import { BriefSchema } from "@/lib/types";
 
@@ -283,8 +283,16 @@ export default function Home() {
             </ol>
             <VoiceDemo />
           </div>
-          <div className="mt-10">
-            <IntakeBriefPreview brief={SAMPLE_BRIEF} />
+          <div className="mt-16">
+            <Reveal className="mb-6 max-w-3xl">
+              <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-teal-700">After the call</p>
+              <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">What the therapist sees after the call</h3>
+              <p className="mt-2 text-slate-600">
+                The recording, every answer with the parent&apos;s own words, red flags you can replay, and the
+                questions to check in session 1. The therapist confirms each answer.
+              </p>
+            </Reveal>
+            <TherapistView brief={SAMPLE_BRIEF} />
           </div>
         </div>
       </section>

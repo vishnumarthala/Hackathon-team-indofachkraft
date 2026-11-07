@@ -17,7 +17,9 @@ import {
   LIVE_MESSAGES,
   VoiceDemo,
   activeTurnIndex,
+  cleanAgentText,
   formatCountdown,
+  upsertLine,
   liveStatusText,
   startVoiceDemo,
   type DemoStartDeps,
@@ -139,6 +141,31 @@ describe("startVoiceDemo", () => {
     const { d } = deps(Response.json({}), "denied");
     await startVoiceDemo("en", d);
     expect(d.fetchFn).not.toHaveBeenCalled();
+  });
+});
+
+describe("live transcript lines", () => {
+  it("keeps the parent's line when the agent's reply shares its event_id", () => {
+    let lines = upsertLine([], "agent", 1, "[warmly] Is that okay with you?");
+    lines = upsertLine(lines, "user", 2, "Yes, that is fine.");
+    lines = upsertLine(lines, "agent", 2, "[warmly] Thank you. How old is Ravi?");
+    expect(lines).toEqual([
+      { key: "agent-1", role: "agent", text: "Is that okay with you?" },
+      { key: "parent-2", role: "parent", text: "Yes, that is fine." },
+      { key: "agent-2", role: "agent", text: "Thank you. How old is Ravi?" },
+    ]);
+  });
+
+  it("replaces a corrected agent line and ignores empty messages", () => {
+    let lines = upsertLine([], "agent", 3, "He is three");
+    lines = upsertLine(lines, "agent", 3, "He is three years old.");
+    lines = upsertLine(lines, "user", 4, "   ");
+    expect(lines).toEqual([{ key: "agent-3", role: "agent", text: "He is three years old." }]);
+  });
+
+  it("strips audio tags but keeps real brackets-free text", () => {
+    expect(cleanAgentText("[warmly] Thank you, [softly] take your time.")).toBe("Thank you, take your time.");
+    expect(cleanAgentText("No tags here.")).toBe("No tags here.");
   });
 });
 
