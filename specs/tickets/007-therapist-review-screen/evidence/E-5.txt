@@ -1,0 +1,6 @@
+step1 {"error":"Fact not found"} 404
+S2 seeded
+step4 {"error":"Rate this item before confirming"} 422
+step6 {"error":"Only ISAA items can be rated here"} 422
+step7 400
+step8 {"error":"Session not found"} 404
