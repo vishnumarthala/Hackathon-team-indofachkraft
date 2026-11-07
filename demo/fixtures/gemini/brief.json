@@ -1,0 +1,34 @@
+{
+  "summary": "Parent-reported: Lakshmi describes Ravi, age 40 months, who used a few words at age 2 and then stopped talking; he has no words now. She reports little eye contact, no turning to his name, solitary play with lining up of cars, repeated cartoon lines, hand flapping when excited, covering his ears at kitchen sounds, big tantrums when the school route changes and hitting his own head when upset. Sleep is late and he eats only rice and curd. A younger uncle also started talking late. Everything here is parent-reported and needs to be checked in the session.",
+  "red_flags": [
+    {
+      "type": "lost_speech",
+      "turn_id": "t8",
+      "quote": "at age 2 he said a few words like amma and ball, then he stopped talking"
+    },
+    {
+      "type": "self_injury",
+      "turn_id": "t17",
+      "quote": "he hits his own head with his hand when he is upset"
+    }
+  ],
+  "questions_to_verify": [
+    "Which words did Ravi use before he stopped talking, and how did the loss happen?",
+    "Does Ravi respond to his name in the session when called from behind?",
+    "How often does the head hitting happen, and has he ever been injured?",
+    "Does Ravi use any gestures, such as pulling a hand, to ask for things?",
+    "How does Ravi react to sudden sounds in the clinic?"
+  ],
+  "parent_reported": [
+    { "field_id": "child_age_months", "label": "Age (months)", "value": "40" },
+    { "field_id": "main_concern", "label": "Main concern", "value": "He is not talking, does not look at us and does not turn when we call his name." },
+    { "field_id": "lost_speech_details", "label": "When speech was lost", "value": "Said a few words like amma and ball at about age 2, then stopped talking." },
+    { "field_id": "eye_contact", "label": "Eye contact", "value": "Does not look at the parents when they talk." },
+    { "field_id": "play_and_peers", "label": "Play and other children", "value": "Plays alone, lines up his cars, does not play with his cousins." },
+    { "field_id": "repetitive_behaviours", "label": "Repetitive behaviours", "value": "Lines up cars, repeats lines from cartoons, flaps hands when excited." },
+    { "field_id": "sensory", "label": "Sensory reactions", "value": "Covers his ears at the mixer and the pressure cooker." },
+    { "field_id": "routines_and_tantrums", "label": "Routines and tantrums", "value": "Big tantrum when the route to school changes." },
+    { "field_id": "sleep_and_eating", "label": "Sleep and eating", "value": "Sleeps late; eats only rice and curd." },
+    { "field_id": "family_history", "label": "Family history", "value": "The parent's younger brother started talking late." }
+  ]
+}

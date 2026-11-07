@@ -1,0 +1,33 @@
+{
+  "instrument": "FACP",
+  "bands": [
+    {
+      "id": "typical",
+      "min": 80,
+      "max": 100,
+      "label": "Typical",
+      "action": "Home program and parent counselling, re-screen in 3 months"
+    },
+    {
+      "id": "borderline",
+      "min": 60,
+      "max": 79,
+      "label": "Borderline",
+      "action": "IEP and home program, review in 3 months"
+    },
+    {
+      "id": "moderate",
+      "min": 40,
+      "max": 59,
+      "label": "Moderate",
+      "action": "IEP and regular therapy sessions"
+    },
+    {
+      "id": "severe",
+      "min": 0,
+      "max": 39,
+      "label": "Severe",
+      "action": "IEP and referral to specialist (Phase 3)"
+    }
+  ]
+}
