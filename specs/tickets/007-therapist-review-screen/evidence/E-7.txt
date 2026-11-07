@@ -1,0 +1,15 @@
+ ✓ tests/facts.test.ts > applyFactAction (FR-6) > confirm keeps the value and sets status confirmed 3ms
+ ✓ tests/facts.test.ts > applyFactAction (FR-6) > confirm with a null value is rejected with 422 0ms
+ ✓ tests/facts.test.ts > applyFactAction (FR-6) > edit sets the new value and status edited 0ms
+ ✓ tests/facts.test.ts > applyFactAction (FR-6) > edit of an unrated item rates it as edited 0ms
+ ✓ tests/facts.test.ts > applyFactAction (FR-6) > same-value edit of a suggestion counts as confirm 0ms
+ ✓ tests/facts.test.ts > applyFactAction (FR-6) > same-value edit of an already confirmed item is an edit 0ms
+ ✓ tests/facts.test.ts > bulkTargets (FR-8) > confirm_suggested confirms only suggested items with a value 0ms
+ ✓ tests/facts.test.ts > bulkTargets (FR-8) > rate_unrated sets every null item to 1 as edited 0ms
+ ✓ tests/facts.test.ts > bulkTargets (FR-8) > both bulk actions together decide all items, so the total is final 1ms
+ ✓ tests/facts.test.ts > request schemas > accepts confirm and edit 1..5, rejects other values 3ms
+ ✓ tests/facts.test.ts > request schemas > bulk rate_unrated only allows value 1 1ms
+ ✓ tests/facts.test.ts > value helpers > ratingOf keeps only integer ratings 1..5 0ms
+ ✓ tests/facts.test.ts > value helpers > toScoringFacts maps DB rows to scoring input 0ms
+      Tests  13 passed (13)
+clean
