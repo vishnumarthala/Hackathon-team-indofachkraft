@@ -1,0 +1,8 @@
+$ E-2
+ ✓ tests/tts.test.ts > voiceIdFor > picks the voice per language 3ms
+ ✓ tests/tts.test.ts > voiceIdFor > throws `No voice configured for te` when ELEVENLABS_VOICE_ID_TE is empty 1ms
+ ✓ tests/tts.test.ts > synthesize > POSTs text + eleven_v3 to /v1/text-to-speech/<voice> with xi-api-key and returns the mp3 Buffer 14ms
+ ✓ tests/tts.test.ts > synthesize > uses the Hindi and English voices 1ms
+ ✓ tests/tts.test.ts > synthesize > missing voice throws before any request 1ms
+ ✓ tests/tts.test.ts > synthesize > throws on HTTP errors and empty audio, without leaking the key 1ms
+      Tests  6 passed (6)

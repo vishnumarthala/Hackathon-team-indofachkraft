@@ -1,0 +1,6 @@
+$ E-1 step 4
+[{"status":"final","audio_path":null,"email_status":"demo","has_isaa":false,"has_200":false,"content_start":"లక్ష్మి గారు, ఈ రోజు రవి గురించి మీరు చె"}]
+$ audit
+[{"action":"email.demo_skipped","actor":"system","email_status":null},{"action":"parent_note.sent","actor":"therapist","email_status":"demo"}]
+$ API timing (curl, demo)
+200 0.795811s

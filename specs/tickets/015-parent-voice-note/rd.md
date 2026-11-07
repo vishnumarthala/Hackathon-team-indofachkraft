@@ -1,6 +1,6 @@
 # 015: Parent voice note (Telugu TTS + email)
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 011: adds a section to 011's Report tab and needs final assessment reports
 

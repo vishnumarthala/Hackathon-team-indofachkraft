@@ -1,0 +1,5 @@
+$ step 1
+{"error":"Report not found"} 404
+R2=11110fad-ad55-4431-aa7d-e911c82536f3 (draft)
+$ step 2
+{"error":"Finalize the report first"} 422

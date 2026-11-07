@@ -1,0 +1,17 @@
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - preconditions > 404 for an unknown report 4ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - preconditions > 422 unless the report is a final assessment 1ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - preconditions > 422 `No voice configured for te` before calling Gemini 1ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - live path (mocked provider, storage, email) > sent: Gemini from the final report, TTS, unique upload, report saved, email with 7-day link, status persisted 7ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - live path (mocked provider, storage, email) > repeated generation uses a new audio object path each time and never deletes the earlier one 1ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - live path (mocked provider, storage, email) > failed: email error is persisted and audited without claiming it was sent 2ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - live path (mocked provider, storage, email) > no_email: no parent email on the case, nothing sent 1ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - live path (mocked provider, storage, email) > provider failure (TTS) -> 502, no upload, no report stored 1ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - live path (mocked provider, storage, email) > Gemini failure or score-like/wrong-language text -> 502, nothing stored 1ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - live path (mocked provider, storage, email) > report persistence failure removes the uploaded object and sends no email 0ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - live path (mocked provider, storage, email) > upload failure -> 500 and no report stored 0ms
+ ✓ tests/parent-voice-note.test.ts > POST /api/reports/:id/parent-voice-note - DEMO_MODE > demo: no TTS/upload, audio_path null, status demo persisted 1ms
+ ✓ tests/parent-voice-note.test.ts > helpers and component > fixture and prompt rules (NFR-2, FR-4) 0ms
+ ✓ tests/parent-voice-note.test.ts > helpers and component > subject, email text, unique paths, prompt 0ms
+ ✓ tests/parent-voice-note.test.ts > helpers and component > renders all four persisted email statuses and both button labels 2ms
+ ✓ tests/parent-voice-note.test.ts > helpers and component > createVoiceNote maps the API response and errors 1ms
+      Tests  16 passed (16)
