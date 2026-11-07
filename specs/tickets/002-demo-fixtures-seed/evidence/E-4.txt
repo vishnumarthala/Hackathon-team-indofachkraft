@@ -1,0 +1,9 @@
+$ /usr/bin/time -p npm run -s seed:demo -- --new
+seeded case=4ebff409-0a2e-4536-994a-2dbc5b729925 session=a2bd29e3-ab3a-4735-8fc6-b21d7ec29007 intake=c5b6f7d6-b32b-429c-af52-d662e7cc3d8c token=<redacted>
+real 1.48
+user 0.36
+sys 0.06
+$ step 2 (db:sql counts)
+[{"isaa":40,"sheet":15,"confirmed":2,"unrated":24,"briefs":1,"st":"extracted","turns":21}]
+$ step 3
+21
