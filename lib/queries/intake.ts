@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "@/lib/db";
 import { newToken } from "@/lib/tokens";
-import type { CaseRow } from "@/lib/types";
+import { isUuid } from "@/lib/cases/validation";
+import type { CaseRow, RecordingRow, ReportRow } from "@/lib/types";
 
 // Tokens from newToken() are 43-char base64url; seeded/demo tokens may be other base64url-ish strings.
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{8,128}$/;
@@ -39,4 +40,57 @@ export async function ensureIntakeToken(caseRow: CaseRow): Promise<{ token: stri
   const again = await db.from("cases").select("intake_token").eq("id", caseRow.id).single();
   if (again.error || !again.data?.intake_token) throw new Error("Could not create the intake link");
   return { token: again.data.intake_token as string, created: false };
+}
+
+export type IntakeBrief = {
+  recording: Pick<RecordingRow, "id" | "segments" | "created_at">;
+  report: ReportRow | null;
+};
+
+// 010: the latest intake recording of a case and its pre-session brief (null when none).
+export async function getIntakeBrief(caseId: string): Promise<IntakeBrief | null> {
+  if (!isUuid(caseId)) return null;
+  const db = supabaseAdmin();
+  const rec = await db
+    .from("recordings")
+    .select("id, segments, created_at")
+    .eq("case_id", caseId)
+    .eq("kind", "intake_call")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (rec.error) throw new Error(`Could not load the intake call: ${rec.error.message}`);
+  if (!rec.data) return null;
+  const rep = await db
+    .from("reports")
+    .select("*")
+    .eq("recording_id", rec.data.id)
+    .eq("kind", "pre_session_brief")
+    .maybeSingle();
+  if (rep.error) throw new Error(`Could not load the brief: ${rep.error.message}`);
+  return { recording: rec.data as IntakeBrief["recording"], report: (rep.data ?? null) as ReportRow | null };
+}
+
+// 010 FR-9: marks the case's latest pre-session brief final; null when the case has none.
+export async function markBriefReviewed(caseId: string): Promise<ReportRow | null> {
+  if (!isUuid(caseId)) return null;
+  const db = supabaseAdmin();
+  const found = await db
+    .from("reports")
+    .select("id")
+    .eq("case_id", caseId)
+    .eq("kind", "pre_session_brief")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (found.error) throw new Error(`Could not load the brief: ${found.error.message}`);
+  if (!found.data) return null;
+  const { data, error } = await db
+    .from("reports")
+    .update({ status: "final", updated_at: new Date().toISOString() })
+    .eq("id", found.data.id)
+    .select("*")
+    .single();
+  if (error) throw new Error(`Could not update the brief: ${error.message}`);
+  return data as ReportRow;
 }

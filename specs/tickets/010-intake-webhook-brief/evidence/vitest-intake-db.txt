@@ -1,0 +1,118 @@
+
+ RUN  v4.1.12 /home/marthalv/Documents/vishnu/ct-010-intake-webhook-brief
+
+ ✓ tests/intake.test.ts > verifySignature (FR-2) > valid: correct HMAC over '<t>.<rawBody>' with a fresh timestamp 2ms
+ ✓ tests/intake.test.ts > verifySignature (FR-2) > valid: header parts in any order 0ms
+ ✓ tests/intake.test.ts > verifySignature (FR-2) > invalid: wrong secret, modified body, flipped hex digit 1ms
+ ✓ tests/intake.test.ts > verifySignature (FR-2) > old timestamp (> 30 min) is rejected; 29 min is accepted 0ms
+ ✓ tests/intake.test.ts > verifySignature (FR-2) > future timestamp is rejected 0ms
+ ✓ tests/intake.test.ts > verifySignature (FR-2) > missing parts: no header, no secret, no t, no v0, wrong scheme, malformed t, invalid hex 1ms
+ ✓ tests/intake.test.ts > buildIntakeSegments (FR-3.3) > keeps the original index in ids and skips the empty turn (index 8 -> no t9) 1ms
+ ✓ tests/intake.test.ts > buildIntakeSegments (FR-3.3) > maps speakers: agent -> agent, user -> parent, label = role 1ms
+ ✓ tests/intake.test.ts > buildIntakeSegments (FR-3.3) > end time = next kept turn's start, last turn = start + 5, text = message 1ms
+ ✓ tests/intake.test.ts > buildIntakeSegments (FR-3.3) > whitespace-only and missing messages are skipped too 1ms
+ ✓ tests/intake.test.ts > buildCaseSheetFacts (FR-3.4) > maps all 15 case-sheet fields from the fixture with value and rationale 1ms
+ ✓ tests/intake.test.ts > buildCaseSheetFacts (FR-3.4) > ignores unknown keys, keeps null values, handles missing results 0ms
+ ✓ tests/intake.test.ts > buildBriefPrompt (FR-3.5) > formats transcript lines with AI/PARENT labels and the collected fields as '<label>: <value>' 1ms
+ ✓ tests/intake.test.ts > filterRedFlags > drops red flags whose turn_id is not an existing segment id 0ms
+ ✓ tests/intake.test.ts > renderBriefMarkdown (FR-4) > has the headings, labelled red flags with mm:ss, numbered questions and the report table 1ms
+ ✓ tests/intake.test.ts > renderBriefMarkdown (FR-4) > no red flags -> '- None reported'; pipes in cells are escaped; Other label 0ms
+ ✓ tests/intake.test.ts > briefStateFrom (FR-8) > none / failed / brief with labelled, timed red flags and status 1ms
+ ✓ tests/intake.test.ts > prompts/brief.md (FR-5) > contains the system-design section 10 rules 0ms
+ ✓ tests/intake.test.ts > parsePostCallData > rejects a payload without an intake token or transcript 2ms
+stderr | tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > signed but not JSON -> 400; invalid data -> 400; save failure -> 500
+elevenlabs webhook: bad
+
+stderr | tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > signed but not JSON -> 400; invalid data -> 400; save failure -> 500
+elevenlabs webhook: db down
+
+stderr | tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > provider unavailable -> explicit 502, nothing saved
+intake complete: Conversation request failed (HTTP 503)
+
+stderr | tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > provider body not JSON -> explicit 502, nothing saved
+intake complete: Conversation response was not a JSON object
+
+stderr | tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > processor failure -> 500 Could not save the call
+intake complete: tx failed
+
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > valid signature -> 200 with the processor result; processor gets payload.data 6ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > missing header -> 401 Invalid signature, nothing processed 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > bad hex -> 401 Invalid signature, nothing processed 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > old timestamp -> 401 Invalid signature, nothing processed 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > future timestamp -> 401 Invalid signature, nothing processed 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > malformed header -> 401 Invalid signature, nothing processed 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > wrong scheme -> 401 Invalid signature, nothing processed 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > mismatched secret -> 401 Invalid signature, nothing processed 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > signature over a different body (tampered) -> 401 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > webhook secret not configured -> 401 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > unrelated signed event -> 200 ignored with its type 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > signed but not JSON -> 400; invalid data -> 400; save failure -> 500 2ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-1 webhook signature (FR-1) > unknown token and duplicate results are passed through as 200 (NFR-2) 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > status initiated -> 202 processing, nothing saved 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > status in-progress -> 202 processing, nothing saved 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > status processing -> 202 processing, nothing saved 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > pending status without a reported token yet is still 202 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > done for the expected agent and token -> 200 with the processor result 3ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > agent mismatch on a done call -> 403, nothing saved 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > agent missing on a done call -> 403, nothing saved 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > token mismatch on a done call -> 403, nothing saved 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > token missing on a done call -> 403, nothing saved 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > conversation id mismatch on a done call -> 403, nothing saved 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > token mismatch is rejected even while pending 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > failed status -> explicit 502, nothing saved 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > unknown status -> explicit 502, nothing saved 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > no status -> explicit 502, nothing saved 2ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > done but malformed transcript -> explicit 502, nothing saved 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > provider unavailable -> explicit 502, nothing saved 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > provider body not JSON -> explicit 502, nothing saved 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > invalid body (missing conversation_id) -> 400 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > invalid body (empty conversation_id) -> 400 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > invalid body (non-string conversation_id) -> 400 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > invalid body (path characters) -> 400 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > invalid body (non-JSON body) -> 400 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > unknown token -> 404, no provider request 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > processor failure -> 500 Could not save the call 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > demo mode: uses the fixture, never the provider 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-2 completion endpoint (FR-11) > the provider key never appears in a response 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-4 simulate and review routes (FR-6, FR-9) > simulate outside demo mode -> 404 Not found 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-4 simulate and review routes (FR-6, FR-9) > simulate with an unknown token -> 404 This link is not valid. 0ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-4 simulate and review routes (FR-6, FR-9) > simulate in demo mode replays the fixture with the token and demo-<now> id 1ms
+ ✓ tests/intake-completion.test.ts > mocked routes > E-4 simulate and review routes (FR-6, FR-9) > review without a brief -> 404; with a brief -> 200 { report } and brief.reviewed audit 1ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > posts the conversation id, retries every 3 s on 202, then shows the thank-you message 2ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > never overlaps requests: a slow request delays the next poll and start() is ignored while busy 1ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > times out after 120 s with an actionable error, then a retry completes without a second call 2ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > 502 failed call -> actionable error, no success claim, retry allowed 1ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > 500 save failure -> actionable error, no success claim, retry allowed 0ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > 403 mismatch -> actionable error, no success claim, retry allowed 1ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > 200 ignored -> actionable error, no success claim, retry allowed 0ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > network error -> actionable error, no success claim, retry allowed 1ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > cancel (unmount) stops the timer and ignores an in-flight answer 1ms
+ ✓ tests/intake-completion.test.ts > E-3 client completion lifecycle (FR-12) > IntakeCall wiring: the id from onConnect is posted to the completion endpoint after disconnect 8ms
+ ✓ tests/intake-completion.test.ts > E-4 components (FR-7, FR-8) > SimulateCallButton renders the demo button 1ms
+ ✓ tests/intake-completion.test.ts > E-4 components (FR-7, FR-8) > simulateIntake posts to the simulate endpoint and maps results 1ms
+ ✓ tests/intake-completion.test.ts > E-4 components (FR-7, FR-8) > brief: heading, Parent-reported badge, summary, red flags in red, numbered questions, table, review button 2ms
+ ✓ tests/intake-completion.test.ts > E-4 components (FR-7, FR-8) > final brief: no review button, shows Reviewed by <therapist_name> 1ms
+ ✓ tests/intake-completion.test.ts > E-4 components (FR-7, FR-8) > intake without brief shows the failure message; no intake renders nothing 0ms
+ ✓ tests/intake-completion.test.ts > E-4 components (FR-7, FR-8) > review client posts to the reviewed endpoint and maps errors 1ms
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-1 signed webhook persists recording, 15 facts, brief, intake_done and receipt audit 1456ms
+stderr | tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-1 a fact insert failure rolls back recording, facts, case status and receipt audit
+elevenlabs webhook: unsupported Unicode escape sequence
+
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-1 bad signatures write nothing; unknown token is ignored and audited 358ms
+stderr | tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-1 brief failure keeps recording and facts, returns brief: false and audits intake.brief_failed
+brief generation failed: Gemini request failed: overloaded
+
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-1 a fact insert failure rolls back recording, facts, case status and receipt audit 971ms
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-1 brief failure keeps recording and facts, returns brief: false and audits intake.brief_failed 918ms
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-1 red flags citing unknown turn ids are dropped before saving 570ms
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-2 completion: pending statuses and mismatches write nothing; done persists the same output 1226ms
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-2 concurrent webhook and completion for the same conversation create one recording and one fact set 501ms
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-2 five concurrent deliveries of the same conversation still produce no duplicate facts 485ms
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-4 demo simulate completes the intake from the fixture; case status only moves from booked 1142ms
+ ✓ tests/intake-completion.test.ts > database integration (CT_DB_TESTS=1, isolated a010 cases) > E-4 review marks the brief final with updated_at and a brief.reviewed audit 883ms
+
+ Test Files  2 passed (2)
+      Tests  88 passed (88)
+   Start at  14:31:18
+   Duration  9.24s (transform 262ms, setup 0ms, import 678ms, tests 8.77s, environment 0ms)
+
