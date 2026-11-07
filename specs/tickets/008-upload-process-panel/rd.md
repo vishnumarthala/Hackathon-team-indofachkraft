@@ -1,6 +1,6 @@
 # 008: Upload and process panel, speaker swap
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 005, 006, 007: calls their APIs and adds a button to 007's review page
 
