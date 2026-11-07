@@ -1,0 +1,6 @@
+$ npm run -s fixtures:scribe
+wrote demo/fixtures/scribe-response.json
+$ git diff --exit-code --stat demo/fixtures/scribe-response.json
+exit=0
+$ step 3
+eng true 2 true

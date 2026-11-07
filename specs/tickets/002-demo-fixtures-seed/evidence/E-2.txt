@@ -1,0 +1,8 @@
+$ step 1
+true true true all signs 2
+$ step 2
+40 true true true true lost_speech,self_injury 24:4,5:4
+$ step 3
+post_call_transcription true 1 true 40 true true 15 demo-intake-token
+$ step 4
+te false true
