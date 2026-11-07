@@ -9,6 +9,7 @@ import { BulkActions } from "./BulkActions";
 import { IsaaForm } from "./IsaaForm";
 import { ratingValue } from "./ItemRow";
 import { ScorePanel } from "./ScorePanel";
+import { SwapSpeakersButton, type SwapPhase } from "./SwapSpeakersButton";
 
 const RED_FLAG_TEXT: Record<string, string> = {
   lost_speech: "Red flag: lost speech",
@@ -55,6 +56,7 @@ export function ReviewScreen({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [bulkBusy, setBulkBusy] = useState(false);
   const [bulkError, setBulkError] = useState<string | null>(null);
+  const [swapPhase, setSwapPhase] = useState<SwapPhase>("idle");
 
   // After router.refresh() the server sends fresh facts: adopt them.
   if (serverFacts !== syncedFrom) {
@@ -115,7 +117,7 @@ export function ReviewScreen({
 
   return (
     <div className="space-y-4">
-      {redFlags.length > 0 && (
+      {swapPhase === "idle" && redFlags.length > 0 && (
         <div role="alert" className="rounded border border-red-300 bg-red-50 px-4 py-3 font-semibold text-red-800">
           {redFlags.map((flag) => RED_FLAG_TEXT[flag.type]).join(" · ")} - consider referral
         </div>
@@ -128,25 +130,34 @@ export function ReviewScreen({
           segments={segments}
           activeSegmentId={activeSegmentId}
           onSelect={seek}
+          headerAction={<SwapSpeakersButton recordingId={recordingId} onPhase={setSwapPhase} />}
         />
-        <div className="min-w-0 space-y-4">
-          <ScorePanel score={score} facpScore={facpScore} recommendation={recommendation} />
-          <BulkActions
-            suggestedCount={suggestedCount}
-            unratedCount={unratedCount}
-            busy={bulkBusy}
-            error={bulkError}
-            onRun={runBulk}
-          />
-          <IsaaForm
-            facts={facts}
-            busyFactId={busyFactId}
-            errors={errors}
-            onRate={(fact, value) => update(fact, { action: "edit", value })}
-            onConfirm={(fact) => update(fact, { action: "confirm" })}
-            onSeek={seek}
-          />
-        </div>
+        {swapPhase !== "idle" ? (
+          <p role="status" className="min-w-0 rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800">
+            {swapPhase === "working"
+              ? "Swapping speakers and filling the ISAA form again. The earlier ratings were cleared and stay hidden until the AI finishes."
+              : "The earlier ratings were cleared because the speakers were swapped, and the AI could not fill the form again. Retry to get new suggestions."}
+          </p>
+        ) : (
+          <div className="min-w-0 space-y-4">
+            <ScorePanel score={score} facpScore={facpScore} recommendation={recommendation} />
+            <BulkActions
+              suggestedCount={suggestedCount}
+              unratedCount={unratedCount}
+              busy={bulkBusy}
+              error={bulkError}
+              onRun={runBulk}
+            />
+            <IsaaForm
+              facts={facts}
+              busyFactId={busyFactId}
+              errors={errors}
+              onRate={(fact, value) => update(fact, { action: "edit", value })}
+              onConfirm={(fact) => update(fact, { action: "confirm" })}
+              onSeek={seek}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
