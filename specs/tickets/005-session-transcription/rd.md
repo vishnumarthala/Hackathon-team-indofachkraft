@@ -1,6 +1,6 @@
 # 005: Session upload and Scribe v2 transcription
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 002: needs the Scribe fixture, roleplay-segments.json, the test audio and the seed (002 waits for 001)
 

@@ -1,0 +1,4 @@
+[{"item_id":"1","value":4},{"item_id":"3","value":3}]
+step6 true
+[{"item_id":"1","value":4,"status":"confirmed","confirmed_by":"Demo Therapist"},{"item_id":"3","value":1,"status":"edited","confirmed_by":"Demo Therapist"}]
+[{"action":"fact.confirmed","entity":"fact","from_status":"suggested","to_status":"confirmed"},{"action":"fact.edited","entity":"fact","from_status":"suggested","to_status":"edited"}]
