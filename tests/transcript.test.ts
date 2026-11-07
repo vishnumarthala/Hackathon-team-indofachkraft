@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildSegments, formatTime, mapSpeakers, toPromptLines, type ScribeWord } from "@/lib/transcript";
@@ -7,7 +7,6 @@ import type { Segment } from "@/lib/types";
 const FIXTURES = path.resolve("demo/fixtures");
 const scribeFile = path.join(FIXTURES, "scribe-response.json");
 const roleplayFile = path.join(FIXTURES, "roleplay-segments.json");
-const haveFixtures = existsSync(scribeFile) && existsSync(roleplayFile);
 
 const w = (text: string, start: number, end: number, speaker_id = "speaker_0"): ScribeWord => ({
   text,
@@ -25,8 +24,7 @@ const sp = (start: number, end: number, speaker_id = "speaker_0"): ScribeWord =>
 });
 
 describe("buildSegments + mapSpeakers on the Scribe fixture (ticket 002)", () => {
-  // Activates once 002's fixtures are merged; until then it is reported as skipped.
-  it.skipIf(!haveFixtures)("rebuilds demo/fixtures/roleplay-segments.json exactly", () => {
+  it("rebuilds demo/fixtures/roleplay-segments.json exactly", () => {
     const scribe = JSON.parse(readFileSync(scribeFile, "utf8")) as { words: ScribeWord[] };
     const expected = JSON.parse(readFileSync(roleplayFile, "utf8")) as Segment[];
     const { segments } = mapSpeakers(buildSegments(scribe.words));

@@ -1,0 +1,17 @@
+ ✓ tests/transcript.test.ts > buildSegments + mapSpeakers on the Scribe fixture (ticket 002) > rebuilds demo/fixtures/roleplay-segments.json exactly 9ms
+ ✓ tests/transcript.test.ts > buildSegments > returns [] for an empty word list 0ms
+ ✓ tests/transcript.test.ts > buildSegments > joins words and spacing of one speaker, trims text, uses first/last word times 0ms
+ ✓ tests/transcript.test.ts > buildSegments > splits on speaker change 0ms
+ ✓ tests/transcript.test.ts > buildSegments > splits on a gap > 1.5 s but not on exactly 1.5 s 1ms
+ ✓ tests/transcript.test.ts > buildSegments > splits when a segment would last longer than 30 s 1ms
+ ✓ tests/transcript.test.ts > buildSegments > keeps audio events in the text 0ms
+ ✓ tests/transcript.test.ts > mapSpeakers > makes the speaker who says 'Note' the therapist, even if they speak second 0ms
+ ✓ tests/transcript.test.ts > mapSpeakers > falls back to the first segment's speaker as therapist 1ms
+ ✓ tests/transcript.test.ts > formatTime and toPromptLines > formats seconds as mm:ss 0ms
+ ✓ tests/transcript.test.ts > formatTime and toPromptLines > renders prompt lines with id, times and upper-case speaker 0ms
+ ✓ tests/stt.test.ts > transcribeAudio > returns the fixture in DEMO_MODE without calling fetch 4ms
+ ✓ tests/stt.test.ts > transcribeAudio > sends scribe_v2 with diarization, 2 speakers, word timestamps and the xi-api-key header 13ms
+ ✓ tests/stt.test.ts > transcribeAudio > throws an error containing the HTTP status on a non-2xx response 1ms
+ ✓ tests/stt.test.ts > transcribeAudio > rejects a malformed response 1ms
+ ✓ tests/stt.test.ts > transcribeAudio > fails in DEMO_MODE when the fixture is missing 0ms
+      Tests  16 passed (16)
