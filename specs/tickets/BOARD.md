@@ -47,7 +47,7 @@ All tickets remain draft until their requirements and evaluations have been revi
 
 | # | Title | Status | Mode | Runs | Priority | Checkpoint |
 |---|-------|--------|------|------|----------|------------|
-| 014 | Landing page and pilot sign-up | draft | solo | waits for 001: replaces the placeholder home page | SHOULD | CP1 13:30 |
+| 014 | Landing page and pilot sign-up | done | solo | waits for 001: replaces the placeholder home page | SHOULD | CP1 13:30 |
 
 ## Critical path
 
