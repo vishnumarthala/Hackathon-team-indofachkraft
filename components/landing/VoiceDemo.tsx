@@ -100,7 +100,26 @@ export async function startVoiceDemo(language: DemoLanguage, deps: DemoStartDeps
   return { kind: "started" };
 }
 
-type Line = { id: number; role: "agent" | "parent"; text: string };
+export type Line = { key: string; role: "agent" | "parent"; text: string };
+
+export const DEMO_CALL_ENDED_EVENT = "carethread:demo-call-ended";
+
+// The agent's voice uses expressive tags such as [warmly]; they are not meant to be read.
+export function cleanAgentText(text: string): string {
+  return text.replace(/\[[a-z][a-z ]{0,30}\]\s*/gi, "").replace(/\s{2,}/g, " ").trim();
+}
+
+// A parent transcript and the agent's reply to it share one event_id, so the key includes the role.
+// A repeated key (a corrected agent response) replaces the earlier line.
+export function upsertLine(lines: Line[], role: "user" | "agent", eventId: number, message: string): Line[] {
+  const speaker = role === "agent" ? "agent" : "parent";
+  const text = speaker === "agent" ? cleanAgentText(message) : message.trim();
+  if (!text) return lines;
+  const key = `${speaker}-${eventId}`;
+  const index = lines.findIndex((l) => l.key === key);
+  if (index === -1) return [...lines, { key, role: speaker, text }];
+  return lines.map((l, i) => (i === index ? { ...l, text } : l));
+}
 
 function TranscriptLine({ role, text, active = false }: { role: "agent" | "parent"; text: string; active?: boolean }) {
   const agent = role === "agent";
@@ -163,15 +182,21 @@ function LivePanel() {
   const [lines, setLines] = useState<Line[]>([]);
   const [wasConnected, setWasConnected] = useState(false);
   const [remaining, setRemaining] = useState(DEMO_CALL_LIMIT_SEC);
+  const connectedRef = useRef(false);
 
   const conversation = useConversation({
     onConnect: () => {
+      connectedRef.current = true;
       setWasConnected(true);
       setRemaining(DEMO_CALL_LIMIT_SEC);
     },
     onMessage: ({ message, role, event_id }) => {
-      if (!message?.trim()) return;
-      setLines((prev) => [...prev.filter((l) => l.id !== event_id), { id: event_id, role: role === "agent" ? "agent" : "parent", text: message }]);
+      setLines((prev) => upsertLine(prev, role, event_id, message ?? ""));
+    },
+    onDisconnect: () => {
+      if (!connectedRef.current) return;
+      connectedRef.current = false;
+      window.dispatchEvent(new Event(DEMO_CALL_ENDED_EVENT));
     },
     onError: () => {
       setError(LIVE_MESSAGES.failed);
@@ -281,7 +306,7 @@ function LivePanel() {
       {lines.length > 0 && (
         <ol aria-label="Live transcript" className="max-h-72 space-y-2 overflow-y-auto pr-1">
           {lines.map((l) => (
-            <TranscriptLine key={l.id} role={l.role} text={l.text} />
+            <TranscriptLine key={l.key} role={l.role} text={l.text} />
           ))}
         </ol>
       )}
