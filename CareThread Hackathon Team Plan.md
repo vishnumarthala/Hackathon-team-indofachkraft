@@ -21,7 +21,7 @@ Nov 7, 2026 · @Vishnu
 
 | Phase | What happens | AI output | Human decision |
 | --- | --- | --- | --- |
-| 1. Intake call | After booking, the AI voice agent calls the parent in Telugu, Hindi or English (max 15 min). Opens with consent and "I am an AI assistant". | Pre-session brief: summary, red flags (lost speech, self-injury), questions to verify. Every answer marked "parent-reported". | Therapist reviews the brief before session 1 |
+| 1. Intake call | After booking, the parent gets a link (WhatsApp or email), opens it on their phone and talks to the AI voice agent in the browser in Telugu, Hindi or English (max 15 min). Opens with consent and "I am an AI assistant". | Pre-session brief: summary, red flags (lost speech, self-injury), questions to verify. Every answer marked "parent-reported". | Therapist reviews the brief before session 1 |
 | 2. Online session | Session recorded with consent. Therapist can speak notes, e.g. "rate item 5 as 4, no response to name". | ISAA items filled with suggested rating, evidence quote and timestamp. Draft report. Comparison with the previous session. | Therapist confirms or edits every item |
 | 3. Specialist handoff | Severe band, ISAA 70 or more, or any red flag: AI recommends referral. | Referral packet (summary, scores, evidence clips, intake, decisions) plus "ask the case" with cited answers. | Therapist decides to refer, parent consents to share |
 
@@ -41,13 +41,13 @@ ISAA bands for the demo: below 70 no autism, 70 to 106 mild, 107 to 153 moderate
 
 ## 2. Scope for today
 
-**MUST (working end to end by 13:30)**
+**MUST (Phase 2 end to end on `main` by CP3, 15:00)**
 
 - Phase 2 core: upload role-play session audio, ElevenLabs Scribe v2 transcript with speakers, Gemini fills the 40 ISAA items (rating, evidence quote, timestamp, confidence), therapist taps confirm or edit, total score and band shown.
 
 **SHOULD (by 15:30)**
 
-- Phase 1: real outbound call from the ElevenLabs agent to a teammate's phone. Fallback: ElevenLabs web voice widget.
+- Phase 1: browser voice intake. A teammate opens the intake link on their phone, taps Start and talks to the ElevenLabs agent. Fallback: ElevenLabs embed widget on the same page.
 - Phase 1: pre-session brief page built from the call.
 - Phase 3: referral packet page and "ask the case" chat with cited answers.
 - Landing page with "Join the pilot" sign-up form (needed for validation evidence).
@@ -60,6 +60,7 @@ ISAA bands for the demo: below 70 no autism, 70 to 106 mild, 107 to 153 moderate
 **WON'T BUILD TODAY**
 
 - Live video calling (use a pre-recorded role-play instead).
+- Real phone calls (Twilio, SIP trunk, Exotel). Today the parent talks to the agent through a browser link; phone calls are roadmap.
 - Booking marketplace, payments, login and multi-tenant setup.
 - Real patient data of any kind. Real HIPAA infrastructure.
 
@@ -67,21 +68,22 @@ ISAA bands for the demo: below 70 no autism, 70 to 106 mild, 107 to 153 moderate
 
 | Layer | Tool | Notes |
 | --- | --- | --- |
-| App | Next.js (App Router) + Tailwind on Vercel | One app: therapist dashboard, specialist page, landing page |
-| Data | Supabase (Postgres + Storage) | Fresh project created today. Audio files in Storage |
-| Intake call | ElevenLabs Agents + Twilio outbound | Agent collects proforma answers via data collection fields, posts to our webhook after the call |
+| App | Next.js (App Router) + Tailwind, runs locally on each laptop | One app: therapist dashboard, specialist page, landing page. Vercel deploy is optional (decided at 15:30) |
+| Data | Supabase (Postgres + Storage) in Docker on each laptop | `npx supabase start`; schema in `supabase/migrations/`. Audio files in the local Storage bucket |
+| Intake call | ElevenLabs Agents + React SDK (WebRTC in the browser) | No phone number or telephony provider. Parent opens `/intake/[token]`, taps Start. Agent collects proforma answers via data collection fields, posts to our webhook after the call |
 | Transcription | ElevenLabs Scribe v2 (batch, diarization on) | Speaker labels: parent, therapist |
 | Parent summary | ElevenLabs TTS | Telugu or Hindi voice note |
 | AI | Gemini API (Google credits) | Structured JSON output against our schema. Extraction, brief, report, ask-the-case |
-| Workflows | Next.js API routes + webhooks | No separate workflow tool. Booking form calls our API, which starts the ElevenLabs outbound call. ElevenLabs post-call webhook triggers the brief. Refer button calls our API, which emails the specialist. Optional: Supabase Database Webhooks for DB-triggered steps |
+| Workflows | Next.js API routes + webhooks | No separate workflow tool. Booking form calls our API, which creates the intake link (shared by WhatsApp link or Resend email). When the browser call ends, our API fetches the finished conversation from ElevenLabs and builds the brief (the post-call webhook is used only when deployed). Refer button calls our API, which emails the specialist. Optional: Supabase Database Webhooks for DB-triggered steps |
 | Email | Resend (free tier) | Specialist referral email and parent voice-note email |
 | Build | Cursor, Wispr Flow | Dictate prompts and code |
 
 ### Flow
 
 ```
-PHASE 1  Booking form -> POST /api/cases/:id/call -> ElevenLabs agent calls parent
-         -> post-call webhook (transcript + collected fields)
+PHASE 1  Booking form -> POST /api/cases/:id/intake-link -> link to parent (WhatsApp / email)
+         -> parent opens link, talks to ElevenLabs agent in the browser
+         -> call ends -> our API fetches the conversation (transcript + collected fields)
          -> Gemini -> pre-session brief -> DB
 
 PHASE 2  Session audio upload -> Scribe v2 (diarized transcript)
@@ -99,26 +101,31 @@ Every piece of information is a fact with its source. This is our moat and our a
 
 ```
 fact {
-  id, case_id, instrument: "ISAA" | "CASE_SHEET" | "FACP",
-  item_id, value, 
+  id, case_id, recording_id, instrument: "ISAA" | "CASE_SHEET",
+  item_id, value, ai_value,
   source: "parent_call" | "session" | "therapist_voice",
-  evidence: { quote, start_sec, end_sec, recording_id },
+  evidence: { quote, segment_id, start_sec, end_sec, recording_id, verified },
   confidence: 0..1,
   status: "suggested" | "confirmed" | "edited",
-  confirmed_by, created_at
+  confirmed_by, confirmed_at, created_at
 }
 ```
 
-Tables: `cases`, `recordings`, `facts`, `reports`, `referrals`. Maps later to FHIR (Patient, Encounter, QuestionnaireResponse, ServiceRequest).
+Tables: `cases`, `recordings`, `facts`, `reports`, `referrals`, `case_questions`, `audit_events`, `pilot_signups`. FACP is a number on the case (entered by the therapist). Maps later to FHIR (Patient, Encounter, QuestionnaireResponse, ServiceRequest). Full DDL, types and rules: [docs/system-design.md](docs/system-design.md).
 
 ### Contracts to agree at 11:30 (do not change after)
 
+Full list with request/response shapes: [docs/system-design.md](docs/system-design.md) section 8.
+
 - `/schemas/isaa.json`: the 40 items, 6 domains, 1 to 5 scale. Single source of truth for prompt and UI.
-- `POST /api/cases/:id/call` (start the ElevenLabs outbound intake call)
+- `POST /api/cases/:id/intake-link` (create the parent intake link, optionally email it)
+- `POST /api/intake/:token/start` (returns ElevenLabs conversation token for the browser call)
 - `POST /api/webhooks/elevenlabs` (post-call data)
+- `POST /api/cases/:id/sessions` (signed upload URL for the session audio)
 - `POST /api/sessions/:id/transcribe`
 - `POST /api/sessions/:id/extract`
 - `PATCH /api/facts/:id` (confirm or edit)
+- `POST /api/sessions/:id/report`
 - `POST /api/cases/:id/refer`
 - `POST /api/cases/:id/ask`
 
@@ -127,16 +134,26 @@ Tables: `cases`, `recordings`, `facts`, `reports`, `referrals`. Maps later to FH
 ```
 carethread/
   app/          Next.js pages + API routes
-  lib/          elevenlabs.ts, gemini.ts, scoring.ts, db.ts, email.ts
+  lib/          env, db, types, isaa, gemini, email, audit, scoring, transcript, extraction,
+                elevenlabs/ (stt, agent, tts), intake/, report/, referral/, ask/
   schemas/      isaa.json, case-sheet.json, facp.json
-  prompts/      extract.md, brief.md, report.md, ask.md
-  demo/         role-play audio, sample transcript, seed.sql
-  README.md     setup, demo login, architecture
+  prompts/      extract.md, brief.md, report.md, referral.md, ask.md, parent-summary.md
+  supabase/     migrations/0001_init.sql
+  scripts/      migrate.ts, seed-demo.ts, make-scribe-fixture.ts
+  demo/         role-play audio, fixtures for DEMO_MODE
+  docs/         system-design.md, elevenlabs-agent.md
+  specs/        super-agent tickets (BOARD.md) and grill record
+  README.md     setup, no login needed, architecture
 ```
 
-- Public GitHub repo created at kickoff. Commit every 30 to 45 minutes (judges look at history).
-- One branch per person, small PRs, merge to main often. Main must always run.
-- Secrets only in `.env.local`. Commit `.env.example`. Never commit API keys.
+**Git rules (full version: [docs/team-workflow.md](docs/team-workflow.md))**
+
+- **Nobody pushes to `main`.** GitHub branch protection now requires an approved PR, including for admins. The local pre-push hook is optional and bypassable; required CI comes after ticket 001.
+- Each person works on their own integration branch: `int/a-voice`, `int/b-backend`, `int/c-frontend`, `int/d-pitch`. Tickets are built on `ticket/NNN-slug` and merged into your `int/` branch only after their eval passes.
+- At each checkpoint (CP1 13:30, CP2 14:15, CP3 15:00, CP4 15:30 freeze, CP5 16:15) everyone opens one PR `int/<role> -> main`; the merge captain merges with a merge commit, then everyone merges `origin/main` back into their branch.
+- Never rebase or force-push a pushed branch; need a teammate's work early? `git merge origin/int/<their-role>`.
+- Each laptop runs its own Supabase in Docker; commit only migrations, never `.env.local`. Commit `.env.example`. Never commit API keys.
+- Commit on your branch every 30 to 45 minutes and push (judges look at history).
 
 ## 4. Roles
 
@@ -144,31 +161,36 @@ Write your name next to your role.
 
 | Role | Owner | Owns | Done means |
 | --- | --- | --- | --- |
-| A. Voice | \_\_\_\_\_\_ | ElevenLabs agent (prompt, data collection fields, Telugu/Hindi/English), Twilio outbound call, Scribe v2 integration, TTS parent summary | Teammate's phone rings, call data lands in our DB |
-| B. AI and backend | \_\_\_\_\_\_ | ISAA schema, Gemini prompts (extract, brief, report, ask), API routes, Supabase, scoring logic | Role-play audio in, 40 items with evidence out, valid JSON every time |
+| A. Voice | \_\_\_\_\_\_ | ElevenLabs agent (prompt, data collection fields, Telugu/Hindi/English), browser intake page (React SDK), Scribe v2 integration, TTS parent summary | Teammate opens the link on their phone, AI talks, call data lands in our DB |
+| B. AI and backend | \_\_\_\_\_\_ | ISAA schema, Gemini prompts (extract, brief, report, ask), API routes and webhooks, Supabase, Resend email, scoring logic | Role-play audio in, 40 items with evidence out, valid JSON every time |
 | C. Frontend | \_\_\_\_\_\_ | Therapist dashboard (brief, live form with evidence, report), specialist page, landing page with sign-up form | A judge can click through the full flow without help |
 | D. Founder and pitch | \_\_\_\_\_\_ | Customer calls, role-play recording, deck, video, README, submission, timekeeping | 5 slides, 3-minute video, all links tested |
 
 D also calls out the checkpoints and has the final say on cutting scope.
 
+**Work split:** the build is split into 15 draft super-agent tickets in [specs/tickets/BOARD.md](specs/tickets/BOARD.md), one table per builder: A builds 005, 009, 010, 011, 015; B builds 001, 002, 006, 012, 013; C builds 003, 004, 007, 008; D builds 014. Use super-agent workers for assigned, fully specified tickets; builders manually integrate passing work on their own branches. Do not use the unadapted automatic merger. Human-only tasks (accounts, keys, ElevenLabs agent setup, role-play recording) are listed in [docs/system-design.md](docs/system-design.md) section 14.
+
 ## 5. Timeline
 
 | Time | What | Who |
 | --- | --- | --- |
-| 10:55 to 11:30 | Claim credits now: Google AI (only until 13:00, max 70 people), ElevenLabs perk via Discord, Cursor. Create repo, Supabase and a Resend API key. Agree schema and API contracts. Lock team in the portal before 11:30. | All |
+| 10:55 to 11:30 | Claim credits now: Google AI (only until 13:00, max 70 people), ElevenLabs perk via Discord, Cursor. Create repo and a Resend API key. Agree schema and API contracts. Lock team in the portal before 11:30. | All |
 | 11:00 | Send validation messages (section 6) | D |
-| 11:30 to 12:30 | A: agent + first test call. B: ISAA schema + extraction prompt on a sample transcript. C: dashboard skeleton on mock JSON. D: write and record the role-play audio (below), first calls. | All |
-| 12:30 to 13:00 | Lunch, keep tests running | All |
-| **13:30** | **Checkpoint 1: Phase 2 works end to end on the role-play audio.** If not, everyone helps until it does. | All |
-| 13:30 to 15:30 | Phase 1 call to brief, Phase 3 referral + ask, landing page live | A, B, C |
-| 15:00 | Validation cut-off: quotes collected, sign-ups counted | D |
-| **15:30** | **Feature freeze. Bug fixes only.** | All |
-| 15:30 to 16:30 | Deck, record demo screen capture, then pitch, edit video, README with demo login | D + C |
-| **16:30** | **Checkpoint 2: video on YouTube (unlisted), all links tested in an incognito window** | D |
+| Now to target 12:45 | Reconcile and review the plan PR; everyone prepares Docker and reads assigned tickets. Enable the hook after the plan PR lands. | All |
+| **Target 12:45** | **CP0: plan PR merged into `main`.** B starts 001 once its spec is ready. | Captain, B |
+| After CP0 to target 13:15 | B: 001. A: ElevenLabs agent setup. C: read 003/004/007, UI sketch. D: role-play recording, validation calls. | All |
+| Target ~13:15 | 001 express merge when green (only merge outside a checkpoint). Everyone merges `origin/main`, `npm install`, `npx supabase start`. | Captain, All |
+| **13:30** | **CP1:** 002, 003, 004, 014 on `main` | All |
+| **14:15** | **CP2:** 005, 006, 007, 009 on `main` | All |
+| **15:00** | **CP3: Phase 2 end to end on `main` (008), plus 010, 011, 012.** If Phase 2 is not there, everyone helps; D cuts 013/015. Validation cut-off: quotes collected, sign-ups counted. | All, D |
+| **15:30** | **CP4: Feature freeze.** 013, 015 only if green. After this, bug-fix PRs only (`fix/<slug>`). | All |
+| 15:30 to 16:15 | Deck, record demo screen capture from `main`, decide product link (deploy or tunnel) | D + C |
+| **16:15** | **CP5: final merge of fixes, `main` tagged `demo`** | Captain |
+| **16:30** | **Checkpoint: video on YouTube (unlisted), all links tested in an incognito window** | D |
 | 16:45 | Team lead submits in the portal | Lead |
 | 17:00 | Hard deadline, no late submissions |  |
 
-### Role-play script for the demo audio (D records at 12:00)
+### Role-play script for the demo audio (D records by 13:30)
 
 4 minutes, two adults, quiet room, synthetic names only. The parent (in English with some Telugu) must clearly mention at least 10 ISAA signs so the form fills visibly:
 
@@ -232,7 +254,7 @@ Only use quotes with permission. No real child names or health details in the de
 | Time | Content |
 | --- | --- |
 | 0:00 to 0:45 | Pitch: problem, who pays, one quote from a therapist |
-| 0:45 to 1:15 | Phase 1: book, phone rings, 15 seconds of the AI call in Telugu, brief appears |
+| 0:45 to 1:15 | Phase 1: book, parent taps the WhatsApp link, 15 seconds of the AI call in Telugu, brief appears |
 | 1:15 to 2:15 | Phase 2: session audio runs, form fills itself with evidence, therapist voice note fills an item, score and band |
 | 2:15 to 2:45 | Phase 3: severe band, Refer, specialist asks "When did speech regress?", answer cites the timestamp |
 | 2:45 to 3:00 | Close: pilots, ask, team |
@@ -261,17 +283,20 @@ Record the demo screen capture first, then the pitch. Never use real children or
 | Risk | Fallback |
 | --- | --- |
 | Telugu quality in the agent is weak | Run the call in Hindi or English, show Telugu as roadmap |
-| Twilio outbound call fails | ElevenLabs web voice widget in the browser |
+| Browser voice call fails at the venue (mic permission, Wi-Fi) | Phone hotspot, ElevenLabs embed widget, or replay a recorded intake call with the cached webhook payload |
 | Scribe or Gemini is slow during recording | Cached transcript and extraction JSON for the demo run |
 | Gemini returns invalid JSON | Schema-constrained output, validate, one retry |
 | Running out of time | Phase 3 becomes a static referral packet page, no chat |
+| Merge conflict at a checkpoint | PR author merges `origin/main` locally, fixes, pushes (2 min); captain merges the others meanwhile |
+| Someone pushes to `main` by mistake | GitHub branch protection requires an approved PR, including admins; the optional local hook is bypassable ([team workflow](docs/team-workflow.md)). |
+| A laptop's Docker/Supabase breaks | `npx supabase stop --no-backup && npx supabase start && npm run db:migrate && npm run seed:demo`; worst case pair on a teammate's laptop |
 | Google credits gone | Use the Gemini free tier key from AI Studio |
 
 ## 9. Submission checklist (team lead, before 16:45)
 
 - [ ] Team locked in the portal (before 11:30)
 - [ ] Pitch deck, max 5 slides, shared link opens without login
-- [ ] GitHub repo public, README with setup, demo login and architecture
+- [ ] GitHub repo public, README with setup, demo link (no login needed) and architecture
 - [ ] Pitch + demo video, max 3 minutes, YouTube unlisted or Google Drive "anyone with the link" (no Loom, no Vimeo)
 - [ ] Product link works in an incognito window
 - [ ] Landing page live with sign-up form

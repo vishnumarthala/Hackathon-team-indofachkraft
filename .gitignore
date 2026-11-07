@@ -1,0 +1,4 @@
+.claude/worktrees/
+.env*.local
+.tmp/
+specs/.super-agent/watchdog.log

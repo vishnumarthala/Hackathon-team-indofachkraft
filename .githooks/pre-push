@@ -1,0 +1,20 @@
+#!/bin/sh
+# Refuses any push to main/master. Enable once per clone: git config core.hooksPath .githooks
+# See docs/team-workflow.md - main only changes through a pull request at a checkpoint.
+blocked=0
+while read local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/master)
+      blocked=1
+      ;;
+  esac
+done
+if [ "$blocked" = "1" ]; then
+  echo "" >&2
+  echo "  BLOCKED: pushing to main is not allowed (docs/team-workflow.md)." >&2
+  echo "  Push your integration branch instead:  git push origin int/<role>" >&2
+  echo "  Then open a PR at the next checkpoint: gh pr create --base main --head int/<role>" >&2
+  echo "" >&2
+  exit 1
+fi
+exit 0
