@@ -1,0 +1,35 @@
+$ E-2 step 1
+ ✓ tests/report.test.ts > composeReportMarkdown > has the exact headings in order 2ms
+ ✓ tests/report.test.ts > composeReportMarkdown > takes every number from the score object 1ms
+ ✓ tests/report.test.ts > composeReportMarkdown > lists observations with their item ids and the background 0ms
+ ✓ tests/report.test.ts > composeReportMarkdown > lists red flags and next steps (server action first, then model recommendations) 0ms
+ ✓ tests/report.test.ts > composeReportMarkdown > ends with the exact footer line 0ms
+ ✓ tests/report.test.ts > composeReportMarkdown > uses provisional wording and confirmed-only domain sums 0ms
+ ✓ tests/report.test.ts > composeReportMarkdown > can be called directly with a red-flag list and None 0ms
+ ✓ tests/report.test.ts > model prompt > contains only confirmed/edited facts, without invented quotes 1ms
+ ✓ tests/report.test.ts > model prompt > drops an unverified evidence quote 0ms
+ ✓ tests/report.test.ts > model prompt > system prompt forbids computing the total score or band 0ms
+ ✓ tests/report.test.ts > filterDraft > rejects observations citing unconfirmed or out-of-domain item ids 0ms
+ ✓ tests/report.test.ts > filterDraft > rejects quotations without matching evidence and score claims 0ms
+ ✓ tests/report.test.ts > filterDraft > with only two confirmed items, none of the fixture's broader observations are presented as observed 0ms
+ ✓ tests/report.test.ts > POST /api/sessions/:id/report > 404 for an unknown session or a non-session recording 3ms
+ ✓ tests/report.test.ts > POST /api/sessions/:id/report > 422 when no confirmed/edited ISAA fact has a value 1ms
+ ✓ tests/report.test.ts > POST /api/sessions/:id/report > 409 when the report is final, without calling Gemini 0ms
+ ✓ tests/report.test.ts > POST /api/sessions/:id/report > 409 when the report became final while generating 1ms
+ ✓ tests/report.test.ts > POST /api/sessions/:id/report > 502 on Gemini failure; no draft created or overwritten 1ms
+ ✓ tests/report.test.ts > POST /api/sessions/:id/report > 200: calls Gemini with confirmed facts only, saves filtered content and server numbers, audits 1ms
+ ✓ tests/report.test.ts > PATCH /api/reports/:id > 404 for an unknown report 1ms
+ ✓ tests/report.test.ts > PATCH /api/reports/:id > 422 for other report kinds 1ms
+ ✓ tests/report.test.ts > PATCH /api/reports/:id > 409 when already final 0ms
+ ✓ tests/report.test.ts > PATCH /api/reports/:id > 400 for invalid bodies 3ms
+ ✓ tests/report.test.ts > PATCH /api/reports/:id > saves edits and finalizes, with audits 1ms
+ ✓ tests/report.test.ts > PATCH /api/reports/:id > 409 when the row turned final between read and write 0ms
+ ✓ tests/report.test.ts > ReportEditor > shows Generate draft report without a report 5ms
+ ✓ tests/report.test.ts > ReportEditor > shows the editor, preview and buttons for a draft 11ms
+ ✓ tests/report.test.ts > ReportEditor > final: badge, read-only textarea, no Save/Mark final/Regenerate 1ms
+ ✓ tests/report.test.ts > ReportEditor > generateReport / patchReport call the API and surface errors 2ms
+ ✓ tests/report.test.ts > ReportEditor > session select helpers 0ms
+      Tests  30 passed (30)
+exit=0
+$ E-2 step 2: grep -ciE "total score|band" prompts/report.md
+1

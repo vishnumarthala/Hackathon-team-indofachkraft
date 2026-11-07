@@ -1,0 +1,13 @@
+$ step 2
+{"error":"Confirm at least one ISAA item first"} 422
+$ step 3
+{"error":"Report is final"} 409
+$ step 4
+{"error":"Report not found"} 404
+B=e8dbd2f5-9c50-4edc-bce0-e230f341a18d
+$ step 5
+{"error":"Only assessment reports can be edited here"} 422
+$ step 7
+200 (670 ms)
+$ step 7 content (provisional)
+[{"status":"draft","content_md":"# Assessment report - Ravi (synthetic)\n\nSession 1 · 2026-11-07 · Demo Therapist\n\n## Background\n\nRavi (synthetic) is a boy aged 40 months who attended a first session with his mother Lakshmi (synthetic). Before the session the mother completed an intake call with the AI assistant. She reports that Ravi used a few words at age 2 and then stopped talking. This draft documents what the therapist confirmed in the session; it is not a diagnosis and the clinician decides on next steps.\n\n## ISAA result\n\nISAA total: at least 46 (provisional - 2 of 40 confirmed)\n\nDomain scores are sums of confirmed items only; they are not domain totals.\n\n| Domain | Score | Max |\n| --- | --- | --- |\n| Social relationship and reciprocity | 4 | 45 |\n| Emotional responsiveness | 0 | 25 |\n| Speech-language and communication | 0 | 45 |\n| Behaviour patterns | 4 | 35 |\n| Sensory aspects | 0 | 30 |\n| Cognitive component | 0 | 20 |\n\n## Observations\n\nNo observations could be supported by confirmed items.\n\n## Red flags\n\n- None\n\n## Suggested next steps\n\n- Enter the FACP score to get a suggested action\n- Discuss the reported loss of words with a developmental paediatrician.\n- Make a safety plan with the family for head hitting when Ravi is upset.\n- Keep daily routines predictable and prepare Ravi before changes such as a new route.\n- Offer a quiet space during loud kitchen sounds at home.\n- Review progress with the family at the next session.\n\nAI-drafted from confirmed observations. Reviewed and decided by Demo Therapist. This is not a diagnosis by AI.\n"}]
