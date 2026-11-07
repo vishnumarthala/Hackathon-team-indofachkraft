@@ -88,6 +88,24 @@ describe("startIntakeCall", () => {
     });
   });
 
+  it("public agent: no token, so the session starts by agent id over WebRTC", async () => {
+    const { d } = deps(Response.json({ ...liveBody, conversation_token: null, agent_id: "agent_pub" }));
+    await expect(startIntakeCall("t", "hi", d)).resolves.toEqual({ kind: "started" });
+    expect(d.startSession).toHaveBeenCalledWith({
+      agentId: "agent_pub",
+      connectionType: "webrtc",
+      dynamicVariables: liveBody.dynamic_variables,
+      overrides: { agent: { language: "hi" } },
+      onError: d.onSdkError,
+    });
+  });
+
+  it("neither token nor agent id: generic start error, no SDK session", async () => {
+    const { d } = deps(Response.json({ dynamic_variables: {} }));
+    await expect(startIntakeCall("t", "en", d)).resolves.toEqual({ kind: "error", message: MESSAGES.startFailed });
+    expect(d.startSession).not.toHaveBeenCalled();
+  });
+
   it("SDK throwing on start reports the call failure", async () => {
     const { d } = deps(Response.json(liveBody));
     d.startSession.mockImplementation(() => {

@@ -7,7 +7,7 @@ const icon = "h-6 w-6";
 const PHASES: { title: string; text: string; who: string; icon: ReactNode; tint: string }[] = [
   {
     title: "1. Intake call",
-    text: "Before the first visit, an AI voice assistant talks to the parent in English, Hindi or Telugu (German coming soon) and prepares a pre-session brief for the therapist.",
+    text: "Before the visit, the parent talks to our AI voice agent in Telugu, Hindi or English (German coming soon). The therapist gets a brief with red flags.",
     who: "Parent → Therapist",
     tint: "from-amber-100 to-orange-50 text-orange-700",
     icon: (
@@ -19,7 +19,7 @@ const PHASES: { title: string; text: string; who: string; icon: ReactNode; tint:
   },
   {
     title: "2. Online session",
-    text: "During the session, CareThread suggests a rating for each of the 40 ISAA items with an evidence quote and timestamp, and the therapist confirms or edits every one.",
+    text: "Forms fill themselves: 40 ISAA items from the session recording, each with a quote and timestamp. The therapist confirms every item.",
     who: "Therapist confirms",
     tint: "from-teal-100 to-emerald-50 text-teal-700",
     icon: (
@@ -31,7 +31,7 @@ const PHASES: { title: string; text: string; who: string; icon: ReactNode; tint:
   },
   {
     title: "3. Specialist handoff",
-    text: "When a referral is needed, the specialist receives the complete case and can ask questions that are answered with cited evidence.",
+    text: "When it is serious, one click sends the full case to the specialist, who can ask it questions. The family never repeats the story.",
     who: "Therapist → Specialist",
     tint: "from-sky-100 to-indigo-50 text-sky-700",
     icon: (

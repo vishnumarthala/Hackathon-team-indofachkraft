@@ -2,17 +2,59 @@ import { env } from "@/lib/env";
 
 export const CONVERSATION_TOKEN_URL = "https://api.elevenlabs.io/v1/convai/conversation/token";
 
+export class TokenRequestError extends Error {
+  constructor(
+    message: string,
+    readonly status: number | null,
+  ) {
+    super(message);
+    this.name = "TokenRequestError";
+  }
+}
+
 // Server only: issues a short-lived WebRTC conversation token for the private intake agent.
 export async function getConversationToken(): Promise<string> {
   const url = `${CONVERSATION_TOKEN_URL}?agent_id=${encodeURIComponent(env.ELEVENLABS_AGENT_ID)}`;
   const res = await fetch(url, { method: "GET", headers: { "xi-api-key": env.ELEVENLABS_API_KEY } });
-  if (!res.ok) throw new Error(`Conversation token request failed (HTTP ${res.status})`);
+  if (!res.ok) throw new TokenRequestError(`Conversation token request failed (HTTP ${res.status})`, res.status);
   const json = (await res.json().catch(() => null)) as { token?: unknown } | null;
   if (!json || typeof json.token !== "string" || json.token === "") {
-    throw new Error("Conversation token response had no token");
+    throw new TokenRequestError("Conversation token response had no token", null);
   }
   return json.token;
 }
+
+export type AgentStart = { agent_id: string; conversation_token: string | null };
+
+// Statuses meaning "this key may not mint tokens for this agent" (e.g. the agent lives in another
+// workspace). A public agent (authentication off) can still be started by its ID from the browser.
+const PUBLIC_FALLBACK_STATUSES = new Set([401, 403, 404]);
+
+// Server only. Returns a conversation token when possible, otherwise the agent ID for a public start.
+// Throws when no agent is configured, or on other provider failures (network, 5xx).
+export async function startAgentSession(): Promise<AgentStart> {
+  const agentId = env.ELEVENLABS_AGENT_ID;
+  if (!process.env.ELEVENLABS_API_KEY) return { agent_id: agentId, conversation_token: null };
+  try {
+    return { agent_id: agentId, conversation_token: await getConversationToken() };
+  } catch (err) {
+    if (err instanceof TokenRequestError && err.status !== null && PUBLIC_FALLBACK_STATUSES.has(err.status)) {
+      return { agent_id: agentId, conversation_token: null };
+    }
+    throw err;
+  }
+}
+
+// Dynamic variables the published CareThread intake agent requires (a missing one fails the start).
+export type AgentVariables = {
+  parent_name: string;
+  child_name: string;
+  centre_name: string;
+  therapist_name: string;
+  case_id: string;
+};
+
+export const DEMO_CENTRE_NAME = "CareThread Demo Centre";
 
 export const CONVERSATIONS_URL = "https://api.elevenlabs.io/v1/convai/conversations";
 

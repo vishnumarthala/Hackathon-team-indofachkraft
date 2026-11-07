@@ -8,7 +8,7 @@ const m = vi.hoisted(() => ({
   ensureIntakeToken: vi.fn(),
   audit: vi.fn(),
   sendEmail: vi.fn(),
-  getConversationToken: vi.fn(),
+  startAgentSession: vi.fn(),
 }));
 vi.mock("@/lib/queries/cases", () => ({ getCase: m.getCase }));
 vi.mock("@/lib/queries/intake", () => ({
@@ -18,7 +18,7 @@ vi.mock("@/lib/queries/intake", () => ({
 }));
 vi.mock("@/lib/audit", () => ({ audit: m.audit }));
 vi.mock("@/lib/email", () => ({ sendEmail: m.sendEmail }));
-vi.mock("@/lib/elevenlabs/agent", () => ({ getConversationToken: m.getConversationToken }));
+vi.mock("@/lib/elevenlabs/agent", () => ({ startAgentSession: m.startAgentSession, DEMO_CENTRE_NAME: "CareThread Demo Centre" }));
 
 import { POST as linkPOST } from "@/app/api/cases/[id]/intake-link/route";
 import { POST as startPOST } from "@/app/api/intake/[token]/start/route";
@@ -157,12 +157,12 @@ describe("POST /api/intake/:token/start", () => {
     vi.stubEnv("DEMO_MODE", "true");
     const res = await startCall({ language: "hi" });
     expect(await res.json()).toEqual({ demo: true });
-    expect(m.getConversationToken).not.toHaveBeenCalled();
+    expect(m.startAgentSession).not.toHaveBeenCalled();
     expect(actions()).toEqual(["intake.started"]);
   });
 
   it("live returns the token, agent id and all dynamic variables; audits intake.started as parent", async () => {
-    m.getConversationToken.mockResolvedValue("conv_tok");
+    m.startAgentSession.mockResolvedValue({ agent_id: "agent_test", conversation_token: "conv_tok" });
     const res = await startCall({ language: "te" });
     expect(res.status).toBe(200);
     const text = await res.text();
@@ -170,6 +170,10 @@ describe("POST /api/intake/:token/start", () => {
       conversation_token: "conv_tok",
       agent_id: "agent_test",
       dynamic_variables: {
+        parent_name: "Lakshmi",
+        child_name: "Ravi",
+        centre_name: "CareThread Demo Centre",
+        case_id: CASE.id,
         intake_token: TOKEN,
         child_alias: "Ravi",
         parent_alias: "Lakshmi",
@@ -181,8 +185,16 @@ describe("POST /api/intake/:token/start", () => {
     expect(m.audit).toHaveBeenCalledWith(expect.objectContaining({ action: "intake.started", actor: "parent", caseId: CASE.id }));
   });
 
+  it("public agent (no token for this key): returns the agent id with a null token", async () => {
+    m.startAgentSession.mockResolvedValue({ agent_id: "agent_test", conversation_token: null });
+    const body = await (await startCall({ language: "te" })).json();
+    expect(body.conversation_token).toBeNull();
+    expect(body.agent_id).toBe("agent_test");
+    expect(body.dynamic_variables).toMatchObject({ parent_name: "Lakshmi", child_name: "Ravi", case_id: CASE.id });
+  });
+
   it("502 when ElevenLabs fails, without leaking details", async () => {
-    m.getConversationToken.mockRejectedValue(new Error(`HTTP 401 key ${SECRET}`));
+    m.startAgentSession.mockRejectedValue(new Error(`HTTP 500 key ${SECRET}`));
     const res = await startCall({ language: "en" });
     expect(res.status).toBe(502);
     const text = await res.text();
@@ -212,5 +224,35 @@ describe("getConversationToken (FR-6)", () => {
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+});
+
+describe("startAgentSession", () => {
+  const actual = () => vi.importActual<typeof import("@/lib/elevenlabs/agent")>("@/lib/elevenlabs/agent");
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("returns a conversation token when the key can mint one", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => Response.json({ token: "tok" })));
+    await expect((await actual()).startAgentSession()).resolves.toEqual({ agent_id: "agent_test", conversation_token: "tok" });
+  });
+
+  it.each([401, 403, 404])("falls back to the public agent id on HTTP %i", async (status) => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("no", { status })));
+    await expect((await actual()).startAgentSession()).resolves.toEqual({ agent_id: "agent_test", conversation_token: null });
+  });
+
+  it("falls back without calling ElevenLabs when no API key is set", async () => {
+    vi.stubEnv("ELEVENLABS_API_KEY", "");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    await expect((await actual()).startAgentSession()).resolves.toEqual({ agent_id: "agent_test", conversation_token: null });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("throws on server errors and when no agent is configured", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("down", { status: 503 })));
+    await expect((await actual()).startAgentSession()).rejects.toThrow("503");
+    vi.stubEnv("ELEVENLABS_AGENT_ID", "");
+    await expect((await actual()).startAgentSession()).rejects.toThrow("Missing env var: ELEVENLABS_AGENT_ID");
   });
 });
