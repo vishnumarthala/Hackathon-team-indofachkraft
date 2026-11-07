@@ -38,14 +38,14 @@ export function HeroVisual() {
           <span style={{ animationDelay: "300ms" }} />
           <span style={{ animationDelay: "450ms" }} />
         </span>
-        Intake call · Deutsch
+        Intake call · Telugu
       </div>
 
       <div className="rounded-3xl border border-white/60 bg-white/80 p-5 shadow-2xl shadow-teal-900/15 backdrop-blur-xl">
         <div className="mb-4 flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-teal-700">Session 1 · ISAA</p>
-            <p className="text-sm text-slate-500">Aarav, 3 yrs (synthetic)</p>
+            <p className="text-sm text-slate-500">Ravi, 3 yrs (synthetic)</p>
           </div>
           <span className="flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700">
             <span className={`lp-pulse h-2 w-2 rounded-full bg-rose-500`} />

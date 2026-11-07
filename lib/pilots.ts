@@ -9,8 +9,8 @@ export type PilotRole = (typeof PILOT_ROLES)[number];
 export const PILOT_ROLE_LABELS: Record<PilotRole, string> = {
   therapist: "Therapist",
   psychologist: "Child psychologist",
-  centre_owner: "Centre owner",
-  parent: "Parent",
+  centre_owner: "Centre owner / manager",
+  parent: "Parent (interested in the pilot)",
   other: "Other",
 };
 

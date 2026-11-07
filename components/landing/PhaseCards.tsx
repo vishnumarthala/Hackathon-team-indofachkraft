@@ -7,7 +7,7 @@ const icon = "h-6 w-6";
 const PHASES: { title: string; text: string; who: string; icon: ReactNode; tint: string }[] = [
   {
     title: "1. Intake call",
-    text: "Before the first visit, an AI voice assistant talks to the parent in English or German (also Hindi and Telugu) and prepares a pre-session brief for the therapist.",
+    text: "Before the first visit, an AI voice assistant talks to the parent in English, Hindi or Telugu (German coming soon) and prepares a pre-session brief for the therapist.",
     who: "Parent → Therapist",
     tint: "from-amber-100 to-orange-50 text-orange-700",
     icon: (
