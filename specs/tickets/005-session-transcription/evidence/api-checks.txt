@@ -1,0 +1,27 @@
+case=56eee8dd-7c39-430d-afc1-afc0963d8523 S0=83140017-628d-46e0-8730-4d4ef17f6f57
+=== E-1
+{"recording_id":"2ee35b1e-640c-4a25-a6ed-16a629bfdfae","session_number":2,"bucket":"recordings","path":"56eee8dd-7c39-430d-afc1-afc0963d8523/2ee35b1e-640c-4a25-a6ed-16a629bfdfae.wav","token":"<redacted>","signed_url":"<redacted>"} 201
+step2 200
+{"recording_id":"2ee35b1e-640c-4a25-a6ed-16a629bfdfae","status":"transcribed","segments_count":36,"duration_sec":240.43,"speaker_map":{"speaker_0":"therapist","speaker_1":"parent"}} 200 1.682860
+[{"status":"transcribed","n":36,"speaker_map":{"speaker_0":"therapist","speaker_1":"parent"},"storage_path":"56eee8dd-7c39-430d-afc1-afc0963d8523/2ee35b1e-640c-4a25-a6ed-16a629bfdfae.wav"}]
+fixture N = 36
+[{"action":"recording.created"},{"action":"recording.consent"},{"action":"recording.transcribed"}]
+=== E-2
+01:23 [s12 | 01:23-01:30 | PARENT] He stopped talking.
+=== E-3
+{"error":"Invalid request","details":{"mime_type":"Unsupported audio type"}} 400
+{"error":"Invalid request","details":{"size_bytes":"File too large (max 50 MB)"}} 400
+{"error":"Case not found"} 404
+=== E-4
+{"error":"Audio file not uploaded yet"} 409
+[{"status":"created"}]
+=== E-5
+{"error":"Items already confirmed; create a new session instead"} 409
+{"error":"Session not found"} 404
+=== E-7
+server only
+=== E-8
+upload 200
+{"error":"Transcription failed","details":"Missing fixture scribe-response.json"} 502
+[{"status":"failed","has_error":true}]
+step6 200
