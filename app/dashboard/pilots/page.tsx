@@ -7,7 +7,7 @@ export default async function PilotSignupsPage() {
   const rows = await listPilotSignups();
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8">
+    <div className="mx-auto w-full max-w-6xl px-4 py-8">
       <h1 className="mb-1 text-3xl font-bold text-slate-900">Pilot sign-ups</h1>
       <p className="mb-6 text-slate-700">{rows.length} sign-ups</p>
 
@@ -37,6 +37,6 @@ export default async function PilotSignupsPage() {
           </tbody>
         </table>
       </div>
-    </main>
+    </div>
   );
 }

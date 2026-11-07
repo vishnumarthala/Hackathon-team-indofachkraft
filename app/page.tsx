@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-16">
+    <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-16">
       <section className="mb-10">
         <h1 className="mb-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
           CareThread
@@ -50,6 +50,6 @@ export default function Home() {
         </p>
         <PilotForm />
       </section>
-    </main>
+    </div>
   );
 }
