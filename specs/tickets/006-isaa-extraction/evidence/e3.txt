@@ -1,0 +1,33 @@
+## E-3 step 1
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/Hackathon-team-indofachkraft
+
+ ✓ tests/extraction.test.ts > normalizeText > lower-cases, strips punctuation and collapses whitespace 1ms
+ ✓ tests/extraction.test.ts > postProcess with the extract fixture > returns exactly 40 items in order with server timestamps 1ms
+ ✓ tests/extraction.test.ts > postProcess with the extract fixture > verifies the fixture quotes and never keeps evidence on unrated items 0ms
+ ✓ tests/extraction.test.ts > postProcess with the extract fixture > keeps the lost speech and self-injury red flags 0ms
+ ✓ tests/extraction.test.ts > postProcess synthetic cases > unknown segment -> rating null, confidence 0, no evidence 0ms
+ ✓ tests/extraction.test.ts > postProcess synthetic cases > null segment or null quote -> no evidence 0ms
+ ✓ tests/extraction.test.ts > postProcess synthetic cases > wrong quote keeps the rating unverified with confidence capped at 0.5 0ms
+ ✓ tests/extraction.test.ts > postProcess synthetic cases > matching quote ignores case and punctuation 0ms
+ ✓ tests/extraction.test.ts > postProcess synthetic cases > keeps the first entry for a duplicate item 0ms
+ ✓ tests/extraction.test.ts > postProcess synthetic cases > fills missing items with null ratings 0ms
+ ✓ tests/extraction.test.ts > postProcess synthetic cases > drops red flags whose segment does not exist 0ms
+ ✓ tests/extraction.test.ts > parseVoiceNotes > finds the two roleplay notes 0ms
+ ✓ tests/extraction.test.ts > parseVoiceNotes > parses digits and English words with as/at/to 0ms
+ ✓ tests/extraction.test.ts > parseVoiceNotes > ignores parents, non-note lines and out-of-range values; last note wins 0ms
+ ✓ tests/extraction.test.ts > mergeVoiceNotes > adds valid Gemini notes only for items the regex did not find 0ms
+ ✓ tests/extraction.test.ts > mergeVoiceNotes > the fixture's Gemini notes duplicate the regex notes 0ms
+ ✓ tests/extraction.test.ts > computeFactWrites > new rows: value = ai_value = rating, voice notes confirmed 0ms
+ ✓ tests/extraction.test.ts > computeFactWrites > re-extraction skips confirmed/edited rows and keeps the first AI value 0ms
+ ✓ tests/extraction.test.ts > prompts > system prompt carries the section 10 rules 0ms
+ ✓ tests/extraction.test.ts > prompts > user prompt lists 40 items, the scale and transcript lines 0ms
+
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
+   Start at  14:03:22
+   Duration  181ms (transform 35ms, setup 0ms, import 107ms, tests 4ms, environment 0ms)
+
+exit 0
+## step 2
+[[24,3,"s3"]]

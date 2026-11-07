@@ -1,0 +1,19 @@
+ RUN  v4.1.12 /Users/vishnu/Documents/git/HT-012
+ ✓ tests/packet.test.ts > buildPacket > picks verified key evidence from confirmed/edited facts, sorted by rating desc then item id, max 8 2ms
+ ✓ tests/packet.test.ts > buildPacket > lists every confirmed/edited fact as a decision and nothing suggested 0ms
+ ✓ tests/packet.test.ts > buildPacket > keeps the first 5 parent-reported intake answers as '<label>: <value>' and none without a brief 0ms
+ ✓ tests/packet.test.ts > buildPacket > scores provisionally from confirmed facts only (minimum_total, 'at least', confirmed domain sums) 0ms
+ ✓ tests/packet.test.ts > buildPacket > gives a final total and band when all 40 items are confirmed 0ms
+ ✓ tests/packet.test.ts > buildPacket > never serializes suggested ratings or suggested totals 0ms
+ ✓ tests/packet.test.ts > buildPacket > collects red flags from confirmed items and intake (brief first, then case-sheet booleans), not extraction 0ms
+ ✓ tests/packet.test.ts > pickReferralSession > uses the latest extracted session, ignoring later sessions that are not extracted 0ms
+ ✓ tests/packet.test.ts > ReferRequestSchema > requires parent consent to be true 1ms
+ ✓ tests/packet.test.ts > POST /api/cases/:id/refer > returns 422 when the latest extracted session (the one the tab shows) has no confirmed items, even if an older one has 3ms
+ ✓ tests/packet.test.ts > POST /api/cases/:id/refer > returns 404 for an unknown case and 400 without consent 1ms
+ ✓ tests/packet.test.ts > POST /api/cases/:id/refer > returns 502 and stores nothing when Gemini fails 1ms
+ ✓ tests/packet.test.ts > POST /api/cases/:id/refer > creates the referral from the displayed session, marks the case referred and skips email in demo mode 2ms
+ ✓ tests/packet.test.ts > POST /api/cases/:id/refer > still returns 201 with emailed false when the email cannot be sent 1ms
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  14:07:26
+   Duration  219ms (transform 59ms, setup 0ms, import 141ms, tests 13ms, environment 0ms)

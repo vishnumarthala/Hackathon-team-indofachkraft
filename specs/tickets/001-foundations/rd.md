@@ -1,6 +1,6 @@
 # 001: Foundations - scaffold, schema, shared contracts
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** alongside
 
