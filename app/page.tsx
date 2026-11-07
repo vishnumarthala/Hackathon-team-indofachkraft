@@ -19,7 +19,7 @@ const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
 const STATS = [
   { value: "40", label: "ISAA items, each with an evidence quote and timestamp" },
-  { value: "4", label: "languages for the parent: English and German, plus Hindi and Telugu" },
+  { value: "3", label: "languages for the parent call: English, Hindi and Telugu (German coming soon)" },
   { value: "1", label: "thread from the first call to the specialist" },
 ];
 
@@ -30,9 +30,43 @@ const TRUST = [
   { title: "Privacy by design", text: "Private storage, an audit log of every change, and synthetic data only in this demo." },
 ];
 
+const VALUE_LINE =
+  "Less paperwork per assessment, consistent ISAA documentation, and referrals that arrive complete.";
+
+const AUDIENCES = [
+  {
+    who: "For centres",
+    tag: "The subscriber: one plan per clinician",
+    points: [
+      "Consistent, evidence-backed ISAA records across every therapist",
+      "An audit log of every change and every decision",
+      "Referral packets that reach the specialist complete",
+    ],
+  },
+  {
+    who: "For therapists",
+    tag: "Daily users",
+    points: [
+      "A pre-session brief from the parent call before session 1",
+      "The ISAA form filled from the session, with quotes and timestamps",
+      "A draft report; nothing counts until you confirm it",
+    ],
+  },
+  {
+    who: "For parents and specialists",
+    tag: "Free, by invitation",
+    points: [
+      "Parents get a link from their therapist and talk in their own language",
+      "Specialists open the full case by link and can ask it questions",
+      "Neither needs an account",
+    ],
+  },
+];
+
 const PILOT_PERKS = [
+  "For centres and clinicians: one pilot per centre",
   "Help shape the product with direct access to the team",
-  "Parent calls in English and German, plus Hindi and Telugu",
+  "Parent calls in English, Hindi and Telugu (German coming soon)",
   "Try it first on synthetic role-play sessions, no real patients",
 ];
 
@@ -92,6 +126,13 @@ export default function Home() {
             </h1>
 
             <p
+              className={`lp-fade-up mb-4 max-w-xl text-xl font-semibold leading-snug text-slate-900 sm:text-2xl`}
+              style={delay(150)}
+            >
+              {VALUE_LINE}
+            </p>
+
+            <p
               className={`lp-fade-up mb-8 max-w-xl text-lg leading-relaxed text-slate-600 sm:text-xl`}
               style={delay(200)}
             >
@@ -148,6 +189,36 @@ export default function Home() {
         <PhaseCards />
       </section>
 
+      {/* WHO IT'S FOR */}
+      <section className="border-t border-slate-200/70 bg-white">
+        <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
+          <Reveal className="mx-auto mb-12 max-w-2xl text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">Who it&apos;s for</p>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Centres subscribe, therapists use it daily</h2>
+          </Reveal>
+          <div className="grid gap-5 md:grid-cols-3">
+            {AUDIENCES.map((a, i) => (
+              <Reveal
+                key={a.who}
+                delay={i * 90}
+                className={`rounded-2xl border p-6 ${i === 0 ? "border-teal-300 bg-teal-50/60" : "border-slate-200 bg-[#fbfaf7]"}`}
+              >
+                <h3 className="text-lg font-bold text-slate-900">{a.who}</h3>
+                <p className="mb-4 text-sm font-medium text-teal-800">{a.tag}</p>
+                <ul className="space-y-2.5">
+                  {a.points.map((p) => (
+                    <li key={p} className="flex gap-2.5 text-sm leading-relaxed text-slate-700">
+                      <Check />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* PRINCIPLE */}
       <section className="relative overflow-hidden bg-slate-900 text-white">
         <div aria-hidden="true">
@@ -195,8 +266,11 @@ export default function Home() {
           <div>
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">Pilot programme</p>
             <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">Join the pilot</h2>
-            <p className="mb-6 text-lg leading-relaxed text-slate-600">
-              For early intervention therapists, child psychologists, centres and parents.
+            <p className="mb-2 text-lg leading-relaxed text-slate-600">
+              For early intervention centres, therapists and child psychologists.
+            </p>
+            <p className="mb-6 text-sm text-slate-500">
+              Parent? You don&apos;t need to sign up: your therapist sends you a link.
             </p>
 
             <ul className="space-y-3">

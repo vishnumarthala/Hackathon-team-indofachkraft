@@ -33,8 +33,29 @@ say -v Samantha -r 170 -o .tmp/sample-short.aiff "Good morning. When you call hi
 afconvert -f WAVE -d LEI16@16000 -c 1 .tmp/sample-short.aiff demo/audio/sample-short.wav
 ```
 
-`demo/audio/session-1.mp3` (the recorded role-play) is added later by Role D. When it exists,
-`npm run seed:demo` uploads it to the `recordings` bucket for session 1.
+## Session audio (`demo/audio/session-1.mp3`)
+
+The 4-minute role-play session as **synthetic ElevenLabs speech** (AI voices, no human voice), generated
+from `fixtures/roleplay-segments.json`: one text-to-speech clip per turn (`eleven_multilingual_v2`,
+therapist voice "Sarah", parent voice "Laura"), each placed at its fixture `start_sec`, mixed with quiet
+room tone; mono 44.1 kHz MP3, 64 kbps, 242.5 s, about 1.9 MB. Because the turns line up with the fixture
+timestamps, evidence playback for seeded sessions plays the right moment. `npm run seed:demo` uploads it
+to the `recordings` bucket for session 1.
+
+Live check (Scribe v2 through `lib/elevenlabs/stt.ts` + `lib/transcript.ts`): 36 segments, therapist and
+parent mapped correctly on all 36, every start within 0.16 s of the fixture. Scribe writes numbers as words
+("rate item five as four").
+
+Regenerate (needs `ELEVENLABS_API_KEY` in `.env.local`, plus `ffmpeg`/`ffprobe`):
+
+```sh
+npx tsx scripts/make-session-audio.ts                     # picks two female voices from your account
+npx tsx scripts/make-session-audio.ts --therapist-voice <id> --parent-voice <id>
+```
+
+Clips are cached in `.tmp/session-audio/`, so re-running only re-mixes and spends no credits; delete that
+folder (or pick other voices) to synthesise again. Role D can replace the file with the real recorded
+role-play at any time.
 
 ## Seed
 
