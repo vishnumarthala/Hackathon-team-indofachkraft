@@ -1,4 +1,5 @@
 import { audit } from "@/lib/audit";
+import { requireApiUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { generateJson } from "@/lib/gemini";
@@ -21,6 +22,9 @@ export const maxDuration = 60;
 type EmailStatus = "sent" | "demo" | "failed";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const unauthorized = await requireApiUser();
+  if (unauthorized) return unauthorized;
+
   const { id } = await params;
 
   const parsed = await parseJson(req, ReferRequestSchema);

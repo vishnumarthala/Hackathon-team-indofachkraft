@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { audit } from "@/lib/audit";
+import { requireApiUser } from "@/lib/auth";
 import { fail, ok, parseJson } from "@/lib/http";
 import { getReport, updateDraftReport } from "@/lib/queries/reports";
 
@@ -19,6 +20,9 @@ const ReportPatchSchema = z
   .refine((b) => b.content_md !== undefined || b.status !== undefined, { message: "Nothing to update" });
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const unauthorized = await requireApiUser();
+  if (unauthorized) return unauthorized;
+
   const { id } = await params;
   const report = await getReport(id);
   if (!report) return fail(404, "Report not found");

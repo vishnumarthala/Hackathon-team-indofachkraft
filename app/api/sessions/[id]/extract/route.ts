@@ -1,4 +1,5 @@
 import { runExtraction, type ExtractionOutcome } from "@/lib/extraction";
+import { requireApiUser } from "@/lib/auth";
 import { fail, ok } from "@/lib/http";
 
 export const runtime = "nodejs";
@@ -6,6 +7,9 @@ export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const unauthorized = await requireApiUser();
+  if (unauthorized) return unauthorized;
+
   const { id } = await params;
   let outcome: ExtractionOutcome;
   try {

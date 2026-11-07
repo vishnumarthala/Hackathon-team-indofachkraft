@@ -18,6 +18,7 @@ const m = vi.hoisted(() => ({
   sendEmail: vi.fn(),
   audit: vi.fn(),
 }));
+vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
 vi.mock("@/lib/queries/reports", () => ({ getReport: m.getReport }));
 vi.mock("@/lib/queries/cases", () => ({ getCase: m.getCase }));
 vi.mock("@/lib/queries/parentNote", () => ({

@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Brief, Evidence, ReferralSummary } from "@/lib/types";
 
+vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
+
 // In-memory stand-in for the Supabase query builder (only what the referral code uses).
 type Row = Record<string, unknown>;
 type Tables = Record<string, Row[]>;

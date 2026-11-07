@@ -1,4 +1,5 @@
 import { audit } from "@/lib/audit";
+import { requireApiUser } from "@/lib/auth";
 import { caseCreateSchema } from "@/lib/cases/validation";
 import { supabaseAdmin } from "@/lib/db";
 import { fail, ok, parseJson } from "@/lib/http";
@@ -6,6 +7,9 @@ import { fail, ok, parseJson } from "@/lib/http";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  const unauthorized = await requireApiUser();
+  if (unauthorized) return unauthorized;
+
   const parsed = await parseJson(req, caseCreateSchema);
   if ("response" in parsed) return parsed.response;
 

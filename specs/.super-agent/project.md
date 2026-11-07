@@ -6,8 +6,8 @@ Every agent reads this file. Keep it short and exact.
 
 - Name: CareThread (hackathon MVP, Nov 7 2026, hard deadline 17:00 CET). AI assistant for early
   intervention therapists: browser intake call -> ISAA session form -> specialist referral.
-- Stack: Next.js (App Router, TypeScript, no `src/` dir), Tailwind CSS, **local Supabase in Docker**
-  (Postgres + Storage via the Supabase CLI), Gemini API (`@google/genai`), ElevenLabs
+- Stack: Next.js (App Router, TypeScript, no `src/` dir), Tailwind CSS, Supabase (local Docker for
+  development; hosted Postgres + Storage in production), Gemini API (`@google/genai`), ElevenLabs
   (`@elevenlabs/elevenlabs-js` server, `@elevenlabs/react` browser), Resend, Zod, Vitest, ESLint.
   Package manager: npm. Node 20+. No n8n, no Twilio.
 - Source of truth for shapes: `docs/system-design.md` (DDL, types, API contracts, prompts, env vars).
@@ -46,7 +46,7 @@ Builder (BOARD.md table) is the person running this router.
 
 ## Test accounts
 
-There is no login (decision D-1). The "test account" the router hands a worker is a **run prefix**
+The app uses Supabase email/password login; the "test account" the router hands a worker is a **run prefix**
 `<acct>` = `t<port>-<HHMMSS at the start of the run>` (e.g. `t3002-114502`). Evals use `<acct>` in
 child aliases and emails so reruns never collide with earlier rows.
 
