@@ -1,0 +1,26 @@
+PASS #demo-actions has 'Simulate completed call (demo)'
+PASS simulate request -> 200 - {"received":true,"case_id":"d030e79e-d6f6-40e0-8e4c-964374974a05","recording_id":"b5d27980-41f9-4cdd-afa8-747dabab8f91","brief":true}
+PASS thank-you message shown after simulate
+PASS no microphone request
+PASS no requests to external hosts (ElevenLabs etc.)
+PASS intake completed in DB (intake_done, 15 facts, 1 brief) - {"status":"intake_done","facts":15,"reports":1}
+PASS reloaded intake page shows completed thank-you
+PASS h2 Pre-session brief
+PASS Parent-reported badge
+PASS summary shown
+red flags: ["Lost speech: \"at age 2 he said a few words like amma and ball, then he stopped talking\" at 00:57","Self-injury: \"he hits his own head with his hand when he is upset\" at 02:26"]
+PASS red flags in red with label, quote and mm:ss
+PASS red flag colour is red - lab(40.4273 67.2623 53.7441)
+PASS Questions to verify (numbered, 3-6) - 5
+PASS table What the parent reported - 10 rows
+PASS after review: 'Reviewed by <therapist_name>', button hidden
+PASS reviewed state persists after reload
+PASS DB: report final + brief.reviewed audit
+PASS simulate with broken brief fixture -> brief:false - {"received":true,"case_id":"fd8b01e8-3402-48ab-9344-4916128546a3","recording_id":"dc7b54a5-906f-4979-a2ab-c89f63b654f2","brief":false}
+PASS intake.brief_failed audited
+PASS Brief tab shows the failure message
+PASS no intake recording: #brief-section empty
+PASS single <main> on brief page - 1
+PASS no page errors
+cleanup: deleted 3 a010 cases
+ALL PASS

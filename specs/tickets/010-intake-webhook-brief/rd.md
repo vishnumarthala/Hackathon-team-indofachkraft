@@ -1,6 +1,6 @@
 # 010: Intake webhook and pre-session brief
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 002, 009: needs the post-call and brief fixtures and adds to 009's Brief tab and intake page
 
