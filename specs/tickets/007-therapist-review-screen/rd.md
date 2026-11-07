@@ -1,6 +1,6 @@
 # 007: Therapist review screen
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 002, 003, 004: needs seeded sessions, lib/scoring.ts and the case layout/tabs
 

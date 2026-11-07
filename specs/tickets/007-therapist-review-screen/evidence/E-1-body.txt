@@ -1,0 +1,603 @@
+CareThread
+Dashboard
+Demo - synthetic data only. AI documents, the clinician decides.
+Ravi (synthetic)
+
+40 months
+Telugu
+In assessment
+
+Overview
+Brief
+Sessions
+Report
+Referral
+Red flag: lost speech · Red flag: self-injury - consider referral
+Session 1
+
+No audio uploaded for this session (transcript only).
+
+Therapist00:00Good morning Lakshmi garu, thank you for bringing Ravi today. I will ask some questions while he plays, is that okay?
+Parent00:08Yes madam, avunu, that is fine. He already went to the toy corner.
+Therapist00:14When you talk to Ravi at home, does he look at you?
+Parent00:20No madam, he does not look at us when we talk. Even when I feed him he never looks in my eyes.
+Therapist00:29And when you call his name from another room?
+Parent00:34He does not turn when we call his name. I call Ravi, Ravi, many times, kani he keeps playing.
+Therapist00:42Note: child did not respond to name in three attempts, rate item 5 as 4.
+Parent00:48Same thing at home, madam. My mother says he is in his own world.
+Therapist00:55Let us talk about speech. Did Ravi ever say words?
+Parent01:00Yes, at age 2 he said a few words, amma, nanna, ball. Then slowly he stopped talking. Now he says no words at all.
+Therapist01:09Thank you for telling me, that is important. Did anything else happen around that time?
+Parent01:16Nothing special. My husband said boys talk late, so we waited. Kani the words did not come back.
+Therapist01:24How does he play at home?
+Parent01:29He lines up his toys in one long line, cars, blocks, even spoons. He plays alone, he does not play with his cousins.
+Therapist01:38Does he keep any one toy with him all the time?
+Parent01:44Yes, one small red car. He takes it to bed, to the bathroom, everywhere.
+Therapist01:50Does he make other sounds or repeat things he hears?
+Parent01:55He repeats lines from cartoons, the same line again and again, but not to talk to us.
+Therapist02:03Does he point at things he wants, or to show you something?
+Parent02:08No, he does not point. If he wants water he pulls my hand to the kitchen.
+Therapist02:16How does he react to noises at home?
+Parent02:21He covers his ears at the mixer and the pressure cooker whistle. Sometimes he runs and hides behind the sofa.
+Therapist02:28And when he is happy or excited?
+Parent02:34He flaps his hands very fast and jumps on his toes, chala fast, when the cartoon song comes.
+Therapist02:42Note: child flapped hands twice during play today, rate item 24 as 4.
+Parent02:47Yes, just now also he did it with the red car.
+Therapist02:53What happens when something changes in his routine?
+Parent02:58Big tantrum. One day we changed the route to school because of traffic. He screamed and kicked for half an hour.
+Therapist03:06When he is upset like that, does he ever hurt himself?
+Parent03:12Yes madam, this worries me most. He hits his own head with his hand when he is upset. I hold his hands so he is safe.
+Therapist03:22Thank you, that helps me. Does he come to tell you about his day?
+Parent03:28No, he never comes to tell us anything. He only takes my hand when he needs something.
+Therapist03:36How are his sleep and food?
+Parent03:41Sleep is okay but late. He eats only rice and curd from the same plate every day.
+Therapist03:48Thank you Lakshmi garu. I only document what I see and what you share, and we will plan the next steps together.
+Parent03:56Thank you madam, chala thanks. I just want to help him.
+
+ISAA total: at least 46 (provisional - 2 of 40 confirmed; AI-suggested total 83)
+
+Social relationship and reciprocity: 22 / 45
+Emotional responsiveness: 0 / 25
+Speech-language and communication: 15 / 45
+Behaviour patterns: 18 / 35
+Sensory aspects: 4 / 30
+Cognitive component: 0 / 20
+
+Referral recommended
+
+Red flag: lost speech
+Red flag: self-injury
+
+Referral to specialist (Phase 3)
+
+Suggested by CareThread - the therapist decides
+
+Confirm all remaining suggestions
+Rate all unrated as 1 (Rarely)
+Social relationship and reciprocity
+
+1. Has poor eye contact
+
+AI suggested
+85%
+1
+2
+3
+4
+5
+Confirm
+▶ 00:20
+"he does not look at us when we talk"
+
+2. Lacks social smile
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+3. Remains aloof
+
+AI suggested
+55%
+1
+2
+3
+4
+5
+Confirm
+▶ 00:48
+"he is in his own world"
+
+4. Does not reach out to others
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+5. Unable to relate to people
+
+Voice note
+1
+2
+3
+4
+5
+Confirm
+▶ 00:42
+"Note: child did not respond to name in three attempts, rate item 5 as 4."
+
+6. Unable to respond to social/environmental cues
+
+AI suggested
+85%
+1
+2
+3
+4
+5
+Confirm
+▶ 00:34
+"He does not turn when we call his name"
+
+7. Engages in solitary and repetitive play activities
+
+AI suggested
+80%
+1
+2
+3
+4
+5
+Confirm
+▶ 01:29
+"He lines up his toys in one long line"
+
+8. Unable to take turns in social interaction
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+9. Does not maintain peer relationships
+
+AI suggested
+70%
+1
+2
+3
+4
+5
+Confirm
+▶ 01:29
+"he does not play with his cousins"
+Emotional responsiveness
+
+10. Shows inappropriate emotional response
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+11. Shows exaggerated emotions
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+12. Engages in self-stimulating emotions
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+13. Lacks fear of danger
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+14. Gets excited or agitated for no apparent reason
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+Speech-language and communication
+
+15. Acquired speech and lost it
+
+AI suggested
+90%
+1
+2
+3
+4
+5
+Confirm
+▶ 01:00
+"at age 2 he said a few words, amma, nanna, ball. Then slowly he stopped talking"
+
+16. Has difficulty in using non-verbal language or gestures to communicate
+
+AI suggested
+85%
+1
+2
+3
+4
+5
+Confirm
+▶ 02:08
+"he does not point"
+
+17. Engages in stereotyped and repetitive use of language
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+18. Engages in echolalic speech
+
+AI suggested
+80%
+1
+2
+3
+4
+5
+Confirm
+▶ 01:55
+"He repeats lines from cartoons, the same line again and again"
+
+19. Produces infantile squeals/unusual noises
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+20. Unable to initiate or sustain conversation with others
+
+AI suggested
+65%
+1
+2
+3
+4
+5
+Confirm
+▶ 03:28
+"he never comes to tell us anything"
+
+21. Uses jargon or meaningless words
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+22. Uses pronoun reversals
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+23. Unable to grasp the pragmatics of communication (real meaning)
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+Behaviour patterns
+
+24. Engages in stereotyped and repetitive motor mannerisms
+
+Voice note
+1
+2
+3
+4
+5
+Confirm
+▶ 02:42
+"Note: child flapped hands twice during play today, rate item 24 as 4."
+
+25. Shows attachment to inanimate objects
+
+AI suggested
+70%
+1
+2
+3
+4
+5
+Confirm
+▶ 01:44
+"one small red car. He takes it to bed, to the bathroom, everywhere"
+
+26. Shows hyperactivity/restlessness
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+27. Exhibits aggressive behaviour
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+28. Throws temper tantrums
+
+AI suggested
+70%
+1
+2
+3
+4
+5
+Confirm
+▶ 02:58
+"Big tantrum."
+
+29. Engages in self-injurious behaviour
+
+AI suggested
+90%
+1
+2
+3
+4
+5
+Confirm
+▶ 03:12
+"He hits his own head with his hand when he is upset"
+
+30. Insists on sameness
+
+AI suggested
+80%
+1
+2
+3
+4
+5
+Confirm
+▶ 02:58
+"One day we changed the route to school because of traffic. He screamed and kicked for half an hour."
+Sensory aspects
+
+31. Unusually sensitive to sensory stimuli
+
+AI suggested
+85%
+1
+2
+3
+4
+5
+Confirm
+▶ 02:21
+"He covers his ears at the mixer and the pressure cooker whistle"
+
+32. Stares into space for long periods of time
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+33. Has difficulty in tracking objects
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+34. Has unusual vision
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+35. Insensitive to pain
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+36. Responds to objects/people unusually by smelling, touching or tasting
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+Cognitive component
+
+37. Inconsistent attention and concentration
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+38. Shows delay in responding
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+39. Has unusual memory of some kind
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
+
+40. Has 'savant' ability
+
+AI suggested
+0%
+1
+2
+3
+4
+5
+Confirm
+
+No evidence - needs rating
