@@ -27,7 +27,7 @@ const TRUST = [
   { title: "Consent first", text: "Parents agree before any call or recording starts." },
   { title: "Evidence on every item", text: "Each suggestion links to the exact moment in the session." },
   { title: "Clinician confirms", text: "Nothing reaches the report until the therapist confirms or edits it." },
-  { title: "Built for HIPAA and GDPR", text: "Consent, encryption, audit log, EU data residency." },
+  { title: "Privacy by design", text: "Private storage, an audit log of every change, and synthetic data only in this demo." },
 ];
 
 const PILOT_PERKS = [

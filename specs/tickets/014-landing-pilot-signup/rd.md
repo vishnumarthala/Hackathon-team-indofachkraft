@@ -1,6 +1,6 @@
 # 014: Landing page and pilot sign-up
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 001: replaces the placeholder home page and uses the pilot_signups table
 
