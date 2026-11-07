@@ -1,6 +1,6 @@
 # 013: Ask the case
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 012: adds the chat to 012's specialist page and reuses its EvidencePlayer
 
