@@ -1,0 +1,94 @@
+{
+  "fields": [
+    {
+      "id": "consent_given",
+      "type": "boolean",
+      "label": "Consent given",
+      "description": "Parent agreed to talk to an AI assistant and to recording"
+    },
+    {
+      "id": "child_age_months",
+      "type": "integer",
+      "label": "Age (months)",
+      "description": "Child's age in months"
+    },
+    {
+      "id": "main_concern",
+      "type": "string",
+      "label": "Main concern",
+      "description": "Parent's main concern in their own words"
+    },
+    {
+      "id": "speech_status",
+      "type": "string",
+      "label": "Speech now",
+      "description": "Current words/sentences the child uses"
+    },
+    {
+      "id": "lost_speech",
+      "type": "boolean",
+      "label": "Lost speech",
+      "description": "Child had words or skills and lost them"
+    },
+    {
+      "id": "lost_speech_details",
+      "type": "string",
+      "label": "When speech was lost",
+      "description": "When and what was lost"
+    },
+    {
+      "id": "eye_contact",
+      "type": "string",
+      "label": "Eye contact",
+      "description": "How the child looks at people"
+    },
+    {
+      "id": "response_to_name",
+      "type": "string",
+      "label": "Response to name",
+      "description": "Whether the child turns when called"
+    },
+    {
+      "id": "play_and_peers",
+      "type": "string",
+      "label": "Play and other children",
+      "description": "How the child plays, alone or with others"
+    },
+    {
+      "id": "repetitive_behaviours",
+      "type": "string",
+      "label": "Repetitive behaviours",
+      "description": "Lining up, hand flapping, repeated phrases"
+    },
+    {
+      "id": "sensory",
+      "type": "string",
+      "label": "Sensory reactions",
+      "description": "Reactions to sounds, textures, lights"
+    },
+    {
+      "id": "self_injury",
+      "type": "boolean",
+      "label": "Self-injury",
+      "description": "Child hurts themself (head hitting, biting)"
+    },
+    {
+      "id": "routines_and_tantrums",
+      "type": "string",
+      "label": "Routines and tantrums",
+      "description": "Reactions to changes in routine"
+    },
+    {
+      "id": "sleep_and_eating",
+      "type": "string",
+      "label": "Sleep and eating",
+      "description": "Sleep and eating patterns"
+    },
+    {
+      "id": "family_history",
+      "type": "string",
+      "label": "Family history",
+      "description": "Relevant family history the parent mentions"
+    }
+  ]
+}
