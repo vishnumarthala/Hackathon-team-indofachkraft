@@ -30,6 +30,7 @@ vi.mock("@/lib/queries/reports", () => ({
 }));
 vi.mock("@/lib/gemini", () => ({ generateJson: m.generateJson }));
 vi.mock("@/lib/audit", () => ({ audit: m.audit }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh: () => {}, push: () => {}, replace: () => {} }) }));
 
 import { POST as draftPOST } from "@/app/api/sessions/[id]/report/route";
 import { PATCH as reportPATCH } from "@/app/api/reports/[id]/route";

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -66,6 +67,7 @@ export function ReportPreview({ markdown }: { markdown: string }) {
 }
 
 export function ReportEditor({ recordingId, initialReport }: { recordingId: string; initialReport: EditorReport | null }) {
+  const router = useRouter();
   const [report, setReport] = useState<EditorReport | null>(initialReport);
   const [text, setText] = useState(initialReport?.content_md ?? "");
   const [busy, setBusy] = useState(false);
@@ -153,6 +155,8 @@ export function ReportEditor({ recordingId, initialReport }: { recordingId: stri
                       report.id,
                       text === report.content_md ? { status: "final" } : { content_md: text, status: "final" },
                     ),
+                    // The parent voice note section is rendered by the server page once the report is final.
+                    () => router.refresh(),
                   )
                 }
                 className={`${buttonClass} bg-emerald-700 text-white`}
