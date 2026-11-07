@@ -1,0 +1,626 @@
+{
+  "note": "Synthetic cases only. No real patient data. Pause 0.5 s between turns for clean diarization.",
+  "voices": {
+    "A": "CareThread AI agent",
+    "B": "Therapist",
+    "C": "Parent",
+    "D": "Specialist"
+  },
+  "cases": [
+    {
+      "case_id": "case-1",
+      "title": "Severe band, dual red flags (speech regression and self-injury)",
+      "child": "Aarav",
+      "child_age": "3.5 years",
+      "parent": "Ananya",
+      "clinician": "Dr. Sharma",
+      "expected_routing": "ISAA > 153 (Severe) + red flags → immediate specialist referral (Phase 3)",
+      "isaa_total_expected": 162,
+      "phase1_intake": {
+        "title": "Phase 1: AI intake call",
+        "turns": [
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Hello Ananya. I am CareThread, an AI assistant calling on behalf of Dr. Sharma's Early Intervention Centre before Aarav's visit tomorrow. With your consent, may I ask a few quick questions to prepare your brief?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Yes, go ahead."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "What is your main concern about Aarav right now?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He said a few words like \"Mama\" and \"ball\" at age two, and then he completely stopped talking. Also, he never turns when we call his name."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "I've noted that speech stopped after age two and he doesn't respond to his name. Does he ever hurt himself when upset?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Yes, when frustrated, he hits his own head with his hand."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Thank you. I've marked these as parent-reported for Dr. Sharma's review before tomorrow."
+          }
+        ]
+      },
+      "phase2_session": {
+        "title": "Phase 2: Online assessment session",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Thank you for consenting to recording, Ananya. Tell me how Aarav interacts and plays at home."
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He does not look at us when we talk, his eyes dart away. He plays completely alone, lines up toy cars by color, and refuses to play with his cousins. He repeats lines from cartoons instead of talking, and never points to show us things; he just drags my hand to the kitchen."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: child did not respond to name in three attempts during live observation, rate item 5 as 4. How does he react to noise or changes?",
+            "therapist_notes": [
+              {
+                "item_id": 5,
+                "rating": 4
+              }
+            ]
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He covers his ears at the mixer and pressure cooker, flaps his hands when excited, and has a massive tantrum if we change the route to school, hitting his own head until I hold his hands down."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: clear speech regression and self-injurious behavior observed, rate item 29 as 4. Let's do a quick guided play observation on camera now.",
+            "therapist_notes": [
+              {
+                "item_id": 29,
+                "rating": 4
+              }
+            ]
+          }
+        ]
+      },
+      "phase3_handoff": {
+        "title": "Phase 3: Specialist handoff (live clinician-to-specialist call)",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Dr. Nair, I'm sending over Aarav's referral packet. His ISAA score is 162, putting him in the severe band, with two red flags: speech regression after 24 months and head-hitting during transitions."
+          },
+          {
+            "speaker": "specialist",
+            "voice": "D",
+            "text": "I see the timestamped clips in CareThread. Did he show any joint attention or pointing during your live camera observation?"
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "None at all. Zero pointing and zero response to name across three trials. The parent has consented to share the full case memory, so you can query any item directly."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "case-2",
+      "title": "Moderate band (sensory seeking, echolalia and rigid routines)",
+      "child": "Kabir",
+      "child_age": "4 years",
+      "parent": "Vikram",
+      "clinician": "Dr. Meera",
+      "expected_routing": "ISAA 107–153 (Moderate), FACP 40–59 → IEP and regular therapy sessions",
+      "isaa_total_expected": 124,
+      "phase1_intake": {
+        "title": "Phase 1: AI intake call",
+        "turns": [
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Hello Vikram. I am CareThread, an AI assistant calling before Kabir's session tomorrow. With your consent, I'd like to gather a brief summary for Dr. Meera. Is now okay?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Yes, sure."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "What prompted you to book this evaluation for Kabir?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "His preschool teachers noticed he doesn't sit with other kids, talks mostly by repeating movie dialogues, and gets extremely upset if his daily routine changes."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Got it. Any concerns with self-injury or loss of previously learned speech?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "No, he hasn't lost speech and doesn't hurt himself, though he does spin in circles a lot."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Thank you, Vikram. All details are marked parent-reported for Dr. Meera."
+          }
+        ]
+      },
+      "phase2_session": {
+        "title": "Phase 2: Online assessment session",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Hi Vikram, with your permission we're recording so CareThread can draft our assessment notes. Tell me about Kabir's communication and play."
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He talks, actually quite a lot, but it's almost all echolalia. He repeats exact commercial jingles or uses a sing-song monotone voice. He doesn't maintain peer relationships and prefers spinning the wheels of his bicycle upside down for an hour."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: prominent echolalia and preoccupation with spinning parts of objects, rate item 24 as 4. What about sensory behaviors or meals?",
+            "therapist_notes": [
+              {
+                "item_id": 24,
+                "rating": 4
+              }
+            ]
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He has a super selective diet, only eats white rice and plain crackers, and refuses clothes with tags. He also walks on his tiptoes constantly and stares at ceiling fans out of the corner of his eye."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: persistent toe-walking and tactile defensiveness noted, rate item 31 as 4.",
+            "therapist_notes": [
+              {
+                "item_id": 31,
+                "rating": 4
+              }
+            ]
+          }
+        ]
+      },
+      "phase3_handoff": {
+        "title": "Phase 3: Specialist handoff (developmental pediatrician consult)",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Dr. Rao, Kabir scored 124 on the ISAA, moderate band. No red flags, so we've started an IEP with speech and occupational therapy, and I'm sharing his profile for a co-occurring ADHD and sensory evaluation."
+          },
+          {
+            "speaker": "specialist",
+            "voice": "D",
+            "text": "Looking at the CareThread timeline, his eye contact and reciprocal conversation are the lowest-scoring domains. Let's review him in six weeks after his OT sensory diet begins."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "case-3",
+      "title": "Borderline / mild band (high-functioning social and pragmatic delays)",
+      "child": "Diya",
+      "child_age": "5 years",
+      "parent": "Sneha",
+      "clinician": "Dr. Kavita",
+      "expected_routing": "ISAA 70–106 (Mild), FACP 60–79 → IEP, home program and 3-month review",
+      "isaa_total_expected": 82,
+      "phase1_intake": {
+        "title": "Phase 1: AI intake call",
+        "turns": [
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Hello Sneha. I am CareThread, an AI assistant calling on behalf of Dr. Kavita's clinic. With your consent, may I ask three brief questions before Diya's appointment?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Yes, of course."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "What behaviors would you like Dr. Kavita to focus on tomorrow?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Diya is very bright and knows all the capitals of the world, but she doesn't understand personal space, takes everything literally, and struggles to make friends at school."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Understood. Does she have any sensory sensitivities or meltdown triggers?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Loud school assemblies and hand dryers make her panic and cover her ears."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Thank you. I've added this to Diya's pre-session brief."
+          }
+        ]
+      },
+      "phase2_session": {
+        "title": "Phase 2: Online assessment session",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Welcome Sneha. Let's talk through how Diya interacts with peers and handles emotions."
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "She wants friends, so she's not aloof, but she talks at kids about train schedules instead of taking turns in conversation. She doesn't pick up on facial expressions when someone is bored or annoyed."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: one-sided social approach and difficulty reading social cues, rate item 6 as 3. How does she handle unexpected changes?",
+            "therapist_notes": [
+              {
+                "item_id": 6,
+                "rating": 3
+              }
+            ]
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "If a substitute teacher comes to class, she cries inconsolably because her mental rulebook is broken. She also has an unusual memory for dates and license plates, though she struggles to focus on simple homework instructions."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: circumscribed interest and rigid adherence to rules, rate item 39 as 4.",
+            "therapist_notes": [
+              {
+                "item_id": 39,
+                "rating": 4
+              }
+            ]
+          }
+        ]
+      },
+      "phase3_handoff": {
+        "title": "Phase 3: Specialist handoff (school psychologist alignment)",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Dr. Menon, Diya scored 82 on the ISAA, mild band, and 68 on the FACP. I'm sharing her CareThread brief with you so her school IEP includes pragmatic social-skills group therapy and noise-canceling accommodations for assemblies."
+          },
+          {
+            "speaker": "specialist",
+            "voice": "D",
+            "text": "This evidence log makes the school accommodation request straightforward. We'll re-screen her in three months."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "case-4",
+      "title": "Severe band + elopement / lack of fear of danger (red flag)",
+      "child": "Rohan",
+      "child_age": "4.5 years",
+      "parent": "Rajesh",
+      "clinician": "Dr. Sharma",
+      "expected_routing": "ISAA > 153 (Severe) + safety red flag → specialist referral (Phase 3)",
+      "isaa_total_expected": 171,
+      "phase1_intake": {
+        "title": "Phase 1: AI intake call",
+        "turns": [
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Hello Rajesh. I am CareThread, an AI assistant calling before Rohan's first assessment. With your consent, can I ask a few quick intake questions?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Yes, please."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "What is your biggest daily challenge with Rohan?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He doesn't speak at all, doesn't respond to his name, and has zero fear of danger. He ran straight into traffic twice last month without looking back."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "I'm flagging safety awareness and non-verbal communication as high priority for Dr. Sharma. Thank you for sharing."
+          }
+        ]
+      },
+      "phase2_session": {
+        "title": "Phase 2: Online assessment session",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Thank you for joining, Rajesh. Tell me more about Rohan's safety awareness and sensory responses."
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He has no fear of heights or moving cars, and he seems completely insensitive to pain. Last week he fell and scraped his knee badly and didn't even flinch or cry. He also smells and licks toys before holding them."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: marked lack of fear of danger and high pain threshold, rate item 13 as 5 and item 35 as 5. How does he communicate hunger or discomfort?",
+            "therapist_notes": [
+              {
+                "item_id": 13,
+                "rating": 5
+              }
+            ]
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He screams or throws sudden temper tantrums for no apparent reason, and stares into space for long stretches while rocking back and forth."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: frequent body rocking and non-verbal distress behaviors, rate item 24 as 5.",
+            "therapist_notes": [
+              {
+                "item_id": 24,
+                "rating": 5
+              }
+            ]
+          }
+        ]
+      },
+      "phase3_handoff": {
+        "title": "Phase 3: Specialist handoff (pediatric neurologist referral)",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Dr. Verma, I'm referring Rohan urgently. His ISAA is 171, severe band, and his complete lack of pain response and elopement risk require a pediatric neurology and behavioral safety evaluation."
+          },
+          {
+            "speaker": "specialist",
+            "voice": "D",
+            "text": "I have his CareThread packet open now, including the parent's quotes on pain insensitivity. I'll prioritize his slot this week."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "case-5",
+      "title": "Typical / non-autism band (speech delay only, re-screen)",
+      "child": "Maya",
+      "child_age": "3 years",
+      "parent": "Pooja",
+      "clinician": "Dr. Meera",
+      "expected_routing": "ISAA < 70 (No autism), FACP ≥ 80 → home program, parent counselling and 3-month re-screen",
+      "isaa_total_expected": 48,
+      "phase1_intake": {
+        "title": "Phase 1: AI intake call",
+        "turns": [
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Hello Pooja. I am CareThread, an AI assistant calling before Maya's appointment tomorrow. With your consent, may I ask a few questions to prepare Dr. Meera?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Yes, sure."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "What concerns brought you to the centre?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Maya only says about ten single words at age three, so we are worried about autism."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Does she make eye contact, point to show you things, and play with other kids?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Oh yes, she points at dogs outside, brings us toys to share, waves bye-bye, and loves playing peek-a-boo with her brother."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Thank you, Pooja. I've logged those strengths and your speech concerns for Dr. Meera."
+          }
+        ]
+      },
+      "phase2_session": {
+        "title": "Phase 2: Online assessment session",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Hi Pooja, I read your intake brief. Let's verify Maya's social reciprocity and play behaviors today."
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "She smiles back whenever we smile, comes to us for hugs when she's hurt, and pretends to feed her doll with a spoon. She understands everything we say. If I ask her to bring her blue shoes, she gets them right away. She just isn't putting two words together yet."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: strong joint attention, pretend play, and receptive language; social items rated 1 across the board. Any repetitive movements or sensory aversions?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "None at all. No hand flapping, no lining up toys, and normal reactions to sounds and food."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: absence of restricted or repetitive behaviors; total ISAA score is 48, below the 70 threshold."
+          }
+        ]
+      },
+      "phase3_handoff": {
+        "title": "Phase 3: Specialist handoff (speech-language pathologist internal handoff)",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Hi Divya, I'm sharing Maya's CareThread summary with you for targeted speech therapy. Her ISAA is 48, no autism indicators, and her FACP is 86, so she just needs expressive speech stimulation and a three-month re-screen."
+          },
+          {
+            "speaker": "specialist",
+            "voice": "D",
+            "text": "Great, seeing that her receptive language and joint attention are intact lets me start directly on expressive vocabulary expansion."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "case-6",
+      "title": "Moderate-to-severe band (German SPZ cross-border / bilingual family context)",
+      "child": "Leo",
+      "child_age": "4 years",
+      "parent": "Karthik",
+      "clinician": "Dr. Weber",
+      "expected_routing": "ISAA 145 (Moderate) + severe communication delay → structured therapy and specialist review",
+      "isaa_total_expected": 145,
+      "phase1_intake": {
+        "title": "Phase 1: AI intake call",
+        "turns": [
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Hello Karthik. I am CareThread, an AI assistant calling on behalf of the Autism Therapy Centre before Leo's intake. With your consent, may I ask a few questions to prepare Dr. Weber?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Yes, thank you. It's a relief to explain everything clearly before our appointment."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "What behaviors have you and his kindergarten noticed?"
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "At kindergarten he stays completely aloof in the corner, doesn't respond when teachers call him, and gets overwhelmed by group circle time. At home he only uses single words in Tamil and English to ask for food, never to chat."
+          },
+          {
+            "speaker": "ai_agent",
+            "voice": "A",
+            "text": "Thank you. I've structured these observations into Dr. Weber's pre-session brief."
+          }
+        ]
+      },
+      "phase2_session": {
+        "title": "Phase 2: Online assessment session",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Hello Karthik, thank you for consenting to recording. Let's review Leo's communication and behavior patterns at home and kindergarten."
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "He rarely makes eye contact and doesn't show a range of facial expressions. He's mostly blank unless he's frustrated. He lines up wooden blocks in exact patterns and gets agitated if his little sister touches them."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: aloof social presentation and rigid object arrangement, rate item 3 as 4 and item 23 as 4. How does he react to sensory environments?",
+            "therapist_notes": [
+              {
+                "item_id": 3,
+                "rating": 4
+              }
+            ]
+          },
+          {
+            "speaker": "parent",
+            "voice": "C",
+            "text": "Crowded supermarkets trigger huge meltdowns where he covers his ears and drops to the floor. He also insists on drinking only from one specific blue cup."
+          },
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Note: auditory hypersensitivity and insistence on sameness, rate item 30 as 4.",
+            "therapist_notes": [
+              {
+                "item_id": 30,
+                "rating": 4
+              }
+            ]
+          }
+        ]
+      },
+      "phase3_handoff": {
+        "title": "Phase 3: Specialist handoff (SPZ multidisciplinary team referral)",
+        "turns": [
+          {
+            "speaker": "therapist",
+            "voice": "B",
+            "text": "Dr. Schneider, I'm transferring Leo's CareThread referral packet to the SPZ team. His ISAA score is 145, moderate band, with clear documentation across both home and kindergarten settings so the family doesn't have to repeat their history again."
+          },
+          {
+            "speaker": "specialist",
+            "voice": "D",
+            "text": "Having the timestamped evidence and bilingual home observations already structured saves us an entire intake appointment. We'll schedule his formal diagnostic confirmation next month."
+          }
+        ]
+      }
+    }
+  ]
+}
