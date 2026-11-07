@@ -6,7 +6,6 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { fontVars } from "@/components/landing/fonts";
 import { Logo } from "@/components/landing/ui";
 import { getAuthenticatedUser } from "@/lib/auth";
-import blocksImage from "@/public/landing/blocks.jpg";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +43,7 @@ export default async function LoginPage({
       </div>
 
       <div className="relative hidden overflow-hidden bg-[#0b1f1d] lg:block">
-        <Image src={blocksImage} alt="" fill priority sizes="50vw" className="lp-ken object-cover" placeholder="blur" />
+        <Image src="/landing/blocks.jpg" alt="" fill priority sizes="50vw" className="lp-ken object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f1d]/85 via-[#0b1f1d]/20 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 p-14 text-white">
           <p className="lp-display max-w-md text-5xl leading-[1.05]">

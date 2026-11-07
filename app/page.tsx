@@ -14,7 +14,6 @@ import { TherapistView } from "@/components/landing/TherapistView";
 import { Arrow, ButtonLink, CheckIcon, Eyebrow } from "@/components/landing/ui";
 import { VoiceDemo } from "@/components/landing/VoiceDemo";
 import { BriefSchema } from "@/lib/types";
-import roomImage from "@/public/landing/room.jpg";
 
 // The brief the sample intake call turns into (synthetic, validated at build time).
 const SAMPLE_BRIEF = BriefSchema.parse(briefFixture);
@@ -327,7 +326,7 @@ export default function Home() {
       {/* ---------- PRINCIPLE / TRUST ---------- */}
       <section id="trust" className="relative scroll-mt-16 overflow-hidden bg-[#0b1f1d] text-white">
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-          <Image src={roomImage} alt="" fill sizes="100vw" className="lp-ken object-cover opacity-30" placeholder="blur" />
+          <Image src="/landing/room.jpg" alt="" fill sizes="100vw" className="lp-ken object-cover opacity-30" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1d] via-[#0b1f1d]/90 to-[#0b1f1d]/50" />
         </div>
         <div className="relative mx-auto w-full max-w-6xl px-4 py-28 sm:px-6 sm:py-36">
