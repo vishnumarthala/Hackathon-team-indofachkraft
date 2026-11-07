@@ -1,11 +1,18 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import briefFixture from "@/demo/fixtures/gemini/brief.json";
 import { HeroVisual } from "@/components/landing/HeroVisual";
 import "@/components/landing/landing.css";
 import { PhaseCards } from "@/components/landing/PhaseCards";
 import { PilotForm } from "@/components/landing/PilotForm";
 import { Reveal } from "@/components/landing/Reveal";
+import { TherapistView } from "@/components/landing/TherapistView";
+import { VoiceDemo } from "@/components/landing/VoiceDemo";
+import { BriefSchema } from "@/lib/types";
+
+// The demo brief the intake call turns into (synthetic, validated at build time).
+const SAMPLE_BRIEF = BriefSchema.parse(briefFixture);
 
 const SUBTITLE =
   "CareThread is the AI assistant for early intervention therapists. It talks to the parent before the first session, documents the online session and fills the assessment form, and hands the complete case to the specialist.";
@@ -30,36 +37,58 @@ const TRUST = [
   { title: "Privacy by design", text: "Private storage, an audit log of every change, and synthetic data only in this demo." },
 ];
 
-const VALUE_LINE =
-  "Less paperwork per assessment, consistent ISAA documentation, and referrals that arrive complete.";
+const VALUE_LINE = "Get kids into early intervention sooner.";
+
+// Pitch deck slide 1 (sources listed under the section).
+const PROBLEM_STATS = [
+  { value: "~2 years", label: "Parents notice the first signs (23 months on average)", tone: "warm" },
+  { value: "Before 3", label: "The window: the younger support starts, the bigger the gains", tone: "teal" },
+  { value: "4 years", label: "Median age at which US children are identified; only half are evaluated by age 3", tone: "plain" },
+  { value: "6.5 years", label: "Average age at which German children are identified: after Kita, at school entry", tone: "plain" },
+];
+
+const PREVALENCE = [
+  { value: "1 in 31", label: "US children have autism (1 in 20 boys)" },
+  { value: "1 in 100", label: "children worldwide" },
+];
+
+// Pitch deck slide 2.
+const EVIDENCE = [
+  { value: "4 in 10", label: "toddlers identified with autism at 1 to 3 years no longer met the criteria at age 5 to 7" },
+  { value: "+17.6 vs +7", label: "IQ points after 2 years of early intervention vs usual care (randomised trial)" },
+];
+
+const CALL_STEPS = [
+  { title: "A link, not a waiting room", text: "After booking, the parent gets a private link by WhatsApp or email and opens it on their phone." },
+  { title: "Consent first", text: "The assistant says it is an AI, that the call is recorded for the therapist, and asks before it continues." },
+  { title: "In the parent's language", text: "Telugu, Hindi or English, one question at a time: speech, lost words, eye contact, play, sounds, routines, safety." },
+  { title: "A brief for the therapist", text: "Red flags such as lost speech or self-injury are quoted in the parent's words. It documents; the therapist decides." },
+];
 
 const AUDIENCES = [
   {
-    who: "For centres",
-    tag: "The subscriber: one plan per clinician",
-    points: [
-      "Consistent, evidence-backed ISAA records across every therapist",
-      "An audit log of every change and every decision",
-      "Referral packets that reach the specialist complete",
-    ],
+    who: "The centre",
+    tag: "Pays: one plan per clinician",
+    pain: "Therapist burnout and churn. Records differ from centre to centre.",
+    gain: "More assessments per therapist and one standard, evidence-backed record with an audit log.",
   },
   {
-    who: "For therapists",
-    tag: "Daily users",
-    points: [
-      "A pre-session brief from the parent call before session 1",
-      "The ISAA form filled from the session, with quotes and timestamps",
-      "A draft report; nothing counts until you confirm it",
-    ],
+    who: "The therapist",
+    tag: "Uses it every day",
+    pain: "Fills a 40-item form while watching the child. Writes reports after hours.",
+    gain: "Arrives with a brief. The form fills itself, she confirms every item.",
   },
   {
-    who: "For parents and specialists",
+    who: "The family",
     tag: "Free, by invitation",
-    points: [
-      "Parents get a link from their therapist and talk in their own language",
-      "Specialists open the full case by link and can ask it questions",
-      "Neither needs an account",
-    ],
+    pain: "Months on a waitlist. Explaining everything in a second language.",
+    gain: "An intake call in Telugu, Hindi or English and a voice summary in their language.",
+  },
+  {
+    who: "The specialist",
+    tag: "Free, by link",
+    pain: "Thin referral letters. Takes the full history again.",
+    gain: "A referral packet with evidence, and answers from the case with timestamps.",
   },
 ];
 
@@ -141,6 +170,15 @@ export default function Home() {
 
             <div className={`lp-fade-up flex flex-wrap items-center gap-3`} style={delay(300)}>
               <a
+                href="#voice-demo"
+                className={`lp-press inline-flex min-h-12 items-center gap-2 rounded-full bg-slate-900 px-7 py-3 font-semibold text-white shadow-lg shadow-slate-900/20 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-500/40`}
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path strokeLinecap="round" d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3ZM19 11a7 7 0 0 1-14 0M12 18v3" />
+                </svg>
+                Hear the AI intake call
+              </a>
+              <a
                 href="#pilot"
                 className={`lp-press inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-700 px-7 py-3 font-semibold text-white shadow-lg shadow-teal-700/25 hover:bg-teal-800 hover:shadow-xl hover:shadow-teal-700/30 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/40`}
               >
@@ -168,54 +206,149 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STATS */}
+      {/* PROBLEM */}
       <section className="border-y border-slate-200/70 bg-white">
-        <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-10 sm:grid-cols-3">
-          {STATS.map((s, i) => (
-            <Reveal key={s.value} delay={i * 100} className="flex items-center gap-4">
-              <span className="text-4xl font-extrabold tabular-nums text-teal-700">{s.value}</span>
-              <span className="text-sm leading-snug text-slate-600">{s.label}</span>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* PHASES */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
-        <Reveal className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">How it works</p>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">One thread, three moments of care</h2>
-        </Reveal>
-        <PhaseCards />
-      </section>
-
-      {/* WHO IT'S FOR */}
-      <section className="border-t border-slate-200/70 bg-white">
         <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
-          <Reveal className="mx-auto mb-12 max-w-2xl text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">Who it&apos;s for</p>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Centres subscribe, therapists use it daily</h2>
+          <Reveal className="mb-10 max-w-3xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-orange-700">The problem</p>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">The signs appear at 2. Help arrives at 4 to 6.</h2>
           </Reveal>
-          <div className="grid gap-5 md:grid-cols-3">
-            {AUDIENCES.map((a, i) => (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {PROBLEM_STATS.map((st, i) => (
               <Reveal
-                key={a.who}
-                delay={i * 90}
-                className={`rounded-2xl border p-6 ${i === 0 ? "border-teal-300 bg-teal-50/60" : "border-slate-200 bg-[#fbfaf7]"}`}
+                key={st.value}
+                delay={i * 80}
+                className={`rounded-2xl border-t-4 p-5 shadow-sm ${
+                  st.tone === "warm"
+                    ? "border-orange-500 bg-[#fbfaf7]"
+                    : st.tone === "teal"
+                      ? "border-teal-600 bg-teal-50"
+                      : "border-slate-800 bg-[#fbfaf7]"
+                }`}
               >
-                <h3 className="text-lg font-bold text-slate-900">{a.who}</h3>
-                <p className="mb-4 text-sm font-medium text-teal-800">{a.tag}</p>
-                <ul className="space-y-2.5">
-                  {a.points.map((p) => (
-                    <li key={p} className="flex gap-2.5 text-sm leading-relaxed text-slate-700">
-                      <Check />
-                      {p}
-                    </li>
-                  ))}
-                </ul>
+                <p className={`mb-2 text-3xl font-extrabold ${st.tone === "warm" ? "text-orange-700" : st.tone === "teal" ? "text-teal-700" : "text-slate-900"}`}>
+                  {st.value}
+                </p>
+                <p className="text-sm leading-relaxed text-slate-600">{st.label}</p>
               </Reveal>
             ))}
           </div>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {PREVALENCE.map((st, i) => (
+              <Reveal key={st.value} delay={i * 80} className="flex items-baseline gap-4 rounded-2xl bg-slate-900 p-5 text-white">
+                <span className="text-3xl font-extrabold text-orange-300">{st.value}</span>
+                <span className="text-sm text-slate-300">{st.label}</span>
+              </Reveal>
+            ))}
+          </div>
+          <p className="mt-6 max-w-3xl text-lg text-slate-700">
+            <strong className="text-slate-900">Why so late?</strong> Too few specialists, year-long waitlists, and
+            therapists who spend their sessions on paperwork.
+          </p>
+          <p className="mt-3 text-xs text-slate-500">Sources: CDC ADDM 2025 · WHO · Höfer et al. 2019</p>
+        </div>
+      </section>
+
+      {/* VOICE DEMO */}
+      <section id="voice-demo" className="relative scroll-mt-6 overflow-hidden">
+        <div aria-hidden="true">
+          <div className="lp-blob" style={{ width: 360, height: 360, top: 60, right: -160, background: "#ccfbf1", animationDelay: "-4s" }} />
+        </div>
+        <div className="relative mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
+          <Reveal className="mb-12 max-w-3xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">
+              Step 1 · The AI intake call
+            </p>
+            <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+              Hear how our ElevenLabs voice agent talks to parents
+            </h2>
+            <p className="text-lg leading-relaxed text-slate-600">
+              Before the first visit, the family talks to the CareThread intake assistant in their own language. The
+              therapist walks into session 1 already knowing the history, so the session goes to the child.
+            </p>
+          </Reveal>
+          <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.15fr]">
+            <ol className="space-y-5">
+              {CALL_STEPS.map((step, i) => (
+                <Reveal key={step.title} delay={i * 80} className="flex gap-4">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-700 text-sm font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="font-semibold text-slate-900">{step.title}</p>
+                    <p className="text-sm leading-relaxed text-slate-600">{step.text}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </ol>
+            <VoiceDemo />
+          </div>
+          <div className="mt-16">
+            <Reveal className="mb-6 max-w-3xl">
+              <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-teal-700">After the call</p>
+              <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">What the therapist sees after the call</h3>
+              <p className="mt-2 text-slate-600">
+                The recording, every answer with the parent&apos;s own words, red flags you can replay, and the
+                questions to check in session 1. The therapist confirms each answer.
+              </p>
+            </Reveal>
+            <TherapistView brief={SAMPLE_BRIEF} />
+          </div>
+        </div>
+      </section>
+
+      {/* SOLUTION / PHASES */}
+      <section className="border-y border-slate-200/70 bg-white">
+        <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
+          <Reveal className="mx-auto mb-10 max-w-2xl text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">The solution</p>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">One thread, three moments of care</h2>
+          </Reveal>
+          <div className="mb-10 grid gap-4 md:grid-cols-2">
+            {EVIDENCE.map((e, i) => (
+              <Reveal key={e.value} delay={i * 80} className="flex items-center gap-5 rounded-2xl bg-teal-50 p-5">
+                <span className="shrink-0 text-3xl font-extrabold text-teal-700 sm:text-4xl">{e.value}</span>
+                <span className="text-sm leading-relaxed text-slate-700">{e.label}</span>
+              </Reveal>
+            ))}
+          </div>
+          <PhaseCards />
+          <div className="mt-12 grid gap-6 sm:grid-cols-3">
+            {STATS.map((st, i) => (
+              <Reveal key={st.value} delay={i * 100} className="flex items-center gap-4">
+                <span className="text-4xl font-extrabold tabular-nums text-teal-700">{st.value}</span>
+                <span className="text-sm leading-snug text-slate-600">{st.label}</span>
+              </Reveal>
+            ))}
+          </div>
+          <p className="mt-8 text-center text-xs text-slate-500">
+            Sources: Harstad et al., JAMA Pediatrics 2023 · Dawson et al., Pediatrics 2010
+          </p>
+        </div>
+      </section>
+
+      {/* WHO IT'S FOR */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
+        <Reveal className="mx-auto mb-12 max-w-2xl text-center">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">Who it&apos;s for</p>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Four people, one thread</h2>
+          <p className="mt-3 text-slate-600">Centres subscribe. Therapists use it every day. Families and specialists join free.</p>
+        </Reveal>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {AUDIENCES.map((a, i) => (
+            <Reveal
+              key={a.who}
+              delay={i * 90}
+              className={`flex flex-col rounded-2xl border p-6 ${i === 0 ? "border-teal-300 bg-teal-50/60" : "border-slate-200 bg-white"}`}
+            >
+              <h3 className="text-lg font-bold text-slate-900">{a.who}</h3>
+              <p className="mb-4 text-sm font-medium text-teal-800">{a.tag}</p>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Today</p>
+              <p className="mb-4 text-sm leading-relaxed text-slate-700">{a.pain}</p>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-teal-700">With CareThread</p>
+              <p className="text-sm leading-relaxed text-slate-800">{a.gain}</p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
@@ -288,6 +421,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <footer className="border-t border-slate-200/70 py-8 text-center text-sm text-slate-500">
+        Built on ElevenLabs and Google Gemini · Synthetic demo data only · AI documents, the clinician decides.
+      </footer>
     </div>
   );
 }
