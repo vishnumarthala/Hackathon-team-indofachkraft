@@ -1,0 +1,14 @@
+> carethread@0.1.0 lint
+> eslint .
+
+> tsc --noEmit
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/fixtures.test.ts > Scribe fixture > make-scribe-fixture output equals the committed scribe-response.json and is deterministic
+ Test Files  1 failed | 17 passed | 2 skipped (20)
+      Tests  1 failed | 193 passed | 12 skipped (206)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+build-done

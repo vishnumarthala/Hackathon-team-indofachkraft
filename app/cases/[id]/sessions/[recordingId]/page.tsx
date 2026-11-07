@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ReviewScreen } from "@/components/session/ReviewScreen";
 import { getSessionReview } from "@/lib/queries/sessions";
+import { needsReextraction } from "@/lib/speakers";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,7 @@ export default async function SessionReviewPage({
       facts={facts}
       extractionRedFlags={recording.red_flags ?? []}
       facpScore={caseRow.facp_score ?? null}
+      needsReextraction={await needsReextraction(recording.id)}
     />
   );
 }
