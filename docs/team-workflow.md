@@ -230,3 +230,16 @@ the resulting diff and resolve conflicts without discarding teammate work; do no
 | get a teammate's finished tickets early | `git merge origin/int/<their-role>` |
 | open my checkpoint PR | `gh pr create --base main --head int/<role>` (complete the template) |
 | see the board | `specs/tickets/BOARD.md` or `/super-agent:mark-ready` |
+
+## Fallback: shared Supabase cloud project (when Docker is not available)
+
+Docker was not usable on every laptop, so the team can share **one Supabase cloud project** instead:
+
+1. Put the project's values in your git-ignored `.env.local` (or `.env`): `NEXT_PUBLIC_SUPABASE_URL`,
+   `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (or `..._ANON_KEY`), `SUPABASE_SECRET_KEY` (or
+   `SUPABASE_SERVICE_ROLE_KEY`) and `DATABASE_URL` (dashboard > Connect > connection string). Share
+   them in the team chat only, never in git.
+2. One person runs `npm run db:push` after a migration lands on `main`; it applies pending
+   `supabase/migrations/*.sql` and records them like the Supabase CLI. Check with `npm run db:check`.
+3. Everyone shares the same data: prefix test rows with your run prefix, never delete rows you did
+   not create, and never run `db:reset` against the cloud project.

@@ -1,6 +1,6 @@
 # 004: Cases dashboard and case pages
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 001: needs the scaffold, lib/db.ts, lib/http.ts, lib/audit.ts and the cases table
 
