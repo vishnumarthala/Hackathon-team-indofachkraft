@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
+import { requireApiUser } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/db";
 import { fail, ok, parseJson } from "@/lib/http";
 import { getCase } from "@/lib/queries/cases";
@@ -33,6 +34,9 @@ const sessionSchema = z.object({
 });
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const unauthorized = await requireApiUser();
+  if (unauthorized) return unauthorized;
+
   const { id: caseId } = await params;
   const found = await getCase(caseId);
   if (!found) return fail(404, "Case not found");

@@ -22,6 +22,7 @@ const m = vi.hoisted(() => ({
   generateJson: vi.fn(),
   sdkOptions: null as null | Record<string, (arg?: unknown) => void>,
 }));
+vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
 vi.mock("@/lib/intake/process", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/intake/process")>()),
   processPostCall: m.process,

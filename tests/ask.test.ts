@@ -23,6 +23,7 @@ const askMock = vi.hoisted(() => ({
   prompts: [] as string[],
 }));
 
+vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
 vi.mock("@/lib/gemini", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/gemini")>();
   return {

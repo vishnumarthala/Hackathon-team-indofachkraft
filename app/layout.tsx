@@ -20,10 +20,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <Link href="/dashboard" className="text-sm font-medium text-slate-700 hover:text-slate-900">
               Dashboard
             </Link>
+            <Link href="/login" className="text-sm font-medium text-slate-700 hover:text-slate-900">
+              Sign in
+            </Link>
           </nav>
         </header>
         <div role="note" className="bg-yellow-200 px-4 py-2 text-center text-sm font-medium text-yellow-950">
-          Demo - synthetic data only. AI documents, the clinician decides.
+          Authenticated pilot - synthetic data only; do not enter real patient information. AI documents, the clinician decides.
         </div>
         <main className="flex-1">{children}</main>
       </body>

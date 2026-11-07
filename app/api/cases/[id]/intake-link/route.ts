@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { audit } from "@/lib/audit";
+import { requireApiUser } from "@/lib/auth";
 import { sendEmail } from "@/lib/email";
 import { env } from "@/lib/env";
 import { fail, ok } from "@/lib/http";
@@ -24,6 +25,9 @@ async function readBody(req: Request): Promise<z.infer<typeof bodySchema> | null
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const unauthorized = await requireApiUser();
+  if (unauthorized) return unauthorized;
+
   const { id } = await params;
   const caseRow = await getCase(id);
   if (!caseRow) return fail(404, "Case not found");

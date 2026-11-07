@@ -17,6 +17,7 @@ const m = vi.hoisted(() => ({
   generateJson: vi.fn(),
   audit: vi.fn(),
 }));
+vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
 vi.mock("@/lib/queries/recordings", () => ({ getRecording: m.getRecording }));
 vi.mock("@/lib/queries/cases", () => ({ getCase: m.getCase }));
 vi.mock("@/lib/queries/reports", () => ({

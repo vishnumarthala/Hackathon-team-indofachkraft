@@ -13,10 +13,11 @@ CareThread helps early intervention therapists: (1) a browser voice intake with 
 session 1, (2) AI-filled ISAA form from a recorded session that the therapist confirms item by item,
 (3) a referral packet with "ask the case" for the specialist. **AI documents, the clinician decides.**
 
-Built today: everything in the ticket board, running on each developer's laptop (Next.js dev server +
-local Supabase in Docker). Not built: login, multi-tenancy, payments, live video, real phone calls
-(Twilio/SIP), real patient data, FHIR export. A cloud deployment (Vercel + Supabase cloud) is a
-configuration step only, decided at 15:30 (see [team workflow](team-workflow.md)).
+Built today: the ticket-board MVP, email/password login, admin-only account directory, running on
+Vercel + Supabase cloud or locally with Supabase in Docker. Not built: multi-tenancy or per-user case
+ownership, payments, live video, real phone calls (Twilio/SIP), real patient data, FHIR export.
+Continue using synthetic data only until data isolation, consent, retention, and clinical security
+requirements are implemented and reviewed.
 
 ## 2. Architecture
 
@@ -28,13 +29,13 @@ flowchart LR
     S[Specialist page<br/>/specialist/token]
     L[Landing /]
   end
-  subgraph Laptop[Next.js dev server on the laptop]
+  subgraph Next[Next.js app (local or Vercel)]
     API[API routes /api/*]
     RSC[Server components]
   end
-  subgraph Docker[Local Supabase in Docker]
-    DB[(Postgres :54322)]
-    ST[(Storage :54321<br/>bucket: recordings)]
+  subgraph Supabase[Supabase (local or cloud)]
+    DB[(Postgres)]
+    ST[(Private Storage<br/>bucket: recordings)]
   end
   EL[ElevenLabs<br/>Agents · Scribe v2 · TTS]
   GM[Gemini API]
@@ -56,16 +57,32 @@ flowchart LR
   EL -. post-call webhook (HMAC, only when deployed or tunnelled) .-> API
 ```
 
-- **One Next.js app** (App Router, TypeScript, Tailwind) running locally (`npm run dev -- -p 3000`);
-  deployable to Vercel later without code changes. Server components read the DB directly; mutations
-  go through `/api/*` route handlers.
+- **One Next.js app** (App Router, TypeScript, Tailwind) running locally (`npm run dev -- -p 3000`) and
+  deployed to Vercel. Server components read the DB directly; mutations go through `/api/*` route
+  handlers.
 - **No workflow tool.** Every step is an API route or a webhook. Long steps (Scribe, Gemini) run inside
   the route with `export const maxDuration = 300` and `export const runtime = "nodejs"`.
-- **Supabase, local in Docker** (Supabase CLI: `npx supabase start`), one stack per laptop, with RLS
-  enabled and no policies: only the server (service-role key) reads or writes tables. The browser uses
-  the anon key only for `uploadToSignedUrl`. Schema changes are migrations in `supabase/migrations/`.
-- **No login.** Therapist pages are open (synthetic data only, banner on every page). Parent and
-  specialist pages are reachable only with an unguessable token.
+- **Supabase** (local Docker via `npx supabase start` for development; hosted Supabase in production).
+  Clinical tables use RLS without client policies, so only the server's service-role client reads or
+  writes them. The browser uses the anon key for Auth and signed uploads, not clinical table reads.
+  Schema changes are migrations in `supabase/migrations/`.
+- **Authentication.** `/dashboard`, `/cases/*`, private API routes, and `/admin/users` require a
+  Supabase Auth session. Account creation is disabled in the application; create accounts in the
+  Supabase Auth dashboard. New accounts default to the `therapist` role. Promote the initial admin
+  directly in the Supabase SQL editor:
+  `update public.user_profiles set role = 'admin' where id = (select id from auth.users where email = 'admin@example.com');`
+  The admin-only directory shows account email, role, confirmation status, creation date, and last
+  sign-in; service-role access is used only after checking the signed-in user's database role. Add
+  accounts in Supabase Auth > Users; the database trigger creates each account's default therapist
+  profile. There is no public sign-up form or in-app user invitation flow.
+  For the Vercel Supabase project, apply migrations with `npm run db:push`, set Auth's Site URL to
+  `https://carethread-two.vercel.app`, allow that same URL for redirects, and disable new sign-ups in
+  the Supabase Auth settings. `supabase/config.toml` disables sign-ups for local Supabase only; the
+  cloud Auth setting is managed separately.
+- **Shared case data is not tenant-isolated.** All signed-in therapists can access the shared case
+  store. Do not enter real patient information until case ownership and tenant isolation are built.
+- Parent intake and specialist pages remain accessible only with an unguessable token. The matching
+  token-based API endpoints and signed webhook are public by design.
 
 ## 3. Repo layout
 

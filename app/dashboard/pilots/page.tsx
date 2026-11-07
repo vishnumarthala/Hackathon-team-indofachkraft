@@ -1,9 +1,14 @@
+import { notFound } from "next/navigation";
 import { formatBerlin, PILOT_ROLE_LABELS } from "@/lib/pilots";
 import { listPilotSignups } from "@/lib/queries/pilots";
+import { getUserRole, requirePageUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function PilotSignupsPage() {
+  const user = await requirePageUser();
+  if ((await getUserRole(user.id)) !== "admin") notFound();
+
   const rows = await listPilotSignups();
 
   return (
