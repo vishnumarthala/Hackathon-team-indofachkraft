@@ -1,6 +1,6 @@
 # 012: Referral packet, specialist page and email
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 002, 003, 004: needs `seed:demo -- --confirmed`, lib/scoring.ts and the Referral tab placeholder
 

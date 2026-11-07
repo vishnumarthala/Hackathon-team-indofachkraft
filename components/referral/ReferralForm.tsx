@@ -42,6 +42,8 @@ export function ReferralForm({ caseId, defaultReason }: { caseId: string; defaul
       if (res.status === 201) {
         const status: EmailStatus = json.email_status ?? (json.emailed ? "sent" : "failed");
         setSuccess({ url: json.url, email: email.trim(), emailStatus: status });
+        // Untick consent so a second click cannot send a duplicate referral by accident.
+        setConsent(false);
         router.refresh();
       } else {
         if (json.details && typeof json.details === "object") setErrors(json.details);

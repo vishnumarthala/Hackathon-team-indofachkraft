@@ -1,0 +1,11 @@
+## step 1
+{"error":"Invalid request","details":{"parent_consent":"Parent consent is required"}} 400
+## step 2 seed
+seeded case=e5c2e4ab-c5f8-41a6-8687-2ca355596e96 session=cdc60b4f-7336-4cf2-895d-5704a4cf671a intake=b303082f-12c0-42e3-9497-2a75764cacc4 token=<redacted>
+## step 2
+{"error":"Confirm at least one ISAA item before referring"} 422
+## step 3
+{"error":"Case not found"} 404
+## step 4
+Process and confirm a session before referring.
+Process and confirm a session before referring.

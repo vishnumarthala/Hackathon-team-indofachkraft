@@ -1,0 +1,8 @@
+# Re-run after UI polish on a fresh case d4f0437d-a323-4dbb-9bee-c673952ee925 (seed --new --confirmed)
+referrals+case (after specialist view): [{"status":"viewed","parent_consent":true,"emailed":false,"len":43,"ev":8,"case_status":"referred"}]
+viewed: [{"status":"viewed","viewed":true}]
+audit: [{"action":"email.demo_skipped","actor":"system"},{"action":"referral.created","actor":"therapist"},{"action":"referral.viewed","actor":"specialist"}]
+packet text: [{"has_suggested_total":false,"has_suggested_status":false}]
+Send referral disabled before consent: true; disabled again after success (consent reset): true
+Specialist page: all expected strings present, "AI suggested" absent; no audio for this case -> "Session 1 · mm:ss" rendered as plain text (0 buttons)
+Audio check on case 3d99eab4 after attaching demo/audio/sample-short.wav to its session: "Session 1 · 00:42" rendered as a button, click loaded the 1-hour signed URL into the hidden <audio> (duration 10.2 s); seeking to 2 s and play() -> playing (currentTime advanced, paused=false)

@@ -64,6 +64,7 @@ const {
 } = packetModule;
 const { formatIsaaScore } = await import("@/lib/scoring");
 const { getReferralContext } = await import("@/lib/queries/referrals");
+const emailModule = await import("@/lib/email");
 const { POST } = await import("@/app/api/cases/[id]/refer/route");
 
 const CASE_ID = "11111111-1111-4111-8111-111111111111";
@@ -345,5 +346,15 @@ describe("POST /api/cases/:id/refer", () => {
     const actions = state.tables.audit_events.map((e) => e.action);
     expect(actions).toContain("referral.created");
     expect(actions).toContain("email.demo_skipped");
+  });
+
+  it("still returns 201 with emailed false when the email cannot be sent", async () => {
+    seed([fact({ item: 2, value: 4, status: "confirmed", evidence: evidence(SESSION_2, 30) }, SESSION_2)]);
+    vi.spyOn(emailModule, "sendEmail").mockRejectedValue(new emailModule.EmailError("Email could not be sent: down"));
+    const res = await request(body);
+    expect(res.status).toBe(201);
+    expect(await res.json()).toMatchObject({ emailed: false, email_status: "failed" });
+    expect(state.tables.referrals).toHaveLength(1);
+    expect(state.tables.referrals[0].emailed).toBe(false);
   });
 });

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { EvidenceTimestamp } from "@/components/referral/EvidencePlayer";
 import { ratingLabel } from "@/lib/isaa";
 import { redFlagText, scoreFromPacket, sessionLabel, type ReferralPacket } from "@/lib/referral/packet";
-import { formatIsaaScore, ISAA_BAND_LABELS, SUGGESTION_LABEL, type FacpBand } from "@/lib/scoring";
+import { formatIsaaScore, SUGGESTION_LABEL, type FacpBand } from "@/lib/scoring";
 
 const FACP_BAND_LABELS: Record<FacpBand, string> = {
   typical: "Typical",
@@ -54,7 +54,6 @@ export function PacketView({ packet, reason, sentAt }: { packet: ReferralPacket;
 
       <Section title="ISAA">
         <p className="font-medium text-slate-900">{formatIsaaScore(scoreFromPacket(isaa))}</p>
-        {isaa.band !== null && <p className="text-sm text-slate-700">Band: {ISAA_BAND_LABELS[isaa.band]}</p>}
         <table className="w-full max-w-lg border-collapse text-sm">
           <caption className="pb-1 text-left text-slate-600">Domain scores are sums of items confirmed by the therapist.</caption>
           <thead>
