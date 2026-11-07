@@ -1,11 +1,16 @@
-import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
-import { HeroVisual } from "@/components/landing/HeroVisual";
+import Image from "next/image";
 import "@/components/landing/landing.css";
-import { PhaseCards } from "@/components/landing/PhaseCards";
-import { PilotForm } from "@/components/landing/PilotForm";
+import { Features, LanguageRow } from "@/components/landing/Features";
+import { fontVars } from "@/components/landing/fonts";
+import { HeroReel } from "@/components/landing/HeroReel";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { LoopVideo } from "@/components/landing/LoopVideo";
 import { Reveal } from "@/components/landing/Reveal";
+import { SiteFooter } from "@/components/landing/SiteFooter";
+import { SiteNav } from "@/components/landing/SiteNav";
+import { Arrow, ButtonLink, CheckIcon, Eyebrow } from "@/components/landing/ui";
+import roomImage from "@/public/landing/room.jpg";
 
 const SUBTITLE =
   "CareThread is the AI assistant for early intervention therapists. It talks to the parent before the first session, documents the online session and fills the assessment form, and hands the complete case to the specialist.";
@@ -15,279 +20,256 @@ export const metadata: Metadata = {
   description: "CareThread is the AI assistant for early intervention therapists.",
 };
 
-const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
-
-const STATS = [
-  { value: "40", label: "ISAA items, each with an evidence quote and timestamp" },
-  { value: "3", label: "languages for the parent call: English, Hindi and Telugu (German coming soon)" },
-  { value: "1", label: "thread from the first call to the specialist" },
+const AUDIENCES = [
+  {
+    who: "Therapists",
+    tag: "Use it every day",
+    text: "Your workspace. Brief before session 1, ISAA filled from the session, a draft report you confirm.",
+    icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0",
+    featured: true,
+  },
+  {
+    who: "Centres",
+    tag: "Subscribe for their team",
+    text: "Consistent, evidence-backed ISAA records across every therapist, with an audit log of every change.",
+    icon: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6",
+  },
+  {
+    who: "Parents",
+    tag: "Free, by invitation",
+    text: "A link from their therapist. They talk in their own language before the first session. No app, no account.",
+    icon: "M4 6h16v10H8l-4 4V6Z",
+  },
+  {
+    who: "Specialists",
+    tag: "Free, by link",
+    text: "Receive the complete referral packet and ask the case questions. Every answer cites its source.",
+    icon: "M9 12l2 2 4-4M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z",
+  },
 ];
 
 const TRUST = [
   { title: "Consent first", text: "Parents agree before any call or recording starts." },
   { title: "Evidence on every item", text: "Each suggestion links to the exact moment in the session." },
-  { title: "Clinician confirms", text: "Nothing reaches the report until the therapist confirms or edits it." },
-  { title: "Privacy by design", text: "Private storage, an audit log of every change, and synthetic data only in this demo." },
+  { title: "The clinician confirms", text: "Nothing reaches the report until the therapist confirms or edits it." },
+  { title: "Private by design", text: "Private storage and an audit log of every change and decision." },
 ];
 
-const VALUE_LINE =
-  "Less paperwork per assessment, consistent ISAA documentation, and referrals that arrive complete.";
-
-const AUDIENCES = [
+const FAQ = [
   {
-    who: "For centres",
-    tag: "The subscriber: one plan per clinician",
-    points: [
-      "Consistent, evidence-backed ISAA records across every therapist",
-      "An audit log of every change and every decision",
-      "Referral packets that reach the specialist complete",
-    ],
+    q: "Who uses CareThread?",
+    a: "Early intervention therapists and child psychologists use it every day. Centres subscribe for their team. Parents and specialists never need an account: they get a link from the therapist.",
   },
   {
-    who: "For therapists",
-    tag: "Daily users",
-    points: [
-      "A pre-session brief from the parent call before session 1",
-      "The ISAA form filled from the session, with quotes and timestamps",
-      "A draft report; nothing counts until you confirm it",
-    ],
+    q: "Who makes the clinical decision?",
+    a: "Always the clinician. CareThread is not a diagnosis. It documents what was said and suggests ratings with evidence. The clinician reviews, edits and decides every item.",
   },
   {
-    who: "For parents and specialists",
-    tag: "Free, by invitation",
-    points: [
-      "Parents get a link from their therapist and talk in their own language",
-      "Specialists open the full case by link and can ask it questions",
-      "Neither needs an account",
-    ],
+    q: "Which assessments does it support?",
+    a: "The ISAA (Indian Scale for Assessment of Autism), all 40 items, with an evidence quote and timestamp for each suggestion.",
+  },
+  {
+    q: "Which languages can parents use?",
+    a: "English, Hindi and Telugu today. German is coming soon. Reports are written in English.",
+  },
+  {
+    q: "How do I get access?",
+    a: "Book a demo. We walk you through CareThread on a sample case, then set up your centre's workspace and send your team their logins.",
+  },
+  {
+    q: "I already have an account. Where do I log in?",
+    a: "Use Log in at the top of this page with the email and password from your centre's administrator.",
   },
 ];
-
-const PILOT_PERKS = [
-  "For centres and clinicians: one pilot per centre",
-  "Help shape the product with direct access to the team",
-  "Parent calls in English, Hindi and Telugu (German coming soon)",
-  "Try it first on synthetic role-play sessions, no real patients",
-];
-
-function Check() {
-  return (
-    <svg className="mt-0.5 h-5 w-5 shrink-0 text-teal-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.7-9.3a1 1 0 0 0-1.4-1.4L9 10.6 7.7 9.3a1 1 0 0 0-1.4 1.4l2 2a1 1 0 0 0 1.4 0l4-4Z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
 
 export default function Home() {
   return (
-    <div className="bg-[#fbfaf7] text-slate-900">
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div aria-hidden="true">
-          <div className="lp-blob" style={{ width: 420, height: 420, top: -120, left: -120, background: "#99f6e4" }} />
-          <div
-            className="lp-blob"
-            style={{ width: 360, height: 360, top: 80, right: -140, background: "#fed7aa", animationDelay: "-6s" }}
-          />
-          <div
-            className="lp-blob"
-            style={{ width: 300, height: 300, bottom: -160, left: "40%", background: "#bae6fd", animationDelay: "-11s" }}
-          />
-          <div
-            className="absolute inset-0 opacity-[0.35]"
-            style={{
-              backgroundImage: "radial-gradient(rgba(15,118,110,0.18) 1px, transparent 1px)",
-              backgroundSize: "22px 22px",
-              maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-              WebkitMaskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-            }}
-          />
-        </div>
+    <div className={`lp-root ${fontVars} overflow-x-clip`}>
+      <SiteNav overDark />
 
-        <div className="relative mx-auto grid w-full max-w-6xl items-center gap-14 px-4 pb-20 pt-14 sm:pt-20 lg:grid-cols-[1.1fr_1fr] lg:pb-28">
-          <div>
-            <p
-              className={`lp-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white/70 px-3 py-1 text-sm font-medium text-teal-800 backdrop-blur`}
-              style={delay(0)}
-            >
-              <span className={`lp-pulse h-2 w-2 rounded-full bg-teal-500`} />
-              Pilot open for centres in Germany and India
-            </p>
+      <HeroReel subtitle={SUBTITLE} />
 
-            <h1
-              className={`lp-fade-up mb-6 text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl`}
-              style={delay(100)}
-            >
-              <span className="lp-gradient-text">CareThread</span>
-            </h1>
-
-            <p
-              className={`lp-fade-up mb-4 max-w-xl text-xl font-semibold leading-snug text-slate-900 sm:text-2xl`}
-              style={delay(150)}
-            >
-              {VALUE_LINE}
-            </p>
-
-            <p
-              className={`lp-fade-up mb-8 max-w-xl text-lg leading-relaxed text-slate-600 sm:text-xl`}
-              style={delay(200)}
-            >
-              {SUBTITLE}
-            </p>
-
-            <div className={`lp-fade-up flex flex-wrap items-center gap-3`} style={delay(300)}>
-              <a
-                href="#pilot"
-                className={`lp-press inline-flex min-h-12 items-center gap-2 rounded-full bg-teal-700 px-7 py-3 font-semibold text-white shadow-lg shadow-teal-700/25 hover:bg-teal-800 hover:shadow-xl hover:shadow-teal-700/30 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/40`}
-              >
-                Join the pilot
-                <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path
-                    fillRule="evenodd"
-                    d="M3 10a.75.75 0 0 1 .75-.75h10.6l-3.9-3.7a.75.75 0 1 1 1.04-1.08l5.25 5a.75.75 0 0 1 0 1.08l-5.25 5a.75.75 0 1 1-1.04-1.08l3.9-3.7H3.75A.75.75 0 0 1 3 10Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </a>
-              <Link
-                href="/dashboard"
-                className={`lp-press inline-flex min-h-12 items-center rounded-full border border-slate-300 bg-white/80 px-7 py-3 font-semibold text-slate-800 backdrop-blur hover:border-teal-600 hover:text-teal-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30`}
-              >
-                Open the demo
-              </Link>
-            </div>
-          </div>
-
-          <div className="lp-fade-up" style={delay(350)}>
-            <HeroVisual />
-          </div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section className="border-y border-slate-200/70 bg-white">
-        <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-10 sm:grid-cols-3">
-          {STATS.map((s, i) => (
-            <Reveal key={s.value} delay={i * 100} className="flex items-center gap-4">
-              <span className="text-4xl font-extrabold tabular-nums text-teal-700">{s.value}</span>
-              <span className="text-sm leading-snug text-slate-600">{s.label}</span>
+      {/* ---------- PROOF STRIP ---------- */}
+      <section className="border-y border-[#0b1f1d]/[0.07] bg-white">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-1 divide-y divide-[#0b1f1d]/[0.07] px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6">
+          {[
+            { v: "40", l: "ISAA items, each with a quote and timestamp" },
+            { v: "1", l: "thread from the first parent call to the specialist" },
+            { v: "0", l: "ratings final until the therapist confirms them" },
+          ].map((s, i) => (
+            <Reveal key={s.l} delay={i * 90} className="flex items-center gap-5 py-8 sm:justify-center sm:px-6">
+              <span className="lp-display text-6xl leading-none text-teal-700">{s.v}</span>
+              <span className="max-w-[14rem] text-sm leading-snug text-slate-600">{s.l}</span>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* PHASES */}
-      <section className="mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
-        <Reveal className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">How it works</p>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">One thread, three moments of care</h2>
-        </Reveal>
-        <PhaseCards />
+      {/* ---------- HOW IT WORKS ---------- */}
+      <section id="how" className="scroll-mt-20">
+        <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+          <Reveal className="mb-14 max-w-2xl">
+            <Eyebrow>How it works</Eyebrow>
+            <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
+              One thread, from the first call <em className="text-teal-700">to the specialist.</em>
+            </h2>
+            <div className="mt-6">
+              <LanguageRow />
+            </div>
+          </Reveal>
+          <HowItWorks />
+        </div>
       </section>
 
-      {/* WHO IT'S FOR */}
-      <section className="border-t border-slate-200/70 bg-white">
-        <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
-          <Reveal className="mx-auto mb-12 max-w-2xl text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">Who it&apos;s for</p>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Centres subscribe, therapists use it daily</h2>
+      {/* ---------- WHO IT'S FOR ---------- */}
+      <section id="who" className="scroll-mt-20 bg-white">
+        <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+          <Reveal className="mb-14 grid gap-6 lg:grid-cols-2 lg:items-end">
+            <div>
+              <Eyebrow>Who it&apos;s for</Eyebrow>
+              <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
+                Built for therapists. <em className="text-teal-700">Simple for everyone around them.</em>
+              </h2>
+            </div>
+            <p className="max-w-md text-lg leading-relaxed text-slate-600 lg:justify-self-end">
+              Therapists log in and do the work. Parents and specialists join by link, with nothing to install.
+            </p>
           </Reveal>
-          <div className="grid gap-5 md:grid-cols-3">
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {AUDIENCES.map((a, i) => (
               <Reveal
                 key={a.who}
                 delay={i * 90}
-                className={`rounded-2xl border p-6 ${i === 0 ? "border-teal-300 bg-teal-50/60" : "border-slate-200 bg-[#fbfaf7]"}`}
+                className={`lp-card relative flex flex-col rounded-3xl p-7 ${
+                  a.featured ? "bg-[#0b1f1d] text-white" : "border border-[#0b1f1d]/[0.08] bg-[#f8f6f1]"
+                }`}
               >
-                <h3 className="text-lg font-bold text-slate-900">{a.who}</h3>
-                <p className="mb-4 text-sm font-medium text-teal-800">{a.tag}</p>
-                <ul className="space-y-2.5">
-                  {a.points.map((p) => (
-                    <li key={p} className="flex gap-2.5 text-sm leading-relaxed text-slate-700">
-                      <Check />
-                      {p}
-                    </li>
-                  ))}
-                </ul>
+                <span
+                  className={`mb-8 flex h-12 w-12 items-center justify-center rounded-2xl ${
+                    a.featured ? "bg-teal-500/15 text-teal-300" : "bg-white text-teal-700 ring-1 ring-[#0b1f1d]/[0.06]"
+                  }`}
+                >
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d={a.icon} />
+                  </svg>
+                </span>
+                <h3 className="text-xl font-semibold">{a.who}</h3>
+                <p className={`mb-3 text-sm font-medium ${a.featured ? "text-teal-300" : "text-teal-700"}`}>{a.tag}</p>
+                <p className={`text-[0.95rem] leading-relaxed ${a.featured ? "text-white/70" : "text-slate-600"}`}>{a.text}</p>
+                {a.featured && (
+                  <a href="/login" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:text-teal-200">
+                    Therapist log in <Arrow className="h-3.5 w-3.5" />
+                  </a>
+                )}
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* PRINCIPLE */}
-      <section className="relative overflow-hidden bg-slate-900 text-white">
-        <div aria-hidden="true">
-          <div
-            className="lp-blob"
-            style={{ width: 380, height: 380, top: -160, right: -80, background: "#0d9488", opacity: 0.35 }}
-          />
-          <div
-            className="lp-blob"
-            style={{ width: 300, height: 300, bottom: -160, left: -60, background: "#f97362", opacity: 0.25, animationDelay: "-8s" }}
-          />
+      {/* ---------- FEATURES ---------- */}
+      <section id="features" className="scroll-mt-20">
+        <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+          <Reveal className="mb-14 max-w-2xl">
+            <Eyebrow>Inside the workspace</Eyebrow>
+            <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
+              Documentation you can <em className="text-teal-700">trust and check.</em>
+            </h2>
+          </Reveal>
+          <Features />
         </div>
-        <div className="relative mx-auto w-full max-w-6xl px-4 py-20 sm:py-24">
-          <Reveal className="mb-12 max-w-3xl">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-teal-300">Our principle</p>
-            <p className="text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-              AI documents, the clinician decides.
+      </section>
+
+      {/* ---------- PRINCIPLE / TRUST ---------- */}
+      <section id="trust" className="relative scroll-mt-16 overflow-hidden bg-[#0b1f1d] text-white">
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+          <Image src={roomImage} alt="" fill sizes="100vw" className="lp-ken object-cover opacity-30" placeholder="blur" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f1d] via-[#0b1f1d]/90 to-[#0b1f1d]/50" />
+        </div>
+        <div className="relative mx-auto w-full max-w-6xl px-4 py-28 sm:px-6 sm:py-36">
+          <Reveal className="max-w-3xl">
+            <Eyebrow tone="light">Our principle</Eyebrow>
+            <p className="lp-display text-5xl leading-[1.04] sm:text-7xl">
+              AI documents, <em className="text-teal-300">the clinician decides.</em>
+            </p>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
+              CareThread does the writing. Every rating, every line of the report and every referral is checked and
+              signed off by a person.
             </p>
           </Reveal>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-16 grid gap-px overflow-hidden rounded-3xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
             {TRUST.map((t, i) => (
-              <Reveal
-                key={t.title}
-                delay={i * 90}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"
-              >
-                <p className="mb-1.5 font-semibold text-teal-200">{t.title}</p>
-                <p className="text-sm leading-relaxed text-slate-300">{t.text}</p>
+              <Reveal key={t.title} delay={i * 90} className="bg-[#0b1f1d]/80 p-7 backdrop-blur">
+                <CheckIcon className="mb-5 h-6 w-6 text-teal-300" />
+                <p className="mb-2 font-semibold">{t.title}</p>
+                <p className="text-sm leading-relaxed text-white/65">{t.text}</p>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* PILOT */}
-      <section id="pilot" className="relative scroll-mt-6 overflow-hidden">
-        <div aria-hidden="true">
-          <div
-            className="lp-blob"
-            style={{ width: 340, height: 340, top: 40, left: -160, background: "#ccfbf1", animationDelay: "-3s" }}
-          />
-        </div>
-        <div className="relative mx-auto grid w-full max-w-6xl gap-12 px-4 py-20 sm:py-24 lg:grid-cols-[1fr_1.1fr]">
-          {/* No scroll reveal here: the sign-up must be visible even before JS runs or on /#pilot. */}
-          <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-teal-700">Pilot programme</p>
-            <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">Join the pilot</h2>
-            <p className="mb-2 text-lg leading-relaxed text-slate-600">
-              For early intervention centres, therapists and child psychologists.
+      {/* ---------- FAQ ---------- */}
+      <section id="faq" className="scroll-mt-20">
+        <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-24 sm:px-6 sm:py-32 lg:grid-cols-[0.8fr_1.2fr]">
+          <Reveal>
+            <Eyebrow>FAQ</Eyebrow>
+            <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">Questions, answered.</h2>
+            <p className="mt-5 max-w-sm text-slate-600">
+              Something else on your mind? Ask us on the demo call.
             </p>
-            <p className="mb-6 text-sm text-slate-500">
-              Parent? You don&apos;t need to sign up: your therapist sends you a link.
-            </p>
-
-            <ul className="space-y-3">
-              {PILOT_PERKS.map((p) => (
-                <li key={p} className="flex gap-3 text-slate-700">
-                  <Check />
-                  {p}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5 sm:p-8">
-            <PilotForm />
+          </Reveal>
+          <div className="divide-y divide-[#0b1f1d]/10 border-y border-[#0b1f1d]/10">
+            {FAQ.map((f) => (
+              <details key={f.q} className="lp-faq group">
+                <summary className="flex min-h-16 cursor-pointer items-center justify-between gap-6 py-5 text-left text-lg font-semibold text-[#0b1f1d] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30">
+                  {f.q}
+                  <span className="lp-chev flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-teal-700 ring-1 ring-[#0b1f1d]/10 group-hover:bg-teal-50">
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                      <path d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1Z" />
+                    </svg>
+                  </span>
+                </summary>
+                <p className="lp-faq-body max-w-2xl pb-6 leading-relaxed text-slate-600">{f.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* ---------- FINAL CTA ---------- */}
+      <section id="pilot" className="scroll-mt-20 px-4 pb-24 sm:px-6">
+        <Reveal className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-[32px] bg-teal-800 text-white">
+          <div className="absolute inset-0" aria-hidden="true">
+            <LoopVideo src="/landing/hero.mp4" poster="/landing/hero.jpg" className="h-full w-full object-cover opacity-25 mix-blend-luminosity" />
+            <div className="absolute inset-0 bg-gradient-to-r from-teal-900 via-teal-900/85 to-teal-800/40" />
+          </div>
+          <div className="relative grid gap-10 px-7 py-16 sm:px-14 sm:py-20 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+            <div>
+              <Eyebrow tone="lighter">Now onboarding pilot centres in Germany and India</Eyebrow>
+              <h2 className="lp-display text-5xl leading-[1.04] sm:text-6xl">
+                Give your therapists their <em className="text-teal-200">sessions back.</em>
+              </h2>
+              <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/75">
+                See CareThread on a sample case in a short call. If it fits, we set up your centre&apos;s workspace and
+                send your team their logins.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-stretch">
+              <ButtonLink href="/book-demo" variant="light" className="min-h-14 text-base">
+                Book a demo
+                <Arrow />
+              </ButtonLink>
+              <ButtonLink href="/login" variant="outlineLight" className="min-h-14 text-base">
+                Log in to your workspace
+              </ButtonLink>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      <SiteFooter />
     </div>
   );
 }
