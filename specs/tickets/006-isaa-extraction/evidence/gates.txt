@@ -1,0 +1,12 @@
+## npm run lint
+exit 0
+## npm run typecheck
+exit 0
+## npm test
+ Test Files  12 passed (12)
+      Tests  131 passed (131)
+exit 0
+## npm run build
+exit 0
+    ./app/api/sessions/[id]/extract/route.ts
+├ ƒ /api/sessions/[id]/extract

@@ -1,0 +1,15 @@
+seed: seeded case=fee42ca6-0e4a-49c6-9681-4e72a8d2c0a2 session=ebd1eb6d-4b00-4f82-9ee5-d672cd8bc945 intake=420ba48a-57e5-4a51-9f1c-e3b9166024f4 token=<redacted>
+## E-1 step 1
+[{"status":"booked"}]
+## step 2
+200 0.582245
+## step 3
+40 true true 0 lost_speech,self_injury 2 true
+## step 4
+[{"status":"extracted","case_status":"in_assessment","n":40}]
+## step 5
+[]
+## E-2
+[{"item_id":"5","value":4,"source":"therapist_voice","status":"confirmed","confirmed_by":"Demo Therapist (voice note)","rationale":"Rated by the therapist in a voice note."},{"item_id":"24","value":4,"source":"therapist_voice","status":"confirmed","confirmed_by":"Demo Therapist (voice note)","rationale":"Parent-reported: hand flapping and toe walking when excited."}]
+## audit
+[{"action":"extraction.completed","details":{"notes":2,"rated":16,"verified":16}}]

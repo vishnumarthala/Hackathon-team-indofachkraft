@@ -1,0 +1,14 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/Hackathon-team-indofachkraft
+
+ ✓ tests/extraction.db.test.ts > extraction persistence (database) > rolls back everything when the upsert fails (re-extraction) 1737ms
+ ✓ tests/extraction.db.test.ts > extraction persistence (database) > rolls back a first extraction that fails after the upsert 1112ms
+ ✓ tests/extraction.db.test.ts > extraction persistence (database) > keeps a therapist decision made while the model was running 1549ms
+ ✓ tests/extraction.db.test.ts > extraction persistence (database) > a therapist decision racing the commit waits for the lock and is not overwritten 1850ms
+ ✓ tests/extraction.db.test.ts > extraction persistence (database) > a second concurrent extraction is rejected with 409 1602ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  14:04:27
+   Duration  8.22s (transform 38ms, setup 0ms, import 111ms, tests 8.04s, environment 0ms)
+

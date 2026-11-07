@@ -215,6 +215,7 @@ describe("computeFactWrites", () => {
       evidence: { segment_id: "s7", verified: true, start_sec: 42.43, end_sec: 46.78 },
     });
     expect(r5.ai_value).toBe(processed.items[4].rating);
+    expect(r5.rationale).toBe("Rated by the therapist in a voice note.");
   });
 
   it("re-extraction skips confirmed/edited rows and keeps the first AI value", () => {

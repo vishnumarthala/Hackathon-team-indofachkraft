@@ -244,6 +244,7 @@ export function computeFactWrites(args: {
         status: "confirmed",
         confirmed_by: `${therapistName} (voice note)`,
         confirmed_at: now,
+        rationale: item.rating === null ? "Rated by the therapist in a voice note." : item.rationale,
         evidence: {
           quote: note.text.slice(0, 300),
           segment_id: segment.id,

@@ -1,6 +1,6 @@
 # 006: ISAA extraction with Gemini
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 002: needs the extract fixture, roleplay segments and `seed:demo -- --stage transcribed` (002 waits for 001)
 

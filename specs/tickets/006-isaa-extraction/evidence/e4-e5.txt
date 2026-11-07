@@ -1,0 +1,21 @@
+## E-4 step 1
+[{"item_id":"1"}]
+## step 2
+[{"item_id":"2"}]
+## step 3
+200
+## step 4
+[{"item_id":"1","value":1,"status":"edited","ai_value":4},{"item_id":"2","value":null,"status":"suggested","ai_value":2}]
+## E-5 step 1
+[{"id":"f2562b3b-245b-40e8-8b13-89598970fe71"}]
+## E-5 step 2
+{"error":"Transcribe the session first"} 409
+## step 3
+[{"status":"extracting"}]
+## step 4
+{"error":"Extraction already running"} 409
+## step 5
+{"error":"Session not found"} 404
+## extra: intake recording id and non-uuid
+{"error":"Session not found"} 404
+{"error":"Session not found"} 404
