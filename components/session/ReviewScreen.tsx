@@ -9,6 +9,7 @@ import { BulkActions } from "./BulkActions";
 import { IsaaForm } from "./IsaaForm";
 import { ratingValue } from "./ItemRow";
 import { ScorePanel } from "./ScorePanel";
+import { swapSegments } from "@/lib/speaker-swap";
 import { SwapSpeakersButton, type SwapPhase } from "./SwapSpeakersButton";
 
 const RED_FLAG_TEXT: Record<string, string> = {
@@ -38,6 +39,7 @@ export function ReviewScreen({
   facts: serverFacts,
   extractionRedFlags,
   facpScore,
+  needsReextraction = false,
 }: {
   recordingId: string;
   sessionNumber: number | null;
@@ -46,6 +48,7 @@ export function ReviewScreen({
   facts: FactRow[];
   extractionRedFlags: ExtractionRedFlagInput[];
   facpScore: number | null;
+  needsReextraction?: boolean;
 }) {
   const router = useRouter();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -56,7 +59,8 @@ export function ReviewScreen({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [bulkBusy, setBulkBusy] = useState(false);
   const [bulkError, setBulkError] = useState<string | null>(null);
-  const [swapPhase, setSwapPhase] = useState<SwapPhase>("idle");
+  const [swapPhase, setSwapPhase] = useState<SwapPhase>(needsReextraction ? "cleared" : "idle");
+  const [swappedSegments, setSwappedSegments] = useState<Segment[] | null>(null);
 
   // After router.refresh() the server sends fresh facts: adopt them.
   if (serverFacts !== syncedFrom) {
@@ -127,10 +131,17 @@ export function ReviewScreen({
           sessionNumber={sessionNumber}
           audioUrl={audioUrl}
           audioRef={audioRef}
-          segments={segments}
+          segments={swappedSegments ?? segments}
           activeSegmentId={activeSegmentId}
           onSelect={seek}
-          headerAction={<SwapSpeakersButton recordingId={recordingId} onPhase={setSwapPhase} />}
+          headerAction={(
+            <SwapSpeakersButton
+              recordingId={recordingId}
+              initialPhase={swapPhase}
+              onPhase={setSwapPhase}
+              onSwapped={() => setSwappedSegments(swapSegments(segments))}
+            />
+          )}
         />
         {swapPhase !== "idle" ? (
           <p role="status" className="min-w-0 rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800">

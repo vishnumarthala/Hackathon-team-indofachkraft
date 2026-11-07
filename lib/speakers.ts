@@ -1,33 +1,16 @@
 // Speaker swap (008 FR-6). Pure rules are unit tested; the transaction locks the recording row
 // the same way updateFact/bulkUpdate do, so it is serialized against manual decisions and extraction.
 import type postgres from "postgres";
-import { env } from "@/lib/env";
 import { isUuid } from "@/lib/cases/validation";
-import { EXTRACTION_RUNNING, SESSION_NOT_FOUND } from "@/lib/facts";
+import { EXTRACTION_RUNNING, SESSION_NOT_FOUND, db } from "@/lib/facts";
+import { isManualDecision, swapSegments, swapSpeakerMap } from "@/lib/speaker-swap";
 import type { Segment, SpeakerRole } from "@/lib/types";
+
+export { isManualDecision, swapRole, swapSegments, swapSpeakerMap } from "@/lib/speaker-swap";
 
 export const SWAP_BLOCKED = "Speakers can't be swapped after items are confirmed";
 export const TRANSCRIPTION_RUNNING = "Transcription already running";
 export const TRANSCRIBE_FIRST = "Transcribe the session first";
-
-export function swapRole(role: SpeakerRole): SpeakerRole {
-  if (role === "therapist") return "parent";
-  if (role === "parent") return "therapist";
-  return role;
-}
-
-export function swapSpeakerMap(map: Record<string, SpeakerRole>): Record<string, SpeakerRole> {
-  return Object.fromEntries(Object.entries(map).map(([label, role]) => [label, swapRole(role)]));
-}
-
-export function swapSegments(segments: Segment[]): Segment[] {
-  return segments.map((s) => ({ ...s, speaker: swapRole(s.speaker) }));
-}
-
-// A manual therapist decision: an edited item, or a confirmed one that is not an untouched voice note.
-export function isManualDecision(fact: { status: string; source: string }): boolean {
-  return fact.status === "edited" || (fact.status === "confirmed" && fact.source !== "therapist_voice");
-}
 
 export type SwapResult =
   | { ok: true; data: { speaker_map: Record<string, SpeakerRole>; segments_count: number } }
@@ -85,15 +68,23 @@ export async function swapSpeakersInTx(tx: Tx, recordingId: string): Promise<Swa
   return { ok: true, data: { speaker_map, segments_count: segments.length } };
 }
 
-type Sql = postgres.Sql;
-const globalForSql = globalThis as unknown as { __carethreadSql?: Sql };
-
 export async function swapSpeakers(recordingId: string): Promise<SwapResult> {
-  if (typeof window !== "undefined") throw new Error("lib/speakers.ts is server-only");
   if (!isUuid(recordingId)) return { ok: false, status: 404, error: SESSION_NOT_FOUND };
-  if (!globalForSql.__carethreadSql) {
-    const { default: postgresClient } = await import("postgres");
-    globalForSql.__carethreadSql = postgresClient(env.DATABASE_URL, { max: 5, prepare: false, onnotice: () => {} });
-  }
-  return globalForSql.__carethreadSql.begin((tx) => swapSpeakersInTx(tx, recordingId)) as Promise<SwapResult>;
+  const sql = await db();
+  return sql.begin((tx) => swapSpeakersInTx(tx, recordingId)) as Promise<SwapResult>;
+}
+
+// True when the speakers were swapped after the last completed extraction, i.e. the ISAA form was
+// cleared and still needs the AI to fill it again (the page shows a retry instead of empty ratings).
+export async function needsReextraction(recordingId: string): Promise<boolean> {
+  if (!isUuid(recordingId)) return false;
+  const sql = await db();
+  const rows = await sql<{ swapped: string | null; completed: string | null }[]>`
+    select max(id) filter (where action = 'recording.speakers_swapped')::text as swapped,
+           max(id) filter (where action = 'extraction.completed')::text as completed
+    from audit_events
+    where entity = 'recording' and entity_id = ${recordingId}
+      and action in ('recording.speakers_swapped', 'extraction.completed')`;
+  const { swapped, completed } = rows[0] ?? { swapped: null, completed: null };
+  return swapped !== null && (completed === null || BigInt(swapped) > BigInt(completed));
 }

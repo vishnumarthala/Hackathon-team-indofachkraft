@@ -92,7 +92,7 @@ type Tx = postgres.TransactionSql;
 
 const globalForSql = globalThis as unknown as { __carethreadSql?: Sql };
 
-async function db(): Promise<Sql> {
+export async function db(): Promise<Sql> {
   if (typeof window !== "undefined") throw new Error("lib/facts.ts is server-only");
   if (!globalForSql.__carethreadSql) {
     const { default: postgresClient } = await import("postgres");
