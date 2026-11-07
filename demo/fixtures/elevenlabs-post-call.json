@@ -1,0 +1,213 @@
+{
+  "type": "post_call_transcription",
+  "event_timestamp": 1794052800,
+  "data": {
+    "agent_id": "demo-agent",
+    "conversation_id": "demo-conversation",
+    "status": "done",
+    "metadata": {
+      "call_duration_secs": 212
+    },
+    "transcript": [
+      {
+        "role": "agent",
+        "message": "Namaskaram Lakshmi garu. I am an AI assistant helping Demo Therapist prepare for Ravi's first session. This call is recorded and only your therapist will read the notes. Do you agree to continue?",
+        "time_in_call_secs": 0
+      },
+      {
+        "role": "user",
+        "message": "Yes, I agree. Avunu, please continue.",
+        "time_in_call_secs": 15
+      },
+      {
+        "role": "agent",
+        "message": "Thank you. How old is Ravi now?",
+        "time_in_call_secs": 20
+      },
+      {
+        "role": "user",
+        "message": "He is three years and four months old.",
+        "time_in_call_secs": 25
+      },
+      {
+        "role": "agent",
+        "message": "What worries you most about Ravi right now?",
+        "time_in_call_secs": 32
+      },
+      {
+        "role": "user",
+        "message": "He is not talking. He does not look at us and he does not turn when we call his name.",
+        "time_in_call_secs": 38
+      },
+      {
+        "role": "agent",
+        "message": "Did Ravi ever use words before?",
+        "time_in_call_secs": 51
+      },
+      {
+        "role": "user",
+        "message": "Yes, at age 2 he said a few words like amma and ball, then he stopped talking. Now he has no words.",
+        "time_in_call_secs": 57
+      },
+      {
+        "role": "agent",
+        "message": null,
+        "time_in_call_secs": 72
+      },
+      {
+        "role": "agent",
+        "message": "Thank you for sharing that. How does he play at home, alone or with other children?",
+        "time_in_call_secs": 74
+      },
+      {
+        "role": "user",
+        "message": "He plays alone and lines up his cars. He does not play with his cousins.",
+        "time_in_call_secs": 82
+      },
+      {
+        "role": "agent",
+        "message": "Does he repeat things, or move his hands in a special way?",
+        "time_in_call_secs": 95
+      },
+      {
+        "role": "user",
+        "message": "He repeats lines from cartoons and he flaps his hands when he is excited.",
+        "time_in_call_secs": 102
+      },
+      {
+        "role": "agent",
+        "message": "How does he react to loud sounds, or to changes in his routine?",
+        "time_in_call_secs": 115
+      },
+      {
+        "role": "user",
+        "message": "He covers his ears at the mixer and the pressure cooker. If we change the route to school he has a big tantrum.",
+        "time_in_call_secs": 122
+      },
+      {
+        "role": "agent",
+        "message": "When he is upset, does he ever hurt himself?",
+        "time_in_call_secs": 140
+      },
+      {
+        "role": "user",
+        "message": "Yes, he hits his own head with his hand when he is upset. Chala bhayam ga untundi.",
+        "time_in_call_secs": 146
+      },
+      {
+        "role": "agent",
+        "message": "That sounds hard, thank you for telling me. How are his sleep and eating?",
+        "time_in_call_secs": 160
+      },
+      {
+        "role": "user",
+        "message": "He sleeps late and he eats only rice and curd.",
+        "time_in_call_secs": 168
+      },
+      {
+        "role": "agent",
+        "message": "Is there anything in the family that you think your therapist should know?",
+        "time_in_call_secs": 177
+      },
+      {
+        "role": "user",
+        "message": "My younger brother also started talking late. Nothing else.",
+        "time_in_call_secs": 185
+      },
+      {
+        "role": "agent",
+        "message": "Thank you Lakshmi garu. I will share these notes with Demo Therapist, who will talk with you at the first session. Goodbye.",
+        "time_in_call_secs": 195
+      }
+    ],
+    "analysis": {
+      "transcript_summary": "Parent-reported intake for Ravi (synthetic), age three years four months. The parent consented to the AI assistant and recording. She reports no words now after a few words at age 2, poor eye contact, no response to name, solitary play with lining up of cars, repeated cartoon lines, hand flapping, covering ears at kitchen sounds, tantrums when the school route changes and head hitting when upset.",
+      "data_collection_results": {
+        "consent_given": {
+          "data_collection_id": "consent_given",
+          "value": true,
+          "rationale": "The parent said: Yes, I agree."
+        },
+        "child_age_months": {
+          "data_collection_id": "child_age_months",
+          "value": 40,
+          "rationale": "Three years and four months is 40 months."
+        },
+        "main_concern": {
+          "data_collection_id": "main_concern",
+          "value": "He is not talking, does not look at us and does not turn when we call his name.",
+          "rationale": "The parent described her main worry in her own words."
+        },
+        "speech_status": {
+          "data_collection_id": "speech_status",
+          "value": "No words now.",
+          "rationale": "The parent said he has no words now."
+        },
+        "lost_speech": {
+          "data_collection_id": "lost_speech",
+          "value": true,
+          "rationale": "The parent said he had a few words at age 2 and then stopped talking."
+        },
+        "lost_speech_details": {
+          "data_collection_id": "lost_speech_details",
+          "value": "Said a few words like amma and ball at about age 2, then stopped talking.",
+          "rationale": "The parent described when and what was lost."
+        },
+        "eye_contact": {
+          "data_collection_id": "eye_contact",
+          "value": "Does not look at the parents when they talk.",
+          "rationale": "The parent said he does not look at us."
+        },
+        "response_to_name": {
+          "data_collection_id": "response_to_name",
+          "value": "Does not turn when called by name.",
+          "rationale": "The parent said he does not turn when we call his name."
+        },
+        "play_and_peers": {
+          "data_collection_id": "play_and_peers",
+          "value": "Plays alone, lines up his cars, does not play with his cousins.",
+          "rationale": "The parent described solitary play."
+        },
+        "repetitive_behaviours": {
+          "data_collection_id": "repetitive_behaviours",
+          "value": "Lines up cars, repeats lines from cartoons, flaps hands when excited.",
+          "rationale": "The parent described lining up, repeated phrases and hand flapping."
+        },
+        "sensory": {
+          "data_collection_id": "sensory",
+          "value": "Covers his ears at the mixer and the pressure cooker.",
+          "rationale": "The parent described reactions to kitchen sounds."
+        },
+        "self_injury": {
+          "data_collection_id": "self_injury",
+          "value": true,
+          "rationale": "The parent said he hits his own head with his hand when he is upset."
+        },
+        "routines_and_tantrums": {
+          "data_collection_id": "routines_and_tantrums",
+          "value": "Big tantrum when the route to school changes.",
+          "rationale": "The parent described a reaction to a change in routine."
+        },
+        "sleep_and_eating": {
+          "data_collection_id": "sleep_and_eating",
+          "value": "Sleeps late; eats only rice and curd.",
+          "rationale": "The parent described sleep and eating."
+        },
+        "family_history": {
+          "data_collection_id": "family_history",
+          "value": "The parent's younger brother started talking late.",
+          "rationale": "The parent mentioned a family member who talked late."
+        }
+      }
+    },
+    "conversation_initiation_client_data": {
+      "dynamic_variables": {
+        "intake_token": "demo-intake-token",
+        "child_alias": "Ravi (synthetic)",
+        "parent_alias": "Lakshmi (synthetic)",
+        "therapist_name": "Demo Therapist",
+        "language": "te"
+      }
+    }
+  }
+}

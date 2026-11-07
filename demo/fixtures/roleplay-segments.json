@@ -1,0 +1,290 @@
+[
+  {
+    "id": "s1",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 0.5,
+    "end_sec": 6.59,
+    "text": "Good morning Lakshmi garu, thank you for bringing Ravi today. I will ask some questions while he plays, is that okay?"
+  },
+  {
+    "id": "s2",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 8.59,
+    "end_sec": 12.56,
+    "text": "Yes madam, avunu, that is fine. He already went to the toy corner."
+  },
+  {
+    "id": "s3",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 14.66,
+    "end_sec": 18.54,
+    "text": "When you talk to Ravi at home, does he look at you?"
+  },
+  {
+    "id": "s4",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 20.74,
+    "end_sec": 27.12,
+    "text": "No madam, he does not look at us when we talk. Even when I feed him he never looks in my eyes."
+  },
+  {
+    "id": "s5",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 29.42,
+    "end_sec": 32.42,
+    "text": "And when you call his name from another room?"
+  },
+  {
+    "id": "s6",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 34.42,
+    "end_sec": 40.33,
+    "text": "He does not turn when we call his name. I call Ravi, Ravi, many times, kani he keeps playing."
+  },
+  {
+    "id": "s7",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 42.43,
+    "end_sec": 46.78,
+    "text": "Note: child did not respond to name in three attempts, rate item 5 as 4."
+  },
+  {
+    "id": "s8",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 48.98,
+    "end_sec": 53.24,
+    "text": "Same thing at home, madam. My mother says he is in his own world."
+  },
+  {
+    "id": "s9",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 55.54,
+    "end_sec": 58.84,
+    "text": "Let us talk about speech. Did Ravi ever say words?"
+  },
+  {
+    "id": "s10",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 60.84,
+    "end_sec": 67.8,
+    "text": "Yes, at age 2 he said a few words, amma, nanna, ball. Then slowly he stopped talking. Now he says no words at all."
+  },
+  {
+    "id": "s11",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 69.9,
+    "end_sec": 74.45,
+    "text": "Thank you for telling me, that is important. Did anything else happen around that time?"
+  },
+  {
+    "id": "s12",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 76.65,
+    "end_sec": 82.27,
+    "text": "Nothing special. My husband said boys talk late, so we waited. Kani the words did not come back."
+  },
+  {
+    "id": "s13",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 84.57,
+    "end_sec": 87.57,
+    "text": "How does he play at home?"
+  },
+  {
+    "id": "s14",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 89.57,
+    "end_sec": 96.44,
+    "text": "He lines up his toys in one long line, cars, blocks, even spoons. He plays alone, he does not play with his cousins."
+  },
+  {
+    "id": "s15",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 98.54,
+    "end_sec": 102.13,
+    "text": "Does he keep any one toy with him all the time?"
+  },
+  {
+    "id": "s16",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 104.33,
+    "end_sec": 108.39,
+    "text": "Yes, one small red car. He takes it to bed, to the bathroom, everywhere."
+  },
+  {
+    "id": "s17",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 110.69,
+    "end_sec": 113.79,
+    "text": "Does he make other sounds or repeat things he hears?"
+  },
+  {
+    "id": "s18",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 115.79,
+    "end_sec": 121.12,
+    "text": "He repeats lines from cartoons, the same line again and again, but not to talk to us."
+  },
+  {
+    "id": "s19",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 123.22,
+    "end_sec": 126.7,
+    "text": "Does he point at things he wants, or to show you something?"
+  },
+  {
+    "id": "s20",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 128.9,
+    "end_sec": 133.74,
+    "text": "No, he does not point. If he wants water he pulls my hand to the kitchen."
+  },
+  {
+    "id": "s21",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 136.04,
+    "end_sec": 139.04,
+    "text": "How does he react to noises at home?"
+  },
+  {
+    "id": "s22",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 141.04,
+    "end_sec": 146.84,
+    "text": "He covers his ears at the mixer and the pressure cooker whistle. Sometimes he runs and hides behind the sofa."
+  },
+  {
+    "id": "s23",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 148.94,
+    "end_sec": 151.94,
+    "text": "And when he is happy or excited?"
+  },
+  {
+    "id": "s24",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 154.14,
+    "end_sec": 159.76,
+    "text": "He flaps his hands very fast and jumps on his toes, chala fast, when the cartoon song comes."
+  },
+  {
+    "id": "s25",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 162.06,
+    "end_sec": 165.83,
+    "text": "Note: child flapped hands twice during play today, rate item 24 as 4."
+  },
+  {
+    "id": "s26",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 167.83,
+    "end_sec": 171.22,
+    "text": "Yes, just now also he did it with the red car."
+  },
+  {
+    "id": "s27",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 173.32,
+    "end_sec": 176.32,
+    "text": "What happens when something changes in his routine?"
+  },
+  {
+    "id": "s28",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 178.52,
+    "end_sec": 184.61,
+    "text": "Big tantrum. One day we changed the route to school because of traffic. He screamed and kicked for half an hour."
+  },
+  {
+    "id": "s29",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 186.91,
+    "end_sec": 190.3,
+    "text": "When he is upset like that, does he ever hurt himself?"
+  },
+  {
+    "id": "s30",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 192.3,
+    "end_sec": 200.24,
+    "text": "Yes madam, this worries me most. He hits his own head with his hand when he is upset. I hold his hands so he is safe."
+  },
+  {
+    "id": "s31",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 202.34,
+    "end_sec": 206.4,
+    "text": "Thank you, that helps me. Does he come to tell you about his day?"
+  },
+  {
+    "id": "s32",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 208.6,
+    "end_sec": 213.73,
+    "text": "No, he never comes to tell us anything. He only takes my hand when he needs something."
+  },
+  {
+    "id": "s33",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 216.03,
+    "end_sec": 219.03,
+    "text": "How are his sleep and food?"
+  },
+  {
+    "id": "s34",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 221.03,
+    "end_sec": 225.96,
+    "text": "Sleep is okay but late. He eats only rice and curd from the same plate every day."
+  },
+  {
+    "id": "s35",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 228.06,
+    "end_sec": 234.64,
+    "text": "Thank you Lakshmi garu. I only document what I see and what you share, and we will plan the next steps together."
+  },
+  {
+    "id": "s36",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 236.84,
+    "end_sec": 240.43,
+    "text": "Thank you madam, chala thanks. I just want to help him."
+  }
+]
