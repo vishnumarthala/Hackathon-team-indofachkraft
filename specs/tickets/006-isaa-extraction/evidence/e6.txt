@@ -1,0 +1,15 @@
+## E-6 step 1: seeded session=657d3f9d-5337-47c0-a15e-dd178fe3245a
+## step 2
+moved
+## step 3
+{"error":"Extraction failed","details":"Missing fixture gemini/extract.json"} 502
+## step 4
+[{"status":"extracted","has_error":true,"n":40,"item5":"confirmed"}]
+## step 5
+restored
+## audit
+[{"action":"extraction.failed","details":{"error":"Missing fixture gemini/extract.json"}}]
+## re-run after restore
+200 0.670625
+40 0
+[{"status":"extracted","error":null}]
