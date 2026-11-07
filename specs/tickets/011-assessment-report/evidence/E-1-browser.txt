@@ -1,0 +1,146 @@
+initial: CareThread
+Dashboard
+Demo - synthetic data only. AI documents, the clinician decides.
+Ravi (synthetic)
+
+40 months
+Telugu
+In assessment
+
+Overview
+Brief
+Sessions
+Report
+Referral
+Assessment report
+Session
+Session 1
+Generate draft report
+
+session options: ["Session 1"]
+
+generate ms: 2333
+
+STEP3:
+CareThread
+Dashboard
+Demo - synthetic data only. AI documents, the clinician decides.
+Ravi (synthetic)
+
+40 months
+Telugu
+In assessment
+
+Overview
+Brief
+Sessions
+Report
+Referral
+Assessment report
+Session
+Session 1
+Regenerate draft
+Report (Markdown)
+Save
+Mark final
+Assessment report - Ravi (synthetic)
+
+Session 1 · 2026-11-07 · Demo Therapist
+
+Background
+
+Ravi (synthetic) is a boy aged 40 months who attended a first session with his mother Lakshmi (synthetic). Before the session the mother completed an intake call with the AI assistant. She reports that Ravi used a few words at age 2 and then stopped talking. This draft documents what the therapist confirmed in the session; it is not a diagnosis and the clinician decides on next steps.
+
+ISAA result
+
+ISAA total: 83 · Mild (70-106)
+
+Domain	Score	Max
+Social relationship and reciprocity	25	45
+Emotional responsiveness	5	25
+Speech-language and communication	20	45
+Behaviour patterns	20	35
+Sensory aspects	9	30
+Cognitive component	4	20
+Observations
+Social relationship and reciprocity
+
+Ravi did not look at people when spoken to and did not turn to his name in three attempts during the session. The mother reports that he plays alone and does not join his cousins. (items 1, 5, 6, 7, 9)
+
+Speech-language and communication
+
+The mother reports a few words at age 2 that were later lost; no words were heard in the session. He repeats lines from cartoons and does not point to request or to show. (items 15, 16, 18, 20)
+
+Behaviour patterns
+
+Hand flapping was seen twice during play. The mother reports lining up of toys, strong distress when the route to school changes, attachment to one toy car and hitting his own head when upset. (items 24, 25, 28, 29, 30)
+
+Sensory aspects
+
+The mother reports that Ravi covers his ears at the mixer and the pressure cooker whistle and sometimes hides. (items 31)
+
+Red flags
+Lost speech
+Self-injury
+Suggested next steps
+Referral to specialist (Phase 3)
+Discuss the reported loss of words with a developmental paediatrician.
+Make a safety plan with the family for head hitting when Ravi is upset.
+Keep daily routines predictable and prepare Ravi before changes such as a new route.
+Offer a quiet space during loud kitchen sounds at home.
+Review progress with the family at the next session.
+
+AI-drafted from confirmed observations. Reviewed and decided by Demo Therapist. This is not a diagnosis by AI.
+
+STEP5:
+CareThread
+Dashboard
+Demo - synthetic data only. AI documents, the clinician decides.
+Ravi (synthetic)
+
+40 months
+Telugu
+In assessment
+
+Overview
+Brief
+Sessions
+Report
+Referral
+Assessment report
+Session
+Session 1
+Regenerate draft
+Report (Markdown)
+Save
+Mark final
+Saved
+Edited by therapist
+
+STEP6:
+CareThread
+Dashboard
+Demo - synthetic data only. AI documents, the clinician decides.
+Ravi (synthetic)
+
+40 months
+Telugu
+In assessment
+
+Overview
+Brief
+Sessions
+Report
+Referral
+Assessment report
+Session
+Session 1
+Final
+Report (Markdown)
+Edited by therapist
+
+save buttons after final: 0
+
+readonly: 
+
+after reload Final badge: 1, regenerate buttons: 0

@@ -1,0 +1,6 @@
+$ step 4
+[{"total":83}]
+$ step 7
+[{"status":"final","content_md":"# Edited by therapist"}]
+$ audit
+[{"action":"report.drafted","actor":"ai"},{"action":"report.edited","actor":"therapist"},{"action":"report.finalized","actor":"therapist"}]
