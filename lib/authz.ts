@@ -45,6 +45,30 @@ export async function requireProviderApi(): Promise<{ actor: Actor } | { respons
   return { actor: { user, role } };
 }
 
+export async function requirePlatformAdminApi(): Promise<{ actor: Actor } | { response: Response }> {
+  const user = await getAuthenticatedUser();
+  if (!user) return { response: fail(401, "Authentication required") };
+  const role = await getUserRole(user.id);
+  if (role !== "platform_admin") return { response: fail(403, "Platform admin access required") };
+  return { actor: { user, role } };
+}
+
+// Ticket 028: only the provider bound to a profile may change it. Other providers' ids, missing and
+// malformed ids all give the same 404.
+export async function requireProviderProfileOwner(
+  profileId: string,
+): Promise<{ actor: Actor } | { response: Response }> {
+  const result = await requireProviderApi();
+  if ("response" in result) return result;
+  if (!isUuid(profileId)) return { response: fail(404, "Profile not found") };
+  const { data, error } = await supabaseAdmin().from("provider_profiles").select("user_id").eq("id", profileId).maybeSingle();
+  if (error) throw new Error(`Could not load provider profile: ${error.message}`);
+  if ((data as { user_id: string | null } | null)?.user_id !== result.actor.user.id) {
+    return { response: fail(404, "Profile not found") };
+  }
+  return result;
+}
+
 async function lookupCaseId(table: "recordings" | "reports" | "facts", id: string): Promise<string | null> {
   if (!isUuid(id)) return null;
   const { data, error } = await supabaseAdmin().from(table).select("case_id").eq("id", id).maybeSingle();
@@ -85,6 +109,13 @@ export function requireReportAccess(reportId: string, notFoundMessage = "Report 
 
 export function requireFactAccess(factId: string, notFoundMessage = "Fact not found") {
   return gate(() => lookupCaseId("facts", factId), notFoundMessage);
+}
+
+export async function requirePlatformAdminPage(): Promise<Actor> {
+  const user = await requirePageUser();
+  const role = await getUserRole(user.id);
+  if (role !== "platform_admin") notFound();
+  return { user, role };
 }
 
 export async function requireProviderPage(): Promise<Actor> {

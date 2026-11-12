@@ -21,6 +21,7 @@ describe("authentication route access", () => {
       "/api/pilot-signups",
       "/api/locale",
       "/api/demo/voice-token",
+      "/api/providers/join",
       "/api/webhooks/elevenlabs",
       "/api/intake/a-token/start",
       "/api/intake/a-token/complete",
@@ -32,6 +33,7 @@ describe("authentication route access", () => {
     }
 
     expect(isProtectedPath("/api/cases/123")).toBe(true);
+    expect(isProtectedPath("/api/providers/register")).toBe(true);
   });
 
   it("does not protect public landing, login, intake, or specialist pages", () => {

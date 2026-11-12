@@ -119,6 +119,19 @@ flowchart LR
   texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
   token-based API endpoints and signed webhook are public by design.
+- **Provider profiles and verification (ticket 028).** Stable `provider_profiles.id` per provider,
+  public at `/p/<slug>` (and centres at `/c/<slug>`) only when a platform admin verified the registration
+  (`/admin/verifications`) and the provider listed it. Self-registration at `/join`, admin seeding at
+  `/admin/providers/new`, single-use claim links at `/claim/<token>`. `can_prescribe` is the SQL function
+  `provider_can_prescribe(profile_id)` (type + verified + NMC/state council), never stored. See
+  `docs/providers.md`.
+- **"Near me" directory (ticket 029).** PostGIS (`extensions` schema): `practice_locations.geog` is
+  maintained from `lat/lng` by a trigger (GiST index); `search_providers(...)` (service role only) returns
+  verified + listed profiles, one row per profile at its nearest location. Public `/find` (server-rendered
+  from the URL, list works without a map), `GET /api/public/providers` (60/min per IP), SEO pages
+  `/find/hyderabad/<type>`, `Get directions` on `/p/<slug>`. Addresses are geocoded server-side when a
+  location is created (Google with `GOOGLE_MAPS_SERVER_KEY`, else the bundled Hyderabad PIN code table).
+  The searcher's location is never stored. See `docs/maps.md`.
 
 ## 3. Repo layout
 
@@ -175,6 +188,9 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `NEXT_PUBLIC_APP_URL` | links in emails, WhatsApp text | `http://localhost:3000` locally |
 | | | The 4 Supabase variables below are written by `npm run db:env` from `npx supabase status -o env` (`API_URL`, `ANON_KEY`, `SERVICE_ROLE_KEY`, `DB_URL`) |
 | `DEMO_MODE` | all integrations | `true` = fixtures instead of external AI/email calls (section 9) |
+| `SHOW_SYNTHETIC_LISTINGS` | public provider pages (028) | default `true`: demo profiles shown with a `Demo profile` badge; `false` hides them |
+| `GOOGLE_MAPS_SERVER_KEY` | server geocoding (029) | optional; Geocoding API only, IP/API restricted, never sent to the browser; unset or `DEMO_MODE=true` -> bundled Hyderabad table (`docs/maps.md`) |
+| `NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY` / `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` | `/find` map + Places, `/p` static map (029) | optional; referrer restricted; passed to client components at request time; unset -> list only |
 | `NEXT_PUBLIC_SUPABASE_URL` | server + browser upload | |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | browser upload only | cannot read tables (RLS) |
 | `SUPABASE_SERVICE_ROLE_KEY` | server only | never sent to the browser |
@@ -468,6 +484,8 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `POST /api/cases/:id/refer` | 012 | `{ specialist_name, specialist_email, reason, parent_consent: true }` | 201 `{ referral_id, url, emailed }` |
 | `POST /api/cases/:id/ask` | 013 | `{ share_token, question }` | 200 `{ found, answer, citations: ResolvedCitation[] }` |
 | `POST /api/pilot-signups` | 014 | `{ name, email, role, country, centre?, clinicians?, note?, website? }` (`website` = hidden honeypot) | 201 `{ ok: true }` (200 if email exists or honeypot filled) |
+| `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
+| `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 
 `ResolvedCitation = { kind: "fact" | "segment", id, recording_id, session_number | null, start_sec, label }`

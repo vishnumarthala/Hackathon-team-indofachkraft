@@ -68,6 +68,8 @@ app.` via `withConsentHint()` (`lib/consent/features.ts`, safe in the browser).
   the same child never see each other's case data (cross-org sharing is ticket 022).
 - Providers can never give consent digitally (`/api/family/**` -> 403). They record **paper** consent.
 - Platform admins revoke a guardian link with `POST /api/admin/guardian-links/:id/revoke`.
+- Ticket 028's provider self-registration refuses accounts with an active guardian link
+  (`user_has_guardian_links()` reads `guardian_links.user_id/status`; this migration runs first).
 
 ## Guardian flows
 

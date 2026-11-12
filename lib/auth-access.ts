@@ -12,6 +12,8 @@ export function isPublicApiPath(pathname: string): boolean {
     pathname === "/api/pilot-signups" ||
     pathname === "/api/locale" ||
     pathname === "/api/demo/voice-token" ||
+    pathname === "/api/providers/join" ||
+    pathname === "/api/public/providers" ||
     pathname === "/api/webhooks/elevenlabs" ||
     pathname === "/api/auth/phone/send" ||
     pathname === "/api/auth/phone/verify" ||
@@ -75,11 +77,18 @@ export function safeRelativePath(value: string | null | undefined): string | nul
   }
 }
 
+// 028: provider onboarding pages (`/join`, `/claim/<token>`) are open to every role, because a new account is
+// a guardian until POST /api/providers/register or a claim promotes it server-side.
+function isProviderOnboardingPath(pathname: string): boolean {
+  return pathname === "/join" || pathname.startsWith("/claim/");
+}
+
 /** Where a signed-in user goes after sign-in (FR-3): `next` only when it belongs to the user's area. */
 export function postSignInPath(role: AppRole, next: string | null | undefined): string {
   const safe = safeRelativePath(next);
   if (!safe) return homeForRole(role);
   const path = safe.split(/[?#]/)[0];
+  if (isProviderOnboardingPath(path)) return safe;
   if (role === "guardian") return isFamilyPortalPath(path) ? safe : homeForRole(role);
   return isFamilyPath(path) ? homeForRole(role) : safe;
 }

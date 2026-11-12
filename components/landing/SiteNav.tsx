@@ -18,6 +18,7 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
   const ref = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const t = useT("nav");
+  const td = useT("directory.landing");
 
   // Solid background once the page scrolls (class toggle, no re-render on scroll).
   useEffect(() => {
@@ -51,6 +52,11 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
               </a>
             </li>
           ))}
+          <li>
+            <Link href="/find" className="lp-underline text-[0.92rem] font-medium opacity-80 transition-opacity hover:opacity-100">
+              {td("find")}
+            </Link>
+          </li>
         </ul>
 
         <div className="ml-auto flex items-center gap-2">
@@ -98,6 +104,11 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
               </a>
             </li>
           ))}
+          <li>
+            <Link href="/find" onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base font-medium text-[#0b1f1d]">
+              {td("find")}
+            </Link>
+          </li>
         </ul>
         <div className="mt-4 grid grid-cols-2 gap-3">
           <Link href="/login" className="lp-btn flex min-h-12 items-center justify-center rounded-full border border-[#0b1f1d]/15 bg-white px-2 text-center font-semibold text-[#0b1f1d]">

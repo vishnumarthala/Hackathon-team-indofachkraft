@@ -61,6 +61,22 @@ export const env = {
   get DEMO_EMAIL_TO() {
     return read("DEMO_EMAIL_TO");
   },
+  // 028 NFR-1: demo (is_synthetic) provider profiles stay visible with a badge unless this is "false".
+  get SHOW_SYNTHETIC_LISTINGS() {
+    return process.env.SHOW_SYNTHETIC_LISTINGS !== "false";
+  },
+  // 029: Google Maps. Server key (Geocoding API) is server-only; the browser key (Maps JavaScript, Places,
+  // Static Maps) is HTTP-referrer restricted and passed to client components as a prop. Both optional:
+  // without them geocoding uses the bundled Hyderabad table and /find shows the list without a map.
+  get GOOGLE_MAPS_SERVER_KEY() {
+    return read("GOOGLE_MAPS_SERVER_KEY");
+  },
+  get NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY() {
+    return read("NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY");
+  },
+  get NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID() {
+    return read("NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID");
+  },
   get ELEVENLABS_VOICE_ID_EN() {
     return read("ELEVENLABS_VOICE_ID_EN");
   },

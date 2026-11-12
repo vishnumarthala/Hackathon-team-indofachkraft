@@ -3,7 +3,7 @@
 Branch: `ticket/020-children-consent`. Tested against the isolated local Supabase stack `dnmslot4` (ports
 603xx; all seven migrations applied by `db reset`), `DEMO_MODE=true`, `DEMO_FIXTURES_DIR=.tmp/fx-3040`,
 dev server on port 3040, integrated browser (Playwright). Accounts from `npm run -s seed:users -- --prefix acct`;
-synthetic data only. Raw evidence in `evidence/` (`acceptance.txt` = scripted API/HTML run, 97 checks, all PASS;
+synthetic data only. Raw evidence in `evidence/` (`acceptance.txt` = scripted API/HTML run, 98 checks after the merge below, all PASS;
 `vitest-020-verbose.txt` = the eval test command incl. the gated-route table; screenshots).
 
 | Check | Result | Evidence |
@@ -74,3 +74,25 @@ synthetic data only. Raw evidence in `evidence/` (`acceptance.txt` = scripted AP
 - **Pre-existing, not changed:** a browser holding a session cookie for a user that no longer exists
   (e.g. after `db reset`) gets a 500 from `proxy.ts` (`User from sub claim in JWT does not exist` is not
   treated as an invalid session). Clearing cookies fixes it.
+
+## Merge with `main` (028 provider profiles, 029 PostGIS directory)
+
+- `git merge main` into `ticket/020-children-consent`. Conflicts: `messages/{en,hi,te}.json` (both sides'
+  keys kept, deep-merged, no value clashes), `messages/REVIEW.md` (regenerated with
+  `npx tsx scripts/i18n-review.ts`), `next.config.ts` (020 `proxyClientMaxBodySize` + 029 request-log filter).
+  `lib/authz.ts`, `lib/env.ts`, `.env.example`, `docs/system-design.md` merged automatically.
+- Migration order: `20261113002000_children_consent` -> `20261113002800_provider_profiles` ->
+  `20261113002900_postgis_directory`; `db reset` on slot 4 applied all nine migrations.
+- 028's stand-in: `user_has_guardian_links()` (028 migration) already reads `guardian_links.user_id` /
+  `status = 'active'` dynamically, which matches 020's table, so no migration change is needed (existing
+  migrations are not edited). `tests/provider-profiles.test.ts` no longer creates a fake `guardian_links`
+  table: it inserts a real synthetic child + active link, expects `user_has_guardian_links() = true` and 403
+  on `POST /api/providers/register` (role stays guardian, no profile), and `false` once the link is revoked.
+  The acceptance run also checks the function against a link created through the claim flow.
+- Note for 041/ops: the 028 function returns `false` if `guardian_links` were ever missing (fail open);
+  with 020 merged first the table always exists.
+- After the merge, slot 4 reset: `npm run lint` and `npm run typecheck` exit 0; `npx vitest run` 52 files,
+  701 passed, 10 skipped (the pre-existing 010 block; all DB suites ran, including 028/029 and the 020
+  suites); `npm run build` exit 0; acceptance script 98/98 PASS. (The intake-page check in the script now
+  matches the rendered element instead of the page text, because the English catalogue is embedded in the
+  RSC payload.)
