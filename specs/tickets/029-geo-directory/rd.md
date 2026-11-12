@@ -1,6 +1,6 @@
 # 029: PostGIS "near me" directory with Google Maps
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 028: searches verified, listed provider profiles and their practice locations
 

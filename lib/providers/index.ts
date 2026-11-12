@@ -30,6 +30,8 @@ export type ProviderProfile = {
   listed: boolean;
   claimed: boolean;
   is_synthetic: boolean;
+  offers_video: boolean;
+  offers_in_clinic: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -38,7 +40,7 @@ export type ProviderProfile = {
 export const PROFILE_COLUMNS =
   "id, user_id, slug, display_name, provider_type, qualifications, bio, languages, years_experience, photo_path, " +
   "registration_council, registration_state, registration_number, verification_status, verified_at, time_zone, " +
-  "listed, claimed, is_synthetic, created_at, updated_at";
+  "listed, claimed, is_synthetic, offers_video, offers_in_clinic, created_at, updated_at";
 
 export type Location = {
   id: string;

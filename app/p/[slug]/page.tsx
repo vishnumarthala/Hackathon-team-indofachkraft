@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DemoBadge, jsonLdScript, ProviderAvatar, VerifiedBadge } from "@/components/providers/PublicProfile";
 import { env } from "@/lib/env";
+import { directionsUrl, staticMapUrl } from "@/lib/geo/constants";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { PRESCRIBER_TYPES } from "@/lib/providers/constants";
 import { getPublicProfile } from "@/lib/providers/public";
@@ -35,7 +36,11 @@ export default async function PublicProfilePage({ params }: Props) {
   if (!data) notFound();
   const { provider, locations } = data;
   const t = await getT("providers");
+  const td = await getT("directory");
   const format = await getFormatter();
+  const browserKey = env.NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY;
+  const mapped = locations.filter((loc) => loc.lat !== null && loc.lng !== null).map((loc) => ({ lat: Number(loc.lat), lng: Number(loc.lng) }));
+  const modes = [provider.offers_in_clinic ? td("modes.in_clinic") : null, provider.offers_video ? td("modes.video") : null].filter(Boolean);
   const appUrl = env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
 
   const jsonLd = {
@@ -111,6 +116,18 @@ export default async function PublicProfilePage({ params }: Props) {
       {locations.length ? (
         <section>
           <h2 className="text-lg font-semibold text-slate-900">{t("public.locations")}</h2>
+          {/* 029 FR-6: static map when a browser key is configured; directions links work without one. */}
+          {browserKey && mapped.length ? (
+            // eslint-disable-next-line @next/next/no-img-element -- Google Maps Static API image
+            <img
+              src={staticMapUrl(mapped, browserKey)}
+              alt={td("profileMap.alt", { name: provider.display_name })}
+              width={640}
+              height={320}
+              loading="lazy"
+              className="mt-2 h-auto w-full rounded border border-slate-200"
+            />
+          ) : null}
           <ul className="mt-2 space-y-3">
             {locations.map((loc) => (
               <li key={loc.id} className="rounded border border-slate-200 bg-white p-3 text-sm text-slate-700">
@@ -137,6 +154,17 @@ export default async function PublicProfilePage({ params }: Props) {
                     {t("public.website")}: <a href={loc.org.website} rel="noopener noreferrer nofollow" target="_blank" className="underline">{loc.org.website}</a>
                   </p>
                 ) : null}
+                {loc.lat !== null && loc.lng !== null ? (
+                  <a
+                    href={directionsUrl(Number(loc.lat), Number(loc.lng))}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={td("profileMap.directionsTo", { place: loc.name })}
+                    className="mt-1 inline-flex min-h-11 items-center font-medium text-teal-800 underline"
+                  >
+                    {td("profileMap.directions")}
+                  </a>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -145,7 +173,7 @@ export default async function PublicProfilePage({ params }: Props) {
 
       <section>
         <h2 className="text-lg font-semibold text-slate-900">{t("public.consultModes")}</h2>
-        <p className="text-slate-700">{t("public.consultModesSoon")}</p>
+        <p className="text-slate-700">{modes.length ? modes.join(", ") : t("public.consultModesSoon")}</p>
       </section>
 
       <div className="space-y-1">

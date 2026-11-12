@@ -54,6 +54,14 @@ export async function seedProvider(
   const outcome = data as { result: string; profile_id?: string; org_id?: string; location_id?: string };
   if (outcome.result === "org_not_found") return { ok: false, status: 404, error: "Organisation not found" };
   if (outcome.result === "location_not_found") return { ok: false, status: 404, error: "Location not found" };
+  // 029: consultation modes are plain profile flags (no verification impact), set after the seed transaction.
+  if (input.offers_in_clinic !== undefined || input.offers_video !== undefined) {
+    const modes = Object.fromEntries(
+      Object.entries({ offers_in_clinic: input.offers_in_clinic, offers_video: input.offers_video }).filter(([, v]) => v !== undefined),
+    );
+    const { error: modeError } = await supabaseAdmin().from("provider_profiles").update(modes).eq("id", outcome.profile_id as string);
+    if (modeError) throw new Error(`Could not set consultation modes: ${modeError.message}`);
+  }
   return {
     ok: true,
     data: {

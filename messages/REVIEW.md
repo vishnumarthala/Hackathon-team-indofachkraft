@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 681. Not yet approved: 681.
+Rows: 757. Not yet approved: 757.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -696,3 +696,79 @@ Rows: 681. Not yet approved: 681.
 | `family.settings.linkFailed` | Could not connect this sign-in method. Please try again. | साइन इन का यह तरीका नहीं जुड़ सका। कृपया फिर से कोशिश करें। | ఈ సైన్ ఇన్ పద్ధతిని కనెక్ట్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `family.settings.linked` | Sign-in method added. | साइन इन का तरीका जोड़ दिया गया। | సైన్ ఇన్ పద్ధతి జోడించబడింది. |  | pending |
 | `family.settings.unlinked` | Sign-in method removed. | साइन इन का तरीका हटा दिया गया। | సైన్ ఇన్ పద్ధతి తీసివేయబడింది. |  | pending |
+| `directory.title` | Find a provider near you | अपने पास कोई विशेषज्ञ खोजें | మీ దగ్గర నిపుణులను కనుగొనండి |  | pending |
+| `directory.intro` | Verified child-development specialists and centres in Hyderabad. Search by locality or PIN code. | हैदराबाद में सत्यापित बाल-विकास विशेषज्ञ और केंद्र। इलाके या पिन कोड से खोजें। | హైదరాబాద్‌లో ధృవీకరించబడిన పిల్లల అభివృద్ధి నిపుణులు మరియు కేంద్రాలు. ప్రాంతం లేదా పిన్ కోడ్‌తో వెతకండి. |  | pending |
+| `directory.metaTitle` | Find child-development specialists near you in Hyderabad \| DoctorNearMe | हैदराबाद में अपने पास बाल-विकास विशेषज्ञ खोजें \| DoctorNearMe | హైదరాబాద్‌లో మీ దగ్గర పిల్లల అభివృద్ధి నిపుణులను కనుగొనండి \| DoctorNearMe |  | pending |
+| `directory.metaDescription` | Search verified speech therapists, occupational therapists, developmental paediatricians and centres near you in Hyderabad. | हैदराबाद में अपने पास सत्यापित स्पीच थेरेपिस्ट, ऑक्यूपेशनल थेरेपिस्ट, विकासात्मक बाल रोग विशेषज्ञ और केंद्र खोजें। | హైదరాబాద్‌లో మీ దగ్గర ధృవీకరించబడిన స్పీచ్ థెరపిస్టులు, ఆక్యుపేషనల్ థెరపిస్టులు, డెవలప్‌మెంటల్ పీడియాట్రీషియన్లు మరియు కేంద్రాలను వెతకండి. |  | pending |
+| `directory.filters.legend` | Search | खोजें | వెతకండి |  | pending |
+| `directory.filters.location` | Location | स्थान | ప్రాంతం |  | pending |
+| `directory.filters.locationHint` | Locality or PIN code, e.g. Banjara Hills or 500034 | इलाका या पिन कोड, जैसे Banjara Hills या 500034 | ప్రాంతం లేదా పిన్ కోడ్, ఉదా. Banjara Hills లేదా 500034 |  | pending |
+| `directory.filters.useMyLocation` | Use my location | मेरा स्थान इस्तेमाल करें | నా లొకేషన్ ఉపయోగించండి |  | pending |
+| `directory.filters.locating` | Finding your location... | आपका स्थान खोजा जा रहा है... | మీ లొకేషన్ కనుగొంటున్నాం... |  | pending |
+| `directory.filters.locationDenied` | We couldn't get your location. Type a locality or PIN code instead. | हमें आपका स्थान नहीं मिल सका। इसके बजाय इलाका या पिन कोड लिखें। | మీ లొకేషన్ దొరకలేదు. బదులుగా ప్రాంతం లేదా పిన్ కోడ్ టైప్ చేయండి. |  | pending |
+| `directory.filters.specialty` | Specialty | विशेषज्ञता | నైపుణ్యం |  | pending |
+| `directory.filters.anySpecialty` | All specialties | सभी विशेषज्ञताएँ | అన్ని నైపుణ్యాలు |  | pending |
+| `directory.filters.centres` | Centres | केंद्र | కేంద్రాలు |  | pending |
+| `directory.filters.language` | Language | भाषा | భాష |  | pending |
+| `directory.filters.anyLanguage` | Any language | कोई भी भाषा | ఏ భాష అయినా |  | pending |
+| `directory.filters.consultation` | Consultation | परामर्श | సంప్రదింపు |  | pending |
+| `directory.filters.distance` | Distance | दूरी | దూరం |  | pending |
+| `directory.filters.distanceOption` | {km} km | {km} कि.मी. | {km} కి.మీ. |  | pending |
+| `directory.filters.search` | Search | खोजें | వెతకండి |  | pending |
+| `directory.filters.suggestions` | Suggested places | सुझाए गए स्थान | సూచించిన ప్రాంతాలు |  | pending |
+| `directory.modes.in_clinic` | In clinic | क्लिनिक में | క్లినిక్‌లో |  | pending |
+| `directory.modes.video` | Video | वीडियो | వీడియో |  | pending |
+| `directory.modes.any` | Any | कोई भी | ఏదైనా |  | pending |
+| `directory.results.near` | Providers near {place} | {place} के पास विशेषज्ञ | {place} దగ్గర నిపుణులు |  | pending |
+| `directory.results.yourLocation` | your location | आपके स्थान | మీ లొకేషన్ |  | pending |
+| `directory.results.kmAway` | {distance} km away | {distance} कि.मी. दूर | {distance} కి.మీ. దూరంలో |  | pending |
+| `directory.results.videoAnywhere` | Video consultations | वीडियो परामर्श | వీడియో సంప్రదింపులు |  | pending |
+| `directory.results.languages` | Languages | भाषाएँ | భాషలు |  | pending |
+| `directory.results.consultation` | Consultation | परामर्श | సంప్రదింపు |  | pending |
+| `directory.results.viewProfile` | View profile | प्रोफ़ाइल देखें | ప్రొఫైల్ చూడండి |  | pending |
+| `directory.results.book` | Book | बुक करें | బుక్ చేయండి |  | pending |
+| `directory.results.bookSoon` | Online booking is coming soon. | ऑनलाइन बुकिंग जल्द आ रही है। | ఆన్‌లైన్ బుకింగ్ త్వరలో వస్తుంది. |  | pending |
+| `directory.results.empty` | No providers found nearby. Try a larger distance. | आसपास कोई विशेषज्ञ नहीं मिला। ज़्यादा दूरी चुनकर देखें। | దగ్గరలో నిపుణులు ఎవరూ దొరకలేదు. ఎక్కువ దూరం ఎంచుకుని చూడండి. |  | pending |
+| `directory.results.start` | Type a locality or PIN code, or use your location, to see providers near you. | अपने पास के विशेषज्ञ देखने के लिए इलाका या पिन कोड लिखें, या अपना स्थान इस्तेमाल करें। | మీ దగ్గర ఉన్న నిపుణులను చూడడానికి ప్రాంతం లేదా పిన్ కోడ్ టైప్ చేయండి, లేదా మీ లొకేషన్ ఉపయోగించండి. |  | pending |
+| `directory.results.notFound` | We couldn't find that place. Try a locality or PIN code in Hyderabad. | हमें वह जगह नहीं मिली। हैदराबाद का कोई इलाका या पिन कोड लिखें। | ఆ ప్రదేశం దొరకలేదు. హైదరాబాద్‌లోని ఒక ప్రాంతం లేదా పిన్ కోడ్ ప్రయత్నించండి. |  | pending |
+| `directory.results.outsideArea` | We currently list providers in Hyderabad only | अभी हम केवल हैदराबाद के विशेषज्ञ दिखाते हैं | ప్రస్తుతం మేము హైదరాబాద్‌లోని నిపుణులను మాత్రమే చూపిస్తున్నాం |  | pending |
+| `directory.results.invalid` | Some search options were not valid. Check them and try again. | खोज के कुछ विकल्प सही नहीं थे। उन्हें जाँचकर फिर से कोशिश करें। | కొన్ని వెతుకు ఎంపికలు సరిగా లేవు. వాటిని సరిచూసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `directory.results.previous` | Previous | पिछला | మునుపటి |  | pending |
+| `directory.results.next` | Next | अगला | తదుపరి |  | pending |
+| `directory.results.pagination` | Result pages | परिणाम पृष्ठ | ఫలితాల పేజీలు |  | pending |
+| `directory.results.page` | Page {page} | पृष्ठ {page} | పేజీ {page} |  | pending |
+| `directory.results.view` | Show results as | परिणाम ऐसे दिखाएँ | ఫలితాలను ఇలా చూపించు |  | pending |
+| `directory.results.list` | List | सूची | జాబితా |  | pending |
+| `directory.results.map` | Map | नक्शा | మ్యాప్ |  | pending |
+| `directory.results.mapLabel` | Map of search results | खोज परिणामों का नक्शा | వెతుకు ఫలితాల మ్యాప్ |  | pending |
+| `directory.results.mapUnavailable` | The map could not be loaded. The list shows all results. | नक्शा लोड नहीं हो सका। सूची में सभी परिणाम हैं। | మ్యాప్ లోడ్ కాలేదు. జాబితాలో అన్ని ఫలితాలు ఉన్నాయి. |  | pending |
+| `directory.results.clusterLabel` | {count} providers here. Zoom in. | यहाँ {count} विशेषज्ञ हैं। ज़ूम इन करें। | ఇక్కడ {count} మంది నిపుణులు ఉన్నారు. జూమ్ ఇన్ చేయండి. |  | pending |
+| `directory.browse.title` | Browse by specialty in Hyderabad | हैदराबाद में विशेषज्ञता के अनुसार देखें | హైదరాబాద్‌లో నైపుణ్యం ప్రకారం చూడండి |  | pending |
+| `directory.seo.title` | {type} in Hyderabad | हैदराबाद में {type} | హైదరాబాద్‌లో {type} |  | pending |
+| `directory.seo.metaTitle` | {type} in Hyderabad \| DoctorNearMe | हैदराबाद में {type} \| DoctorNearMe | హైదరాబాద్‌లో {type} \| DoctorNearMe |  | pending |
+| `directory.seo.metaDescription` | Verified {type} in Hyderabad, listed by DoctorNearMe. Compare locations, languages and consultation modes. | हैदराबाद में सत्यापित {type}, DoctorNearMe पर सूचीबद्ध। स्थान, भाषाएँ और परामर्श के तरीके देखें। | హైదరాబాద్‌లో ధృవీకరించబడిన {type}, DoctorNearMeలో జాబితా చేయబడ్డారు. ప్రాంతాలు, భాషలు, సంప్రదింపు విధానాలు చూడండి. |  | pending |
+| `directory.seo.intro` | Verified providers within {km} km of central Hyderabad, nearest first. | मध्य हैदराबाद से {km} कि.मी. के भीतर सत्यापित विशेषज्ञ, सबसे पास वाले पहले। | మధ్య హైదరాబాద్ నుండి {km} కి.మీ. లోపు ధృవీకరించబడిన నిపుణులు, దగ్గర ఉన్నవారు ముందు. |  | pending |
+| `directory.seo.searchNearYou` | Search near you | अपने पास खोजें | మీ దగ్గర వెతకండి |  | pending |
+| `directory.seo.empty` | No verified providers are listed here yet. | यहाँ अभी कोई सत्यापित विशेषज्ञ सूचीबद्ध नहीं है। | ఇక్కడ ఇంకా ధృవీకరించబడిన నిపుణులు ఎవరూ జాబితాలో లేరు. |  | pending |
+| `directory.typesPlural.developmental_pediatrician` | Developmental paediatricians | विकासात्मक बाल रोग विशेषज्ञ | డెవలప్‌మెంటల్ పీడియాట్రీషియన్లు |  | pending |
+| `directory.typesPlural.child_psychiatrist` | Child psychiatrists | बाल मनोचिकित्सक | చైల్డ్ సైకియాట్రిస్టులు |  | pending |
+| `directory.typesPlural.child_psychologist` | Child psychologists | बाल मनोवैज्ञानिक | చైల్డ్ సైకాలజిస్టులు |  | pending |
+| `directory.typesPlural.speech_language_pathologist` | Speech-language pathologists | स्पीच-लैंग्वेज पैथोलॉजिस्ट | స్పీచ్-లాంగ్వేజ్ పాథాలజిస్టులు |  | pending |
+| `directory.typesPlural.occupational_therapist` | Occupational therapists | ऑक्यूपेशनल थेरेपिस्ट | ఆక్యుపేషనల్ థెరపిస్టులు |  | pending |
+| `directory.typesPlural.aba_therapist` | ABA therapists | ABA थेरेपिस्ट | ABA థెరపిస్టులు |  | pending |
+| `directory.typesPlural.special_educator` | Special educators | विशेष शिक्षक | ప్రత్యేక విద్యావేత్తలు |  | pending |
+| `directory.typesPlural.physiotherapist` | Physiotherapists | फ़िज़ियोथेरेपिस्ट | ఫిజియోథెరపిస్టులు |  | pending |
+| `directory.typesPlural.pediatrician` | Paediatricians | बाल रोग विशेषज्ञ | పిల్లల వైద్యులు |  | pending |
+| `directory.typesPlural.centre` | Child development centres | बाल विकास केंद्र | పిల్లల అభివృద్ధి కేంద్రాలు |  | pending |
+| `directory.profileMap.title` | Map | नक्शा | మ్యాప్ |  | pending |
+| `directory.profileMap.alt` | Map of {name}'s practice locations | {name} के प्रैक्टिस स्थानों का नक्शा | {name} ప్రాక్టీస్ చేసే ప్రదేశాల మ్యాప్ |  | pending |
+| `directory.profileMap.directions` | Get directions | रास्ता देखें | దారి చూపించు |  | pending |
+| `directory.profileMap.directionsTo` | Get directions to {place} | {place} तक का रास्ता देखें | {place} కు దారి చూపించు |  | pending |
+| `directory.landing.title` | Find care | देखभाल खोजें | సంరక్షణ కనుగొనండి |  | pending |
+| `directory.landing.find` | Find a provider near you | अपने पास विशेषज्ञ खोजें | మీ దగ్గర నిపుణులను కనుగొనండి |  | pending |
+| `directory.editor.geocodeFailed` | We couldn't find this address on the map. Check the pincode. | हमें यह पता नक्शे पर नहीं मिला। पिन कोड जाँचें। | ఈ చిరునామా మ్యాప్‌లో దొరకలేదు. పిన్ కోడ్ సరిచూడండి. |  | pending |
+| `directory.editor.notOnMap` | Not on the map: families can't find this location in search. Check the pincode. | नक्शे पर नहीं: परिवार खोज में यह स्थान नहीं देख पाएँगे। पिन कोड जाँचें। | మ్యాప్‌లో లేదు: వెతుకులో కుటుంబాలకు ఈ ప్రదేశం కనిపించదు. పిన్ కోడ్ సరిచూడండి. |  | pending |
+| `directory.editor.modes` | Consultation modes | परामर्श के तरीके | సంప్రదింపు విధానాలు |  | pending |
+| `directory.editor.modesHint` | Shown in the directory. Families filter by these. | डायरेक्टरी में दिखाए जाते हैं। परिवार इन्हीं से फ़िल्टर करते हैं। | డైరెక్టరీలో చూపిస్తారు. కుటుంబాలు వీటితో ఫిల్టర్ చేస్తాయి. |  | pending |
+| `directory.editor.offersInClinic` | In clinic | क्लिनिक में | క్లినిక్‌లో |  | pending |
+| `directory.editor.offersVideo` | Video consultations | वीडियो परामर्श | వీడియో సంప్రదింపులు |  | pending |

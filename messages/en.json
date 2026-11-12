@@ -791,5 +791,101 @@
       "linked": "Sign-in method added.",
       "unlinked": "Sign-in method removed."
     }
+  },
+  "directory": {
+    "title": "Find a provider near you",
+    "intro": "Verified child-development specialists and centres in Hyderabad. Search by locality or PIN code.",
+    "metaTitle": "Find child-development specialists near you in Hyderabad | DoctorNearMe",
+    "metaDescription": "Search verified speech therapists, occupational therapists, developmental paediatricians and centres near you in Hyderabad.",
+    "filters": {
+      "legend": "Search",
+      "location": "Location",
+      "locationHint": "Locality or PIN code, e.g. Banjara Hills or 500034",
+      "useMyLocation": "Use my location",
+      "locating": "Finding your location...",
+      "locationDenied": "We couldn't get your location. Type a locality or PIN code instead.",
+      "specialty": "Specialty",
+      "anySpecialty": "All specialties",
+      "centres": "Centres",
+      "language": "Language",
+      "anyLanguage": "Any language",
+      "consultation": "Consultation",
+      "distance": "Distance",
+      "distanceOption": "{km} km",
+      "search": "Search",
+      "suggestions": "Suggested places"
+    },
+    "modes": {
+      "in_clinic": "In clinic",
+      "video": "Video",
+      "any": "Any"
+    },
+    "results": {
+      "near": "Providers near {place}",
+      "yourLocation": "your location",
+      "kmAway": "{distance} km away",
+      "videoAnywhere": "Video consultations",
+      "languages": "Languages",
+      "consultation": "Consultation",
+      "viewProfile": "View profile",
+      "book": "Book",
+      "bookSoon": "Online booking is coming soon.",
+      "empty": "No providers found nearby. Try a larger distance.",
+      "start": "Type a locality or PIN code, or use your location, to see providers near you.",
+      "notFound": "We couldn't find that place. Try a locality or PIN code in Hyderabad.",
+      "outsideArea": "We currently list providers in Hyderabad only",
+      "invalid": "Some search options were not valid. Check them and try again.",
+      "previous": "Previous",
+      "next": "Next",
+      "pagination": "Result pages",
+      "page": "Page {page}",
+      "view": "Show results as",
+      "list": "List",
+      "map": "Map",
+      "mapLabel": "Map of search results",
+      "mapUnavailable": "The map could not be loaded. The list shows all results.",
+      "clusterLabel": "{count} providers here. Zoom in."
+    },
+    "browse": {
+      "title": "Browse by specialty in Hyderabad"
+    },
+    "seo": {
+      "title": "{type} in Hyderabad",
+      "metaTitle": "{type} in Hyderabad | DoctorNearMe",
+      "metaDescription": "Verified {type} in Hyderabad, listed by DoctorNearMe. Compare locations, languages and consultation modes.",
+      "intro": "Verified providers within {km} km of central Hyderabad, nearest first.",
+      "searchNearYou": "Search near you",
+      "empty": "No verified providers are listed here yet."
+    },
+    "typesPlural": {
+      "developmental_pediatrician": "Developmental paediatricians",
+      "child_psychiatrist": "Child psychiatrists",
+      "child_psychologist": "Child psychologists",
+      "speech_language_pathologist": "Speech-language pathologists",
+      "occupational_therapist": "Occupational therapists",
+      "aba_therapist": "ABA therapists",
+      "special_educator": "Special educators",
+      "physiotherapist": "Physiotherapists",
+      "pediatrician": "Paediatricians",
+      "centre": "Child development centres"
+    },
+    "profileMap": {
+      "title": "Map",
+      "alt": "Map of {name}'s practice locations",
+      "directions": "Get directions",
+      "directionsTo": "Get directions to {place}"
+    },
+    "landing": {
+      "title": "Find care",
+      "find": "Find a provider near you"
+    },
+    "editor": {
+      "geocodeFailed": "We couldn't find this address on the map. Check the pincode.",
+      "notOnMap": "Not on the map: families can't find this location in search. Check the pincode.",
+      "modes": "Consultation modes",
+      "modesHint": "Shown in the directory. Families filter by these.",
+      "offersInClinic": "In clinic",
+      "offersVideo": "Video consultations"
+    }
   }
 }

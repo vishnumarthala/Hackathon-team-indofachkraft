@@ -13,6 +13,7 @@ export function isPublicApiPath(pathname: string): boolean {
     pathname === "/api/locale" ||
     pathname === "/api/demo/voice-token" ||
     pathname === "/api/providers/join" ||
+    pathname === "/api/public/providers" ||
     pathname === "/api/webhooks/elevenlabs" ||
     pathname === "/api/auth/phone/send" ||
     pathname === "/api/auth/phone/verify" ||

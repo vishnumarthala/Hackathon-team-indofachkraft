@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { typeSlug } from "@/lib/geo/constants";
 import { getT } from "@/lib/i18n/server";
 import { Logo } from "./ui";
 
@@ -22,11 +23,21 @@ export async function SiteFooter() {
         { href: "/login", label: t("nav.logIn") },
       ],
     },
+    // 029 FR-7: the directory and its indexable SEO pages are linked from the landing page.
+    {
+      title: t("directory.landing.title"),
+      links: [
+        { href: "/find", label: t("directory.landing.find") },
+        ...(["speech_language_pathologist", "occupational_therapist", "developmental_pediatrician", "child_psychologist", "centre"] as const).map(
+          (type) => ({ href: `/find/hyderabad/${typeSlug(type)}`, label: t(`directory.typesPlural.${type}`) }),
+        ),
+      ],
+    },
   ];
 
   return (
     <footer className="border-t border-[#0b1f1d]/10 bg-[#f8f6f1]">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Logo />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-600">{t("footer.tagline")}</p>
