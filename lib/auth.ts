@@ -5,7 +5,9 @@ import { supabaseAdmin } from "@/lib/db";
 import { fail } from "@/lib/http";
 import { supabaseServer } from "@/lib/supabase-server";
 
-export type UserRole = "admin" | "therapist";
+export type UserRole = "platform_admin" | "provider" | "guardian";
+
+export const USER_ROLES: readonly UserRole[] = ["platform_admin", "provider", "guardian"];
 
 export async function getAuthenticatedUser(): Promise<User | null> {
   const { data, error } = await (await supabaseServer()).auth.getUser();
@@ -35,6 +37,6 @@ export async function getUserRole(userId: string): Promise<UserRole> {
     .single();
 
   if (error) throw new Error(`Could not load user role: ${error.message}`);
-  if (data.role !== "admin" && data.role !== "therapist") throw new Error("Unexpected user role");
-  return data.role;
+  if (!USER_ROLES.includes(data.role)) throw new Error("Unexpected user role");
+  return data.role as UserRole;
 }

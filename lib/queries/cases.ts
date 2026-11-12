@@ -4,10 +4,12 @@ import { isUuid } from "@/lib/cases/validation";
 
 export type SessionListItem = Pick<RecordingRow, "id" | "session_number" | "status" | "created_at">;
 
-export async function listCases(): Promise<CaseRow[]> {
+export async function listCases(orgIds: string[]): Promise<CaseRow[]> {
+  if (orgIds.length === 0) return [];
   const { data, error } = await supabaseAdmin()
     .from("cases")
     .select("*")
+    .in("org_id", orgIds)
     .order("created_at", { ascending: false });
   if (error) throw new Error(`Could not load cases: ${error.message}`);
   return (data ?? []) as CaseRow[];

@@ -36,7 +36,7 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
   return (
     <header ref={ref} data-over-dark={overDark || undefined} className={`lp-nav fixed inset-x-0 top-0 z-50 ${open ? "lp-nav-solid !bg-[#f8f6f1]" : ""}`}>
       <nav aria-label="Main" className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
-        <Link href="/" aria-label="CareThread home" className="rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30">
+        <Link href="/" aria-label="DoctorNearMe home" className="rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30">
           <Logo />
         </Link>
 

@@ -6,7 +6,7 @@ import { getCaseByToken, hasIntakeRecording } from "@/lib/queries/intake";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "CareThread intake call",
+  title: "DoctorNearMe intake call",
   robots: { index: false, follow: false },
 };
 

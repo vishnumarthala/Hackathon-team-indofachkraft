@@ -2,6 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Brief, Evidence, ReferralSummary } from "@/lib/types";
 
 vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
+vi.mock("@/lib/authz", () => ({
+  requireCaseAccess: vi.fn().mockResolvedValue(null),
+  requireRecordingAccess: vi.fn().mockResolvedValue(null),
+  requireReportAccess: vi.fn().mockResolvedValue(null),
+  requireFactAccess: vi.fn().mockResolvedValue(null),
+  requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
+}));
 
 // In-memory stand-in for the Supabase query builder (only what the referral code uses).
 type Row = Record<string, unknown>;

@@ -33,7 +33,9 @@ function Field({
   );
 }
 
-export function CaseForm() {
+export type OrgOption = { id: string; name: string };
+
+export function CaseForm({ orgs = [] }: { orgs?: OrgOption[] }) {
   const router = useRouter();
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -50,6 +52,7 @@ export function CaseForm() {
         (key) => [key, String(form.get(key) ?? "")],
       ),
     );
+    if (orgs.length > 1) body.org_id = String(form.get("org_id") ?? "");
     try {
       const res = await fetch("/api/cases", {
         method: "POST",
@@ -74,6 +77,20 @@ export function CaseForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="max-w-lg space-y-4">
       <p className="rounded bg-yellow-50 px-3 py-2 text-sm text-yellow-900">Use made-up names only (synthetic data).</p>
+      {orgs.length > 1 && (
+        <Field id="org_id" label="Organisation" error={errors.org_id}>
+          <select id="org_id" name="org_id" required defaultValue="" className={inputClass} aria-describedby={describedBy("org_id")}>
+            <option value="" disabled>
+              Choose an organisation
+            </option>
+            {orgs.map((org) => (
+              <option key={org.id} value={org.id}>
+                {org.name}
+              </option>
+            ))}
+          </select>
+        </Field>
+      )}
       <Field id="child_alias" label="Child alias" error={errors.child_alias}>
         <input id="child_alias" name="child_alias" required maxLength={60} className={inputClass} aria-describedby={describedBy("child_alias")} />
       </Field>

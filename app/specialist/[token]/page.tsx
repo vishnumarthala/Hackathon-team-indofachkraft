@@ -12,7 +12,7 @@ import { getAudioUrls, getReferralByToken, markReferralViewed } from "@/lib/quer
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Referral - CareThread",
+  title: "Referral - DoctorNearMe",
   robots: { index: false, follow: false },
   referrer: "no-referrer",
 };
@@ -54,7 +54,7 @@ export default async function SpecialistPage({ params }: { params: Promise<{ tok
         />
       </EvidencePlayerProvider>
       <footer className="mt-10 border-t border-slate-200 pt-4 text-sm text-slate-600">
-        Prepared with CareThread. AI documents, the clinician decides. This is not a diagnosis by AI.
+        Prepared with DoctorNearMe. AI documents, the clinician decides. This is not a diagnosis by AI.
       </footer>
     </div>
   );

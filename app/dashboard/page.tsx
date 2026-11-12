@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { StatusBadge } from "@/components/case/StatusBadge";
 import { ageLabel, formatDateTime, languageName } from "@/lib/cases/format";
+import { getActiveOrgIds, requireProviderPage } from "@/lib/authz";
 import { listCases } from "@/lib/queries/cases";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const cases = await listCases();
+  const { user } = await requireProviderPage();
+  const orgIds = await getActiveOrgIds(user.id);
+  const cases = await listCases(orgIds);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
@@ -17,7 +20,15 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {cases.length === 0 ? (
+      {orgIds.length === 0 ? (
+        <p className="text-slate-600">
+          You are not in an organisation yet. Create your practice or accept an invitation on the{" "}
+          <Link href="/dashboard/team" className="font-medium underline">
+            Team
+          </Link>{" "}
+          page.
+        </p>
+      ) : cases.length === 0 ? (
         <p className="text-slate-600">No cases yet. Create the first one.</p>
       ) : (
         <div className="max-w-full overflow-x-auto rounded border border-slate-200">

@@ -11,6 +11,13 @@ const m = vi.hoisted(() => ({
   startAgentSession: vi.fn(),
 }));
 vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
+vi.mock("@/lib/authz", () => ({
+  requireCaseAccess: vi.fn().mockResolvedValue(null),
+  requireRecordingAccess: vi.fn().mockResolvedValue(null),
+  requireReportAccess: vi.fn().mockResolvedValue(null),
+  requireFactAccess: vi.fn().mockResolvedValue(null),
+  requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
+}));
 vi.mock("@/lib/queries/cases", () => ({ getCase: m.getCase }));
 vi.mock("@/lib/queries/intake", () => ({
   getCaseByToken: m.getCaseByToken,
@@ -19,7 +26,7 @@ vi.mock("@/lib/queries/intake", () => ({
 }));
 vi.mock("@/lib/audit", () => ({ audit: m.audit }));
 vi.mock("@/lib/email", () => ({ sendEmail: m.sendEmail }));
-vi.mock("@/lib/elevenlabs/agent", () => ({ startAgentSession: m.startAgentSession, DEMO_CENTRE_NAME: "CareThread Demo Centre" }));
+vi.mock("@/lib/elevenlabs/agent", () => ({ startAgentSession: m.startAgentSession, DEMO_CENTRE_NAME: "DoctorNearMe Demo Centre" }));
 
 import { POST as linkPOST } from "@/app/api/cases/[id]/intake-link/route";
 import { POST as startPOST } from "@/app/api/intake/[token]/start/route";
@@ -35,6 +42,8 @@ const CASE: CaseRow = {
   parent_phone: "+91 98765 43210",
   language: "te",
   therapist_name: "Demo Therapist",
+  org_id: "00000000-0000-4000-8000-00000000a001",
+  created_by: null,
   facp_score: null,
   status: "booked",
   intake_token: null,
@@ -101,8 +110,8 @@ describe("POST /api/cases/:id/intake-link", () => {
     expect((await res.json()).emailed).toBe(true);
     expect(m.sendEmail).toHaveBeenCalledWith({
       to: "parent@example.com",
-      subject: "Your CareThread intake call for Ravi",
-      text: expect.stringMatching(/^Hello Lakshmi, this is Demo Therapist's team at CareThread\./),
+      subject: "Your DoctorNearMe intake call for Ravi",
+      text: expect.stringMatching(/^Hello Lakshmi, this is Demo Therapist's team at DoctorNearMe\./),
       caseId: CASE.id,
     });
     expect(actions()).toEqual(["intake.link_emailed"]);
@@ -173,7 +182,7 @@ describe("POST /api/intake/:token/start", () => {
       dynamic_variables: {
         parent_name: "Lakshmi",
         child_name: "Ravi",
-        centre_name: "CareThread Demo Centre",
+        centre_name: "DoctorNearMe Demo Centre",
         case_id: CASE.id,
         intake_token: TOKEN,
         child_alias: "Ravi",

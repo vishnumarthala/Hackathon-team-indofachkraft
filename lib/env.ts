@@ -13,7 +13,7 @@ function required(name: string, ...aliases: string[]): string {
 }
 
 export const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
-export const DEFAULT_EMAIL_FROM = "CareThread <onboarding@resend.dev>";
+export const DEFAULT_EMAIL_FROM = "DoctorNearMe <onboarding@resend.dev>";
 export const DEFAULT_FIXTURES_DIR = "demo/fixtures";
 
 export const env = {

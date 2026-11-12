@@ -53,3 +53,56 @@ All tickets remain draft until their requirements and evaluations have been revi
 
 001 -> 002 -> 005 + 006, and 001 -> 003 + 004 -> 007 -> 008 = Phase 2 end to end on `main` at CP3 (15:00).
 Human tasks that tickets depend on (not tickets): `docs/system-design.md` section 14.
+
+
+# DoctorNearMe (tickets 016-042) - `feat/doctornearme`
+
+Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md). Built by AI workers;
+`done` = merged into `feat/doctornearme`. Draft tickets need a team review before `ready`.
+
+## M1 - SaaS core and pilot safety
+
+| # | Title | Status | Mode | Runs |
+|---|-------|--------|------|------|
+| 016 | Rebrand to DoctorNearMe (user-facing) | done | solo | alongside |
+| 017 | Organisations, roles, resource-level authorisation and provider onboarding | done | solo | alongside |
+| 018 | i18n foundation (English, Hindi, Telugu) | draft | solo | alongside |
+| 019 | Guardian sign-in and family portal shell | draft | solo | waits for 017, 018 |
+| 020 | Children, guardian links and consent gating | draft | solo | waits for 019 |
+| 021 | Child health profile | draft | solo | waits for 020 |
+| 022 | Care team, provider assignments and cross-org sharing grants | draft | solo | waits for 020 |
+| 023 | Document vault | draft | solo | waits for 022 |
+| 024 | Assessment portal and shared clinical contracts | draft | solo | waits for 022 |
+| 025 | IEP plans, SMART goals and progress tracking | draft | solo | waits for 022, 024 |
+| 026 | Home program | draft | solo | waits for 023, 025 |
+| 027 | Secure messaging (guardian <-> care team) | draft | solo | waits for 022, 023, 032 |
+| 032 | Notifications - transactional outbox, scheduler, email / in-app / WhatsApp adapters | draft | solo | waits for 020 |
+| 041 | Privacy, audit and operations baseline | draft | solo | waits for 023, 032 |
+
+## M2 - Directory, booking and voice
+
+| # | Title | Status | Mode | Runs |
+|---|-------|--------|------|------|
+| 028 | Public provider profiles, credential verification, admin seeding and claim links | draft | solo | waits for 017, 018 |
+| 029 | PostGIS "near me" directory with Google Maps | draft | solo | waits for 028 |
+| 030 | Availability and atomic one-off booking | draft | solo | waits for 028, 032, 041 |
+| 031 | Razorpay payments (test mode) | draft | solo | waits for 030 |
+| 033 | Voice developmental check-in (public screen) | draft | solo | waits for 020, 024, 029, 041 |
+| 034 | Voice booking agent (web widget on /find) | draft | solo | waits for 030, 033 |
+| 035 | Appointment-scoped pre-consult intake | draft | solo | waits for 021, 024, 030, 041 |
+| 036 | Ratings for completed appointments | draft | solo | waits for 030 |
+| 042 | Hyderabad directory seed data (synthetic demo + real-provider import) | draft | solo | waits for 029, 030 |
+
+## M3 - Video, scribe, prescriptions and follow-up
+
+| # | Title | Status | Mode | Runs |
+|---|-------|--------|------|------|
+| 037 | Google Meet for video appointments | draft | solo | waits for 030 |
+| 038 | AI scribe for any provider type | draft | solo | waits for 024, 025, 028, 041 |
+| 039 | E-prescriptions for verified prescribers | draft | solo | waits for 021, 028, 038 |
+| 040 | Follow-up agent ("ask about my child's plan") | draft | solo | waits for 026, 033, 039 |
+
+## Critical path (DoctorNearMe)
+
+017 -> 019 -> 020 -> 022 -> 023 -> 041, and 020 -> 032 -> 041 -> 030 (booking) -> 034/035.
+Real child data needs 020 (consent) and 041 (privacy/audit) on `main` first.

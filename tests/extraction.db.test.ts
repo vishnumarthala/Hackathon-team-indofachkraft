@@ -43,8 +43,8 @@ describe.skipIf(!enabled)("extraction persistence (database)", () => {
     const sessionId = randomUUID();
     created.push(caseId);
     await sql`
-      insert into cases (id, child_alias, parent_alias, language, therapist_name, status)
-      values (${caseId}, ${`t006-db-${caseId.slice(0, 8)} (synthetic)`}, 'Parent (synthetic)', 'en', 'Demo Therapist', ${caseStatus})`;
+      insert into cases (org_id, id, child_alias, parent_alias, language, therapist_name, status)
+      values ('00000000-0000-4000-8000-00000000a001', ${caseId}, ${`t006-db-${caseId.slice(0, 8)} (synthetic)`}, 'Parent (synthetic)', 'en', 'Demo Therapist', ${caseStatus})`;
     await sql`
       insert into recordings (id, case_id, kind, session_number, status, speaker_map, segments)
       values (${sessionId}, ${caseId}, 'session', 1, ${stage},

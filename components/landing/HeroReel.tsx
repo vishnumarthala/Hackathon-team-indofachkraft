@@ -23,7 +23,7 @@ const SCENES: Scene[] = [
     video: "/landing/reel-1.mp4",
     poster: "/landing/reel-1.jpg",
     label: "Before the first session",
-    caption: "CareThread talks with the parent, in their own language.",
+    caption: "DoctorNearMe talks with the parent, in their own language.",
     card: (
       <Card>
         <div className="flex items-center gap-3">
@@ -45,7 +45,7 @@ const SCENES: Scene[] = [
     video: "/landing/reel-2.mp4",
     poster: "/landing/reel-2.jpg",
     label: "During the session",
-    caption: "You stay with the child. CareThread documents.",
+    caption: "You stay with the child. DoctorNearMe documents.",
     card: (
       <Card>
         <div className="mb-2.5 flex items-center justify-between">
@@ -215,7 +215,7 @@ export function HeroReel({ subtitle }: { subtitle: string }) {
               For early intervention therapists
             </p>
             <h1 className="lp-fade-up lp-display text-[3.1rem] leading-[1.02] sm:text-7xl lg:text-[5.4rem]" style={{ "--d": "100ms" } as CSSProperties}>
-              <span className="sr-only">CareThread. </span>
+              <span className="sr-only">DoctorNearMe. </span>
               Spend the session with the child, <em className="text-teal-200">not the paperwork.</em>
             </h1>
             <p className="lp-fade-up mt-6 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg" style={{ "--d": "220ms" } as CSSProperties}>

@@ -43,7 +43,7 @@ describe("sendEmail", () => {
       id: "em_1",
       delivered: true,
     });
-    expect(send).toHaveBeenCalledWith({ from: "CareThread <onboarding@resend.dev>", to: "p@example.com", subject: "Hi", text: "Body" });
+    expect(send).toHaveBeenCalledWith({ from: "DoctorNearMe <onboarding@resend.dev>", to: "p@example.com", subject: "Hi", text: "Body" });
   });
 
   it("redirects every email to DEMO_EMAIL_TO with an Originally to line", async () => {

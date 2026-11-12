@@ -7,6 +7,7 @@ import { getCase } from "@/lib/queries/cases";
 import { getParentSummary, signedAudioUrl } from "@/lib/queries/parentNote";
 import { getAssessmentReport, listExtractedSessions, listIsaaFacts } from "@/lib/queries/reports";
 import { decidedFacts } from "@/lib/report/draft";
+import { requireCasePage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,7 @@ export default async function ReportPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { id } = await params;
+  await requireCasePage(id);
   const { session } = await searchParams;
   const caseRow = await getCase(id);
   if (!caseRow) notFound();

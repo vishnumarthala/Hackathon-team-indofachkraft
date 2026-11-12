@@ -24,6 +24,13 @@ const askMock = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
+vi.mock("@/lib/authz", () => ({
+  requireCaseAccess: vi.fn().mockResolvedValue(null),
+  requireRecordingAccess: vi.fn().mockResolvedValue(null),
+  requireReportAccess: vi.fn().mockResolvedValue(null),
+  requireFactAccess: vi.fn().mockResolvedValue(null),
+  requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
+}));
 vi.mock("@/lib/gemini", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/gemini")>();
   return {
@@ -368,8 +375,8 @@ describe.skipIf(!enabled)("ask route (database)", { timeout: 90_000 }, () => {
     const intakeId = randomUUID();
     const json = (v: unknown) => sql.json(v as postgres.JSONValue);
     await sql`
-      insert into cases (id, child_alias, child_age_months, parent_alias, language, therapist_name, status)
-      values (${caseId}, ${`t013-ask-${caseId.slice(0, 8)} (synthetic)`}, 40, 'Parent (synthetic)', 'en', 'Demo Therapist', 'in_assessment')`;
+      insert into cases (org_id, id, child_alias, child_age_months, parent_alias, language, therapist_name, status)
+      values ('00000000-0000-4000-8000-00000000a001', ${caseId}, ${`t013-ask-${caseId.slice(0, 8)} (synthetic)`}, 40, 'Parent (synthetic)', 'en', 'Demo Therapist', 'in_assessment')`;
     await sql`
       insert into recordings (id, case_id, kind, status, segments)
       values (${intakeId}, ${caseId}, 'intake_call', 'transcribed', ${json(seed.buildIntakeSegments(fixtures.postCall.data.transcript))})`;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { audit } from "@/lib/audit";
-import { requireApiUser } from "@/lib/auth";
+import { requireReportAccess } from "@/lib/authz";
 import { fail, ok, parseJson } from "@/lib/http";
 import { getReport, updateDraftReport } from "@/lib/queries/reports";
 
@@ -20,10 +20,9 @@ const ReportPatchSchema = z
   .refine((b) => b.content_md !== undefined || b.status !== undefined, { message: "Nothing to update" });
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireApiUser();
-  if (unauthorized) return unauthorized;
-
   const { id } = await params;
+  const denied = await requireReportAccess(id);
+  if (denied) return denied;
   const report = await getReport(id);
   if (!report) return fail(404, "Report not found");
   if (report.kind !== "assessment") return fail(422, "Only assessment reports can be edited here");

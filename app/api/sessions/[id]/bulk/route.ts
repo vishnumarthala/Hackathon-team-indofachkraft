@@ -1,15 +1,14 @@
 import { BulkActionSchema, bulkUpdate } from "@/lib/facts";
-import { requireApiUser } from "@/lib/auth";
+import { requireRecordingAccess } from "@/lib/authz";
 import { fail, ok, parseJson } from "@/lib/http";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireApiUser();
-  if (unauthorized) return unauthorized;
-
   const { id } = await params;
+  const denied = await requireRecordingAccess(id);
+  if (denied) return denied;
   const parsed = await parseJson(req, BulkActionSchema);
   if ("response" in parsed) return parsed.response;
 

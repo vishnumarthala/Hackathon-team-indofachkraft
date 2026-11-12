@@ -24,7 +24,7 @@ describe("env", () => {
     vi.stubEnv("DEMO_EMAIL_TO", "");
     vi.stubEnv("DEMO_FIXTURES_DIR", "");
     expect(env.GEMINI_MODEL).toBe("gemini-3.8-flash");
-    expect(env.EMAIL_FROM).toBe("CareThread <onboarding@resend.dev>");
+    expect(env.EMAIL_FROM).toBe("DoctorNearMe <onboarding@resend.dev>");
     expect(env.DEMO_MODE).toBe(false);
     expect(env.DEMO_EMAIL_TO).toBeUndefined();
     expect(env.DEMO_FIXTURES_DIR).toBe("demo/fixtures");

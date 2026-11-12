@@ -1,5 +1,5 @@
 import { audit } from "@/lib/audit";
-import { requireApiUser } from "@/lib/auth";
+import { requireReportAccess } from "@/lib/authz";
 import { NoVoiceError, synthesize, voiceIdFor } from "@/lib/elevenlabs/tts";
 import { sendEmail } from "@/lib/email";
 import { env } from "@/lib/env";
@@ -28,10 +28,9 @@ export const dynamic = "force-dynamic";
 const messageOf = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireApiUser();
-  if (unauthorized) return unauthorized;
-
   const { id } = await params;
+  const denied = await requireReportAccess(id);
+  if (denied) return denied;
   const assessment = await getReport(id);
   if (!assessment) return fail(404, "Report not found");
   if (assessment.kind !== "assessment" || assessment.status !== "final" || !assessment.recording_id) {

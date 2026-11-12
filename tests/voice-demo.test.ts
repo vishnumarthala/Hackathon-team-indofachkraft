@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const m = vi.hoisted(() => ({ startAgentSession: vi.fn(), audit: vi.fn() }));
-vi.mock("@/lib/elevenlabs/agent", () => ({ startAgentSession: m.startAgentSession, DEMO_CENTRE_NAME: "CareThread Demo Centre" }));
+vi.mock("@/lib/elevenlabs/agent", () => ({ startAgentSession: m.startAgentSession, DEMO_CENTRE_NAME: "DoctorNearMe Demo Centre" }));
 vi.mock("@/lib/audit", () => ({ audit: m.audit }));
 vi.mock("@elevenlabs/react", () => ({
   ConversationProvider: ({ children }: { children: unknown }) => children,
@@ -49,7 +49,7 @@ describe("POST /api/demo/voice-token", () => {
       dynamic_variables: {
         parent_name: "Lakshmi",
         child_name: "Ravi",
-        centre_name: "CareThread Demo Centre",
+        centre_name: "DoctorNearMe Demo Centre",
         therapist_name: "Demo Therapist",
         case_id: "landing-demo",
       },

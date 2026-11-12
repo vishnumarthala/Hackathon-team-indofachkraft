@@ -1,15 +1,19 @@
-# CareThread: System Design
+# DoctorNearMe: System Design
 
 Nov 7, 2026 · Source of truth for shapes, contracts and rules. Tickets in `../specs/tickets/` build
 against this file. If a ticket and this file disagree, the ticket's "Decisions" win for that ticket;
 fix this file in the same branch.
 
 Related: [team plan](../CareThread%20Hackathon%20Team%20Plan.md) · [team workflow](team-workflow.md)
-· [grill record](../specs/grill/carethread-mvp.md) · [ticket board](../specs/tickets/BOARD.md)
+· [grill record](../specs/grill/carethread-mvp.md) · [DoctorNearMe decisions](../specs/grill/doctornearme-mvp.md)
+· [ticket board](../specs/tickets/BOARD.md)
+
+> DoctorNearMe was built as CareThread. This file describes the Child Development module (the
+> "CareThread engine"); platform-wide decisions for DoctorNearMe live in the decision record above.
 
 ## 1. Scope
 
-CareThread helps early intervention therapists: (1) a browser voice intake with the parent before
+DoctorNearMe helps early intervention therapists: (1) a browser voice intake with the parent before
 session 1, (2) AI-filled ISAA form from a recorded session that the therapist confirms item by item,
 (3) a referral packet with "ask the case" for the specialist. **AI documents, the clinician decides.**
 
@@ -66,21 +70,28 @@ flowchart LR
   Clinical tables use RLS without client policies, so only the server's service-role client reads or
   writes them. The browser uses the anon key for Auth and signed uploads, not clinical table reads.
   Schema changes are migrations in `supabase/migrations/`.
-- **Authentication.** `/dashboard`, `/cases/*`, private API routes, and `/admin/users` require a
-  Supabase Auth session. Account creation is disabled in the application; create accounts in the
-  Supabase Auth dashboard. New accounts default to the `therapist` role. Promote the initial admin
-  directly in the Supabase SQL editor:
-  `update public.user_profiles set role = 'admin' where id = (select id from auth.users where email = 'admin@example.com');`
-  The admin-only directory shows account email, role, confirmation status, creation date, and last
-  sign-in; service-role access is used only after checking the signed-in user's database role. Add
-  accounts in Supabase Auth > Users; the database trigger creates each account's default therapist
-  profile. There is no public sign-up form or in-app user invitation flow.
+- **Authentication and roles (ticket 017).** `/dashboard`, `/cases/*`, private API routes, and
+  `/admin/users` require a Supabase Auth session. Roles in `user_profiles.role`: `platform_admin`,
+  `provider`, `guardian`. Account creation is still disabled in the application; accounts created in the
+  Supabase Auth dashboard become `provider` (or the role in server-set `app_metadata.role`). Ticket 019
+  changes the fallback to `guardian` when public sign-up opens. Promote a platform admin in SQL:
+  `update public.user_profiles set role = 'platform_admin' where id = (select id from auth.users where email = 'admin@example.com');`
+- **Organisations and tenant isolation (ticket 017).** Every case belongs to an organisation
+  (`cases.org_id`; a centre or a solo practice). A provider can read or change a case only while an
+  active member of its organisation (`org_members`). The server still uses the service-role client, so
+  every route and page passes a gate from `lib/authz.ts` (`requireCaseAccess`, `requireRecordingAccess`,
+  `requireReportAccess`, `requireFactAccess`, `requireCasePage`, `requireProviderPage`); other tenants'
+  ids answer 404. Platform admins get clinical access only through membership. RLS policies mirror this
+  for future browser reads. Legacy cases were moved to the bootstrap organisation
+  `00000000-0000-4000-8000-00000000a001` ("Pilot centre (migrated)") and every account that existed at
+  migration time became a member. Owners/admins invite colleagues from `/dashboard/team`
+  (hashed, single-use, 7-day links at `/invite/<token>`) and remove members there. Locally, add an
+  account to the bootstrap org with `npm run -s org:grant -- <email> [owner|admin|member]`.
   For the Vercel Supabase project, apply migrations with `npm run db:push`, set Auth's Site URL to
   `https://carethread-two.vercel.app`, allow that same URL for redirects, and disable new sign-ups in
   the Supabase Auth settings. `supabase/config.toml` disables sign-ups for local Supabase only; the
   cloud Auth setting is managed separately.
-- **Shared case data is not tenant-isolated.** All signed-in therapists can access the shared case
-  store. Do not enter real patient information until case ownership and tenant isolation are built.
+- **Real patient data** still waits for consent gating (020) and the privacy/audit baseline (041).
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
   token-based API endpoints and signed webhook are public by design.
 
@@ -119,7 +130,7 @@ prompts/  extract.md  brief.md  report.md  referral.md  ask.md  parent-summary.m
 supabase/config.toml  supabase/migrations/20261107120000_init.sql               (001)
 scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
           make-scribe-fixture.ts make-sample-audio.mjs seed-demo.ts (002)
-.githooks/pre-push  .github/pull_request_template.md  .github/workflows/ci.yml (001)
+.github/pull_request_template.md  .github/workflows/ci.yml (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md
@@ -146,7 +157,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `GEMINI_API_KEY` | Gemini | |
 | `GEMINI_MODEL` | Gemini | default `gemini-3.8-flash` |
 | `RESEND_API_KEY` | email | |
-| `EMAIL_FROM` | email | default `CareThread <onboarding@resend.dev>` |
+| `EMAIL_FROM` | email | default `DoctorNearMe <onboarding@resend.dev>` |
 | `DEMO_EMAIL_TO` | email | if set, **every** email goes here (Resend test sender only delivers to the account owner); body starts with `Originally to: <address>` |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
@@ -393,7 +404,7 @@ in Appendix A. Red-flag items: 15 (lost speech), 29 (self-injury).
 - `action`: FACP band present -> its action text; if referral recommended and FACP band is not severe,
   append ` + referral to specialist (Phase 3)`. No FACP and referral recommended ->
   `Referral to specialist (Phase 3)`. No FACP and no referral -> `Enter the FACP score to get a suggested action`.
-- The UI always labels this `Suggested by CareThread - the therapist decides`.
+- The UI always labels this `Suggested by DoctorNearMe - the therapist decides`.
 
 **Case sheet** (`schemas/case-sheet.json`): ElevenLabs data-collection fields (Appendix B).
 

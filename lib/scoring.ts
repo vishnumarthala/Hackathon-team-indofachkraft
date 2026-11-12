@@ -57,7 +57,7 @@ export type IntakeRedFlagInput = {
   brief_red_flags?: BriefRedFlagInput[];
 };
 
-export const SUGGESTION_LABEL = "Suggested by CareThread - the therapist decides";
+export const SUGGESTION_LABEL = "Suggested by DoctorNearMe - the therapist decides";
 
 const ITEM_COUNT = 40;
 const RED_FLAG_ORDER: RedFlagKind[] = ["lost_speech", "self_injury"];

@@ -4,8 +4,8 @@ import { SiteChrome } from "@/components/SiteChrome";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CareThread",
-  description: "The AI assistant for early intervention therapists.",
+  title: "DoctorNearMe",
+  description: "Autism and early intervention care near you, with an AI assistant for therapists.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

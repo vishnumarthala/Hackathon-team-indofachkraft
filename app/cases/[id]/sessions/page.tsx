@@ -2,11 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDate } from "@/lib/cases/format";
 import { getCase, listSessions } from "@/lib/queries/cases";
+import { requireCasePage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
 export default async function SessionsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  await requireCasePage(id);
   const caseRow = await getCase(id);
   if (!caseRow) notFound();
   const sessions = await listSessions(id);

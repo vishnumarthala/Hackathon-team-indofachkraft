@@ -304,7 +304,7 @@ export function DemoRequestForm() {
               {!sending && <Arrow />}
             </button>
           </div>
-          <p className="text-center text-xs text-slate-500">We only use your details to contact you about CareThread.</p>
+          <p className="text-center text-xs text-slate-500">We only use your details to contact you about DoctorNearMe.</p>
         </form>
       )}
     </div>

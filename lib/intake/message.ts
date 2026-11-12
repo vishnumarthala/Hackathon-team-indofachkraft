@@ -8,7 +8,7 @@ export function intakeUrl(appUrl: string, token: string): string {
 
 export function intakeMessage(c: MessageCase, url: string): string {
   return (
-    `Hello ${c.parent_alias}, this is ${c.therapist_name}'s team at CareThread. ` +
+    `Hello ${c.parent_alias}, this is ${c.therapist_name}'s team at DoctorNearMe. ` +
     `Before ${c.child_alias}'s first session, please take a short voice call (about 15 minutes) ` +
     `with our AI assistant in Telugu, Hindi or English: ${url}`
   );
@@ -20,7 +20,7 @@ export function whatsappUrl(phone: string | null | undefined, message: string): 
 }
 
 export function intakeEmailSubject(childAlias: string): string {
-  return `Your CareThread intake call for ${childAlias}`;
+  return `Your DoctorNearMe intake call for ${childAlias}`;
 }
 
 export type IntakeShare = { url: string; message: string; whatsapp_url: string };

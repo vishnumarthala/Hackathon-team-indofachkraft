@@ -321,5 +321,5 @@ describe("formatIsaaScore", () => {
 });
 
 it("exports the suggestion label", () => {
-  expect(SUGGESTION_LABEL).toBe("Suggested by CareThread - the therapist decides");
+  expect(SUGGESTION_LABEL).toBe("Suggested by DoctorNearMe - the therapist decides");
 });

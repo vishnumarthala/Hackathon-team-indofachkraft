@@ -6,11 +6,13 @@ import { briefStateFrom } from "@/lib/intake/briefMarkdown";
 import { buildIntakeShare } from "@/lib/intake/message";
 import { getCase } from "@/lib/queries/cases";
 import { getIntakeBrief } from "@/lib/queries/intake";
+import { requireCasePage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
 export default async function BriefPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  await requireCasePage(id);
   const caseRow = await getCase(id);
   if (!caseRow) notFound();
 

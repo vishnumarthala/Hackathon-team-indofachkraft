@@ -18,7 +18,7 @@ export default async function UserAccountsPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const currentUser = await requirePageUser();
-  if ((await getUserRole(currentUser.id)) !== "admin") notFound();
+  if ((await getUserRole(currentUser.id)) !== "platform_admin") notFound();
 
   const { page: pageParam } = await searchParams;
   const page = validPage(pageParam);

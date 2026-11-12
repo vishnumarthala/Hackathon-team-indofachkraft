@@ -1,4 +1,12 @@
-# CareThread: Team workflow (4 people, 4 laptops, one GitHub repo)
+# DoctorNearMe: Team workflow
+
+> **Current mode: solo (since 2026-11-12).** One owner builds with AI workers. Each ticket is built on
+> `ticket/NNN-slug`, must pass its `eval.md` plus `npm run verify` against a local Supabase, and is then
+> merged straight into `main` and pushed. No pull request or review is required: GitHub branch
+> protection on `main` only blocks force-pushes and deletion, and the local pre-push hook was removed.
+> CI runs on every push to `main`. The team rules below are kept for when the team rejoins.
+
+## Team mode (4 people, 4 laptops, one GitHub repo) - paused
 
 Read this once before you touch code. It is short on purpose.
 

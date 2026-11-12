@@ -14,6 +14,7 @@ import {
   type IsaaExtraction,
   type Segment,
 } from "../lib/types";
+import { BOOTSTRAP_ORG_ID } from "../lib/orgs";
 
 export const CANONICAL = {
   caseId: "00000000-0000-4000-8000-000000000001",
@@ -324,7 +325,7 @@ async function main() {
 
     check(
       "insert case",
-      (await db.from("cases").insert({ id: caseId, ...SEED_CASE, intake_token: token })).error,
+      (await db.from("cases").insert({ id: caseId, ...SEED_CASE, org_id: BOOTSTRAP_ORG_ID, intake_token: token })).error,
     );
 
     const { postCall, brief, segments, extract } = fixtures;

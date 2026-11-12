@@ -48,8 +48,8 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-[#0b1f1d]/10">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:justify-between sm:px-6">
-          <p>© 2026 CareThread. Built for therapists in Germany and India.</p>
-          <p>Built on ElevenLabs and Google Gemini. CareThread supports clinicians; it is not a diagnosis.</p>
+          <p>© 2026 DoctorNearMe. Built for early intervention teams in India.</p>
+          <p>Built on ElevenLabs and Google Gemini. DoctorNearMe supports clinicians; it is not a diagnosis.</p>
         </div>
       </div>
     </footer>
