@@ -1,6 +1,6 @@
 # 017: Organisations, roles, resource-level authorisation and provider onboarding
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** alongside
 

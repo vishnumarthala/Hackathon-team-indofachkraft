@@ -99,7 +99,20 @@ Sources merged: current repo, `doctornearme_mvp_product_architecture_plan.md`, `
 **M3 — Video, scribe, Rx, follow-up**: 037 Google Meet integration · 038 AI scribe generalization · 039 E-Rx for prescribers · 040 follow-up agent
 
 ### Dependencies
-016,017,018: none · 019←017,018 · 020←019 · 021←020 · 022←020 · 023←022 · 024←022 · 025←022 · 026←025 · 027←022,032 · 028←017,018 · 029←028 · 030←028,032 · 031←030 · 032←020 · 033←020,029 · 034←030,033 · 035←024,030 · 036←030 · 037←030 · 038←024,025 · 039←028,038 · 040←026,033,039 · 041←023,032 · 042←029,030
+016,017,018: none · 019←017,018 · 020←019 · 021←020 · 022←020 · 023←022 · 024←022 · 025←022,024 · 026←023,025 · 027←022,023,032 · 028←017,018 · 029←028 · 030←028,032,041 · 031←030 · 032←020 · 033←020,024,029,041 · 034←030,033 · 035←021,024,030,041 · 036←030 · 037←030 · 038←024,025,028,041 · 039←021,028,038 · 040←026,033,039 · 041←023,032 · 042←029,030
+
+(Updated after the ticket specs were written: published versions move to 024 because 025/026 publish
+plans in M1; M2/M3 tickets that touch real child data wait for the 041 privacy baseline.)
+
+### Open product questions found while writing specs
+1. Consent for parents without a smartphone (paper consent recorded by the centre?) - 020.
+2. OT, physio, ABA and special educators have no NMC/RCI-style register: what does "verified" mean? - 028.
+3. "No tracking on child pages" vs. third-party scripts (ElevenLabs SDK, Razorpay checkout): per-route exceptions drafted - 031/040.
+4. Google Meet for phone-only guardians (no Google account) must join as guests - 037.
+5. Synthetic seed listings vs. a real pilot: hidden behind a flag, plus CSV import of real unclaimed providers - 042.
+6. Time zone: new features use Asia/Kolkata; legacy pilot pages show Europe/Berlin - 030.
+7. One-minute outbox cron needs Vercel Pro or an external scheduler - 032.
+8. Care-team "discipline" is free text in M1 because provider types arrive in 028 - 022.
 
 Each ticket gets `rd.md` (requirements), `eval.md` (acceptance), `results.md` per existing convention; BOARD.md gets new tables per milestone.
 

@@ -1,6 +1,6 @@
 # 016: Rebrand to DoctorNearMe (user-facing)
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** alongside
 
