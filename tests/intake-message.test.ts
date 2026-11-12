@@ -4,7 +4,7 @@ import { buildIntakeShare, intakeEmailSubject, intakeMessage, intakeUrl, whatsap
 const c = { parent_alias: "Lakshmi", therapist_name: "Demo Therapist", child_alias: "Ravi" };
 const url = "http://localhost:3000/intake/abc_DEF-123";
 const expected =
-  "Hello Lakshmi, this is Demo Therapist's team at CareThread. Before Ravi's first session, please take a short voice call (about 15 minutes) with our AI assistant in Telugu, Hindi or English: http://localhost:3000/intake/abc_DEF-123";
+  "Hello Lakshmi, this is Demo Therapist's team at DoctorNearMe. Before Ravi's first session, please take a short voice call (about 15 minutes) with our AI assistant in Telugu, Hindi or English: http://localhost:3000/intake/abc_DEF-123";
 
 describe("intake message", () => {
   it("builds the URL from the app URL, ignoring trailing slashes", () => {
@@ -38,6 +38,6 @@ describe("intake message", () => {
   it("buildIntakeShare combines url, message and WhatsApp link; subject text", () => {
     const share = buildIntakeShare({ ...c, parent_phone: null }, "http://localhost:3000", "abc_DEF-123");
     expect(share).toEqual({ url, message: expected, whatsapp_url: `https://wa.me/?text=${encodeURIComponent(expected)}` });
-    expect(intakeEmailSubject("Ravi")).toBe("Your CareThread intake call for Ravi");
+    expect(intakeEmailSubject("Ravi")).toBe("Your DoctorNearMe intake call for Ravi");
   });
 });

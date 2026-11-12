@@ -1,15 +1,19 @@
-# CareThread: System Design
+# DoctorNearMe: System Design
 
 Nov 7, 2026 · Source of truth for shapes, contracts and rules. Tickets in `../specs/tickets/` build
 against this file. If a ticket and this file disagree, the ticket's "Decisions" win for that ticket;
 fix this file in the same branch.
 
 Related: [team plan](../CareThread%20Hackathon%20Team%20Plan.md) · [team workflow](team-workflow.md)
-· [grill record](../specs/grill/carethread-mvp.md) · [ticket board](../specs/tickets/BOARD.md)
+· [grill record](../specs/grill/carethread-mvp.md) · [DoctorNearMe decisions](../specs/grill/doctornearme-mvp.md)
+· [ticket board](../specs/tickets/BOARD.md)
+
+> DoctorNearMe was built as CareThread. This file describes the Child Development module (the
+> "CareThread engine"); platform-wide decisions for DoctorNearMe live in the decision record above.
 
 ## 1. Scope
 
-CareThread helps early intervention therapists: (1) a browser voice intake with the parent before
+DoctorNearMe helps early intervention therapists: (1) a browser voice intake with the parent before
 session 1, (2) AI-filled ISAA form from a recorded session that the therapist confirms item by item,
 (3) a referral packet with "ask the case" for the specialist. **AI documents, the clinician decides.**
 
@@ -146,7 +150,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `GEMINI_API_KEY` | Gemini | |
 | `GEMINI_MODEL` | Gemini | default `gemini-3.8-flash` |
 | `RESEND_API_KEY` | email | |
-| `EMAIL_FROM` | email | default `CareThread <onboarding@resend.dev>` |
+| `EMAIL_FROM` | email | default `DoctorNearMe <onboarding@resend.dev>` |
 | `DEMO_EMAIL_TO` | email | if set, **every** email goes here (Resend test sender only delivers to the account owner); body starts with `Originally to: <address>` |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
@@ -393,7 +397,7 @@ in Appendix A. Red-flag items: 15 (lost speech), 29 (self-injury).
 - `action`: FACP band present -> its action text; if referral recommended and FACP band is not severe,
   append ` + referral to specialist (Phase 3)`. No FACP and referral recommended ->
   `Referral to specialist (Phase 3)`. No FACP and no referral -> `Enter the FACP score to get a suggested action`.
-- The UI always labels this `Suggested by CareThread - the therapist decides`.
+- The UI always labels this `Suggested by DoctorNearMe - the therapist decides`.
 
 **Case sheet** (`schemas/case-sheet.json`): ElevenLabs data-collection fields (Appendix B).
 

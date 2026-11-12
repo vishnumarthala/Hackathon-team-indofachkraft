@@ -31,7 +31,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
   return (
     <div className="w-full">
       <h1 className="lp-display mb-2 text-5xl text-[#0b1f1d]">Welcome back</h1>
-      <p className="mb-8 text-slate-600">Sign in to CareThread with the email and password from your centre&apos;s administrator.</p>
+      <p className="mb-8 text-slate-600">Sign in to DoctorNearMe with the email and password from your centre&apos;s administrator.</p>
       <form className="space-y-5" onSubmit={submit}>
         <label className="block text-sm font-semibold text-[#0b1f1d]">
           Email

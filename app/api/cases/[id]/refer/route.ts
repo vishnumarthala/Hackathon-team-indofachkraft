@@ -93,11 +93,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   try {
     const result = await sendEmail({
       to: body.specialist_email,
-      subject: `Referral: ${caseRow.child_alias} (CareThread)`,
+      subject: `Referral: ${caseRow.child_alias} (DoctorNearMe)`,
       text: [
         `Hello ${body.specialist_name},`,
         "",
-        `${caseRow.therapist_name} has shared a referral for ${caseRow.child_alias} with you through CareThread.`,
+        `${caseRow.therapist_name} has shared a referral for ${caseRow.child_alias} with you through DoctorNearMe.`,
         "",
         `Reason for referral: ${body.reason}`,
         "",

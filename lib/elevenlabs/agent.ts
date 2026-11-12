@@ -45,7 +45,7 @@ export async function startAgentSession(): Promise<AgentStart> {
   }
 }
 
-// Dynamic variables the published CareThread intake agent requires (a missing one fails the start).
+// Dynamic variables the published DoctorNearMe intake agent requires (a missing one fails the start).
 export type AgentVariables = {
   parent_name: string;
   child_name: string;
@@ -54,7 +54,7 @@ export type AgentVariables = {
   case_id: string;
 };
 
-export const DEMO_CENTRE_NAME = "CareThread Demo Centre";
+export const DEMO_CENTRE_NAME = "DoctorNearMe Demo Centre";
 
 export const CONVERSATIONS_URL = "https://api.elevenlabs.io/v1/convai/conversations";
 

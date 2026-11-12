@@ -20,11 +20,11 @@ import roomImage from "@/public/landing/room.jpg";
 const SAMPLE_BRIEF = BriefSchema.parse(briefFixture);
 
 const SUBTITLE =
-  "CareThread is the AI assistant for early intervention therapists. It talks to the parent before the first session, documents the online session and fills the assessment form, and hands the complete case to the specialist.";
+  "DoctorNearMe is the autism and early intervention platform. Its Child Development module, powered by the CareThread engine, talks to the parent before the first session, documents the online session and fills the assessment form, and hands the complete case to the specialist.";
 
 export const metadata: Metadata = {
-  title: "CareThread - AI assistant for early intervention therapists",
-  description: "CareThread is the AI assistant for early intervention therapists.",
+  title: "DoctorNearMe - autism and early intervention, with an AI assistant for therapists",
+  description: "Autism and early intervention care near you, with an AI assistant for therapists.",
 };
 
 // Pitch deck slide 1 (sources listed under the section).
@@ -94,16 +94,16 @@ const TRUST = [
 
 const FAQ = [
   {
-    q: "Who uses CareThread?",
+    q: "Who uses DoctorNearMe?",
     a: "Early intervention therapists and child psychologists use it every day. Centres subscribe for their team. Parents and specialists never need an account: they get a link from the therapist.",
   },
   {
     q: "Who makes the clinical decision?",
-    a: "Always the clinician. CareThread is not a diagnosis. It documents what was said and suggests ratings with evidence. The clinician reviews, edits and decides every item.",
+    a: "Always the clinician. DoctorNearMe is not a diagnosis. It documents what was said and suggests ratings with evidence. The clinician reviews, edits and decides every item.",
   },
   {
     q: "What happens in the AI intake call?",
-    a: "Before session 1 the parent opens a private link and talks to the CareThread assistant in Telugu, Hindi or English. It asks for consent first, then one question at a time. The therapist receives the recording and a pre-session brief with the parent's own words.",
+    a: "Before session 1 the parent opens a private link and talks to the DoctorNearMe assistant in Telugu, Hindi or English. It asks for consent first, then one question at a time. The therapist receives the recording and a pre-session brief with the parent's own words.",
   },
   {
     q: "Which assessments does it support?",
@@ -115,7 +115,7 @@ const FAQ = [
   },
   {
     q: "How do I get access?",
-    a: "Book a demo. We walk you through CareThread on a sample case, then set up your centre's workspace and send your team their logins.",
+    a: "Book a demo. We walk you through DoctorNearMe on a sample case, then set up your centre's workspace and send your team their logins.",
   },
 ];
 
@@ -187,10 +187,10 @@ export default function Home() {
           <Reveal className="mb-14 max-w-3xl">
             <Eyebrow>Step 1 · The AI intake call</Eyebrow>
             <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
-              Hear how CareThread <em className="text-teal-700">talks to parents.</em>
+              Hear how DoctorNearMe <em className="text-teal-700">talks to parents.</em>
             </h2>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
-              Before the first visit, the family talks to the CareThread intake assistant, built on ElevenLabs, in their
+              Before the first visit, the family talks to the DoctorNearMe intake assistant, built on ElevenLabs, in their
               own language. The therapist walks into session 1 already knowing the history, so the session goes to the
               child.
             </p>
@@ -298,7 +298,7 @@ export default function Home() {
                 <p className={`mb-5 text-sm font-medium ${a.featured ? "text-teal-300" : "text-teal-700"}`}>{a.tag}</p>
                 <p className={`mb-1 text-[0.7rem] font-semibold uppercase tracking-wider ${a.featured ? "text-white/45" : "text-slate-400"}`}>Today</p>
                 <p className={`mb-4 text-[0.92rem] leading-relaxed ${a.featured ? "text-white/70" : "text-slate-600"}`}>{a.pain}</p>
-                <p className={`mb-1 text-[0.7rem] font-semibold uppercase tracking-wider ${a.featured ? "text-teal-300" : "text-teal-700"}`}>With CareThread</p>
+                <p className={`mb-1 text-[0.7rem] font-semibold uppercase tracking-wider ${a.featured ? "text-teal-300" : "text-teal-700"}`}>With DoctorNearMe</p>
                 <p className={`text-[0.92rem] leading-relaxed ${a.featured ? "text-white" : "text-[#0b1f1d]"}`}>{a.gain}</p>
                 {a.featured && (
                   <a href="/login" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:text-teal-200">
@@ -337,7 +337,7 @@ export default function Home() {
               AI documents, <em className="text-teal-300">the clinician decides.</em>
             </p>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-              CareThread does the writing. Every rating, every line of the report and every referral is checked and
+              DoctorNearMe does the writing. Every rating, every line of the report and every referral is checked and
               signed off by a person.
             </p>
           </Reveal>
@@ -393,7 +393,7 @@ export default function Home() {
                 Get kids into early intervention <em className="text-teal-200">sooner.</em>
               </h2>
               <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/75">
-                See CareThread on a sample case in a short call. If it fits, we set up your centre&apos;s workspace and
+                See DoctorNearMe on a sample case in a short call. If it fits, we set up your centre&apos;s workspace and
                 send your team their logins.
               </p>
             </div>

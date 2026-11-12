@@ -7,7 +7,7 @@ steps below once, then put the IDs in your git-ignored `.env.local`. Never commi
 ## 1. Create the agent
 
 1. Agents > **Create agent** > Blank agent.
-2. **Name:** `CareThread Intake`
+2. **Name:** `DoctorNearMe Child Development Intake`
 3. **Agent language (default):** English.
 4. **Additional languages:** add **Hindi** and **Telugu**. Pick a voice for each language (a voice that
    sounds natural in that language; multilingual voices work). Note the voice IDs if you want them in
@@ -53,7 +53,7 @@ message and system prompt exactly as written, with double curly braces:
 Copy exactly:
 
 ```
-Hello {{parent_alias}}, I am an AI assistant from CareThread, helping {{therapist_name}}'s team before {{child_alias}}'s first session. This call is recorded and summarised for the therapist. Is it okay to continue?
+Hello {{parent_alias}}, I am an AI assistant from DoctorNearMe, helping {{therapist_name}}'s team before {{child_alias}}'s first session. This call is recorded and summarised for the therapist. Is it okay to continue?
 ```
 
 ## 6. System prompt
@@ -61,7 +61,7 @@ Hello {{parent_alias}}, I am an AI assistant from CareThread, helping {{therapis
 Copy exactly:
 
 ```
-You are CareThread's intake assistant. You are an AI, not a doctor or therapist, and you say so if asked.
+You are DoctorNearMe's intake assistant. You are an AI, not a doctor or therapist, and you say so if asked.
 Speak only in {{language}} (en = English, hi = Hindi, te = Telugu). Use simple, warm words. Ask one question at a time.
 Goal: before {{child_alias}}'s first session, learn from {{parent_alias}} about the child's development so the therapist is prepared.
 First get consent. If the parent does not agree, thank them and end the call.
@@ -105,7 +105,7 @@ ElevenLabs > **Settings** (workspace) > **Webhooks** > Post-call webhook:
   `localhost`. Locally, ticket 010's completion endpoint fetches the conversation instead.)
 - **Authentication:** HMAC. Copy the generated secret.
 - **Event:** `post_call_transcription`.
-- Attach the webhook to the `CareThread Intake` agent if the dashboard asks.
+- Attach the webhook to the `DoctorNearMe Child Development Intake` agent if the dashboard asks.
 
 ## 9. Values for `.env.local`
 
@@ -131,9 +131,13 @@ The team published **CareThread Intake Assistant**, `agent_3701m6tv55eyenhsp1qj9
 English / Hindi / Telugu, consent-first AI disclosure). Put the ID in `.env.local` and in Vercel as
 `ELEVENLABS_AGENT_ID`.
 
+> **Manual rebrand step (ticket 016):** in the ElevenLabs dashboard rename this agent to
+> `DoctorNearMe Child Development Intake` and paste the DoctorNearMe first message (section 5) and system
+> prompt (section 6). The agent ID does not change, so no app config changes are needed.
+
 - **Required dynamic variables:** `parent_name`, `child_name`, `centre_name`, `therapist_name`, `case_id`
   (a missing one fails the session start). `/api/intake/<token>/start` sends them from the case
-  (centre `CareThread Demo Centre`), plus `intake_token`, which our completion and webhook processing use
+  (centre `DoctorNearMe Demo Centre`), plus `intake_token`, which our completion and webhook processing use
   to find the case. The landing page demo (`/api/demo/voice-token`) sends fixed synthetic values (Lakshmi,
   Ravi, Demo Therapist, `case_id: landing-demo`).
 - **Token or public start:** `startAgentSession()` (`lib/elevenlabs/agent.ts`) asks for a WebRTC

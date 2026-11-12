@@ -29,8 +29,8 @@ const STEPS: Step[] = [
   {
     key: "intake",
     label: "1. Intake call",
-    title: "CareThread talks to the parent before the first session",
-    text: "Send the parent a link. CareThread holds a calm, guided conversation in their language, right in the browser. You open the case to a pre-session brief instead of a blank page.",
+    title: "DoctorNearMe talks to the parent before the first session",
+    text: "Send the parent a link. DoctorNearMe holds a calm, guided conversation in their language, right in the browser. You open the case to a pre-session brief instead of a blank page.",
     points: ["No app to install for parents", "Consent before anything is recorded", "English, Hindi and Telugu today, German coming soon"],
     video: "/landing/intake.mp4",
     poster: "/landing/intake.jpg",
@@ -52,8 +52,8 @@ const STEPS: Step[] = [
   {
     key: "session",
     label: "2. Online session",
-    title: "Run the session. CareThread fills the ISAA form",
-    text: "Upload or record the online session. CareThread transcribes it and suggests a rating for each of the 40 ISAA items, each linked to the exact quote and timestamp. Nothing counts until you confirm it.",
+    title: "Run the session. DoctorNearMe fills the ISAA form",
+    text: "Upload or record the online session. DoctorNearMe transcribes it and suggests a rating for each of the 40 ISAA items, each linked to the exact quote and timestamp. Nothing counts until you confirm it.",
     points: ["Evidence quote and timestamp on every item", "Confirm or edit each rating in one click", "Score updates as you confirm"],
     video: "/landing/session.mp4",
     poster: "/landing/session.jpg",
@@ -87,7 +87,7 @@ const STEPS: Step[] = [
     key: "handoff",
     label: "3. Specialist handoff",
     title: "Hand the complete case to the specialist",
-    text: "Mark the report final and CareThread builds the referral packet: intake, confirmed ISAA with evidence, and the parent's voice note. The specialist opens it by link and can ask the case questions.",
+    text: "Mark the report final and DoctorNearMe builds the referral packet: intake, confirmed ISAA with evidence, and the parent's voice note. The specialist opens it by link and can ask the case questions.",
     points: ["Report drafted from confirmed items only", "One link for the specialist, no account", "Ask the case: answers cite their source"],
     video: "/landing/specialist.mp4",
     poster: "/landing/specialist.jpg",
@@ -153,7 +153,7 @@ export function HowItWorks() {
   return (
     <div ref={rootRef} className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
       <div>
-        <div role="tablist" aria-label="How CareThread works" onKeyDown={onKey} className="flex flex-col gap-3">
+        <div role="tablist" aria-label="How DoctorNearMe works" onKeyDown={onKey} className="flex flex-col gap-3">
           {STEPS.map((s, i) => {
             const selected = i === active;
             return (

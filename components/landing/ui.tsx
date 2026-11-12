@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-/** CareThread mark: a thread looping through a speech bubble. */
+/** DoctorNearMe mark: a thread looping through a speech bubble. */
 export function Logo({ className = "", light = false }: { className?: string; light?: boolean }) {
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
@@ -17,7 +17,7 @@ export function Logo({ className = "", light = false }: { className?: string; li
         <circle cx="24" cy="8.5" r="2.2" fill="#ef6f5e" />
       </svg>
       <span className={`text-[1.15rem] font-semibold tracking-tight ${light ? "text-white" : "text-[color:var(--nav-fg,#0b1f1d)]"}`}>
-        CareThread
+        DoctorNearMe
       </span>
     </span>
   );

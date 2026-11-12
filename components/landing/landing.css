@@ -1,4 +1,4 @@
-/* CareThread marketing pages (landing, book a demo, login). Prefixed `lp-` global classes:
+/* DoctorNearMe marketing pages (landing, book a demo, login). Prefixed `lp-` global classes:
    next.config.ts routes every *.css through the Tailwind loader as global CSS, so CSS modules are not used.
    Every animation is disabled under prefers-reduced-motion. */
 

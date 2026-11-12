@@ -49,7 +49,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     conversation_token: session.conversation_token,
     agent_id: session.agent_id,
     dynamic_variables: {
-      // Required by the published CareThread intake agent (docs/elevenlabs-agent.md).
+      // Required by the published DoctorNearMe intake agent (docs/elevenlabs-agent.md).
       parent_name: caseRow.parent_alias,
       child_name: caseRow.child_alias,
       centre_name: DEMO_CENTRE_NAME,

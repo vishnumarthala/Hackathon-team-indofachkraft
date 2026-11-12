@@ -6,8 +6,8 @@ import { fontVars } from "@/components/landing/fonts";
 import { Logo } from "@/components/landing/ui";
 
 export const metadata: Metadata = {
-  title: "Book a demo - CareThread",
-  description: "See CareThread on a sample case and join the pilot for early intervention centres.",
+  title: "Book a demo - DoctorNearMe",
+  description: "See DoctorNearMe on a sample case and join the pilot for early intervention centres.",
 };
 
 const STEPS = [
@@ -25,7 +25,7 @@ export default function BookDemoPage() {
           <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-teal-500/25 blur-[110px]" />
           <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 -left-24 h-96 w-96 rounded-full bg-[#ef6f5e]/20 blur-[110px]" />
           <div className="relative flex h-full flex-col">
-            <Link href="/" aria-label="CareThread home" className="w-fit rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30">
+            <Link href="/" aria-label="DoctorNearMe home" className="w-fit rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30">
               <Logo light />
             </Link>
 
@@ -36,7 +36,7 @@ export default function BookDemoPage() {
               </h1>
               <p className="mt-5 leading-relaxed text-white/70 sm:text-lg">
                 We are onboarding pilot centres and therapists in Germany and India. Book a short demo and we&apos;ll
-                show you CareThread on a sample case.
+                show you DoctorNearMe on a sample case.
               </p>
 
               <ol className="mt-10 hidden space-y-6 lg:block">
@@ -58,7 +58,7 @@ export default function BookDemoPage() {
               <blockquote className="lp-display text-2xl leading-snug text-white/90">
                 &ldquo;AI documents, the clinician decides.&rdquo;
               </blockquote>
-              <figcaption className="mt-2 text-sm text-white/50">The principle CareThread is built on</figcaption>
+              <figcaption className="mt-2 text-sm text-white/50">The principle DoctorNearMe is built on</figcaption>
             </figure>
           </div>
         </aside>
@@ -74,7 +74,7 @@ export default function BookDemoPage() {
             </Link>
             <DemoRequestForm />
             <p className="mt-10 text-center text-sm text-slate-600">
-              Already using CareThread?{" "}
+              Already using DoctorNearMe?{" "}
               <Link href="/login" className="font-semibold text-teal-800 underline-offset-4 hover:underline">
                 Log in
               </Link>

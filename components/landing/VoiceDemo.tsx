@@ -236,7 +236,7 @@ function LivePanel() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-600">
-        Talk to the real CareThread intake assistant in your browser. You play Lakshmi, the parent of Ravi
+        Talk to the real DoctorNearMe intake assistant in your browser. You play Lakshmi, the parent of Ravi
         (synthetic). Calls end automatically after {DEMO_CALL_LIMIT_SEC / 60} minutes.
       </p>
       <div>

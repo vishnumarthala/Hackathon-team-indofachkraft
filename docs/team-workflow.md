@@ -1,4 +1,4 @@
-# CareThread: Team workflow (4 people, 4 laptops, one GitHub repo)
+# DoctorNearMe: Team workflow (4 people, 4 laptops, one GitHub repo)
 
 Read this once before you touch code. It is short on purpose.
 

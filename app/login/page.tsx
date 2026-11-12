@@ -26,21 +26,21 @@ export default async function LoginPage({
   return (
     <div className={`lp-root ${fontVars} grid min-h-screen lg:grid-cols-[1fr_0.95fr]`}>
       <div className="flex flex-col px-6 py-8 sm:px-12 lg:px-20">
-        <Link href="/" aria-label="CareThread home" className="w-fit rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30">
+        <Link href="/" aria-label="DoctorNearMe home" className="w-fit rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30">
           <Logo />
         </Link>
 
         <div className="lp-fade-up mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-16">
           <LoginForm nextPath={safeNextPath(next)} />
           <p className="mt-8 text-center text-sm text-slate-600">
-            New to CareThread?{" "}
+            New to DoctorNearMe?{" "}
             <Link href="/book-demo" className="font-semibold text-teal-800 underline-offset-4 hover:underline">
               Book a demo
             </Link>
           </p>
         </div>
 
-        <p className="text-xs text-slate-500">CareThread supports clinicians. It is not a diagnosis.</p>
+        <p className="text-xs text-slate-500">DoctorNearMe supports clinicians. It is not a diagnosis.</p>
       </div>
 
       <div className="relative hidden overflow-hidden bg-[#0b1f1d] lg:block">
