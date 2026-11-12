@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SAMPLE_CALL, SAMPLE_CALL_SRC, type SampleTurn } from "@/components/landing/sampleCall";
 import { DEMO_CALL_ENDED_EVENT, activeTurnIndex } from "@/components/landing/VoiceDemo";
+import { useT } from "@/lib/i18n/client";
 import type { Brief } from "@/lib/types";
 
-const FLAG_LABELS: Record<string, string> = { lost_speech: "Lost speech", self_injury: "Self-injury", other: "Red flag" };
+const FLAG_KEYS = { lost_speech: "flagLostSpeech", self_injury: "flagSelfInjury", other: "redFlag" } as const;
 
 const norm = (s: string) => s.replace(/\s+/g, " ").trim().toLowerCase();
 
@@ -36,7 +37,11 @@ export function clock(sec: number): string {
 
 type Decision = "confirmed" | "editing" | null;
 
+// The brief and transcript are synthetic AI output and stay in English; only the UI around them is translated.
 export function TherapistView({ brief }: { brief: Brief }) {
+  const t = useT("landing.therapistView");
+  const tc = useT("common");
+  const flagLabel = (type: string) => (type in FLAG_KEYS ? t(FLAG_KEYS[type as keyof typeof FLAG_KEYS]) : type);
   const rootRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [active, setActive] = useState(-1);
@@ -74,7 +79,7 @@ export function TherapistView({ brief }: { brief: Brief }) {
       {banner && (
         <div role="status" className="mb-4 flex items-start gap-3 rounded-2xl bg-teal-700 px-4 py-3 text-sm text-white shadow-lg">
           <span className="mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full bg-teal-200" />
-          Your demo call has ended. This is how an intake call reaches the therapist (example case, synthetic data).
+          {t("ended")}
         </div>
       )}
 
@@ -84,16 +89,16 @@ export function TherapistView({ brief }: { brief: Brief }) {
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-teal-700 text-sm font-bold text-white">R</span>
             <div>
-              <p className="font-semibold text-slate-900">Ravi (synthetic)</p>
-              <p className="text-xs text-slate-500">40 months · Telugu · Therapist: Demo Therapist</p>
+              <p className="font-semibold text-slate-900">{t("childName")}</p>
+              <p className="text-xs text-slate-500">{t("childMeta")}</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <span className="rounded-full bg-emerald-100 px-2.5 py-1 font-semibold text-emerald-800">
-              ✓ Intake call completed · {clock(SAMPLE_CALL[SAMPLE_CALL.length - 1].end)}
+              {t("callCompleted", { duration: clock(SAMPLE_CALL[SAMPLE_CALL.length - 1].end) })}
             </span>
             <span className="rounded-full bg-white px-2.5 py-1 font-medium text-slate-600 ring-1 ring-slate-200">
-              AI documents, the clinician decides
+              {t("principle")}
             </span>
           </div>
         </div>
@@ -101,7 +106,7 @@ export function TherapistView({ brief }: { brief: Brief }) {
         <div className="grid lg:grid-cols-[1fr_1.15fr]">
           {/* Recording and transcript */}
           <div className="border-b border-slate-200 p-5 lg:border-b-0 lg:border-r">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Call recording</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">{t("recording")}</p>
             <audio
               ref={audioRef}
               controls
@@ -112,8 +117,8 @@ export function TherapistView({ brief }: { brief: Brief }) {
             >
               <track kind="captions" />
             </audio>
-            <ol aria-label="Intake call transcript" className="max-h-[26rem] space-y-1.5 overflow-y-auto pr-1 lg:max-h-none">
-              {SAMPLE_CALL.map((t, i) => {
+            <ol aria-label={t("transcriptLabel")} className="max-h-[26rem] space-y-1.5 overflow-y-auto pr-1 lg:max-h-none">
+              {SAMPLE_CALL.map((turn, i) => {
                 const flag = flagLines.get(i);
                 return (
                   <li key={i}>
@@ -124,17 +129,17 @@ export function TherapistView({ brief }: { brief: Brief }) {
                         i === active ? "bg-teal-50 ring-2 ring-teal-500" : flag ? "bg-rose-50 hover:bg-rose-100" : "hover:bg-slate-50"
                       }`}
                     >
-                      <span className="w-9 shrink-0 pt-0.5 font-mono text-xs tabular-nums text-slate-400">{clock(t.start)}</span>
+                      <span className="w-9 shrink-0 pt-0.5 font-mono text-xs tabular-nums text-slate-400">{clock(turn.start)}</span>
                       <span className="min-w-0">
-                        <span className={`mr-1.5 text-xs font-semibold uppercase ${t.role === "agent" ? "text-teal-700" : "text-slate-600"}`}>
-                          {t.role === "agent" ? "AI" : "Parent"}
+                        <span className={`mr-1.5 text-xs font-semibold uppercase ${turn.role === "agent" ? "text-teal-700" : "text-slate-600"}`}>
+                          {turn.role === "agent" ? t("speakerAi") : t("speakerParent")}
                         </span>
                         {flag && (
                           <span className="mr-1.5 rounded-full bg-rose-100 px-2 py-0.5 text-[11px] font-semibold text-rose-700">
-                            Red flag
+                            {t("redFlag")}
                           </span>
                         )}
-                        <span className="text-slate-700">{t.text}</span>
+                        <span lang="en" className="text-slate-700">{turn.text}</span>
                       </span>
                     </button>
                   </li>
@@ -147,16 +152,16 @@ export function TherapistView({ brief }: { brief: Brief }) {
           <div className="space-y-5 p-5">
             <div>
               <div className="mb-2 flex items-center justify-between gap-2">
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Pre-session brief</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">{t("brief")}</p>
                 <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-200">
-                  Parent-reported
+                  {t("parentReported")}
                 </span>
               </div>
-              <p className="text-sm leading-relaxed text-slate-700">{brief.summary}</p>
+              <p lang="en" className="text-sm leading-relaxed text-slate-700">{brief.summary}</p>
             </div>
 
             <div>
-              <p className="mb-2 text-sm font-semibold text-slate-900">Red flags</p>
+              <p className="mb-2 text-sm font-semibold text-slate-900">{t("redFlags")}</p>
               <ul className="space-y-2">
                 {brief.red_flags.map((f) => {
                   const line = redFlagLineIndex(f.quote, SAMPLE_CALL);
@@ -164,16 +169,16 @@ export function TherapistView({ brief }: { brief: Brief }) {
                     <li key={`${f.type}-${f.turn_id}`} className="flex items-start justify-between gap-3 rounded-xl bg-rose-50 p-3 text-sm">
                       <span>
                         <span className="mr-2 rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-700">
-                          {FLAG_LABELS[f.type] ?? f.type}
+                          {flagLabel(f.type)}
                         </span>
-                        <span className="italic text-slate-700">&ldquo;{f.quote}&rdquo;</span>
+                        <span lang="en" className="italic text-slate-700">&ldquo;{f.quote}&rdquo;</span>
                       </span>
                       {line !== -1 && (
                         <button
                           type="button"
                           onClick={() => playFrom(line)}
                           className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-semibold text-rose-700 ring-1 ring-rose-200 hover:bg-rose-100"
-                          aria-label={`Play the moment: ${FLAG_LABELS[f.type] ?? f.type}`}
+                          aria-label={t("playMoment", { flag: flagLabel(f.type) })}
                         >
                           ▶ {clock(SAMPLE_CALL[line].start)}
                         </button>
@@ -186,9 +191,9 @@ export function TherapistView({ brief }: { brief: Brief }) {
 
             <div>
               <div className="mb-2 flex items-center justify-between gap-2">
-                <p className="text-sm font-semibold text-slate-900">Parent&apos;s answers</p>
+                <p className="text-sm font-semibold text-slate-900">{t("answers")}</p>
                 <span className="text-xs tabular-nums text-slate-500">
-                  {confirmedCount} of {brief.parent_reported.length} confirmed
+                  {t("confirmedCount", { confirmed: confirmedCount, total: brief.parent_reported.length })}
                 </span>
               </div>
               <ul className="divide-y divide-slate-100 rounded-xl ring-1 ring-slate-200">
@@ -198,21 +203,21 @@ export function TherapistView({ brief }: { brief: Brief }) {
                   return (
                     <li key={r.field_id} className="flex flex-wrap items-start justify-between gap-2 px-3 py-2.5 text-sm">
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-slate-500">{r.label}</p>
+                        <p lang="en" className="text-xs font-semibold text-slate-500">{r.label}</p>
                         {decision === "editing" ? (
                           <input
-                            aria-label={`Edit ${r.label}`}
+                            aria-label={t("editLabel", { label: r.label })}
                             value={value}
                             onChange={(e) => setEdits((p) => ({ ...p, [r.field_id]: e.target.value }))}
                             className="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1 text-sm"
                           />
                         ) : (
-                          <p className="text-slate-800">{value}</p>
+                          <p lang="en" className="text-slate-800">{value}</p>
                         )}
                       </div>
                       {decision === "confirmed" ? (
                         <span className="shrink-0 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
-                          ✓ Confirmed by therapist
+                          {t("confirmedByTherapist")}
                         </span>
                       ) : (
                         <span className="flex shrink-0 gap-1.5">
@@ -221,7 +226,7 @@ export function TherapistView({ brief }: { brief: Brief }) {
                             onClick={() => setDecisions((p) => ({ ...p, [r.field_id]: "confirmed" }))}
                             className="rounded-full bg-teal-700 px-3 py-1 text-xs font-semibold text-white hover:bg-teal-800"
                           >
-                            Confirm
+                            {tc("confirm")}
                           </button>
                           {decision !== "editing" && (
                             <button
@@ -229,7 +234,7 @@ export function TherapistView({ brief }: { brief: Brief }) {
                               onClick={() => setDecisions((p) => ({ ...p, [r.field_id]: "editing" }))}
                               className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50"
                             >
-                              Edit
+                              {tc("edit")}
                             </button>
                           )}
                         </span>
@@ -241,8 +246,8 @@ export function TherapistView({ brief }: { brief: Brief }) {
             </div>
 
             <div>
-              <p className="mb-2 text-sm font-semibold text-slate-900">Questions to verify in session 1</p>
-              <ul className="list-disc space-y-1.5 pl-5 text-sm text-slate-700">
+              <p className="mb-2 text-sm font-semibold text-slate-900">{t("questions")}</p>
+              <ul lang="en" className="list-disc space-y-1.5 pl-5 text-sm text-slate-700">
                 {brief.questions_to_verify.map((q) => (
                   <li key={q}>{q}</li>
                 ))}
@@ -252,9 +257,9 @@ export function TherapistView({ brief }: { brief: Brief }) {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-slate-50 px-5 py-3 text-xs text-slate-500">
-          <span>Parent-reported · the therapist confirms in session 1. This is not a diagnosis.</span>
+          <span>{t("footer")}</span>
           <Link href="/dashboard" className="font-semibold text-teal-800 underline-offset-2 hover:underline">
-            Open the full demo →
+            {t("openDemo")}
           </Link>
         </div>
       </div>

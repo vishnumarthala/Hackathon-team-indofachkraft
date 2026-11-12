@@ -8,16 +8,19 @@
   --lp-sand: #efe9df;
   --lp-teal: #0f766e;
   --lp-coral: #ef6f5e;
-  font-family: var(--font-lp-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Indic fallbacks (root layout fonts) so Hindi/Telugu never render as boxes. */
+  font-family: var(--font-lp-sans), var(--font-noto-devanagari), var(--font-noto-telugu), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   background: var(--lp-cream);
   color: var(--lp-ink);
   -webkit-font-smoothing: antialiased;
 }
 
 .lp-display {
-  font-family: var(--font-lp-display), Georgia, "Times New Roman", serif;
+  font-family: var(--font-lp-display), var(--font-noto-devanagari), var(--font-noto-telugu), Georgia, "Times New Roman", serif;
   font-weight: 400;
   letter-spacing: -0.015em;
+  /* Long Telugu/Hindi words must wrap instead of widening the grid at 375 px. */
+  overflow-wrap: anywhere;
 }
 
 /* ---------- Nav ---------- */

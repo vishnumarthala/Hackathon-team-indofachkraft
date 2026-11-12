@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { formatBerlin, PILOT_ROLE_LABELS } from "@/lib/pilots";
+import { getFormatter } from "@/lib/i18n/server";
+import { PILOT_ROLE_LABELS } from "@/lib/pilots";
 import { listPilotSignups } from "@/lib/queries/pilots";
 import { getUserRole, requirePageUser } from "@/lib/auth";
 
@@ -10,6 +11,7 @@ export default async function PilotSignupsPage() {
   if ((await getUserRole(user.id)) !== "platform_admin") notFound();
 
   const rows = await listPilotSignups();
+  const format = await getFormatter();
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
@@ -36,7 +38,7 @@ export default async function PilotSignupsPage() {
                 <td className="px-3 py-2">{r.country}</td>
                 <td className="px-3 py-2">{r.centre ?? ""}</td>
                 <td className="px-3 py-2">{r.clinicians ?? ""}</td>
-                <td className="whitespace-nowrap px-3 py-2">{formatBerlin(r.created_at)}</td>
+                <td className="whitespace-nowrap px-3 py-2">{format.dateTime(r.created_at)}</td>
               </tr>
             ))}
           </tbody>

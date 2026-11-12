@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import { useT } from "@/lib/i18n/client";
+import type { TFunction } from "@/lib/i18n/keys";
 import { LoopVideo } from "./LoopVideo";
 import { CheckIcon, Wave } from "./ui";
 
@@ -25,54 +27,58 @@ function Panel({ children }: { children: ReactNode }) {
   );
 }
 
-const STEPS: Step[] = [
+const STEP_COUNT = 3;
+
+function buildSteps(t: TFunction<"landing.how">, tReel: TFunction<"landing.reel">): Step[] {
+  return [
   {
     key: "intake",
-    label: "1. Intake call",
-    title: "DoctorNearMe talks to the parent before the first session",
-    text: "Send the parent a link. DoctorNearMe holds a calm, guided conversation in their language, right in the browser. You open the case to a pre-session brief instead of a blank page.",
-    points: ["No app to install for parents", "Consent before anything is recorded", "English, Hindi and Telugu today, German coming soon"],
+    label: t("intakeLabel"),
+    title: t("intakeTitle"),
+    text: t("intakeText"),
+    points: [t("intakePoint1"), t("intakePoint2"), t("intakePoint3")],
     video: "/landing/intake.mp4",
     poster: "/landing/intake.jpg",
     mock: (
       <Panel>
         <div className="mb-3 flex items-center justify-between">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">Pre-session brief</p>
+          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">{t("briefTitle")}</p>
           <Wave />
         </div>
-        <p className="mb-2 text-sm font-semibold text-[#0b1f1d]">Ravi, 3 years</p>
+        <p className="mb-2 text-sm font-semibold text-[#0b1f1d]">{t("briefChild")}</p>
         <ul className="space-y-1.5 text-[0.8rem] text-slate-600">
-          <li><span className="font-medium text-slate-800">Main concern:</span> few words, does not answer to his name</li>
-          <li><span className="font-medium text-slate-800">First noticed:</span> around 18 months</li>
-          <li><span className="font-medium text-slate-800">Watch for:</span> eye contact, play with toys</li>
+          <li><span className="font-medium text-slate-800">{t("briefConcernLabel")}</span> {t("briefConcern")}</li>
+          <li><span className="font-medium text-slate-800">{t("briefNoticedLabel")}</span> {t("briefNoticed")}</li>
+          <li><span className="font-medium text-slate-800">{t("briefWatchLabel")}</span> {t("briefWatch")}</li>
         </ul>
       </Panel>
     ),
   },
   {
     key: "session",
-    label: "2. Online session",
-    title: "Run the session. DoctorNearMe fills the ISAA form",
-    text: "Upload or record the online session. DoctorNearMe transcribes it and suggests a rating for each of the 40 ISAA items, each linked to the exact quote and timestamp. Nothing counts until you confirm it.",
-    points: ["Evidence quote and timestamp on every item", "Confirm or edit each rating in one click", "Score updates as you confirm"],
+    label: t("sessionLabel"),
+    title: t("sessionTitle"),
+    text: t("sessionText"),
+    points: [t("sessionPoint1"), t("sessionPoint2"), t("sessionPoint3")],
     video: "/landing/session.mp4",
     poster: "/landing/session.jpg",
     mock: (
       <Panel>
         <div className="mb-3 flex items-center justify-between">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">ISAA review</p>
-          <span className="text-xs font-medium text-slate-500">38 / 40 confirmed</span>
+          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">{t("reviewTitle")}</p>
+          <span className="text-xs font-medium text-slate-500">{t("reviewProgress")}</span>
         </div>
         <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-slate-100">
           <div className="h-full w-[95%] rounded-full bg-teal-600" />
         </div>
+        {/* ISAA item texts: not translated (clinical instrument items). */}
         {[
-          { n: 15, t: "Acquired speech and lost it", q: "said a few words at two, then stopped", ts: "01:18" },
-          { n: 31, t: "Unusually sensitive to sensory stimuli", q: "covers his ears at the mixer", ts: "02:05" },
+          { n: 15, t: "Acquired speech and lost it", q: t("quoteLostSpeech"), ts: "01:18" },
+          { n: 31, t: "Unusually sensitive to sensory stimuli", q: t("quoteSensory"), ts: "02:05" },
         ].map((r) => (
           <div key={r.n} className="mb-2 rounded-xl bg-slate-50 p-2.5 last:mb-0">
             <div className="flex items-center justify-between text-[0.8rem] font-semibold text-slate-800">
-              <span>
+              <span lang="en">
                 {r.n}. {r.t}
               </span>
               <span className="font-mono text-[0.7rem] font-normal text-slate-500">{r.ts}</span>
@@ -85,17 +91,17 @@ const STEPS: Step[] = [
   },
   {
     key: "handoff",
-    label: "3. Specialist handoff",
-    title: "Hand the complete case to the specialist",
-    text: "Mark the report final and DoctorNearMe builds the referral packet: intake, confirmed ISAA with evidence, and the parent's voice note. The specialist opens it by link and can ask the case questions.",
-    points: ["Report drafted from confirmed items only", "One link for the specialist, no account", "Ask the case: answers cite their source"],
+    label: t("handoffLabel"),
+    title: t("handoffTitle"),
+    text: t("handoffText"),
+    points: [t("handoffPoint1"), t("handoffPoint2"), t("handoffPoint3")],
     video: "/landing/specialist.mp4",
     poster: "/landing/specialist.jpg",
     mock: (
       <Panel>
-        <p className="mb-3 text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">Referral packet</p>
+        <p className="mb-3 text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">{t("packetTitle")}</p>
         <ul className="mb-3 space-y-1.5">
-          {["Intake summary", "ISAA with evidence", "Therapist report", "Parent voice note"].map((x) => (
+          {[tReel("packetIntake"), t("packetIsaa"), tReel("packetReport"), tReel("packetVoiceNote")].map((x) => (
             <li key={x} className="flex items-center gap-2 text-[0.82rem] text-slate-700">
               <CheckIcon className="h-4 w-4 text-teal-600" />
               {x}
@@ -103,14 +109,18 @@ const STEPS: Step[] = [
           ))}
         </ul>
         <div className="flex h-9 items-center justify-center rounded-full bg-[#0b1f1d] text-xs font-semibold text-white">
-          Send to specialist
+          {tReel("sendToSpecialist")}
         </div>
       </Panel>
     ),
   },
-];
+  ];
+}
 
 export function HowItWorks() {
+  const t = useT("landing.how");
+  const tReel = useT("landing.reel");
+  const STEPS = useMemo(() => buildSteps(t, tReel), [t, tReel]);
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
   const [inView, setInView] = useState(false);
@@ -130,7 +140,7 @@ export function HowItWorks() {
     if (!auto || !inView) return;
     const id = window.setTimeout(() => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setAuto(false);
-      setActive((a) => (a + 1) % STEPS.length);
+      setActive((a) => (a + 1) % STEP_COUNT);
     }, DURATION);
     return () => window.clearTimeout(id);
   }, [active, auto, inView]);
@@ -153,7 +163,7 @@ export function HowItWorks() {
   return (
     <div ref={rootRef} className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
       <div>
-        <div role="tablist" aria-label="How DoctorNearMe works" onKeyDown={onKey} className="flex flex-col gap-3">
+        <div role="tablist" aria-label={t("tablistLabel")} onKeyDown={onKey} className="flex flex-col gap-3">
           {STEPS.map((s, i) => {
             const selected = i === active;
             return (

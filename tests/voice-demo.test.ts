@@ -24,6 +24,7 @@ import {
   startVoiceDemo,
   type DemoStartDeps,
 } from "@/components/landing/VoiceDemo";
+import { withI18n } from "./helpers/i18n";
 import { allowVoiceDemo, GLOBAL_LIMIT, PER_IP_LIMIT, PER_IP_WINDOW_MS, resetVoiceDemoLimits } from "@/lib/voiceDemoLimit";
 
 const SECRET = "sk_test_secret_value";
@@ -193,7 +194,7 @@ describe("helpers", () => {
   });
 
   it("renders both tabs with the sample call first", () => {
-    const html = renderToStaticMarkup(createElement(VoiceDemo));
+    const html = renderToStaticMarkup(withI18n(createElement(VoiceDemo)));
     expect(html).toContain("Listen to a sample call");
     expect(html).toContain("Talk to it live");
     expect(html).toContain('src="/landing/sample-intake-call.mp3"');

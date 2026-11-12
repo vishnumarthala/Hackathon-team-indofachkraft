@@ -91,6 +91,13 @@ flowchart LR
   `https://carethread-two.vercel.app`, allow that same URL for redirects, and disable new sign-ups in
   the Supabase Auth settings. `supabase/config.toml` disables sign-ups for local Supabase only; the
   cloud Auth setting is managed separately.
+- **Languages and time zone (ticket 018).** The UI is English, Hindi or Telugu with no URL prefix: the
+  locale comes from cookie `dnm_locale`, then `user_profiles.preferred_locale`, then (on
+  `/intake/<token>`) the case language, then `Accept-Language`, then `en`. Dates and times show in the
+  viewer's browser time zone (cookie `dnm_tz`, then `user_profiles.time_zone`, fallback `Asia/Kolkata`);
+  storage stays UTC. `proxy.ts` passes the pathname to the server in the `x-dnm-path` request header
+  (always overwritten). Every new UI string goes through `t()`; see `docs/i18n.md`. Hindi/Telugu copy
+  awaits human review in `messages/REVIEW.md`.
 - **Real patient data** still waits for consent gating (020) and the privacy/audit baseline (041).
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
   token-based API endpoints and signed webhook are public by design.
@@ -99,7 +106,8 @@ flowchart LR
 
 ```
 app/
-  layout.tsx                      root layout: header + demo banner (001)
+  layout.tsx                      root layout: header + demo banner (001); fonts, <html lang>, I18nProvider (018)
+  api/locale/route.ts             POST UI language / time zone preference (018)
   page.tsx                        landing + pilot sign-up (014; placeholder from 001)
   dashboard/page.tsx              case list (004)
   dashboard/pilots/page.tsx       pilot sign-ups list (014)
@@ -125,6 +133,9 @@ lib/
   extraction.ts                   (006)
   intake/process.ts               post-call processing (010)
   queries/<area>.ts               read helpers, one file per ticket area
+  i18n/                           config, server (getLocale/getTimeZone/getT/getFormatter), client
+                                  (I18nProvider/useT/useFormatter), format, keys, translate, messages (018)
+messages/  en.json hi.json te.json REVIEW.md   UI copy catalogues + human review list (018)
 schemas/  isaa.json  case-sheet.json  facp.json                                  (001)
 prompts/  extract.md  brief.md  report.md  referral.md  ask.md  parent-summary.md (one per ticket)
 supabase/config.toml  supabase/migrations/20261107120000_init.sql               (001)
@@ -133,7 +144,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 .github/pull_request_template.md  .github/workflows/ci.yml (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
-docs/     system-design.md  elevenlabs-agent.md
+docs/     system-design.md  elevenlabs-agent.md  i18n.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.

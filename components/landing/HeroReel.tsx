@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useT } from "@/lib/i18n/client";
+import type { TFunction } from "@/lib/i18n/keys";
 import { Arrow, ButtonLink, Wave } from "./ui";
 
 const SCENE_MS = 6000;
@@ -18,12 +20,15 @@ function Card({ children }: { children: ReactNode }) {
 
 type Scene = { video: string; poster: string; label: string; caption: string; card: ReactNode };
 
-const SCENES: Scene[] = [
+const SCENE_COUNT = 4;
+
+function buildScenes(t: TFunction<"landing.reel">): Scene[] {
+  return [
   {
     video: "/landing/reel-1.mp4",
     poster: "/landing/reel-1.jpg",
-    label: "Before the first session",
-    caption: "DoctorNearMe talks with the parent, in their own language.",
+    label: t("intakeLabel"),
+    caption: t("intakeCaption"),
     card: (
       <Card>
         <div className="flex items-center gap-3">
@@ -31,12 +36,12 @@ const SCENES: Scene[] = [
             <Wave />
           </span>
           <div className="leading-tight">
-            <p className="text-sm font-semibold">Intake call · English</p>
-            <p className="text-xs text-slate-500">Ravi&apos;s mother is talking · 06:12</p>
+            <p className="text-sm font-semibold">{t("intakeCardTitle")}</p>
+            <p className="text-xs text-slate-500">{t("intakeCardMeta", { time: "06:12" })}</p>
           </div>
         </div>
         <p className="mt-3 rounded-xl bg-[#f8f6f1] px-3 py-2 text-[0.82rem] italic text-slate-600">
-          &ldquo;He said a few words at two, then he stopped.&rdquo;
+          &ldquo;{t("intakeCardQuote")}&rdquo;
         </p>
       </Card>
     ),
@@ -44,26 +49,26 @@ const SCENES: Scene[] = [
   {
     video: "/landing/reel-2.mp4",
     poster: "/landing/reel-2.jpg",
-    label: "During the session",
-    caption: "You stay with the child. DoctorNearMe documents.",
+    label: t("sessionLabel"),
+    caption: t("sessionCaption"),
     card: (
       <Card>
         <div className="mb-2.5 flex items-center justify-between">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">Session 1 · Live notes</p>
+          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">{t("sessionCardTitle")}</p>
           <span className="flex items-center gap-1.5 text-xs font-semibold text-[#ef6f5e]">
             <span className="lp-pulse h-2 w-2 rounded-full bg-[#ef6f5e]" />
-            Documenting
+            {t("sessionCardStatus")}
           </span>
         </div>
         <ul className="space-y-1.5 text-[0.82rem] text-slate-600">
           <li>
-            <span className="font-mono text-xs text-slate-400">00:42</span> Looks away when his name is called
+            <span className="font-mono text-xs text-slate-400">00:42</span> {t("sessionNote1")}
           </li>
           <li>
-            <span className="font-mono text-xs text-slate-400">01:18</span> Lines up toy cars, repeats the order
+            <span className="font-mono text-xs text-slate-400">01:18</span> {t("sessionNote2")}
           </li>
           <li className="lp-caret">
-            <span className="font-mono text-xs text-slate-400">02:05</span> Covers his ears at the noise
+            <span className="font-mono text-xs text-slate-400">02:05</span> {t("sessionNote3")}
           </li>
         </ul>
       </Card>
@@ -72,17 +77,18 @@ const SCENES: Scene[] = [
   {
     video: "/landing/reel-3.mp4",
     poster: "/landing/reel-3.jpg",
-    label: "Your review",
-    caption: "Every ISAA rating is linked to the moment it was said. You confirm it.",
+    label: t("reviewLabel"),
+    caption: t("reviewCaption"),
     card: (
       <Card>
         <div className="mb-1.5 flex items-center justify-between">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">ISAA · Item 1</p>
+          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">{t("reviewCardTitle")}</p>
           <span className="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[0.7rem] text-slate-600">▶ 00:42</span>
         </div>
-        <p className="font-semibold">Has poor eye contact</p>
+        {/* ISAA item text: not translated (clinical instrument item). */}
+        <p lang="en" className="font-semibold">Has poor eye contact</p>
         <p className="mt-1 border-l-2 border-teal-200 pl-2.5 text-sm italic text-slate-600">
-          &ldquo;he does not look at us when we talk&rdquo;
+          &ldquo;{t("reviewCardQuote")}&rdquo;
         </p>
         <div className="mt-3 flex items-center justify-between">
           <div className="flex gap-1">
@@ -94,10 +100,10 @@ const SCENES: Scene[] = [
           </div>
           <div className="relative h-8 w-[112px]">
             <span className="lp-swap-a lp-tap absolute inset-0 flex items-center justify-center rounded-full bg-teal-700 text-xs font-semibold text-white">
-              Confirm
+              {t("confirm")}
             </span>
             <span className="lp-swap-b absolute inset-0 flex items-center justify-center rounded-full bg-teal-50 text-xs font-semibold text-teal-800 ring-1 ring-teal-200">
-              ✓ Confirmed
+              {t("reviewConfirmed")}
             </span>
           </div>
         </div>
@@ -107,13 +113,13 @@ const SCENES: Scene[] = [
   {
     video: "/landing/reel-4.mp4",
     poster: "/landing/reel-4.jpg",
-    label: "The handoff",
-    caption: "The specialist receives the complete case, ready to act on.",
+    label: t("handoffLabel"),
+    caption: t("handoffCaption"),
     card: (
       <Card>
-        <p className="mb-2.5 text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">Referral packet · ready</p>
+        <p className="mb-2.5 text-[0.7rem] font-semibold uppercase tracking-wider text-teal-700">{t("handoffCardTitle")}</p>
         <ul className="grid grid-cols-2 gap-1.5 text-[0.8rem] text-slate-700">
-          {["Intake summary", "ISAA + evidence", "Therapist report", "Parent voice note"].map((x) => (
+          {[t("packetIntake"), t("packetIsaa"), t("packetReport"), t("packetVoiceNote")].map((x) => (
             <li key={x} className="flex items-center gap-1.5">
               <span className="text-teal-600">✓</span>
               {x}
@@ -121,15 +127,19 @@ const SCENES: Scene[] = [
           ))}
         </ul>
         <div className="mt-3 flex h-9 items-center justify-center rounded-full bg-[#0b1f1d] text-xs font-semibold text-white">
-          Send to specialist
+          {t("sendToSpecialist")}
         </div>
       </Card>
     ),
   },
-];
+  ];
+}
 
 /** Full-screen hero film: four scenes crossfade, each with its caption and a matching product card. */
 export function HeroReel({ subtitle }: { subtitle: string }) {
+  const t = useT("landing.hero");
+  const tReel = useT("landing.reel");
+  const SCENES = useMemo(() => buildScenes(tReel), [tReel]);
   const [active, setActive] = useState(0);
   const sectionRef = useRef<HTMLElement | null>(null);
   const bgRef = useRef<HTMLDivElement | null>(null);
@@ -139,7 +149,7 @@ export function HeroReel({ subtitle }: { subtitle: string }) {
   // Advance scenes (stays on scene 1 under reduced motion).
   useEffect(() => {
     const id = window.setTimeout(() => {
-      if (!reducedMotion()) setActive((a) => (a + 1) % SCENES.length);
+      if (!reducedMotion()) setActive((a) => (a + 1) % SCENE_COUNT);
     }, SCENE_MS);
     return () => window.clearTimeout(id);
   }, [active]);
@@ -212,25 +222,25 @@ export function HeroReel({ subtitle }: { subtitle: string }) {
           <div>
             <p className="lp-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[0.82rem] font-medium text-white backdrop-blur" style={{ "--d": "0ms" } as CSSProperties}>
               <span className="h-1.5 w-1.5 rounded-full bg-teal-300" />
-              For early intervention therapists
+              {t("badge")}
             </p>
             <h1 className="lp-fade-up lp-display text-[3.1rem] leading-[1.02] sm:text-7xl lg:text-[5.4rem]" style={{ "--d": "100ms" } as CSSProperties}>
               <span className="sr-only">DoctorNearMe. </span>
-              Spend the session with the child, <em className="text-teal-200">not the paperwork.</em>
+              {t("title")} <em className="text-teal-200">{t("titleEm")}</em>
             </h1>
             <p className="lp-fade-up mt-6 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg" style={{ "--d": "220ms" } as CSSProperties}>
               {subtitle}
             </p>
             <div className="lp-fade-up mt-8 flex flex-col gap-3 sm:flex-row" style={{ "--d": "320ms" } as CSSProperties}>
               <ButtonLink href="/book-demo" variant="light" className="w-full sm:w-auto">
-                Book a demo
+                {t("bookDemo")}
                 <Arrow />
               </ButtonLink>
               <ButtonLink href="#voice-demo" variant="outlineLight" className="w-full sm:w-auto">
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                   <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3ZM19 11a7 7 0 0 1-14 0M12 18v3" />
                 </svg>
-                Hear the AI intake call
+                {t("hearCall")}
               </ButtonLink>
             </div>
           </div>
@@ -251,7 +261,7 @@ export function HeroReel({ subtitle }: { subtitle: string }) {
               type="button"
               onClick={() => setActive(i)}
               aria-pressed={i === active}
-              aria-label={`Show: ${s.label}`}
+              aria-label={t("showScene", { label: s.label })}
               className="group cursor-pointer text-left focus-visible:outline-none"
             >
               <span className="block h-[3px] overflow-hidden rounded-full bg-white/20 group-focus-visible:ring-2 group-focus-visible:ring-white/60">

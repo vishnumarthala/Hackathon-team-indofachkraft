@@ -2,6 +2,7 @@ import Link from "next/link";
 import { StatusBadge } from "@/components/case/StatusBadge";
 import { ageLabel, formatDateTime, languageName } from "@/lib/cases/format";
 import { getActiveOrgIds, requireProviderPage } from "@/lib/authz";
+import { getTimeZone } from "@/lib/i18n/server";
 import { listCases } from "@/lib/queries/cases";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +11,7 @@ export default async function DashboardPage() {
   const { user } = await requireProviderPage();
   const orgIds = await getActiveOrgIds(user.id);
   const cases = await listCases(orgIds);
+  const timeZone = await getTimeZone();
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
@@ -55,7 +57,7 @@ export default async function DashboardPage() {
                   <td className="px-3 py-2">
                     <StatusBadge status={c.status} />
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2">{formatDateTime(c.created_at)}</td>
+                  <td className="whitespace-nowrap px-3 py-2">{formatDateTime(c.created_at, timeZone)}</td>
                 </tr>
               ))}
             </tbody>

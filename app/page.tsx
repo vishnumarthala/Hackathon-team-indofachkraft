@@ -13,131 +13,82 @@ import { SiteNav } from "@/components/landing/SiteNav";
 import { TherapistView } from "@/components/landing/TherapistView";
 import { Arrow, ButtonLink, CheckIcon, Eyebrow } from "@/components/landing/ui";
 import { VoiceDemo } from "@/components/landing/VoiceDemo";
+import { getT } from "@/lib/i18n/server";
 import { BriefSchema } from "@/lib/types";
 import roomImage from "@/public/landing/room.jpg";
 
-// The brief the sample intake call turns into (synthetic, validated at build time).
+// The brief the sample intake call turns into (synthetic, validated at build time). AI output: not translated.
 const SAMPLE_BRIEF = BriefSchema.parse(briefFixture);
 
-const SUBTITLE =
-  "DoctorNearMe is the autism and early intervention platform. Its Child Development module, powered by the CareThread engine, talks to the parent before the first session, documents the online session and fills the assessment form, and hands the complete case to the specialist.";
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT("landing.meta");
+  return { title: t("title"), description: t("description") };
+}
 
-export const metadata: Metadata = {
-  title: "DoctorNearMe - autism and early intervention, with an AI assistant for therapists",
-  description: "Autism and early intervention care near you, with an AI assistant for therapists.",
-};
+const PROBLEM_TONES = ["warm", "teal", "plain", "plain"] as const;
 
-// Pitch deck slide 1 (sources listed under the section).
-const PROBLEM_STATS = [
-  { value: "~2 years", label: "Parents notice the first signs (23 months on average)", tone: "warm" },
-  { value: "Before 3", label: "The window: the younger support starts, the bigger the gains", tone: "teal" },
-  { value: "4 years", label: "Median age at which US children are identified; only half are evaluated by age 3", tone: "plain" },
-  { value: "6.5 years", label: "Average age at which German children are identified: after Kita, at school entry", tone: "plain" },
-];
+const AUDIENCE_ICONS = {
+  therapist: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0",
+  centre: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6",
+  family: "M4 6h16v10H8l-4 4V6Z",
+  specialist: "M9 12l2 2 4-4M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z",
+} as const;
 
-const PREVALENCE = [
-  { value: "1 in 31", label: "US children have autism (1 in 20 boys)" },
-  { value: "1 in 100", label: "children worldwide" },
-];
+export default async function Home() {
+  const t = await getT("landing");
 
-// Pitch deck slide 2.
-const EVIDENCE = [
-  { value: "4 in 10", label: "toddlers identified with autism at 1 to 3 years no longer met the criteria at age 5 to 7" },
-  { value: "+17.6 vs +7", label: "IQ points after 2 years of early intervention vs usual care (randomised trial)" },
-];
+  // Pitch deck slide 1 (sources listed under the section).
+  const problemStats = ([1, 2, 3, 4] as const).map((n, i) => ({
+    value: t(`problem.stat${n}Value`),
+    label: t(`problem.stat${n}Label`),
+    tone: PROBLEM_TONES[i],
+  }));
+  const prevalence = ([1, 2] as const).map((n) => ({
+    value: t(`problem.prevalence${n}Value`),
+    label: t(`problem.prevalence${n}Label`),
+  }));
+  // Pitch deck slide 2.
+  const evidence = ([1, 2] as const).map((n) => ({
+    value: t(`solution.evidence${n}Value`),
+    label: t(`solution.evidence${n}Label`),
+  }));
+  const callSteps = ([1, 2, 3, 4] as const).map((n) => ({
+    title: t(`voice.step${n}Title`),
+    text: t(`voice.step${n}Text`),
+  }));
+  const audiences = (["therapist", "centre", "family", "specialist"] as const).map((key) => ({
+    key,
+    who: t(`who.${key}Who`),
+    tag: t(`who.${key}Tag`),
+    pain: t(`who.${key}Pain`),
+    gain: t(`who.${key}Gain`),
+    icon: AUDIENCE_ICONS[key],
+    featured: key === "therapist",
+  }));
+  const trust = (["consent", "evidence", "clinician", "private"] as const).map((key) => ({
+    title: t(`trust.${key}Title`),
+    text: t(`trust.${key}Text`),
+  }));
+  const faq = ([1, 2, 3, 4, 5, 6] as const).map((n) => ({ q: t(`faq.q${n}`), a: t(`faq.a${n}`) }));
 
-const CALL_STEPS = [
-  { title: "A link, not a waiting room", text: "After booking, the parent gets a private link by WhatsApp or email and opens it on their phone." },
-  { title: "Consent first", text: "The assistant says it is an AI, that the call is recorded for the therapist, and asks before it continues." },
-  { title: "In the parent's language", text: "Telugu, Hindi or English, one question at a time: speech, lost words, eye contact, play, sounds, routines, safety." },
-  { title: "A brief for the therapist", text: "Red flags such as lost speech or self-injury are quoted in the parent's words. It documents; the therapist decides." },
-];
-
-const AUDIENCES = [
-  {
-    who: "The therapist",
-    tag: "Uses it every day",
-    pain: "Fills a 40-item form while watching the child. Writes reports after hours.",
-    gain: "Arrives with a brief. The form fills itself, she confirms every item.",
-    icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0",
-    featured: true,
-  },
-  {
-    who: "The centre",
-    tag: "Subscribes: one plan per clinician",
-    pain: "Therapist burnout and churn. Records differ from centre to centre.",
-    gain: "More assessments per therapist and one standard, evidence-backed record with an audit log.",
-    icon: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6",
-  },
-  {
-    who: "The family",
-    tag: "Free, by invitation",
-    pain: "Months on a waitlist. Explaining everything in a second language.",
-    gain: "An intake call in Telugu, Hindi or English and a voice summary in their language.",
-    icon: "M4 6h16v10H8l-4 4V6Z",
-  },
-  {
-    who: "The specialist",
-    tag: "Free, by link",
-    pain: "Thin referral letters. Takes the full history again.",
-    gain: "A referral packet with evidence, and answers from the case with timestamps.",
-    icon: "M9 12l2 2 4-4M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z",
-  },
-];
-
-const TRUST = [
-  { title: "Consent first", text: "Parents agree before any call or recording starts." },
-  { title: "Evidence on every item", text: "Each suggestion links to the exact moment in the session." },
-  { title: "The clinician confirms", text: "Nothing reaches the report until the therapist confirms or edits it." },
-  { title: "Private by design", text: "Private storage and an audit log of every change and decision." },
-];
-
-const FAQ = [
-  {
-    q: "Who uses DoctorNearMe?",
-    a: "Early intervention therapists and child psychologists use it every day. Centres subscribe for their team. Parents and specialists never need an account: they get a link from the therapist.",
-  },
-  {
-    q: "Who makes the clinical decision?",
-    a: "Always the clinician. DoctorNearMe is not a diagnosis. It documents what was said and suggests ratings with evidence. The clinician reviews, edits and decides every item.",
-  },
-  {
-    q: "What happens in the AI intake call?",
-    a: "Before session 1 the parent opens a private link and talks to the DoctorNearMe assistant in Telugu, Hindi or English. It asks for consent first, then one question at a time. The therapist receives the recording and a pre-session brief with the parent's own words.",
-  },
-  {
-    q: "Which assessments does it support?",
-    a: "The ISAA (Indian Scale for Assessment of Autism), all 40 items, with an evidence quote and timestamp for each suggestion.",
-  },
-  {
-    q: "Which languages can parents use?",
-    a: "English, Hindi and Telugu today. German is coming soon. Reports are written in English.",
-  },
-  {
-    q: "How do I get access?",
-    a: "Book a demo. We walk you through DoctorNearMe on a sample case, then set up your centre's workspace and send your team their logins.",
-  },
-];
-
-export default function Home() {
   return (
     <div className={`lp-root ${fontVars} overflow-x-clip`}>
       <SiteNav overDark />
 
-      <HeroReel subtitle={SUBTITLE} />
+      <HeroReel subtitle={t("hero.subtitle")} />
 
       {/* ---------- THE PROBLEM ---------- */}
       <section id="problem" className="scroll-mt-20 bg-white">
         <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
           <Reveal className="mb-14 max-w-3xl">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#c2410c]">The problem</p>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#c2410c]">{t("problem.eyebrow")}</p>
             <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
-              The signs appear at 2. <em className="text-[#c2410c]">Help arrives at 4 to 6.</em>
+              {t("problem.title")} <em className="text-[#c2410c]">{t("problem.titleEm")}</em>
             </h2>
           </Reveal>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {PROBLEM_STATS.map((st, i) => (
+            {problemStats.map((st, i) => (
               <Reveal
                 key={st.value}
                 delay={i * 80}
@@ -162,7 +113,7 @@ export default function Home() {
           </div>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {PREVALENCE.map((st, i) => (
+            {prevalence.map((st, i) => (
               <Reveal key={st.value} delay={i * 80} className="flex items-baseline gap-5 rounded-3xl bg-[#0b1f1d] p-6 text-white">
                 <span className="lp-display text-4xl text-[#fdba74]">{st.value}</span>
                 <span className="text-sm text-white/70">{st.label}</span>
@@ -172,10 +123,9 @@ export default function Home() {
 
           <Reveal className="mt-10 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <p className="max-w-3xl text-xl leading-relaxed text-slate-700">
-              <strong className="font-semibold text-[#0b1f1d]">Why so late?</strong> Too few specialists, year-long
-              waitlists, and therapists who spend their sessions on paperwork.
+              <strong className="font-semibold text-[#0b1f1d]">{t("problem.whyLate")}</strong> {t("problem.whyLateText")}
             </p>
-            <p className="text-xs text-slate-500">Sources: CDC ADDM 2025 · WHO · Höfer et al. 2019</p>
+            <p className="text-xs text-slate-500">{t("problem.sources")}</p>
           </Reveal>
         </div>
       </section>
@@ -185,20 +135,18 @@ export default function Home() {
         <div aria-hidden="true" className="pointer-events-none absolute -right-48 top-24 h-[520px] w-[520px] rounded-full bg-teal-200/40 blur-[120px]" />
         <div className="relative mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
           <Reveal className="mb-14 max-w-3xl">
-            <Eyebrow>Step 1 · The AI intake call</Eyebrow>
+            <Eyebrow>{t("voice.eyebrow")}</Eyebrow>
             <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
-              Hear how DoctorNearMe <em className="text-teal-700">talks to parents.</em>
+              {t("voice.title")} <em className="text-teal-700">{t("voice.titleEm")}</em>
             </h2>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
-              Before the first visit, the family talks to the DoctorNearMe intake assistant, built on ElevenLabs, in their
-              own language. The therapist walks into session 1 already knowing the history, so the session goes to the
-              child.
+              {t("voice.intro")}
             </p>
           </Reveal>
 
           <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.15fr]">
             <ol className="relative space-y-7 before:absolute before:bottom-4 before:left-[19px] before:top-4 before:w-px before:bg-teal-700/20">
-              {CALL_STEPS.map((step, i) => (
+              {callSteps.map((step, i) => (
                 <Reveal key={step.title} delay={i * 80} as="li" className="relative flex gap-5">
                   <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0b1f1d] text-sm font-semibold text-white ring-4 ring-[#f8f6f1]">
                     {i + 1}
@@ -219,14 +167,13 @@ export default function Home() {
           <div className="mt-24 sm:mt-28">
             <Reveal className="mb-10 grid gap-6 lg:grid-cols-2 lg:items-end">
               <div>
-                <Eyebrow>After the call</Eyebrow>
+                <Eyebrow>{t("voice.afterEyebrow")}</Eyebrow>
                 <h3 className="lp-display text-4xl leading-[1.05] text-[#0b1f1d] sm:text-5xl">
-                  What the therapist sees <em className="text-teal-700">before session 1.</em>
+                  {t("voice.afterTitle")} <em className="text-teal-700">{t("voice.afterTitleEm")}</em>
                 </h3>
               </div>
               <p className="max-w-lg text-lg leading-relaxed text-slate-600 lg:justify-self-end">
-                The recording, every answer in the parent&apos;s own words, red flags you can replay, and the questions
-                to check in session 1. The therapist confirms each answer.
+                {t("voice.afterText")}
               </p>
             </Reveal>
             <TherapistView brief={SAMPLE_BRIEF} />
@@ -239,22 +186,22 @@ export default function Home() {
         <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
           <Reveal className="mb-12 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
             <div>
-              <Eyebrow>The solution</Eyebrow>
+              <Eyebrow>{t("solution.eyebrow")}</Eyebrow>
               <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
-                One thread, from the first call <em className="text-teal-700">to the specialist.</em>
+                {t("solution.title")} <em className="text-teal-700">{t("solution.titleEm")}</em>
               </h2>
               <div className="mt-6">
                 <LanguageRow />
               </div>
             </div>
             <div className="grid gap-3">
-              {EVIDENCE.map((e) => (
+              {evidence.map((e) => (
                 <div key={e.value} className="flex items-center gap-5 rounded-2xl bg-teal-50 p-5 ring-1 ring-teal-100">
                   <span className="lp-display shrink-0 text-4xl text-teal-700">{e.value}</span>
                   <span className="text-sm leading-relaxed text-slate-700">{e.label}</span>
                 </div>
               ))}
-              <p className="text-xs text-slate-500">Sources: Harstad et al., JAMA Pediatrics 2023 · Dawson et al., Pediatrics 2010</p>
+              <p className="text-xs text-slate-500">{t("solution.sources")}</p>
             </div>
           </Reveal>
           <HowItWorks />
@@ -266,20 +213,20 @@ export default function Home() {
         <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
           <Reveal className="mb-14 grid gap-6 lg:grid-cols-2 lg:items-end">
             <div>
-              <Eyebrow>Who it&apos;s for</Eyebrow>
+              <Eyebrow>{t("who.eyebrow")}</Eyebrow>
               <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
-                Built for therapists. <em className="text-teal-700">Simple for everyone around them.</em>
+                {t("who.title")} <em className="text-teal-700">{t("who.titleEm")}</em>
               </h2>
             </div>
             <p className="max-w-md text-lg leading-relaxed text-slate-600 lg:justify-self-end">
-              Therapists log in and do the work. Centres subscribe. Families and specialists join free, by link.
+              {t("who.intro")}
             </p>
           </Reveal>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {AUDIENCES.map((a, i) => (
+            {audiences.map((a, i) => (
               <Reveal
-                key={a.who}
+                key={a.key}
                 delay={i * 90}
                 className={`lp-card relative flex flex-col rounded-3xl p-7 ${
                   a.featured ? "bg-[#0b1f1d] text-white" : "border border-[#0b1f1d]/[0.08] bg-white"
@@ -296,13 +243,13 @@ export default function Home() {
                 </span>
                 <h3 className="text-xl font-semibold">{a.who}</h3>
                 <p className={`mb-5 text-sm font-medium ${a.featured ? "text-teal-300" : "text-teal-700"}`}>{a.tag}</p>
-                <p className={`mb-1 text-[0.7rem] font-semibold uppercase tracking-wider ${a.featured ? "text-white/45" : "text-slate-400"}`}>Today</p>
+                <p className={`mb-1 text-[0.7rem] font-semibold uppercase tracking-wider ${a.featured ? "text-white/45" : "text-slate-400"}`}>{t("who.today")}</p>
                 <p className={`mb-4 text-[0.92rem] leading-relaxed ${a.featured ? "text-white/70" : "text-slate-600"}`}>{a.pain}</p>
-                <p className={`mb-1 text-[0.7rem] font-semibold uppercase tracking-wider ${a.featured ? "text-teal-300" : "text-teal-700"}`}>With DoctorNearMe</p>
+                <p className={`mb-1 text-[0.7rem] font-semibold uppercase tracking-wider ${a.featured ? "text-teal-300" : "text-teal-700"}`}>{t("who.withUs")}</p>
                 <p className={`text-[0.92rem] leading-relaxed ${a.featured ? "text-white" : "text-[#0b1f1d]"}`}>{a.gain}</p>
                 {a.featured && (
                   <a href="/login" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:text-teal-200">
-                    Therapist log in <Arrow className="h-3.5 w-3.5" />
+                    {t("who.therapistLogin")} <Arrow className="h-3.5 w-3.5" />
                   </a>
                 )}
               </Reveal>
@@ -315,9 +262,9 @@ export default function Home() {
       <section id="features" className="scroll-mt-20 bg-white">
         <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
           <Reveal className="mb-14 max-w-2xl">
-            <Eyebrow>Inside the workspace</Eyebrow>
+            <Eyebrow>{t("features.eyebrow")}</Eyebrow>
             <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
-              Documentation you can <em className="text-teal-700">trust and check.</em>
+              {t("features.title")} <em className="text-teal-700">{t("features.titleEm")}</em>
             </h2>
           </Reveal>
           <Features />
@@ -332,21 +279,20 @@ export default function Home() {
         </div>
         <div className="relative mx-auto w-full max-w-6xl px-4 py-28 sm:px-6 sm:py-36">
           <Reveal className="max-w-3xl">
-            <Eyebrow tone="light">Our principle</Eyebrow>
+            <Eyebrow tone="light">{t("trust.eyebrow")}</Eyebrow>
             <p className="lp-display text-5xl leading-[1.04] sm:text-7xl">
-              AI documents, <em className="text-teal-300">the clinician decides.</em>
+              {t("trust.title")} <em className="text-teal-300">{t("trust.titleEm")}</em>
             </p>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-              DoctorNearMe does the writing. Every rating, every line of the report and every referral is checked and
-              signed off by a person.
+              {t("trust.intro")}
             </p>
           </Reveal>
           <div className="mt-16 grid gap-px overflow-hidden rounded-3xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
-            {TRUST.map((t, i) => (
-              <Reveal key={t.title} delay={i * 90} className="bg-[#0b1f1d]/80 p-7 backdrop-blur">
+            {trust.map((item, i) => (
+              <Reveal key={item.title} delay={i * 90} className="bg-[#0b1f1d]/80 p-7 backdrop-blur">
                 <CheckIcon className="mb-5 h-6 w-6 text-teal-300" />
-                <p className="mb-2 font-semibold">{t.title}</p>
-                <p className="text-sm leading-relaxed text-white/65">{t.text}</p>
+                <p className="mb-2 font-semibold">{item.title}</p>
+                <p className="text-sm leading-relaxed text-white/65">{item.text}</p>
               </Reveal>
             ))}
           </div>
@@ -357,12 +303,12 @@ export default function Home() {
       <section id="faq" className="scroll-mt-20">
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-24 sm:px-6 sm:py-32 lg:grid-cols-[0.8fr_1.2fr]">
           <Reveal>
-            <Eyebrow>FAQ</Eyebrow>
-            <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">Questions, answered.</h2>
-            <p className="mt-5 max-w-sm text-slate-600">Something else on your mind? Ask us on the demo call.</p>
+            <Eyebrow>{t("faq.eyebrow")}</Eyebrow>
+            <h2 className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">{t("faq.title")}</h2>
+            <p className="mt-5 max-w-sm text-slate-600">{t("faq.intro")}</p>
           </Reveal>
           <div className="divide-y divide-[#0b1f1d]/10 border-y border-[#0b1f1d]/10">
-            {FAQ.map((f) => (
+            {faq.map((f) => (
               <details key={f.q} className="lp-faq group">
                 <summary className="flex min-h-16 cursor-pointer items-center justify-between gap-6 py-5 text-left text-lg font-semibold text-[#0b1f1d] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30">
                   {f.q}
@@ -388,22 +334,21 @@ export default function Home() {
           </div>
           <div className="relative grid gap-10 px-7 py-16 sm:px-14 sm:py-20 lg:grid-cols-[1.3fr_1fr] lg:items-center">
             <div>
-              <Eyebrow tone="lighter">Now onboarding pilot centres in Germany and India</Eyebrow>
+              <Eyebrow tone="lighter">{t("cta.eyebrow")}</Eyebrow>
               <h2 className="lp-display text-5xl leading-[1.04] sm:text-6xl">
-                Get kids into early intervention <em className="text-teal-200">sooner.</em>
+                {t("cta.title")} <em className="text-teal-200">{t("cta.titleEm")}</em>
               </h2>
               <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/75">
-                See DoctorNearMe on a sample case in a short call. If it fits, we set up your centre&apos;s workspace and
-                send your team their logins.
+                {t("cta.text")}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-stretch">
               <ButtonLink href="/book-demo" variant="light" className="min-h-14 text-base">
-                Book a demo
+                {t("cta.bookDemo")}
                 <Arrow />
               </ButtonLink>
               <ButtonLink href="/login" variant="outlineLight" className="min-h-14 text-base">
-                Log in to your workspace
+                {t("cta.logIn")}
               </ButtonLink>
             </div>
           </div>

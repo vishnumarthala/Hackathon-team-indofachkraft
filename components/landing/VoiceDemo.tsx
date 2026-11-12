@@ -1,8 +1,10 @@
 "use client";
 
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SAMPLE_CALL, SAMPLE_CALL_SRC, type SampleTurn } from "@/components/landing/sampleCall";
+import { useT } from "@/lib/i18n/client";
+import type { TFunction } from "@/lib/i18n/keys";
 
 export type DemoLanguage = "en" | "hi" | "te";
 
@@ -14,10 +16,13 @@ export const DEMO_LANGUAGES: Array<{ value: DemoLanguage; label: string }> = [
 
 export const DEMO_CALL_LIMIT_SEC = 180;
 
+// English defaults (also the en catalogue values); the component passes translated messages.
 export const DEMO_CONSENT =
   "I understand this is a demo with an AI voice assistant. I will not share real health information.";
 
-export const LIVE_MESSAGES = {
+export type LiveMessages = Record<"mic" | "busy" | "unavailable" | "failed" | "connecting" | "speaking" | "listening" | "ended", string>;
+
+export const LIVE_MESSAGES: LiveMessages = {
   mic: "Microphone access is needed for the live demo. You can listen to the sample call instead.",
   busy: "The live demo is busy. Please listen to the sample call or try again in a few minutes.",
   unavailable: "The live demo is not available right now. Please listen to the sample call.",
@@ -26,14 +31,32 @@ export const LIVE_MESSAGES = {
   speaking: "Assistant is speaking",
   listening: "Listening… you are the parent of Ravi",
   ended: "Demo call ended. In the product, this call becomes the pre-session brief below.",
-} as const;
+};
+
+export function liveMessages(t: TFunction<"landing.demo">): LiveMessages {
+  return {
+    mic: t("mic"),
+    busy: t("busy"),
+    unavailable: t("unavailable"),
+    failed: t("failed"),
+    connecting: t("connecting"),
+    speaking: t("speaking"),
+    listening: t("listening"),
+    ended: t("ended"),
+  };
+}
 
 export type LiveStatus = "disconnected" | "connecting" | "connected" | "error";
 
-export function liveStatusText(status: LiveStatus, isSpeaking: boolean, wasConnected: boolean): string | null {
-  if (status === "connecting") return LIVE_MESSAGES.connecting;
-  if (status === "connected") return isSpeaking ? LIVE_MESSAGES.speaking : LIVE_MESSAGES.listening;
-  if (wasConnected) return LIVE_MESSAGES.ended;
+export function liveStatusText(
+  status: LiveStatus,
+  isSpeaking: boolean,
+  wasConnected: boolean,
+  messages: LiveMessages = LIVE_MESSAGES,
+): string | null {
+  if (status === "connecting") return messages.connecting;
+  if (status === "connected") return isSpeaking ? messages.speaking : messages.listening;
+  if (wasConnected) return messages.ended;
   return null;
 }
 
@@ -62,23 +85,27 @@ export type DemoStartDeps = {
 export type DemoStartResult = { kind: "started" } | { kind: "error"; message: string };
 
 // Microphone first (so the permission prompt comes before any credit is spent), then the server start.
-export async function startVoiceDemo(language: DemoLanguage, deps: DemoStartDeps): Promise<DemoStartResult> {
+export async function startVoiceDemo(
+  language: DemoLanguage,
+  deps: DemoStartDeps,
+  messages: LiveMessages = LIVE_MESSAGES,
+): Promise<DemoStartResult> {
   try {
     const stream = await deps.getMicrophone();
     stream.getTracks?.().forEach((t) => t.stop());
   } catch {
-    return { kind: "error", message: LIVE_MESSAGES.mic };
+    return { kind: "error", message: messages.mic };
   }
 
   let res: Response;
   try {
     res = await deps.fetchFn("/api/demo/voice-token", { method: "POST" });
   } catch {
-    return { kind: "error", message: LIVE_MESSAGES.failed };
+    return { kind: "error", message: messages.failed };
   }
-  if (res.status === 429) return { kind: "error", message: LIVE_MESSAGES.busy };
-  if (res.status === 503) return { kind: "error", message: LIVE_MESSAGES.unavailable };
-  if (!res.ok) return { kind: "error", message: LIVE_MESSAGES.failed };
+  if (res.status === 429) return { kind: "error", message: messages.busy };
+  if (res.status === 503) return { kind: "error", message: messages.unavailable };
+  if (!res.ok) return { kind: "error", message: messages.failed };
 
   const body = (await res.json().catch(() => ({}))) as {
     conversation_token?: string | null;
@@ -90,12 +117,12 @@ export async function startVoiceDemo(language: DemoLanguage, deps: DemoStartDeps
     : body.agent_id
       ? { agentId: body.agent_id, connectionType: "webrtc" }
       : null;
-  if (!target) return { kind: "error", message: LIVE_MESSAGES.failed };
+  if (!target) return { kind: "error", message: messages.failed };
 
   try {
     deps.startSession({ ...target, dynamicVariables: body.dynamic_variables ?? {}, overrides: { agent: { language } } });
   } catch {
-    return { kind: "error", message: LIVE_MESSAGES.failed };
+    return { kind: "error", message: messages.failed };
   }
   return { kind: "started" };
 }
@@ -122,6 +149,7 @@ export function upsertLine(lines: Line[], role: "user" | "agent", eventId: numbe
 }
 
 function TranscriptLine({ role, text, active = false }: { role: "agent" | "parent"; text: string; active?: boolean }) {
+  const t = useT("landing.demo");
   const agent = role === "agent";
   return (
     <li
@@ -130,7 +158,7 @@ function TranscriptLine({ role, text, active = false }: { role: "agent" | "paren
       } ${active ? "ring-2 ring-teal-500" : ""}`}
     >
       <span className={`mr-1.5 text-xs font-semibold uppercase tracking-wide ${agent ? "text-teal-700" : "text-slate-500"}`}>
-        {agent ? "AI assistant" : "Parent"}
+        {agent ? t("speakerAi") : t("speakerParent")}
       </span>
       {text}
     </li>
@@ -138,6 +166,7 @@ function TranscriptLine({ role, text, active = false }: { role: "agent" | "paren
 }
 
 function SamplePlayer() {
+  const t = useT("landing.demo");
   const audioRef = useRef<HTMLAudioElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
   const [active, setActive] = useState(-1);
@@ -151,10 +180,7 @@ function SamplePlayer() {
 
   return (
     <div>
-      <p className="mb-3 text-sm text-slate-600">
-        A synthetic 95-second excerpt: consent first, then age, main concern, lost speech, play, sounds and a self-injury red flag. AI voices
-        only.
-      </p>
+      <p className="mb-3 text-sm text-slate-600">{t("sampleIntro")}</p>
       <audio
         ref={audioRef}
         controls
@@ -165,7 +191,7 @@ function SamplePlayer() {
       >
         <track kind="captions" />
       </audio>
-      <ol ref={listRef} aria-label="Sample call transcript" className="max-h-80 space-y-2 overflow-y-auto pr-1">
+      <ol ref={listRef} aria-label={t("sampleTranscript")} className="max-h-80 space-y-2 overflow-y-auto pr-1">
         {SAMPLE_CALL.map((t, i) => (
           <TranscriptLine key={i} role={t.role} text={t.text} active={i === active} />
         ))}
@@ -175,6 +201,8 @@ function SamplePlayer() {
 }
 
 function LivePanel() {
+  const t = useT("landing.demo");
+  const messages = useMemo(() => liveMessages(t), [t]);
   const [language, setLanguage] = useState<DemoLanguage>("en");
   const [consent, setConsent] = useState(false);
   const [starting, setStarting] = useState(false);
@@ -199,7 +227,7 @@ function LivePanel() {
       window.dispatchEvent(new Event(DEMO_CALL_ENDED_EVENT));
     },
     onError: () => {
-      setError(LIVE_MESSAGES.failed);
+      setError(messages.failed);
       setStarting(false);
     },
   });
@@ -226,22 +254,19 @@ function LivePanel() {
       fetchFn: (input, init) => fetch(input, init),
       getMicrophone: () => navigator.mediaDevices.getUserMedia({ audio: true }),
       startSession: (options) => conversation.startSession(options),
-    });
+    }, messages);
     if (result.kind === "error") setError(result.message);
     setStarting(false);
   }
 
-  const text = liveStatusText(status, conversation.isSpeaking, wasConnected);
+  const text = liveStatusText(status, conversation.isSpeaking, wasConnected, messages);
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-600">
-        Talk to the real DoctorNearMe intake assistant in your browser. You play Lakshmi, the parent of Ravi
-        (synthetic). Calls end automatically after {DEMO_CALL_LIMIT_SEC / 60} minutes.
-      </p>
+      <p className="text-sm text-slate-600">{t("liveIntro", { minutes: DEMO_CALL_LIMIT_SEC / 60 })}</p>
       <div>
         <label htmlFor="demo-language" className="mb-1 block text-sm font-semibold text-slate-800">
-          Language
+          {t("language")}
         </label>
         <select
           id="demo-language"
@@ -265,7 +290,7 @@ function LivePanel() {
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-0.5 h-5 w-5 shrink-0 accent-teal-700"
         />
-        <span>{DEMO_CONSENT}</span>
+        <span>{t("consent")}</span>
       </label>
 
       {status === "connected" ? (
@@ -275,10 +300,10 @@ function LivePanel() {
             onClick={() => endSession()}
             className="lp-press min-h-12 rounded-full bg-rose-700 px-6 py-3 font-semibold text-white hover:bg-rose-800"
           >
-            End call
+            {t("end")}
           </button>
-          <span className="text-sm tabular-nums text-slate-600" aria-label="Time left">
-            {formatCountdown(remaining)} left
+          <span className="text-sm tabular-nums text-slate-600" aria-label={t("timeLeftLabel")}>
+            {t("timeLeft", { time: formatCountdown(remaining) })}
           </span>
         </div>
       ) : (
@@ -288,7 +313,7 @@ function LivePanel() {
           disabled={!consent || starting || status === "connecting"}
           className="lp-press min-h-12 w-full rounded-full bg-teal-700 px-6 py-3 font-semibold text-white shadow-lg shadow-teal-700/25 hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
-          Start demo call
+          {t("start")}
         </button>
       )}
 
@@ -304,7 +329,7 @@ function LivePanel() {
         </p>
       )}
       {lines.length > 0 && (
-        <ol aria-label="Live transcript" className="max-h-72 space-y-2 overflow-y-auto pr-1">
+        <ol aria-label={t("liveTranscript")} className="max-h-72 space-y-2 overflow-y-auto pr-1">
           {lines.map((l) => (
             <TranscriptLine key={l.key} role={l.role} text={l.text} />
           ))}
@@ -315,6 +340,7 @@ function LivePanel() {
 }
 
 export function VoiceDemo() {
+  const t = useT("landing.demo");
   const [tab, setTab] = useState<"sample" | "live">("sample");
   const tabClass = (t: typeof tab) =>
     `min-h-11 flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
@@ -322,12 +348,12 @@ export function VoiceDemo() {
     }`;
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-900/5 sm:p-6">
-      <div role="tablist" aria-label="Voice demo" className="mb-5 flex gap-1 rounded-full bg-slate-100 p-1">
+      <div role="tablist" aria-label={t("tabsLabel")} className="mb-5 flex gap-1 rounded-full bg-slate-100 p-1">
         <button type="button" role="tab" aria-selected={tab === "sample"} onClick={() => setTab("sample")} className={tabClass("sample")}>
-          Listen to a sample call
+          {t("sampleTab")}
         </button>
         <button type="button" role="tab" aria-selected={tab === "live"} onClick={() => setTab("live")} className={tabClass("live")}>
-          Talk to it live
+          {t("liveTab")}
         </button>
       </div>
       <div role="tabpanel">

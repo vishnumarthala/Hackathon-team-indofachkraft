@@ -10,6 +10,7 @@ export function isInvalidSessionError(error: { name?: string; status?: number } 
 export function isPublicApiPath(pathname: string): boolean {
   return (
     pathname === "/api/pilot-signups" ||
+    pathname === "/api/locale" ||
     pathname === "/api/demo/voice-token" ||
     pathname === "/api/webhooks/elevenlabs" ||
     /^\/api\/cases\/[^/]+\/ask$/.test(pathname) ||

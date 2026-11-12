@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   fieldErrors,
-  formatBerlin,
   isHoneypotFilled,
   MSG,
   PilotSignupSchema,
@@ -93,15 +92,5 @@ describe("honeypot", () => {
   it("is not filled when website is missing or blank", () => {
     expect(isHoneypotFilled(PilotSignupSchema.parse(valid))).toBe(false);
     expect(isHoneypotFilled(PilotSignupSchema.parse({ ...valid, website: "  " }))).toBe(false);
-  });
-});
-
-describe("formatBerlin", () => {
-  it("formats in Europe/Berlin as YYYY-MM-DD HH:mm (winter, UTC+1)", () => {
-    expect(formatBerlin("2026-11-07T13:05:00Z")).toBe("2026-11-07 14:05");
-  });
-
-  it("handles summer time (UTC+2) and midnight", () => {
-    expect(formatBerlin("2026-07-01T22:30:00Z")).toBe("2026-07-02 00:30");
   });
 });

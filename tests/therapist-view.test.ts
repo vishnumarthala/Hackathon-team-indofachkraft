@@ -11,6 +11,7 @@ import briefFixture from "@/demo/fixtures/gemini/brief.json";
 import { SAMPLE_CALL } from "@/components/landing/sampleCall";
 import { TherapistView, clock, redFlagLineIndex } from "@/components/landing/TherapistView";
 import { BriefSchema } from "@/lib/types";
+import { withI18n } from "./helpers/i18n";
 
 const brief = BriefSchema.parse(briefFixture);
 
@@ -35,7 +36,7 @@ describe("redFlagLineIndex", () => {
 });
 
 describe("TherapistView markup", () => {
-  const html = renderToStaticMarkup(createElement(TherapistView, { brief }));
+  const html = renderToStaticMarkup(withI18n(createElement(TherapistView, { brief })));
 
   it("shows the case header, the recording and the full transcript", () => {
     expect(html).toContain("Ravi (synthetic)");
