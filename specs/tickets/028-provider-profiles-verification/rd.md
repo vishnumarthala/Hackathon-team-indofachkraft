@@ -1,6 +1,6 @@
 # 028: Public provider profiles, credential verification, admin seeding and claim links
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 017, 018: needs orgs/memberships and provider role (017) and translated UI (018)
 

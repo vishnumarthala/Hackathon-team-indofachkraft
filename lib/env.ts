@@ -61,6 +61,10 @@ export const env = {
   get DEMO_EMAIL_TO() {
     return read("DEMO_EMAIL_TO");
   },
+  // 028 NFR-1: demo (is_synthetic) provider profiles stay visible with a badge unless this is "false".
+  get SHOW_SYNTHETIC_LISTINGS() {
+    return process.env.SHOW_SYNTHETIC_LISTINGS !== "false";
+  },
   get ELEVENLABS_VOICE_ID_EN() {
     return read("ELEVENLABS_VOICE_ID_EN");
   },
