@@ -72,9 +72,9 @@ flowchart LR
   Schema changes are migrations in `supabase/migrations/`.
 - **Authentication and roles (ticket 017).** `/dashboard`, `/cases/*`, private API routes, and
   `/admin/users` require a Supabase Auth session. Roles in `user_profiles.role`: `platform_admin`,
-  `provider`, `guardian`. Account creation is still disabled in the application; accounts created in the
-  Supabase Auth dashboard become `provider` (or the role in server-set `app_metadata.role`). Ticket 019
-  changes the fallback to `guardian` when public sign-up opens. Promote a platform admin in SQL:
+  `provider`, `guardian`. Since ticket 019 every new auth user is a `guardian` unless the server sets
+  `app_metadata.role` (`provider`/`platform_admin`, admin API only); accounts created in the Supabase
+  Auth dashboard become providers by accepting an invitation or with `org:grant`. Promote a platform admin in SQL:
   `update public.user_profiles set role = 'platform_admin' where id = (select id from auth.users where email = 'admin@example.com');`
 - **Organisations and tenant isolation (ticket 017).** Every case belongs to an organisation
   (`cases.org_id`; a centre or a solo practice). A provider can read or change a case only while an
@@ -91,6 +91,14 @@ flowchart LR
   `https://carethread-two.vercel.app`, allow that same URL for redirects, and disable new sign-ups in
   the Supabase Auth settings. `supabase/config.toml` disables sign-ups for local Supabase only; the
   cloud Auth setting is managed separately.
+- **Guardian sign-in and family portal (ticket 019).** Parents sign in at `/family/login` with Google or
+  a phone OTP (`/api/auth/phone/send|verify`, server-side, rate limited) and use `/family/**`.
+  `proxy.ts` routes by role (guardian -> `/family`, provider -> `/dashboard`, platform admin -> `/admin`)
+  and sends a nonce CSP with `script-src 'self'` on every `/family` page; routing is only a convenience:
+  `/api/family/**` handlers call `requireGuardian()` and `/family` pages `requireGuardianPage()`
+  (`lib/authz.ts`). Google<->phone linking is explicit and never merges accounts. Local test accounts:
+  `npm run -s seed:users -- --prefix <acct>`. Details, Supabase dashboard settings and the demo OTP
+  backend: `docs/guardian-auth.md`.
 - **Languages and time zone (ticket 018).** The UI is English, Hindi or Telugu with no URL prefix: the
   locale comes from cookie `dnm_locale`, then `user_profiles.preferred_locale`, then (on
   `/intake/<token>`) the case language, then `Accept-Language`, then `en`. Dates and times show in the
@@ -144,7 +152,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 .github/pull_request_template.md  .github/workflows/ci.yml (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
-docs/     system-design.md  elevenlabs-agent.md  i18n.md
+docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -161,6 +169,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | browser upload only | cannot read tables (RLS) |
 | `SUPABASE_SERVICE_ROLE_KEY` | server only | never sent to the browser |
 | `DATABASE_URL` | `npm run db:sql`, `db:check`, seed | local: `postgresql://postgres:postgres@127.0.0.1:54322/postgres` |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` / `_SECRET` | Supabase CLI only (local Google sign-in) | not read by the app; see `docs/guardian-auth.md`. Hosted projects set Google in the Supabase dashboard |
 | `ELEVENLABS_API_KEY` | Scribe, conversation token, TTS | |
 | `ELEVENLABS_AGENT_ID` | intake page | agent configured per `docs/elevenlabs-agent.md` |
 | `ELEVENLABS_WEBHOOK_SECRET` | webhook HMAC | only needed when the webhook is used (deployed or tunnel) |

@@ -35,7 +35,7 @@ describe.skipIf(!enabled)("organisations and resource-level access (database)", 
       email,
       email_confirm: true,
       password: randomUUID(),
-      app_metadata: role ? { role } : {},
+      app_metadata: { role: role ?? "provider" },
     });
     if (error || !data.user) throw new Error(`createUser failed: ${error?.message}`);
     users.push(data.user.id);

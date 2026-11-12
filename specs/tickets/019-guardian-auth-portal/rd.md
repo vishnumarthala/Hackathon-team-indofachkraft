@@ -1,6 +1,6 @@
 # 019: Guardian sign-in and family portal shell
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 017, 018: needs the `guardian` role, migrated auth trigger and `lib/authz.ts` (017) and `t()`/locale (018)
 

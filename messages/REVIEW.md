@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 382. Not yet approved: 382.
+Rows: 452. Not yet approved: 452.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -397,3 +397,73 @@ Rows: 382. Not yet approved: 382.
 | `intake.simulate.label` | Simulate completed call (demo) | पूरी हुई कॉल का नमूना चलाएँ (डेमो) | పూర్తయిన కాల్‌ను అనుకరించండి (డెమో) |  | pending |
 | `intake.simulate.done` | Call ended. Thank you! You can close this page. | कॉल ख़त्म हुई। धन्यवाद! आप यह पेज बंद कर सकते हैं। | కాల్ ముగిసింది. ధన్యవాదాలు! మీరు ఈ పేజీని మూసివేయవచ్చు. |  | pending |
 | `intake.simulate.failed` | Could not simulate the call. Please try again. | कॉल का नमूना नहीं चल सका। कृपया फिर से कोशिश करें। | కాల్‌ను అనుకరించలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.meta.title` | Family account - DoctorNearMe | परिवार खाता - DoctorNearMe | కుటుంబ ఖాతా - DoctorNearMe |  | pending |
+| `family.login.title` | Sign in to your family account | अपने परिवार खाते में साइन इन करें | మీ కుటుంబ ఖాతాలోకి సైన్ ఇన్ చేయండి |  | pending |
+| `family.login.google` | Continue with Google | Google से जारी रखें | Google తో కొనసాగించండి |  | pending |
+| `family.login.googleUnavailable` | Google sign-in is not available yet. Use your mobile number. | Google से साइन इन अभी उपलब्ध नहीं है। अपना मोबाइल नंबर इस्तेमाल करें। | Google సైన్ ఇన్ ఇంకా అందుబాటులో లేదు. మీ మొబైల్ నంబర్ ఉపయోగించండి. |  | pending |
+| `family.login.or` | or | या | లేదా |  | pending |
+| `family.login.mobile` | Mobile number | मोबाइल नंबर | మొబైల్ నంబర్ |  | pending |
+| `family.login.countryCode` | India country code | भारत का देश कोड | భారత దేశ కోడ్ |  | pending |
+| `family.login.invalidMobile` | Enter a 10-digit Indian mobile number | 10 अंकों का भारतीय मोबाइल नंबर डालें | 10 అంకెల భారతీయ మొబైల్ నంబర్ నమోదు చేయండి |  | pending |
+| `family.login.sendCode` | Send code | कोड भेजें | కోడ్ పంపండి |  | pending |
+| `family.login.sending` | Sending... | भेजा जा रहा है... | పంపుతున్నాం... |  | pending |
+| `family.login.codeSent` | We sent a 6-digit code to {phone}. | हमने {phone} पर 6 अंकों का कोड भेजा है। | {phone} కు 6 అంకెల కోడ్ పంపాము. |  | pending |
+| `family.login.code` | 6-digit code | 6 अंकों का कोड | 6 అంకెల కోడ్ |  | pending |
+| `family.login.invalidCode` | Enter the 6-digit code | 6 अंकों का कोड डालें | 6 అంకెల కోడ్ నమోదు చేయండి |  | pending |
+| `family.login.verify` | Verify | सत्यापित करें | ధృవీకరించండి |  | pending |
+| `family.login.verifying` | Verifying... | सत्यापित किया जा रहा है... | ధృవీకరిస్తున్నాం... |  | pending |
+| `family.login.resend` | Resend code | कोड फिर से भेजें | కోడ్ మళ్ళీ పంపండి |  | pending |
+| `family.login.resendIn` | Resend code in {seconds} s | {seconds} सेकंड में कोड फिर से भेजें | {seconds} సెకన్లలో కోడ్ మళ్ళీ పంపండి |  | pending |
+| `family.login.changeNumber` | Use a different number | दूसरा नंबर इस्तेमाल करें | వేరే నంబర్ ఉపయోగించండి |  | pending |
+| `family.login.wrongCode` | That code is not correct or has expired. | यह कोड सही नहीं है या इसकी समय-सीमा खत्म हो गई है। | ఈ కోడ్ సరైనది కాదు లేదా గడువు ముగిసింది. |  | pending |
+| `family.login.tooMany` | Too many codes requested. Try again later. | बहुत सारे कोड मांगे गए। बाद में फिर कोशिश करें। | చాలా ఎక్కువ కోడ్‌లు అడిగారు. తర్వాత మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.login.oauthFailed` | Google sign-in did not work. Please try again. | Google से साइन इन नहीं हो सका। कृपया फिर से कोशिश करें। | Google సైన్ ఇన్ పని చేయలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.login.clinician` | Are you a clinician? Sign in here | क्या आप क्लिनिशियन हैं? यहां साइन इन करें | మీరు క్లినీషియనా? ఇక్కడ సైన్ ఇన్ చేయండి |  | pending |
+| `family.login.privacy` | We use your number only to sign you in and send appointment updates. | हम आपका नंबर सिर्फ़ साइन इन कराने और अपॉइंटमेंट की जानकारी भेजने के लिए इस्तेमाल करते हैं। | మీ నంబర్‌ను సైన్ ఇన్ కోసం మరియు అపాయింట్‌మెంట్ సమాచారం పంపడానికి మాత్రమే ఉపయోగిస్తాము. |  | pending |
+| `family.shell.navLabel` | Family account | परिवार खाता | కుటుంబ ఖాతా |  | pending |
+| `family.shell.home` | Home | होम | హోమ్ |  | pending |
+| `family.shell.children` | Children | बच्चे | పిల్లలు |  | pending |
+| `family.shell.appointments` | Appointments | अपॉइंटमेंट | అపాయింట్‌మెంట్లు |  | pending |
+| `family.shell.messages` | Messages | संदेश | సందేశాలు |  | pending |
+| `family.shell.documents` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
+| `family.shell.settings` | Settings | सेटिंग्स | సెట్టింగ్‌లు |  | pending |
+| `family.shell.signOut` | Sign out | साइन आउट | సైన్ అవుట్ |  | pending |
+| `family.shell.signingOut` | Signing out... | साइन आउट हो रहा है... | సైన్ అవుట్ అవుతోంది... |  | pending |
+| `family.shell.signOutFailed` | Could not sign out. Please try again. | साइन आउट नहीं हो सका। कृपया फिर से कोशिश करें। | సైన్ అవుట్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.shell.emergency` | In an emergency call 108 (ambulance) or 112. | आपात स्थिति में 108 (एम्बुलेंस) या 112 पर कॉल करें। | అత్యవసర పరిస్థితిలో 108 (అంబులెన్స్) లేదా 112 కు కాల్ చేయండి. |  | pending |
+| `family.home.hello` | Hello, {name} | नमस्ते, {name} | నమస్తే, {name} |  | pending |
+| `family.home.there` | there | जी | మిత్రమా |  | pending |
+| `family.home.addChild` | Add your child | अपने बच्चे को जोड़ें | మీ బిడ్డను జోడించండి |  | pending |
+| `family.home.addChildText` | Keep your child's care, appointments and documents in one place. | अपने बच्चे की देखभाल, अपॉइंटमेंट और दस्तावेज़ एक जगह रखें। | మీ బిడ్డ సంరక్షణ, అపాయింట్‌మెంట్లు మరియు పత్రాలు ఒకే చోట ఉంచండి. |  | pending |
+| `family.home.findSpecialist` | Find a specialist near you | अपने पास विशेषज्ञ खोजें | మీ దగ్గర నిపుణుడిని వెతకండి |  | pending |
+| `family.home.findSpecialistText` | Developmental paediatricians, therapists and centres in Hyderabad. | हैदराबाद में विकासात्मक बाल रोग विशेषज्ञ, थेरेपिस्ट और केंद्र। | హైదరాబాద్‌లో డెవలప్‌మెంటల్ పీడియాట్రీషియన్లు, థెరపిస్టులు మరియు కేంద్రాలు. |  | pending |
+| `family.home.comingSoon` | Coming soon | जल्द आ रहा है | త్వరలో వస్తుంది |  | pending |
+| `family.empty.children` | No children added yet. | अभी तक कोई बच्चा नहीं जोड़ा गया। | ఇంకా పిల్లలను జోడించలేదు. |  | pending |
+| `family.empty.appointments` | No appointments yet. | अभी तक कोई अपॉइंटमेंट नहीं। | ఇంకా అపాయింట్‌మెంట్లు లేవు. |  | pending |
+| `family.empty.messages` | No messages yet. | अभी तक कोई संदेश नहीं। | ఇంకా సందేశాలు లేవు. |  | pending |
+| `family.empty.documents` | No documents yet. | अभी तक कोई दस्तावेज़ नहीं। | ఇంకా పత్రాలు లేవు. |  | pending |
+| `family.settings.title` | Settings | सेटिंग्स | సెట్టింగ్‌లు |  | pending |
+| `family.settings.profile` | Your profile | आपकी प्रोफ़ाइल | మీ ప్రొఫైల్ |  | pending |
+| `family.settings.name` | Your name | आपका नाम | మీ పేరు |  | pending |
+| `family.settings.nameHint` | Up to 80 characters. Your child's care team sees this name. | 80 अक्षरों तक। आपके बच्चे की देखभाल टीम यह नाम देखती है। | 80 అక్షరాల వరకు. మీ బిడ్డ సంరక్షణ బృందం ఈ పేరు చూస్తుంది. |  | pending |
+| `family.settings.nameInvalid` | Enter a name between 1 and 80 characters. | 1 से 80 अक्षरों का नाम डालें। | 1 నుండి 80 అక్షరాల పేరు నమోదు చేయండి. |  | pending |
+| `family.settings.save` | Save | सेव करें | సేవ్ చేయండి |  | pending |
+| `family.settings.saving` | Saving... | सेव हो रहा है... | సేవ్ చేస్తున్నాం... |  | pending |
+| `family.settings.saved` | Saved. | सेव हो गया। | సేవ్ అయింది. |  | pending |
+| `family.settings.methods` | Sign-in methods | साइन इन के तरीके | సైన్ ఇన్ పద్ధతులు |  | pending |
+| `family.settings.google` | Google | Google | Google |  | pending |
+| `family.settings.phone` | Phone | फ़ोन | ఫోన్ |  | pending |
+| `family.settings.connectedAs` | Connected as {email} | {email} के रूप में जुड़ा है | {email} గా కనెక్ట్ అయింది |  | pending |
+| `family.settings.connected` | Connected | जुड़ा है | కనెక్ట్ అయింది |  | pending |
+| `family.settings.notConnected` | Not connected | जुड़ा नहीं है | కనెక్ట్ కాలేదు |  | pending |
+| `family.settings.connectGoogle` | Connect Google | Google जोड़ें | Google కనెక్ట్ చేయండి |  | pending |
+| `family.settings.addPhone` | Add phone | फ़ोन जोड़ें | ఫోన్ జోడించండి |  | pending |
+| `family.settings.changePhone` | Change number | नंबर बदलें | నంబర్ మార్చండి |  | pending |
+| `family.settings.unlink` | Unlink | हटाएं | తీసివేయండి |  | pending |
+| `family.settings.unlinkDisabled` | Add another sign-in method first | पहले साइन इन का कोई दूसरा तरीका जोड़ें | ముందుగా మరో సైన్ ఇన్ పద్ధతిని జోడించండి |  | pending |
+| `family.settings.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `family.settings.googleInUse` | This Google account is already used by another DoctorNearMe account. | यह Google खाता पहले से किसी दूसरे DoctorNearMe खाते में इस्तेमाल हो रहा है। | ఈ Google ఖాతా ఇప్పటికే మరో DoctorNearMe ఖాతాలో ఉపయోగంలో ఉంది. |  | pending |
+| `family.settings.phoneInUse` | This number is already linked to another account. | यह नंबर पहले से किसी दूसरे खाते से जुड़ा है। | ఈ నంబర్ ఇప్పటికే మరో ఖాతాకు లింక్ అయి ఉంది. |  | pending |
+| `family.settings.linkFailed` | Could not connect this sign-in method. Please try again. | साइन इन का यह तरीका नहीं जुड़ सका। कृपया फिर से कोशिश करें। | ఈ సైన్ ఇన్ పద్ధతిని కనెక్ట్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.settings.linked` | Sign-in method added. | साइन इन का तरीका जोड़ दिया गया। | సైన్ ఇన్ పద్ధతి జోడించబడింది. |  | pending |
+| `family.settings.unlinked` | Sign-in method removed. | साइन इन का तरीका हटा दिया गया। | సైన్ ఇన్ పద్ధతి తీసివేయబడింది. |  | pending |

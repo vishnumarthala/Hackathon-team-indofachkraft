@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { isFamilyPath } from "@/lib/auth-access";
 import { useT } from "@/lib/i18n/client";
 
 // Marketing pages (landing, book a demo, login) have their own navigation and no app banner.
@@ -11,7 +12,8 @@ const MARKETING_PATHS = new Set(["/", "/book-demo", "/login"]);
 export function SiteChrome() {
   const pathname = usePathname();
   const t = useT();
-  if (MARKETING_PATHS.has(pathname)) return null;
+  // The family portal (019) renders its own header.
+  if (MARKETING_PATHS.has(pathname) || isFamilyPath(pathname)) return null;
 
   return (
     <>
