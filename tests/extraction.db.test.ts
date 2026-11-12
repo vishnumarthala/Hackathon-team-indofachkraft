@@ -9,6 +9,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { runExtraction, type ExtractionDeps } from "@/lib/extraction";
 import { IsaaExtractionSchema, SegmentSchema, type IsaaExtraction } from "@/lib/types";
 import { buildIsaaFacts } from "../scripts/seed-demo";
+import { grantSyntheticConsent, purgeSyntheticChildren } from "./helpers/consent";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
 const enabled = Boolean(process.env.DATABASE_URL) && process.env.SKIP_DB_TESTS !== "1";
@@ -28,6 +29,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 describe.skipIf(!enabled)("extraction persistence (database)", () => {
   let sql: Sql;
   const created: string[] = [];
+  const children: string[] = [];
 
   beforeAll(() => {
     sql = postgres(process.env.DATABASE_URL as string, { max: 4, prepare: false, onnotice: () => {} });
@@ -35,6 +37,7 @@ describe.skipIf(!enabled)("extraction persistence (database)", () => {
 
   afterAll(async () => {
     if (created.length) await sql`delete from cases where id in ${sql(created)}`;
+    await purgeSyntheticChildren(sql, children);
     await sql.end({ timeout: 5 });
   });
 
@@ -45,6 +48,8 @@ describe.skipIf(!enabled)("extraction persistence (database)", () => {
     await sql`
       insert into cases (org_id, id, child_alias, parent_alias, language, therapist_name, status)
       values ('00000000-0000-4000-8000-00000000a001', ${caseId}, ${`t006-db-${caseId.slice(0, 8)} (synthetic)`}, 'Parent (synthetic)', 'en', 'Demo Therapist', ${caseStatus})`;
+    // 020: the extraction processor re-checks ai_extraction consent before calling Gemini.
+    children.push(await grantSyntheticConsent(sql, caseId, ["ai_extraction"]));
     await sql`
       insert into recordings (id, case_id, kind, session_number, status, speaker_map, segments)
       values (${sessionId}, ${caseId}, 'session', 1, ${stage},

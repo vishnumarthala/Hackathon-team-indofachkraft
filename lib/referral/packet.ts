@@ -34,7 +34,7 @@ export const ReferRequestSchema = z.object({
     .trim()
     .min(3, { error: "Reason must be at least 3 characters" })
     .max(1000, { error: "Reason must be at most 1000 characters" }),
-  parent_consent: z.literal(true, { error: "Parent consent is required" }),
+  // 020 NFR-1: consent is checked server-side (referral_share); a client `parent_consent` flag is ignored.
 });
 export type ReferRequest = z.infer<typeof ReferRequestSchema>;
 

@@ -64,6 +64,10 @@ npm run -s seed:demo                          # reset the canonical case 0000000
 npm run -s seed:demo -- --new                 # fresh ids and a fresh intake token (use this in workers)
 npm run -s seed:demo -- --new --confirmed     # all 40 ISAA facts confirmed or edited
 npm run -s seed:demo -- --new --stage transcribed   # session transcribed, no ISAA facts yet
+npm run -s seed:demo -- --new --no-guardian   # unclaimed child: no guardian, no consent (every gate blocks)
 ```
 
-The last line printed is `seeded case=<uuid> session=<uuid> intake=<uuid> token=<token>`.
+The seed prints `seeded case=<uuid> session=<uuid> intake=<uuid> token=<token>`, then
+`child=<uuid> guardian=demo-guardian@example.com consents=<features>` (ticket 020: a synthetic guardian,
+an active link and v1 consent for every feature, `user_agent = 'seed:synthetic'`) or
+`child=<uuid> unclaimed (no guardian, no consent)` with `--no-guardian`.

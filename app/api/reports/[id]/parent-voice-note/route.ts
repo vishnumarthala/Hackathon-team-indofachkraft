@@ -1,5 +1,6 @@
 import { audit } from "@/lib/audit";
 import { requireReportAccess } from "@/lib/authz";
+import { assertConsentOrAbort, childIdForCase, consentRequired, requireConsent } from "@/lib/consent";
 import { NoVoiceError, synthesize, voiceIdFor } from "@/lib/elevenlabs/tts";
 import { sendEmail } from "@/lib/email";
 import { env } from "@/lib/env";
@@ -38,6 +39,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   }
   const caseRow = await getCase(assessment.case_id);
   if (!caseRow) return fail(404, "Report not found");
+  // 020 FR-7: the voice note needs the guardian's ai_voice_note consent (re-checked before TTS).
+  const childId = await childIdForCase(caseRow.id);
+  const blocked = await requireConsent(childId, "ai_voice_note");
+  if (blocked) return blocked;
   const demo = env.DEMO_MODE;
 
   const failed = async (stage: string, err: unknown) => {
@@ -80,6 +85,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   }
   if (summary.language !== caseRow.language) return failed("gemini", new Error(`Summary language ${summary.language} is not ${caseRow.language}`));
   if (looksLikeScore(summary.text)) return failed("gemini", new Error("Summary contains score-like text"));
+
+  if (!(await assertConsentOrAbort(childId, "ai_voice_note", { stage: "before_tts", caseId: caseRow.id }))) {
+    return consentRequired(childId, "ai_voice_note");
+  }
 
   let audioPath: string | null = null;
   if (!demo) {

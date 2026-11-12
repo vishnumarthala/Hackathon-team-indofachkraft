@@ -706,7 +706,8 @@
       "label": "Simulate completed call (demo)",
       "done": "Call ended. Thank you! You can close this page.",
       "failed": "Could not simulate the call. Please try again."
-    }
+    },
+    "expired": "This link has expired. Please ask your therapist for a new link."
   },
   "family": {
     "meta": {
@@ -790,6 +791,76 @@
       "linkFailed": "Could not connect this sign-in method. Please try again.",
       "linked": "Sign-in method added.",
       "unlinked": "Sign-in method removed."
+    },
+    "children": {
+      "title": "Children",
+      "add": "Add a child",
+      "haveCode": "I have a code from my therapist",
+      "years_one": "{count} year",
+      "years_other": "{count} years",
+      "months_one": "{count} month",
+      "months_other": "{count} months",
+      "age": "{years}, {months}",
+      "ageUnknown": "Date of birth not added",
+      "open": "Open {name}",
+      "backToList": "All children",
+      "form": {
+        "title": "Add a child",
+        "name": "Child's name",
+        "nameHint": "First name or nickname, up to 60 characters.",
+        "dob": "Date of birth (optional)",
+        "sex": "Sex (optional)",
+        "choose": "Choose...",
+        "sexOptions": {
+          "female": "Female",
+          "male": "Male",
+          "other": "Other",
+          "undisclosed": "Prefer not to say"
+        },
+        "relationship": "Your relationship to the child",
+        "relationships": {
+          "mother": "Mother",
+          "father": "Father",
+          "legal_guardian": "Legal guardian",
+          "other_family": "Other family member"
+        },
+        "declaration": "I am this child's parent or legal guardian.",
+        "submit": "Add child",
+        "saving": "Saving...",
+        "nameError": "Enter the child's name (up to 60 characters).",
+        "dobError": "Enter a valid date of birth that is not in the future.",
+        "relationshipError": "Choose your relationship to the child.",
+        "declarationError": "Please confirm that you are the parent or legal guardian.",
+        "saveFailed": "Could not save. Please try again."
+      },
+      "claim": {
+        "title": "Link your child's clinic record",
+        "intro": "Enter the 8-character code your therapist gave you. The code works once and expires after 72 hours.",
+        "code": "Code",
+        "codeHint": "For example ABCD-EF23",
+        "existingQuestion": "Is this one of your children?",
+        "newChild": "No, add as a new child",
+        "submit": "Link record",
+        "saving": "Linking...",
+        "invalid": "This code is not valid",
+        "tooMany": "Too many attempts. Try again in an hour.",
+        "conflict": "This record is already linked"
+      },
+      "overview": {
+        "permissions": "Permissions",
+        "permissionsIntro": "Choose what DoctorNearMe may do with your child's information. You can change this at any time.",
+        "allow": "Allow",
+        "withdraw": "Withdraw",
+        "saving": "Saving...",
+        "agree": "I have read this text and I agree.",
+        "verifyPhone": "Verify your mobile number before giving permission",
+        "verifyLink": "Go to settings",
+        "outdated": "Please review the updated text",
+        "saveFailed": "Could not save. Please try again.",
+        "leave": "Remove this child from my account",
+        "leaveConfirm": "Remove {name} from your account? You will lose access until a new code links you again.",
+        "leaving": "Removing..."
+      }
     }
   },
   "directory": {
@@ -887,5 +958,106 @@
       "offersInClinic": "In clinic",
       "offersVideo": "Video consultations"
     }
+  },
+  "consent": {
+    "features": {
+      "ai_intake_call": {
+        "name": "AI intake voice call",
+        "description": "Before the first session, an AI voice assistant asks you about your child and prepares a summary for the therapist."
+      },
+      "session_recording": {
+        "name": "Recording sessions",
+        "description": "The therapist records the audio of sessions at the centre."
+      },
+      "ai_transcription": {
+        "name": "AI transcription",
+        "description": "AI turns session recordings into written text."
+      },
+      "ai_extraction": {
+        "name": "AI analysis",
+        "description": "AI suggests observations and drafts reports from transcripts. The therapist checks everything."
+      },
+      "ai_voice_note": {
+        "name": "AI voice summary",
+        "description": "AI writes a short summary of the final report and reads it aloud for you."
+      },
+      "referral_share": {
+        "name": "Sharing with a specialist",
+        "description": "The therapist shares a referral packet with a specialist through a private link."
+      },
+      "screen_result_save": {
+        "name": "Saving check-in results",
+        "description": "Results of a developmental check-in are saved to your child's record."
+      },
+      "ai_follow_up": {
+        "name": "AI follow-up assistant",
+        "description": "An AI assistant answers your questions about your child's published plan and asks about progress."
+      }
+    },
+    "allowed": "Allowed",
+    "notAllowed": "Not allowed",
+    "onPaper": "Given on paper on {date}",
+    "processors": "Who processes the data",
+    "processor": "{name}: {purpose} ({location})",
+    "readFull": "Read full text",
+    "version": "Version {version}"
+  },
+  "consentPanel": {
+    "title": "Consent",
+    "linked": "Parent account linked",
+    "notLinked": "No parent account linked yet",
+    "createCode": "Create parent code",
+    "creating": "Creating...",
+    "codeLabel": "Parent code",
+    "codeExpires": "Valid until {date}. Works once. Creating a new code cancels this one.",
+    "shareWhatsapp": "Share on WhatsApp",
+    "codeFailed": "Could not create the code. Please try again.",
+    "printForm": "Print consent form",
+    "recordPaper": "Record paper consent",
+    "digitalOn": "Allowed by the parent on {date}",
+    "paperOn": "On paper, recorded by {provider} on {date}",
+    "withdrawnOn": "Withdrawn on {date}",
+    "never": "Not asked yet",
+    "anotherCentre": "another centre",
+    "viewScan": "View signed form",
+    "hint": "Ask the parent to allow this in their DoctorNearMe app."
+  },
+  "paperConsent": {
+    "title": "Record paper consent",
+    "intro": "For parents without a smartphone: print the consent form, let the parent read and sign it, then record it here with a scan or photo of the signed form.",
+    "formLanguage": "Language of the printed form",
+    "features": "Permissions the parent ticked",
+    "guardianName": "Name of the parent or legal guardian",
+    "relationship": "Relationship to the child",
+    "signedOn": "Date signed",
+    "scan": "Signed form (PDF, JPEG or PNG, up to 10 MB)",
+    "attestation": "I confirm the parent or legal guardian signed this form in person.",
+    "submit": "Save paper consent",
+    "saving": "Saving...",
+    "saved": "Saved.",
+    "invalid": "Check the highlighted fields.",
+    "outdated": "The consent text has changed. Print the new form and ask the parent to sign it.",
+    "failed": "Could not save. Please try again.",
+    "withdrawTitle": "Record a withdrawal",
+    "withdrawIntro": "Use this when the parent tells the centre that they withdraw a permission. No scan is needed.",
+    "withdrawFeature": "Permission",
+    "note": "Note (optional)",
+    "withdrawSubmit": "Record withdrawal",
+    "back": "Back to case"
+  },
+  "consentForm": {
+    "title": "Consent form",
+    "child": "Child",
+    "centre": "Centre",
+    "intro": "Please read each section. Tick the box for each thing you allow. You can withdraw any permission later in the DoctorNearMe app or by telling the centre.",
+    "tick": "I allow this",
+    "formVersion": "Form version",
+    "signature": "Signature of the parent or legal guardian",
+    "name": "Name",
+    "relationship": "Relationship to the child",
+    "date": "Date",
+    "print": "Print",
+    "notConsent": "Printing this form is not consent. It counts only after the signed form is recorded by the centre.",
+    "language": "Form language"
   }
 }

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withConsentHint } from "@/lib/consent/features";
 import { EMAIL_STATUS_TEXT, isEmailStatus, type EmailStatus } from "@/lib/parentNoteStatus";
 
 export type NoteView = { text: string; hasAudio: boolean; audioUrl: string | null; emailStatus: EmailStatus | null };
@@ -18,7 +19,7 @@ export async function createVoiceNote(fetchFn: FetchFn, reportId: string): Promi
       email_status?: unknown;
       error?: string;
     };
-    if (!res.ok || !body.report) return { ok: false, error: body.error ?? "Voice note could not be created" };
+    if (!res.ok || !body.report) return { ok: false, error: body.error ? withConsentHint(body.error) : "Voice note could not be created" };
     return {
       ok: true,
       note: {

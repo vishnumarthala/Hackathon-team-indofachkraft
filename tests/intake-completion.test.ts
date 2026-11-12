@@ -30,6 +30,7 @@ vi.mock("@/lib/authz", () => ({
   requireFactAccess: vi.fn().mockResolvedValue(null),
   requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
 }));
+vi.mock("@/lib/consent", async () => (await import("./helpers/consent")).consentAllowedModule());
 vi.mock("@/lib/intake/process", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/intake/process")>()),
   processPostCall: m.process,
@@ -92,6 +93,8 @@ const CASE = {
   child_alias: "Ravi",
   therapist_name: "Demo Therapist",
   intake_token: TOKEN,
+  intake_token_expires_at: "2999-01-01T00:00:00Z",
+  intake_token_revoked_at: null,
   status: "booked",
 } as unknown as CaseRow;
 const PROCESSED = { received: true, case_id: CASE.id, recording_id: "rec-1", brief: true };

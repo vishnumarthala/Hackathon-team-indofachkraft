@@ -1,9 +1,11 @@
 import { z } from "zod";
+import { requireCaseConsent } from "@/lib/consent";
 import { isDemoMode } from "@/lib/demo";
 import { getConversation } from "@/lib/elevenlabs/agent";
 import { env } from "@/lib/env";
 import { fail, ok, parseJson } from "@/lib/http";
 import { demoPostCallData, InvalidPostCallError, processPostCall, PostCallDataSchema } from "@/lib/intake/process";
+import { INTAKE_COMPLETION_GRACE_MS, intakeLinkState, LINK_EXPIRED } from "@/lib/intake/link";
 import { getCaseByToken } from "@/lib/queries/intake";
 
 export const runtime = "nodejs";
@@ -28,6 +30,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
 
   const caseRow = await getCaseByToken(token);
   if (!caseRow) return fail(404, "This link is not valid.");
+  // 020: a call started before expiry may finish within the grace window; revoked links never.
+  if (intakeLinkState(caseRow, Date.now(), INTAKE_COMPLETION_GRACE_MS) !== "active") return fail(410, LINK_EXPIRED);
+  const blocked = await requireCaseConsent(caseRow.id, "ai_intake_call");
+  if (blocked) return blocked;
 
   if (isDemoMode()) return processAndAnswer(() => demoPostCallData(token, conversationId));
 

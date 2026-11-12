@@ -1,5 +1,6 @@
 // Upload -> transcribe -> extract flow of the New session page (008 FR-3, FR-4, FR-5).
 // Pure of React so the retry rules can be unit tested with fake dependencies.
+import { withConsentHint } from "@/lib/consent/features";
 
 export const MAX_AUDIO_BYTES = 52_428_800;
 // Keep in sync with the list accepted by POST /api/cases/:id/sessions (005).
@@ -53,7 +54,7 @@ export const newProgress = (): FlowProgress => ({ session: null, uploaded: false
 export type FlowResult = { ok: true; recordingId: string } | { ok: false; step: StepId; error: string };
 
 export function apiError(res: ApiResult, fallback: string): string {
-  return typeof res.json.error === "string" ? res.json.error : `${fallback} (${res.status})`;
+  return typeof res.json.error === "string" ? withConsentHint(res.json.error) : `${fallback} (${res.status})`;
 }
 
 export async function runFlow(args: {

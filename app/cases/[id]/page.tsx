@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { FacpForm } from "@/components/case/FacpForm";
+import { ConsentPanel } from "@/components/consent/ConsentPanel";
 import { NEXT_STEPS, formatDate, type CaseStatus } from "@/lib/cases/format";
 import { getCase } from "@/lib/queries/cases";
 import { requireCasePage } from "@/lib/authz";
@@ -35,6 +36,8 @@ export default async function CaseOverviewPage({ params }: { params: Promise<{ i
           </div>
         ))}
       </dl>
+
+      {caseRow.child_id ? <ConsentPanel caseRow={{ ...caseRow, child_id: caseRow.child_id }} /> : null}
 
       <FacpForm caseId={caseRow.id} initialScore={caseRow.facp_score ?? null} />
     </div>

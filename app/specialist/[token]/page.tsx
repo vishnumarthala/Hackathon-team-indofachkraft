@@ -7,7 +7,7 @@ import { audioPlayableUntil } from "@/lib/ask/citations";
 import { listQuestions } from "@/lib/ask/questions";
 import { audit } from "@/lib/audit";
 import { formatDate } from "@/lib/cases/format";
-import { getAudioUrls, getReferralByToken, markReferralViewed } from "@/lib/queries/referrals";
+import { getAudioUrls, getSharedReferral, markReferralViewed } from "@/lib/queries/referrals";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +19,17 @@ export const metadata: Metadata = {
 
 export default async function SpecialistPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const shared = await getReferralByToken(token);
-  if (!shared) notFound();
+  const shared = await getSharedReferral(token);
+  if (shared.state === "missing") notFound();
+  // 020 FR-10: revoked, expired or consent withdrawn.
+  if (shared.state === "unavailable") {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <h1 className="text-2xl font-semibold">This shared case is no longer available.</h1>
+        <p className="mt-3 text-slate-700">Please ask the therapist who referred the child for a new link.</p>
+      </div>
+    );
+  }
   const { referral, packet } = shared;
 
   if (referral.status === "sent" && (await markReferralViewed(referral.id))) {

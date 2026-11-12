@@ -89,4 +89,8 @@ export const env = {
   get DEMO_FIXTURES_DIR() {
     return read("DEMO_FIXTURES_DIR") ?? DEFAULT_FIXTURES_DIR;
   },
+  // 020: salt for the hashed IP stored with each consent record (falls back to the service role key).
+  get CONSENT_IP_SALT() {
+    return read("CONSENT_IP_SALT");
+  },
 };

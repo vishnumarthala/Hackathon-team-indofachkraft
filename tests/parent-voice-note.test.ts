@@ -26,6 +26,7 @@ vi.mock("@/lib/authz", () => ({
   requireFactAccess: vi.fn().mockResolvedValue(null),
   requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
 }));
+vi.mock("@/lib/consent", async () => (await import("./helpers/consent")).consentAllowedModule());
 vi.mock("@/lib/queries/reports", () => ({ getReport: m.getReport }));
 vi.mock("@/lib/queries/cases", () => ({ getCase: m.getCase }));
 vi.mock("@/lib/queries/parentNote", () => ({

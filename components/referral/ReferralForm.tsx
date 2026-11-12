@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { withConsentHint } from "@/lib/consent/features";
 
 type EmailStatus = "sent" | "demo" | "failed";
 type Success = { url: string; email: string; emailStatus: EmailStatus };
@@ -19,7 +20,6 @@ export function ReferralForm({ caseId, defaultReason }: { caseId: string; defaul
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [reason, setReason] = useState(defaultReason);
-  const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +27,6 @@ export function ReferralForm({ caseId, defaultReason }: { caseId: string; defaul
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!consent) return;
     setSending(true);
     setErrors({});
     setError(null);
@@ -36,18 +35,19 @@ export function ReferralForm({ caseId, defaultReason }: { caseId: string; defaul
       const res = await fetch(`/api/cases/${caseId}/refer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ specialist_name: name, specialist_email: email, reason, parent_consent: consent }),
+        body: JSON.stringify({ specialist_name: name, specialist_email: email, reason }),
       });
       const json = await res.json().catch(() => ({}));
       if (res.status === 201) {
         const status: EmailStatus = json.email_status ?? (json.emailed ? "sent" : "failed");
         setSuccess({ url: json.url, email: email.trim(), emailStatus: status });
-        // Untick consent so a second click cannot send a duplicate referral by accident.
-        setConsent(false);
+        // Clear the recipient so a second click cannot send a duplicate referral by accident.
+        setName("");
+        setEmail("");
         router.refresh();
       } else {
         if (json.details && typeof json.details === "object") setErrors(json.details);
-        setError(json.error ?? "Referral could not be sent");
+        setError(typeof json.error === "string" ? withConsentHint(json.error) : "Referral could not be sent");
       }
     } catch {
       setError("Referral could not be sent");
@@ -119,25 +119,12 @@ export function ReferralForm({ caseId, defaultReason }: { caseId: string; defaul
             </p>
           )}
         </div>
-        <div>
-          <div className="flex items-start gap-2">
-            <input
-              id="parent_consent"
-              name="parent_consent"
-              type="checkbox"
-              checked={consent}
-              onChange={(e) => setConsent(e.target.checked)}
-              className="mt-1"
-            />
-            <label htmlFor="parent_consent" className="text-sm text-slate-800">
-              The parent consented to share this case with the specialist
-            </label>
-          </div>
-          {errors.parent_consent && <p className="mt-1 text-sm text-red-700">{errors.parent_consent}</p>}
-        </div>
+        <p className="text-sm text-slate-700">
+          Sharing needs the parent&apos;s &quot;Sharing with a specialist&quot; permission, which DoctorNearMe checks when you send.
+        </p>
         <button
           type="submit"
-          disabled={!consent || sending}
+          disabled={sending}
           className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
         >
           {sending ? "Sending…" : "Send referral"}

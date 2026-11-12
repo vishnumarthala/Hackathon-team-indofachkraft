@@ -1,4 +1,8 @@
 // Seeds a complete synthetic demo case. Usage: npm run -s seed:demo [-- --new] [--confirmed] [--stage transcribed]
+//   [--no-guardian]
+// Ticket 020 (FR-18): the synthetic case gets a synthetic guardian, an active link and v1 consents for every
+// feature (user_agent `seed:synthetic`) so the demo flow keeps working. `--no-guardian` leaves the child
+// unclaimed and without consent (every gated step is blocked).
 import { loadEnvConfig } from "@next/env";
 import { existsSync, readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -20,6 +24,7 @@ export const CANONICAL = {
   caseId: "00000000-0000-4000-8000-000000000001",
   intakeId: "00000000-0000-4000-8000-000000000002",
   sessionId: "00000000-0000-4000-8000-000000000003",
+  childId: "00000000-0000-4000-8000-000000000004",
   token: "demo-intake-token",
   externalId: "seed-canonical",
 };
@@ -76,14 +81,15 @@ export const PostCallSchema = z.object({
 });
 export type PostCall = z.infer<typeof PostCallSchema>;
 
-export type SeedOptions = { isNew: boolean; confirmed: boolean; stage: "extracted" | "transcribed" };
+export type SeedOptions = { isNew: boolean; confirmed: boolean; stage: "extracted" | "transcribed"; noGuardian: boolean };
 
 export function parseArgs(argv: string[]): SeedOptions {
-  const options: SeedOptions = { isNew: false, confirmed: false, stage: "extracted" };
+  const options: SeedOptions = { isNew: false, confirmed: false, stage: "extracted", noGuardian: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--new") options.isNew = true;
     else if (arg === "--confirmed") options.confirmed = true;
+    else if (arg === "--no-guardian") options.noGuardian = true;
     else if (arg === "--stage" || arg.startsWith("--stage=")) {
       const value = arg === "--stage" ? argv[++i] : arg.slice("--stage=".length);
       if (value !== "transcribed" && value !== "extracted") throw new Error(`Unknown stage: ${value ?? "(missing)"}`);
@@ -296,6 +302,7 @@ async function main() {
   const sessionId = options.isNew ? randomUUID() : CANONICAL.sessionId;
   const token = options.isNew ? newToken() : CANONICAL.token;
   const externalId = options.isNew ? `seed-${caseId.slice(0, 8)}` : CANONICAL.externalId;
+  const childId = options.isNew ? randomUUID() : CANONICAL.childId;
 
   const removeStorage = async () => {
     const { data, error } = await db.storage.from(BUCKET).list(caseId, { limit: 1000 });
@@ -323,9 +330,22 @@ async function main() {
     creating = true;
     const now = new Date().toISOString();
 
+    // The canonical child survives re-seeding (its consent log is append-only); new runs get a new child.
+    check(
+      "upsert child",
+      (
+        await db
+          .from("children")
+          .upsert({ id: childId, display_name: SEED_CASE.child_alias, source: "provider" }, { onConflict: "id", ignoreDuplicates: true })
+      ).error,
+    );
     check(
       "insert case",
-      (await db.from("cases").insert({ id: caseId, ...SEED_CASE, org_id: BOOTSTRAP_ORG_ID, intake_token: token })).error,
+      (
+        await db
+          .from("cases")
+          .insert({ id: caseId, ...SEED_CASE, org_id: BOOTSTRAP_ORG_ID, intake_token: token, child_id: childId })
+      ).error,
     );
 
     const { postCall, brief, segments, extract } = fixtures;
@@ -414,6 +434,12 @@ async function main() {
     }
 
     console.log(`seeded case=${caseId} session=${sessionId} intake=${intakeId} token=${token}`);
+    if (options.noGuardian) {
+      console.log(`child=${childId} unclaimed (no guardian, no consent)`);
+    } else {
+      const guardian = await seedSyntheticGuardian(db, childId);
+      console.log(`child=${childId} guardian=${guardian.email} consents=${guardian.granted.join(",") || "(already granted)"}`);
+    }
   } catch (err) {
     if (creating) {
       await removeStorage().catch(() => {});
@@ -421,6 +447,87 @@ async function main() {
     }
     throw err;
   }
+}
+
+export const SEED_GUARDIAN_EMAIL = "demo-guardian@example.com";
+export const SEED_USER_AGENT = "seed:synthetic";
+
+type Db = ReturnType<typeof import("../lib/db").supabaseAdmin>;
+
+/**
+ * FR-18: synthetic guardian + active link + v1 consent for every feature, recorded through the same
+ * strict `record_consent` path as real consent and marked `user_agent = 'seed:synthetic'`. Synthetic demo
+ * cases only: never call this for real data.
+ */
+export async function seedSyntheticGuardian(db: Db, childId: string): Promise<{ email: string; granted: string[] }> {
+  const { CONSENT_FEATURES } = await import("../lib/consent/features");
+  const { data: list, error: listError } = await db.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  if (listError) throw new Error(`list users: ${listError.message}`);
+  let user = list.users.find((u) => u.email?.toLowerCase() === SEED_GUARDIAN_EMAIL);
+  if (!user) {
+    const { data, error } = await db.auth.admin.createUser({
+      email: SEED_GUARDIAN_EMAIL,
+      email_confirm: true,
+      password: randomUUID(),
+      user_metadata: { synthetic: true },
+    });
+    if (error || !data.user) throw new Error(`create synthetic guardian: ${error?.message ?? "no user"}`);
+    user = data.user;
+  }
+  // Synthetic account: marked verified so the seeded digital consent passes the FR-13 rule. No real phone.
+  const { error: profileError } = await db
+    .from("user_profiles")
+    .update({ display_name: "Demo parent (synthetic)", phone_verified_at: new Date().toISOString() })
+    .eq("id", user.id)
+    .eq("role", "guardian");
+  if (profileError) throw new Error(`synthetic guardian profile: ${profileError.message}`);
+
+  const { data: link, error: linkError } = await db
+    .from("guardian_links")
+    .upsert(
+      {
+        child_id: childId,
+        user_id: user.id,
+        relationship: "mother",
+        status: "active",
+        verification_method: "self_registered",
+        declared_at: new Date().toISOString(),
+        revoked_at: null,
+      },
+      { onConflict: "child_id,user_id" },
+    )
+    .select("id")
+    .single();
+  if (linkError || !link) throw new Error(`guardian link: ${linkError?.message ?? "no link"}`);
+
+  const { data: current } = await db.from("child_consent_state").select("feature, granted").eq("child_id", childId);
+  const granted = new Set(((current ?? []) as { feature: string; granted: boolean }[]).filter((r) => r.granted).map((r) => r.feature));
+  const missing = CONSENT_FEATURES.filter((f) => !granted.has(f));
+  if (missing.length === 0) return { email: SEED_GUARDIAN_EMAIL, granted: [] };
+  const { data: docs, error: docError } = await db
+    .from("consent_documents")
+    .select("id, feature, version")
+    .eq("locale", "en")
+    .in("feature", missing)
+    .order("version", { ascending: false });
+  if (docError) throw new Error(`consent texts: ${docError.message}`);
+  const latest = new Map<string, string>();
+  for (const d of (docs ?? []) as { id: string; feature: string }[]) if (!latest.has(d.feature)) latest.set(d.feature, d.id);
+  const { error } = await db.rpc("record_consent", {
+    p: {
+      child_id: childId,
+      action: "granted",
+      method: "digital",
+      features: missing,
+      document_ids: [...latest.values()],
+      locale: "en",
+      guardian_user_id: user.id,
+      guardian_link_id: (link as { id: string }).id,
+      user_agent: SEED_USER_AGENT,
+    },
+  });
+  if (error) throw new Error(`seed consent: ${error.message}`);
+  return { email: SEED_GUARDIAN_EMAIL, granted: missing };
 }
 
 if (process.argv[1] && /seed-demo\.ts$/.test(process.argv[1])) {

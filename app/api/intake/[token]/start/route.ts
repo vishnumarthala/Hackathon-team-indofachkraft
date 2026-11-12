@@ -1,8 +1,10 @@
 import { z } from "zod";
 import { audit } from "@/lib/audit";
+import { requireCaseConsent } from "@/lib/consent";
 import { isDemoMode } from "@/lib/demo";
 import { DEMO_CENTRE_NAME, startAgentSession, type AgentStart } from "@/lib/elevenlabs/agent";
 import { fail, ok, parseJson } from "@/lib/http";
+import { intakeLinkState, LINK_EXPIRED } from "@/lib/intake/link";
 import { getCaseByToken, hasIntakeRecording } from "@/lib/queries/intake";
 import { LanguageSchema } from "@/lib/types";
 
@@ -15,6 +17,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   const { token } = await params;
   const caseRow = await getCaseByToken(token);
   if (!caseRow) return fail(404, "This link is not valid.");
+  // 020 FR-10 / FR-7: expired or revoked links are gone; the call needs ai_intake_call consent.
+  if (intakeLinkState(caseRow) !== "active") return fail(410, LINK_EXPIRED);
+  const blocked = await requireCaseConsent(caseRow.id, "ai_intake_call");
+  if (blocked) return blocked;
   if (await hasIntakeRecording(caseRow.id)) return fail(409, "This intake call is already complete");
 
   const parsed = await parseJson(req, bodySchema);

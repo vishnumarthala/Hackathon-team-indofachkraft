@@ -1,5 +1,6 @@
 import { audit } from "@/lib/audit";
 import { requireCaseAccess } from "@/lib/authz";
+import { assertConsentOrAbort, childIdForCase, consentRequired, requireConsent } from "@/lib/consent";
 import { supabaseAdmin } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { generateJson } from "@/lib/gemini";
@@ -25,6 +26,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const { id } = await params;
   const denied = await requireCaseAccess(id);
   if (denied) return denied;
+  // 020 FR-7 / NFR-1: the server checks referral_share consent; any `parent_consent` body field is ignored.
+  const childId = await childIdForCase(id);
+  const blocked = await requireConsent(childId, "referral_share");
+  if (blocked) return blocked;
 
   const parsed = await parseJson(req, ReferRequestSchema);
   if ("response" in parsed) return parsed.response;
@@ -66,6 +71,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     summary,
     generatedAt: new Date().toISOString(),
   });
+
+  if (!(await assertConsentOrAbort(childId, "referral_share", { stage: "before_share", caseId: caseRow.id }))) {
+    return consentRequired(childId, "referral_share");
+  }
 
   const db = supabaseAdmin();
   const shareToken = newToken();

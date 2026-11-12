@@ -261,20 +261,32 @@ describe.skipIf(!enabled)("provider profiles (database)", { timeout: 60_000 }, (
     });
 
     it("refuses a guardian with active child links (403)", async () => {
-      const [{ exists }] = await sql<{ exists: boolean }[]>`select to_regclass('public.guardian_links') is not null as exists`;
-      // Until ticket 020 ships guardian_links, a minimal stand-in table exercises the same SQL check.
-      if (!exists) await sql`create table public.guardian_links (user_id uuid not null, status text not null)`;
+      // 020's guardian_links (runs before this ticket's migration): a synthetic child with an active link.
+      const guardian = await fx.makeUser("guardian-linked", "guardian");
+      const [child] = await sql<{ id: string }[]>`
+        insert into children (display_name, source, created_by) values ('t028 child (synthetic)', 'guardian', ${guardian.id})
+        returning id`;
       try {
-        const guardian = await fx.makeUser("guardian-linked", "guardian");
-        if (!exists) await sql`insert into public.guardian_links (user_id, status) values (${guardian.id}, 'active')`;
-        else return; // 020's schema needs a child row; covered by 020's own tests.
+        await sql`
+          insert into guardian_links (child_id, user_id, relationship, status, verification_method, declared_at)
+          values (${child.id}, ${guardian.id}, 'mother', 'active', 'self_registered', now())`;
+        const [{ linked }] = await sql<{ linked: boolean }[]>`select public.user_has_guardian_links(${guardian.id}) as linked`;
+        expect(linked).toBe(true);
         as(guardian);
         const res = await register({ provider_type: "pediatrician", full_name: "t028 Linked (synthetic)" });
         expect(res.status).toBe(403);
         const [role] = await sql`select role from user_profiles where id = ${guardian.id}`;
         expect(role.role).toBe("guardian");
+        const [count] = await sql`select count(*)::int as n from provider_profiles where user_id = ${guardian.id}`;
+        expect(count.n).toBe(0);
+
+        // A revoked link no longer blocks registration.
+        await sql`update guardian_links set status = 'revoked', revoked_at = now() where child_id = ${child.id}`;
+        const [{ after }] = await sql<{ after: boolean }[]>`select public.user_has_guardian_links(${guardian.id}) as after`;
+        expect(after).toBe(false);
       } finally {
-        if (!exists) await sql`drop table public.guardian_links`;
+        await sql`delete from guardian_links where child_id = ${child.id}`;
+        await sql`delete from children where id = ${child.id}`;
       }
     });
   });

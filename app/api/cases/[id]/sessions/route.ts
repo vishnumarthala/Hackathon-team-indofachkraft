@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
 import { requireCaseAccess } from "@/lib/authz";
+import { requireCaseConsent } from "@/lib/consent";
 import { supabaseAdmin } from "@/lib/db";
 import { fail, ok, parseJson } from "@/lib/http";
 import { getCase } from "@/lib/queries/cases";
@@ -39,6 +40,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (denied) return denied;
   const found = await getCase(caseId);
   if (!found) return fail(404, "Case not found");
+  // 020 FR-7: no upload URL without the guardian's session_recording consent.
+  const blocked = await requireCaseConsent(caseId, "session_recording");
+  if (blocked) return blocked;
 
   const parsed = await parseJson(req, sessionSchema);
   if ("response" in parsed) return parsed.response;

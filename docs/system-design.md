@@ -106,7 +106,17 @@ flowchart LR
   storage stays UTC. `proxy.ts` passes the pathname to the server in the `x-dnm-path` request header
   (always overwritten). Every new UI string goes through `t()`; see `docs/i18n.md`. Hindi/Telugu copy
   awaits human review in `messages/REVIEW.md`.
-- **Real patient data** still waits for consent gating (020) and the privacy/audit baseline (041).
+- **Children and consent (ticket 020).** A child (`children`) is separate from the org-specific case
+  (`cases.child_id`, not null; legacy cases got unclaimed `legacy_case` children, never a guessed guardian
+  or consent). Guardians link to children by adding them or with a one-time parent code from the centre.
+  Versioned per-child, per-feature consent (`consent_records`, append-only; `child_consent_state`) gates
+  every AI/recording/sharing step at collection time **and** again right before queued work sends data to
+  an external processor (`requireConsent` / `assertConsentOrAbort` in `lib/consent`); both fail closed.
+  Centres record paper consent (printed form, signed scan in the private `consent-forms` bucket, provider
+  attestation). Intake links expire after 7 days, referral links after 30; both are revocable. Details and
+  how to gate a new feature: `docs/consent.md`.
+- **Real patient data** still waits for the privacy/audit baseline (041) and legal review of the consent
+  texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
   token-based API endpoints and signed webhook are public by design.
 - **Provider profiles and verification (ticket 028).** Stable `provider_profiles.id` per provider,
@@ -165,7 +175,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 .github/pull_request_template.md  .github/workflows/ci.yml (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
-docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md
+docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -195,6 +205,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `RESEND_API_KEY` | email | |
 | `EMAIL_FROM` | email | default `DoctorNearMe <onboarding@resend.dev>` |
 | `DEMO_EMAIL_TO` | email | if set, **every** email goes here (Resend test sender only delivers to the account owner); body starts with `Originally to: <address>` |
+| `CONSENT_IP_SALT` | consent records | optional salt for the sha256 IP hash stored with each consent record; falls back to the service role key (020) |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
 used). `npm run build` must succeed with no `.env.local`.
@@ -625,7 +636,9 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   and whose `intake_token` dynamic variable equals the URL token. Webhook (when used): HMAC verified;
   unknown tokens return 200 `{ received: true, ignored: "unknown token" }` and are audited.
 - Audio: private bucket, signed URLs valid 1 hour for playback.
-- Consent: intake page requires a consent checkbox before Start; referral requires `parent_consent: true`.
+- Consent: intake page requires a consent checkbox before Start. Since 020 every gated step also needs the
+  guardian's recorded consent for that feature (server-side; a client `parent_consent` flag is ignored);
+  see `docs/consent.md`.
 - Audit log of every mutation (`audit_events`).
 - Copy rules: never "diagnose/diagnosis" (except "not a diagnosis"), never "HIPAA compliant".
 
