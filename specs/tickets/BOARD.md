@@ -83,7 +83,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 
 | # | Title | Status | Mode | Runs |
 |---|-------|--------|------|------|
-| 028 | Public provider profiles, credential verification, admin seeding and claim links | draft | solo | waits for 017, 018 |
+| 028 | Public provider profiles, credential verification, admin seeding and claim links | done | solo | waits for 017, 018 |
 | 029 | PostGIS "near me" directory with Google Maps | draft | solo | waits for 028 |
 | 030 | Availability and atomic one-off booking | draft | solo | waits for 028, 032, 041 |
 | 031 | Razorpay payments (test mode) | draft | solo | waits for 030 |
