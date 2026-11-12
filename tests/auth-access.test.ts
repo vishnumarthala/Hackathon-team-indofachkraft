@@ -19,6 +19,7 @@ describe("authentication route access", () => {
   it("leaves only the documented token, webhook, and pilot routes public", () => {
     for (const path of [
       "/api/pilot-signups",
+      "/api/locale",
       "/api/demo/voice-token",
       "/api/webhooks/elevenlabs",
       "/api/intake/a-token/start",

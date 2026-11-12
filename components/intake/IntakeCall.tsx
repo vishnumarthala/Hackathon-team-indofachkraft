@@ -1,11 +1,31 @@
 "use client";
 
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SimulateCallButton } from "@/components/intake/SimulateCallButton";
+import { useLocale, useT } from "@/lib/i18n/client";
+import type { TFunction } from "@/lib/i18n/keys";
 import type { Language } from "@/lib/types";
 
-export const MESSAGES = {
+export type IntakeMessages = Record<
+  | "demo"
+  | "mic"
+  | "failed"
+  | "connecting"
+  | "connected"
+  | "ended"
+  | "startFailed"
+  | "notFound"
+  | "alreadyComplete"
+  | "saving"
+  | "saveFailed"
+  | "saveTimeout"
+  | "retry",
+  string
+>;
+
+// English defaults (equal to the en catalogue); the component passes the viewer's translations.
+export const MESSAGES: IntakeMessages = {
   demo: "Demo mode: no live call.",
   mic: "Microphone access is needed for the call. Please allow it and try again.",
   failed: "The call failed. Please try again.",
@@ -13,11 +33,31 @@ export const MESSAGES = {
   connected: "Connected - speak now",
   ended: "Call ended. Thank you! You can close this page.",
   startFailed: "Could not start the call",
+  notFound: "This link is not valid.",
+  alreadyComplete: "This intake call is already complete",
   saving: "Saving your answers… Please keep this page open.",
   saveFailed: "We could not save your call yet. Please check your internet connection and select Try again.",
   saveTimeout: "Saving your call is taking longer than expected. Please wait a minute and select Try again.",
   retry: "Try again",
-} as const;
+};
+
+export function intakeMessages(t: TFunction<"intake.status">): IntakeMessages {
+  return {
+    demo: t("demo"),
+    mic: t("mic"),
+    failed: t("failed"),
+    connecting: t("connecting"),
+    connected: t("connected"),
+    ended: t("ended"),
+    startFailed: t("startFailed"),
+    notFound: t("notFound"),
+    alreadyComplete: t("alreadyComplete"),
+    saving: t("saving"),
+    saveFailed: t("saveFailed"),
+    saveTimeout: t("saveTimeout"),
+    retry: t("retry"),
+  };
+}
 
 export const LANGUAGE_OPTIONS: Array<{ value: Language; label: string }> = [
   { value: "en", label: "English" },
@@ -25,15 +65,16 @@ export const LANGUAGE_OPTIONS: Array<{ value: Language; label: string }> = [
   { value: "te", label: "తెలుగు (Telugu)" },
 ];
 
+// English default (equal to the en catalogue value intake.consent).
 export const CONSENT_LABEL =
   "I agree to talk to an AI assistant and for this call to be recorded and summarised for the therapist.";
 
 export type SdkStatus = "disconnected" | "connecting" | "connected" | "error";
 
-export function statusText(status: SdkStatus, wasConnected: boolean): string | null {
-  if (status === "connecting") return MESSAGES.connecting;
-  if (status === "connected") return MESSAGES.connected;
-  if (status === "disconnected" && wasConnected) return MESSAGES.ended;
+export function statusText(status: SdkStatus, wasConnected: boolean, messages: IntakeMessages = MESSAGES): string | null {
+  if (status === "connecting") return messages.connecting;
+  if (status === "connected") return messages.connected;
+  if (status === "disconnected" && wasConnected) return messages.ended;
   return null;
 }
 
@@ -56,7 +97,12 @@ export type StartDeps = {
 export type StartResult = { kind: "demo" } | { kind: "error"; message: string } | { kind: "started" };
 
 // The whole start flow, free of React so it can be tested with mocks.
-export async function startIntakeCall(token: string, language: Language, deps: StartDeps): Promise<StartResult> {
+export async function startIntakeCall(
+  token: string,
+  language: Language,
+  deps: StartDeps,
+  messages: IntakeMessages = MESSAGES,
+): Promise<StartResult> {
   let res: Response;
   try {
     res = await deps.fetchFn(`/api/intake/${encodeURIComponent(token)}/start`, {
@@ -65,30 +111,34 @@ export async function startIntakeCall(token: string, language: Language, deps: S
       body: JSON.stringify({ language }),
     });
   } catch {
-    return { kind: "error", message: MESSAGES.startFailed };
+    return { kind: "error", message: messages.startFailed };
   }
   const body = (await res.json().catch(() => ({}))) as {
     demo?: boolean;
-    error?: string;
     conversation_token?: string | null;
     agent_id?: string;
     dynamic_variables?: Record<string, string>;
   };
-  if (!res.ok) return { kind: "error", message: body.error ?? MESSAGES.startFailed };
+  if (!res.ok) {
+    // The API answers in English; show its known answers in the viewer's language.
+    if (res.status === 404) return { kind: "error", message: messages.notFound };
+    if (res.status === 409) return { kind: "error", message: messages.alreadyComplete };
+    return { kind: "error", message: messages.startFailed };
+  }
   if (body.demo === true) return { kind: "demo" };
   const target: SessionTarget | null = body.conversation_token
     ? { conversationToken: body.conversation_token }
     : body.agent_id
       ? { agentId: body.agent_id, connectionType: "webrtc" }
       : null;
-  if (!target) return { kind: "error", message: MESSAGES.startFailed };
+  if (!target) return { kind: "error", message: messages.startFailed };
 
   try {
     const stream = await deps.getMicrophone();
     // Only needed for the permission prompt; the SDK opens its own stream.
     stream.getTracks?.().forEach((t) => t.stop());
   } catch {
-    return { kind: "error", message: MESSAGES.mic };
+    return { kind: "error", message: messages.mic };
   }
 
   try {
@@ -99,7 +149,7 @@ export async function startIntakeCall(token: string, language: Language, deps: S
       onError: deps.onSdkError,
     });
   } catch {
-    return { kind: "error", message: MESSAGES.failed };
+    return { kind: "error", message: messages.failed };
   }
   return { kind: "started" };
 }
@@ -122,6 +172,7 @@ export function createCompletionPoller(
   conversationId: string,
   fetchFn: (input: string, init?: RequestInit) => Promise<Response>,
   onState: (state: CompletionState) => void,
+  messages: IntakeMessages = MESSAGES,
 ): CompletionPoller {
   let timer: ReturnType<typeof setTimeout> | null = null;
   let inFlight = false;
@@ -144,19 +195,19 @@ export function createCompletionPoller(
           body: JSON.stringify({ conversation_id: conversationId }),
         });
       } catch {
-        if (current(id)) onState({ kind: "error", message: MESSAGES.saveFailed });
+        if (current(id)) onState({ kind: "error", message: messages.saveFailed });
         return;
       }
       if (!current(id)) return;
       if (res.status === 202) {
-        if (Date.now() >= deadline) onState({ kind: "error", message: MESSAGES.saveTimeout });
+        if (Date.now() >= deadline) onState({ kind: "error", message: messages.saveTimeout });
         else timer = setTimeout(() => void attempt(id), COMPLETION_POLL_MS);
         return;
       }
       const body = (await res.json().catch(() => ({}))) as { received?: boolean; ignored?: string };
       if (!current(id)) return;
       if (res.ok && body.received === true && !body.ignored) onState({ kind: "done" });
-      else onState({ kind: "error", message: MESSAGES.saveFailed });
+      else onState({ kind: "error", message: messages.saveFailed });
     } finally {
       inFlight = false;
     }
@@ -179,14 +230,15 @@ export function createCompletionPoller(
   };
 }
 
-export function completionText(state: CompletionState): string | null {
-  if (state.kind === "saving") return MESSAGES.saving;
-  if (state.kind === "done") return MESSAGES.ended;
+export function completionText(state: CompletionState, messages: IntakeMessages = MESSAGES): string | null {
+  if (state.kind === "saving") return messages.saving;
+  if (state.kind === "done") return messages.ended;
   if (state.kind === "error") return state.message;
   return null;
 }
 
-export type IntakeCallProps = { token: string; childAlias: string; defaultLanguage: Language };
+/** `defaultLanguage` is the case's call language; without one the call language follows the UI locale. */
+export type IntakeCallProps = { token: string; childAlias: string; defaultLanguage: Language | null };
 
 export function IntakeCall(props: IntakeCallProps) {
   return (
@@ -197,7 +249,12 @@ export function IntakeCall(props: IntakeCallProps) {
 }
 
 function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps) {
-  const [language, setLanguage] = useState<Language>(defaultLanguage);
+  const t = useT("intake");
+  const tStatus = useT("intake.status");
+  const messages = useMemo(() => intakeMessages(tStatus), [tStatus]);
+  const uiLocale = useLocale();
+  // The call language is independent of the UI language: switching the UI never changes it.
+  const [language, setLanguage] = useState<Language>(defaultLanguage ?? uiLocale);
   const [consent, setConsent] = useState(false);
   const [starting, setStarting] = useState(false);
   const [demo, setDemo] = useState(false);
@@ -213,10 +270,10 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
   function startCompletion() {
     const conversationId = conversationIdRef.current;
     if (!conversationId) {
-      setCompletion({ kind: "error", message: MESSAGES.saveFailed });
+      setCompletion({ kind: "error", message: messages.saveFailed });
       return;
     }
-    pollerRef.current ??= createCompletionPoller(token, conversationId, (i, init) => fetch(i, init), setCompletion);
+    pollerRef.current ??= createCompletionPoller(token, conversationId, (i, init) => fetch(i, init), setCompletion, messages);
     pollerRef.current.start();
   }
 
@@ -253,30 +310,27 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
       startSession: (options) => conversation.startSession(options),
       onSdkError: () => {
         connectedRef.current = false;
-        setError(MESSAGES.failed);
+        setError(messages.failed);
         setWasConnected(false);
         setStarting(false);
       },
-    });
+    }, messages);
     if (result.kind === "demo") setDemo(true);
     if (result.kind === "error") setError(result.message);
     setStarting(false);
   }
 
   // After a connected call ends, the completion state (not the SDK status) says whether it was saved.
-  const text = ended ? completionText(completion) : statusText(status, wasConnected);
+  const text = ended ? completionText(completion, messages) : statusText(status, wasConnected, messages);
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-semibold break-words">Intake call for {childAlias}&apos;s family</h1>
-      <p className="text-base text-slate-800">
-        You will talk to an AI assistant, not a person. It asks about {childAlias}&apos;s development so the therapist
-        is prepared. The call takes up to 15 minutes and is recorded and summarised for the therapist.
-      </p>
+      <h1 className="text-2xl font-semibold break-words">{t("title", { child: childAlias })}</h1>
+      <p className="text-base text-slate-800">{t("intro", { child: childAlias })}</p>
 
       <div>
         <label htmlFor="intake-language" className="block text-sm font-medium text-slate-800">
-          Language
+          {t("callLanguage")}
         </label>
         <select
           id="intake-language"
@@ -301,7 +355,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-1 h-5 w-5 shrink-0"
         />
-        <span>{CONSENT_LABEL}</span>
+        <span>{t("consent")}</span>
       </label>
 
       {!live && !ended && !demo && (
@@ -311,7 +365,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
           disabled={!consent || starting}
           className="min-h-12 w-full rounded bg-slate-900 px-4 py-3 text-base font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Start call
+          {t("start")}
         </button>
       )}
 
@@ -321,7 +375,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
           onClick={() => conversation.endSession()}
           className="min-h-12 w-full rounded bg-red-700 px-4 py-3 text-base font-semibold text-white"
         >
-          End call
+          {t("end")}
         </button>
       )}
 
@@ -341,7 +395,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
             onClick={startCompletion}
             className="min-h-12 w-full rounded bg-slate-900 px-4 py-3 text-base font-semibold text-white"
           >
-            {MESSAGES.retry}
+            {messages.retry}
           </button>
         </div>
       )}
@@ -349,7 +403,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
       {demo && (
         <div>
           <p role="status" className="text-base font-medium text-slate-900">
-            {MESSAGES.demo}
+            {messages.demo}
           </p>
           <div id="demo-actions">
             <SimulateCallButton token={token} />

@@ -15,6 +15,7 @@ vi.mock("@elevenlabs/react", () => ({
 
 import { CONSENT_LABEL, IntakeCall, MESSAGES, startIntakeCall, statusText, type StartDeps } from "@/components/intake/IntakeCall";
 import { emailStatusText } from "@/components/intake/IntakeLinkCard";
+import { withI18n } from "./helpers/i18n";
 
 function deps(response: Response | Error, mic: "ok" | "denied" = "ok") {
   const stop = vi.fn();
@@ -126,7 +127,7 @@ describe("statusText", () => {
 
 describe("IntakeCall markup", () => {
   const render = () =>
-    renderToStaticMarkup(createElement(IntakeCall, { token: "t", childAlias: "Ravi", defaultLanguage: "te" }));
+    renderToStaticMarkup(withI18n(createElement(IntakeCall, { token: "t", childAlias: "Ravi", defaultLanguage: "te" })));
 
   it("shows heading, disclosure, language select defaulting to the case language, consent and a disabled Start", () => {
     sdk.status = "disconnected";

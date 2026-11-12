@@ -142,7 +142,7 @@ describe("helpers", () => {
     expect(isUuid("not-a-uuid")).toBe(false);
   });
 
-  it("formats labels and Berlin dates", () => {
+  it("formats labels and dates in the viewer's time zone (default Asia/Kolkata)", () => {
     expect([languageName("en"), languageName("hi"), languageName("te")]).toEqual(["English", "Hindi", "Telugu"]);
     expect([statusLabel("booked"), statusLabel("intake_done"), statusLabel("in_assessment"), statusLabel("referred")]).toEqual([
       "Booked",
@@ -151,9 +151,11 @@ describe("helpers", () => {
       "Referred",
     ]);
     expect([ageLabel(40), ageLabel(null)]).toEqual(["40 months", "-"]);
-    expect(formatDateTime("2026-11-07T11:05:00Z")).toBe("2026-11-07 12:05");
-    expect(formatDateTime("2026-07-01T22:30:00Z")).toBe("2026-07-02 00:30");
-    expect(formatDate("2026-11-07T23:30:00Z")).toBe("2026-11-08");
+    expect(formatDateTime("2026-11-07T11:05:00Z")).toBe("2026-11-07 16:35 IST");
+    expect(formatDateTime("2026-11-07T11:05:00Z", "Europe/Berlin")).toBe("2026-11-07 12:05 GMT+1");
+    expect(formatDateTime("2026-07-01T22:30:00Z", "Europe/Berlin")).toBe("2026-07-02 00:30 GMT+2");
+    expect(formatDate("2026-11-07T19:30:00Z")).toBe("2026-11-08");
+    expect(formatDate("2026-11-07T19:30:00Z", "Europe/Berlin")).toBe("2026-11-07");
     expect(NEXT_STEPS.booked).toBe("Send the parent an intake link from the Brief tab.");
   });
 

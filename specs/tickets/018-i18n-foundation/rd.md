@@ -1,6 +1,6 @@
 # 018: i18n foundation (English, Hindi, Telugu)
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** alongside (no ticket dependencies; 016 is merged, so translate the DoctorNearMe copy as it is now)
 

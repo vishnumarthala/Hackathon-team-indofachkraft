@@ -1,8 +1,11 @@
-export default function IntakeNotFound() {
+import { getT } from "@/lib/i18n/server";
+
+export default async function IntakeNotFound() {
+  const t = await getT("intake");
   return (
     <div className="mx-auto w-full max-w-md px-4 py-8">
-      <h1 className="text-xl font-semibold text-slate-900">This link is not valid.</h1>
-      <p className="mt-2 text-base text-slate-700">Please ask your therapist for a new link.</p>
+      <h1 className="text-xl font-semibold text-slate-900">{t("invalidTitle")}</h1>
+      <p className="mt-2 text-base text-slate-700">{t("invalidText")}</p>
     </div>
   );
 }

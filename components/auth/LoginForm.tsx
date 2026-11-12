@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useT } from "@/lib/i18n/client";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
 const inputClass =
   "mt-1.5 block w-full rounded-xl border border-[#0b1f1d]/15 bg-white px-4 py-3 text-base text-[#0b1f1d] transition-[border-color,box-shadow] duration-200 hover:border-[#0b1f1d]/30 focus:border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-600/15";
 
 export function LoginForm({ nextPath }: { nextPath: string }) {
+  const t = useT("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +22,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
 
     const { error } = await supabaseBrowser().auth.signInWithPassword({ email, password });
     if (error) {
-      setErrorMessage("Unable to sign in. Check your email and password, then try again.");
+      setErrorMessage(t("failed"));
       setSubmitting(false);
       return;
     }
@@ -30,11 +32,11 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
 
   return (
     <div className="w-full">
-      <h1 className="lp-display mb-2 text-5xl text-[#0b1f1d]">Welcome back</h1>
-      <p className="mb-8 text-slate-600">Sign in to DoctorNearMe with the email and password from your centre&apos;s administrator.</p>
+      <h1 className="lp-display mb-2 text-5xl text-[#0b1f1d] break-words">{t("title")}</h1>
+      <p className="mb-8 text-slate-600">{t("intro")}</p>
       <form className="space-y-5" onSubmit={submit}>
         <label className="block text-sm font-semibold text-[#0b1f1d]">
-          Email
+          {t("email")}
           <input
             autoComplete="email"
             className={inputClass}
@@ -46,7 +48,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         </label>
         <div>
           <label htmlFor="login-password" className="block text-sm font-semibold text-[#0b1f1d]">
-            Password
+            {t("password")}
           </label>
           <div className="relative">
             <input
@@ -64,7 +66,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
               aria-pressed={showPassword}
               className="absolute right-2 top-1/2 mt-[3px] -translate-y-1/2 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold text-teal-800 hover:bg-teal-50"
             >
-              {showPassword ? "Hide" : "Show"}
+              {showPassword ? t("hidePassword") : t("showPassword")}
             </button>
           </div>
         </div>
@@ -78,7 +80,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           disabled={submitting}
           type="submit"
         >
-          {submitting ? "Signing in..." : "Sign in"}
+          {submitting ? t("submitting") : t("submit")}
         </button>
       </form>
     </div>

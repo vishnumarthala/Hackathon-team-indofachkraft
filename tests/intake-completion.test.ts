@@ -77,6 +77,7 @@ import { briefStateFrom } from "@/lib/intake/briefMarkdown";
 import { InvalidPostCallError } from "@/lib/intake/process";
 import { signPayload } from "@/lib/intake/signature";
 import { BriefSchema } from "@/lib/types";
+import { withI18n } from "./helpers/i18n";
 
 const SECRET = "test-secret";
 const API_KEY = "sk_test_never_returned_1234";
@@ -518,7 +519,7 @@ describe("E-3 client completion lifecycle (FR-12)", () => {
     vi.useRealTimers();
     const fetchMock = vi.fn(async () => saved());
     vi.stubGlobal("fetch", fetchMock);
-    renderToStaticMarkup(createElement(IntakeCall, { token: "tok", childAlias: "Ravi", defaultLanguage: "te" }));
+    renderToStaticMarkup(withI18n(createElement(IntakeCall, { token: "tok", childAlias: "Ravi", defaultLanguage: "te" })));
     const options = m.sdkOptions!;
     options.onDisconnect?.(); // never connected: nothing posted
     expect(fetchMock).not.toHaveBeenCalled();
@@ -536,7 +537,7 @@ describe("E-4 components (FR-7, FR-8)", () => {
   type FetchFn = (input: string, init?: RequestInit) => Promise<Response>;
 
   it("SimulateCallButton renders the demo button", () => {
-    const html = renderToStaticMarkup(createElement(SimulateCallButton, { token: "tok" }));
+    const html = renderToStaticMarkup(withI18n(createElement(SimulateCallButton, { token: "tok" })));
     expect(html).toContain(`>${SIMULATE_LABEL}</button>`);
     expect(SIMULATE_DONE).toBe("Call ended. Thank you! You can close this page.");
   });

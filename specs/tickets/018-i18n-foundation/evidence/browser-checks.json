@@ -1,0 +1,61 @@
+{
+  "e1_lang": "te-IN",
+  "e1_h1": "DoctorNearMe. సెషన్ సమయం పిల్లల కోసం, కాగితాల పని కోసం కాదు.",
+  "e1_teluguFontLoaded": true,
+  "e1_selectLabelled": 1,
+  "e1_afterSwitch_lang": "en-IN",
+  "e1_afterSwitch_url": "http://localhost:6100/",
+  "e1_afterSwitch_h1": "DoctorNearMe. Spend the session with the child, not the paperwork.",
+  "e1_cookie": {
+    "value": "en",
+    "httpOnly": true,
+    "sameSite": "Lax",
+    "path": "/"
+  },
+  "e1_afterReload_lang": "en-IN",
+  "e1_queryKept": "http://localhost:6100/login?next=%2Fdashboard%2Fpilots",
+  "e4_te_home": {
+    "scrollWidth": 375,
+    "innerWidth": 375
+  },
+  "e4_te_login": {
+    "scrollWidth": 375,
+    "innerWidth": 375
+  },
+  "e4_te_intake": {
+    "scrollWidth": 375,
+    "innerWidth": 375
+  },
+  "e4_te_book-demo": {
+    "scrollWidth": 375,
+    "innerWidth": 375
+  },
+  "e4_hi_home": {
+    "scrollWidth": 375,
+    "innerWidth": 375
+  },
+  "e4_hi_login": {
+    "scrollWidth": 375,
+    "innerWidth": 375
+  },
+  "e4_hi_intake": {
+    "scrollWidth": 375,
+    "innerWidth": 375
+  },
+  "e4_hi_book-demo": {
+    "scrollWidth": 375,
+    "innerWidth": 375
+  },
+  "e3_lang": "te-IN",
+  "e3_callLanguage": "te",
+  "e3_startDisabledBefore": true,
+  "e3_startDisabledAfterConsent": false,
+  "e3_afterSwitch_callLanguage": "te",
+  "e3_afterSwitch_label": "Call language",
+  "e3_afterSwitch_start": 1,
+  "e2_initial_lang": "en-IN",
+  "e2_freshBrowser_lang": "hi-IN",
+  "e2_freshBrowser_dnmLocaleCookie": false,
+  "e2_freshBrowser_nav": "DoctorNearMe\nबाल विकास\nडैशबोर्ड\nसाइन इन करें\nभाषा\nEnglish\nहिन्दी\nతెలుగు",
+  "tz_cookie": "Europe%2FBerlin"
+}

@@ -1,19 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState, type FormEvent } from "react";
-import { fieldErrors, MSG, PilotSignupSchema, type PilotRole } from "@/lib/pilots";
+import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useT } from "@/lib/i18n/client";
+import type { TFunction } from "@/lib/i18n/keys";
+import {
+  CENTRE_MAX,
+  COUNTRY_MAX,
+  fieldErrors,
+  NAME_MAX,
+  NOTE_MAX,
+  pilotSignupSchema,
+  type PilotMessages,
+  type PilotRole,
+} from "@/lib/pilots";
 import { Arrow } from "./ui";
 
-const SUCCESS = "Thanks, you're on the pilot list. We'll contact you soon.";
-
-const ROLES: { value: PilotRole; title: string; text: string; icon: string }[] = [
-  { value: "therapist", title: "Therapist", text: "I run early intervention sessions", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0" },
-  { value: "centre_owner", title: "Centre owner / manager", text: "I run a centre or a practice", icon: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" },
-  { value: "psychologist", title: "Child psychologist", text: "I assess children and refer them", icon: "M9 12l2 2 4-4M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" },
-  { value: "parent", title: "Parent", text: "I'd like my child's centre to use it", icon: "M4 6h16v10H8l-4 4V6Z" },
-  { value: "other", title: "Something else", text: "Researcher, partner, investor", icon: "M12 8v4m0 4h.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" },
+const ROLES: { value: PilotRole; key: "Therapist" | "Centre" | "Psychologist" | "Parent" | "Other"; icon: string }[] = [
+  { value: "therapist", key: "Therapist", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0" },
+  { value: "centre_owner", key: "Centre", icon: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" },
+  { value: "psychologist", key: "Psychologist", icon: "M9 12l2 2 4-4M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" },
+  { value: "parent", key: "Parent", icon: "M4 6h16v10H8l-4 4V6Z" },
+  { value: "other", key: "Other", icon: "M12 8v4m0 4h.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" },
 ];
+
+/** The shared pilot sign-up validation messages, in the viewer's language. */
+export function pilotMessages(t: TFunction<"bookDemo.errors">): PilotMessages {
+  return {
+    name: t("name"),
+    nameMax: t("nameMax", { max: NAME_MAX }),
+    email: t("email"),
+    role: t("role"),
+    country: t("country"),
+    countryMax: t("countryMax", { max: COUNTRY_MAX }),
+    centreMax: t("centreMax", { max: CENTRE_MAX }),
+    clinicians: t("clinicians"),
+    noteMax: t("noteMax", { max: NOTE_MAX }),
+  };
+}
 
 const PROFESSIONAL: PilotRole[] = ["therapist", "psychologist", "centre_owner"];
 
@@ -55,6 +79,13 @@ function Field({
 }
 
 export function DemoRequestForm() {
+  const t = useT("bookDemo.form");
+  const tErrors = useT("bookDemo.errors");
+  const tCommon = useT("common");
+  const tGlobalErrors = useT("errors");
+  const msg = useMemo(() => pilotMessages(tErrors), [tErrors]);
+  const schema = useMemo(() => pilotSignupSchema(msg), [msg]);
+  const roleTitle = (r: (typeof ROLES)[number]) => t(`role${r.key}`);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [role, setRole] = useState<PilotRole | "">("");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -62,6 +93,7 @@ export function DemoRequestForm() {
   const topRef = useRef<HTMLDivElement | null>(null);
 
   const isPro = role !== "" && PROFESSIONAL.includes(role);
+  const selectedRole = ROLES.find((r) => r.value === role);
   const describedBy = (f: string) => (errors[f] ? `${f}-error` : undefined);
 
   function goTo(next: 1 | 2 | 3) {
@@ -71,7 +103,7 @@ export function DemoRequestForm() {
 
   function continueFromRole() {
     if (!role) {
-      setErrors({ role: MSG.role });
+      setErrors({ role: msg.role });
       return;
     }
     setErrors({});
@@ -81,7 +113,7 @@ export function DemoRequestForm() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const raw = { ...Object.fromEntries(new FormData(e.currentTarget).entries()), role };
-    const parsed = PilotSignupSchema.safeParse(raw);
+    const parsed = schema.safeParse(raw);
     if (!parsed.success) {
       const errs = fieldErrors(parsed.error);
       setErrors(errs);
@@ -102,9 +134,9 @@ export function DemoRequestForm() {
         return;
       }
       const body: { details?: Record<string, string>; error?: string } = await res.json().catch(() => ({}));
-      setErrors(body.details ?? { body: body.error ?? "Something went wrong. Please try again." });
+      setErrors(body.details ?? { body: body.error ?? tGlobalErrors("generic") });
     } catch {
-      setErrors({ body: "Network error. Please check your connection and try again." });
+      setErrors({ body: tGlobalErrors("network") });
     } finally {
       setSending(false);
     }
@@ -118,25 +150,21 @@ export function DemoRequestForm() {
             <path d="m5 12.5 4.5 4.5L19 7.5" />
           </svg>
         </span>
-        <h2 className="lp-display text-4xl text-[#0b1f1d]">You&apos;re in.</h2>
-        <p className="mt-2 text-lg font-medium text-[#0b1f1d]">{SUCCESS}</p>
+        <h2 className="lp-display text-4xl text-[#0b1f1d]">{t("successTitle")}</h2>
+        <p className="mt-2 text-lg font-medium text-[#0b1f1d]">{t("success")}</p>
         <ol className="mt-8 space-y-4">
-          {[
-            ["Within one working day", "We email you to pick a time for the demo call."],
-            ["On the call", "We walk through a sample case: intake, session, ISAA and referral."],
-            ["After the call", "If it fits, we set up your workspace and send your logins."],
-          ].map(([t, x], i) => (
-            <li key={t} className="flex gap-4">
+          {([1, 2, 3] as const).map((n) => [t(`next${n}Title`), t(`next${n}Text`)]).map(([title, x], i) => (
+            <li key={title} className="flex gap-4">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#0b1f1d] text-xs font-semibold text-white">{i + 1}</span>
               <div>
-                <p className="font-semibold text-[#0b1f1d]">{t}</p>
+                <p className="font-semibold text-[#0b1f1d]">{title}</p>
                 <p className="text-sm text-slate-600">{x}</p>
               </div>
             </li>
           ))}
         </ol>
         <Link href="/" className="mt-10 inline-flex items-center gap-1.5 text-sm font-semibold text-teal-800 hover:text-teal-900">
-          Back to the home page <Arrow className="h-3.5 w-3.5" />
+          {t("backToHome")} <Arrow className="h-3.5 w-3.5" />
         </Link>
       </div>
     );
@@ -145,7 +173,7 @@ export function DemoRequestForm() {
   return (
     <div ref={topRef} className="scroll-mt-24">
       {/* Progress */}
-      <div className="mb-8 flex items-center gap-3" aria-label={`Step ${step} of 2`}>
+      <div className="mb-8 flex items-center gap-3" aria-label={t("progress", { step })}>
         {[1, 2].map((n) => (
           <div key={n} className="flex flex-1 items-center gap-3">
             <span
@@ -156,7 +184,7 @@ export function DemoRequestForm() {
               {step > n ? "✓" : n}
             </span>
             <span className={`text-sm font-medium ${step >= n ? "text-[#0b1f1d]" : "text-slate-500"}`}>
-              {n === 1 ? "About you" : "Your details"}
+              {n === 1 ? t("stepAbout") : t("stepDetails")}
             </span>
             {n === 1 && <span className={`h-px flex-1 transition-colors duration-500 ${step > 1 ? "bg-[#0b1f1d]" : "bg-[#0b1f1d]/15"}`} />}
           </div>
@@ -166,8 +194,8 @@ export function DemoRequestForm() {
       {step === 1 ? (
         <div className="lp-step-in">
           <fieldset aria-describedby={describedBy("role")}>
-            <legend className="mb-1 text-2xl font-semibold text-[#0b1f1d]">I am a</legend>
-            <p className="mb-5 text-sm text-slate-600">Pick the one that fits best. It helps us prepare the right demo.</p>
+            <legend className="mb-1 text-2xl font-semibold text-[#0b1f1d]">{t("iAmA")}</legend>
+            <p className="mb-5 text-sm text-slate-600">{t("pickOne")}</p>
             <div className="grid gap-3">
               {ROLES.map((r) => {
                 const checked = role === r.value;
@@ -201,8 +229,8 @@ export function DemoRequestForm() {
                       </svg>
                     </span>
                     <span className="flex-1">
-                      <span className="block font-semibold text-[#0b1f1d]">{r.title}</span>
-                      <span className="block text-sm text-slate-600">{r.text}</span>
+                      <span className="block font-semibold text-[#0b1f1d]">{roleTitle(r)}</span>
+                      <span className="block text-sm text-slate-600">{t(`role${r.key}Text`)}</span>
                     </span>
                     <span
                       className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
@@ -224,7 +252,7 @@ export function DemoRequestForm() {
             onClick={continueFromRole}
             className="lp-btn mt-7 inline-flex min-h-13 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#0b1f1d] px-7 py-3.5 font-semibold text-white hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/40"
           >
-            Continue
+            {tCommon("continue")}
             <Arrow />
           </button>
         </div>
@@ -232,51 +260,51 @@ export function DemoRequestForm() {
         <form onSubmit={onSubmit} noValidate className="lp-step-in space-y-5">
           <div className="flex items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 ring-1 ring-[#0b1f1d]/10">
             <p className="text-sm text-slate-600">
-              Booking as <span className="font-semibold text-[#0b1f1d]">{ROLES.find((r) => r.value === role)?.title}</span>
+              {t("bookingAs")}{" "}
+              <span className="font-semibold text-[#0b1f1d]">{selectedRole ? roleTitle(selectedRole) : null}</span>
             </p>
             <button type="button" onClick={() => goTo(1)} className="cursor-pointer text-sm font-semibold text-teal-800 underline-offset-4 hover:underline">
-              Change
+              {tCommon("change")}
             </button>
           </div>
 
           {role === "parent" && (
             <p className="rounded-2xl border border-teal-200 bg-teal-50/60 p-4 text-sm leading-relaxed text-teal-900">
-              Parents never need an account: your therapist sends you a link. Leave your details and tell us your
-              child&apos;s centre, and we will reach out to them.
+              {t("parentNote")}
             </p>
           )}
 
-          <Field id="name" label="Name" error={errors.name}>
-            <input id="name" name="name" type="text" maxLength={100} autoComplete="name" aria-invalid={Boolean(errors.name)} aria-describedby={describedBy("name")} className={inputClass} />
+          <Field id="name" label={t("name")} error={errors.name}>
+            <input id="name" name="name" type="text" maxLength={NAME_MAX} autoComplete="name" aria-invalid={Boolean(errors.name)} aria-describedby={describedBy("name")} className={inputClass} />
           </Field>
 
-          <Field id="email" label="Email" hint={isPro ? "Your work email, so we can set up your workspace." : undefined} error={errors.email}>
+          <Field id="email" label={t("email")} hint={isPro ? t("emailHint") : undefined} error={errors.email}>
             <input id="email" name="email" type="email" autoComplete="email" aria-invalid={Boolean(errors.email)} aria-describedby={describedBy("email")} className={inputClass} />
           </Field>
 
-          <Field id="country" label="Country" error={errors.country}>
-            <input id="country" name="country" type="text" list="lp-countries" maxLength={60} autoComplete="country-name" aria-invalid={Boolean(errors.country)} aria-describedby={describedBy("country")} className={inputClass} />
+          <Field id="country" label={t("country")} error={errors.country}>
+            <input id="country" name="country" type="text" list="lp-countries" maxLength={COUNTRY_MAX} autoComplete="country-name" aria-invalid={Boolean(errors.country)} aria-describedby={describedBy("country")} className={inputClass} />
             <datalist id="lp-countries">
-              <option value="Germany" />
-              <option value="India" />
-              <option value="Austria" />
-              <option value="Switzerland" />
+              <option value={t("countryGermany")} />
+              <option value={t("countryIndia")} />
+              <option value={t("countryAustria")} />
+              <option value={t("countrySwitzerland")} />
             </datalist>
           </Field>
 
           <div className={isPro || role === "parent" ? "grid items-end gap-5 sm:grid-cols-2" : "hidden"}>
-            <Field id="centre" label="Centre (optional)" error={errors.centre}>
-              <input id="centre" name="centre" type="text" maxLength={100} autoComplete="organization" aria-invalid={Boolean(errors.centre)} aria-describedby={describedBy("centre")} className={inputClass} />
+            <Field id="centre" label={t("centre")} error={errors.centre}>
+              <input id="centre" name="centre" type="text" maxLength={CENTRE_MAX} autoComplete="organization" aria-invalid={Boolean(errors.centre)} aria-describedby={describedBy("centre")} className={inputClass} />
             </Field>
             {isPro && (
-              <Field id="clinicians" label="Number of clinicians (optional)" error={errors.clinicians}>
+              <Field id="clinicians" label={t("clinicians")} error={errors.clinicians}>
                 <input id="clinicians" name="clinicians" type="number" inputMode="numeric" min={1} max={1000} step={1} aria-invalid={Boolean(errors.clinicians)} aria-describedby={describedBy("clinicians")} className={inputClass} />
               </Field>
             )}
           </div>
 
-          <Field id="note" label="Anything we should know? (optional)" error={errors.note}>
-            <textarea id="note" name="note" rows={3} maxLength={1000} placeholder="E.g. how many children you assess each month" aria-invalid={Boolean(errors.note)} aria-describedby={describedBy("note")} className={inputClass} />
+          <Field id="note" label={t("note")} error={errors.note}>
+            <textarea id="note" name="note" rows={3} maxLength={NOTE_MAX} placeholder={t("notePlaceholder")} aria-invalid={Boolean(errors.note)} aria-describedby={describedBy("note")} className={inputClass} />
           </Field>
 
           {/* Honeypot: hidden from people and assistive tech, never focusable. */}
@@ -293,18 +321,18 @@ export function DemoRequestForm() {
               onClick={() => goTo(1)}
               className="lp-btn min-h-13 cursor-pointer rounded-full border border-[#0b1f1d]/15 px-6 py-3 font-semibold text-[#0b1f1d] hover:border-[#0b1f1d]/40 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30"
             >
-              Back
+              {tCommon("back")}
             </button>
             <button
               type="submit"
               disabled={sending}
               className="lp-btn inline-flex min-h-13 flex-1 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#0b1f1d] px-7 py-3 font-semibold text-white hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/40 disabled:cursor-wait disabled:opacity-60"
             >
-              {sending ? "Sending…" : role === "parent" ? "Send" : "Book my demo"}
+              {sending ? t("sending") : role === "parent" ? t("send") : t("submit")}
               {!sending && <Arrow />}
             </button>
           </div>
-          <p className="text-center text-xs text-slate-500">We only use your details to contact you about DoctorNearMe.</p>
+          <p className="text-center text-xs text-slate-500">{t("privacy")}</p>
         </form>
       )}
     </div>
