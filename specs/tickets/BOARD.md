@@ -68,7 +68,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 017 | Organisations, roles, resource-level authorisation and provider onboarding | done | solo | alongside |
 | 018 | i18n foundation (English, Hindi, Telugu) | done | solo | alongside |
 | 019 | Guardian sign-in and family portal shell | done | solo | waits for 017, 018 |
-| 020 | Children, guardian links and consent gating | draft | solo | waits for 019 |
+| 020 | Children, guardian links and consent gating | done | solo | waits for 019 |
 | 021 | Child health profile | draft | solo | waits for 020 |
 | 022 | Care team, provider assignments and cross-org sharing grants | draft | solo | waits for 020 |
 | 023 | Document vault | draft | solo | waits for 022 |
