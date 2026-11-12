@@ -6,6 +6,7 @@ import path from "node:path";
 import { loadEnvConfig } from "@next/env";
 import postgres, { type Sql } from "postgres";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { grantSyntheticConsent, purgeSyntheticChildren } from "./helpers/consent";
 import {
   NOT_DOCUMENTED,
   factCitation,
@@ -328,6 +329,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 describe.skipIf(!enabled)("ask route (database)", { timeout: 90_000 }, () => {
   let sql: Sql;
   let caseId = "";
+  let childId = "";
   let token = "";
   let referralId = "";
   let askPost: (req: Request, ctx: { params: Promise<{ id: string }> }) => Promise<Response>;
@@ -377,6 +379,8 @@ describe.skipIf(!enabled)("ask route (database)", { timeout: 90_000 }, () => {
     await sql`
       insert into cases (org_id, id, child_alias, child_age_months, parent_alias, language, therapist_name, status)
       values ('00000000-0000-4000-8000-00000000a001', ${caseId}, ${`t013-ask-${caseId.slice(0, 8)} (synthetic)`}, 40, 'Parent (synthetic)', 'en', 'Demo Therapist', 'in_assessment')`;
+    // 020: referrals and questions need the child's referral_share consent.
+    childId = await grantSyntheticConsent(sql, caseId, ["referral_share"]);
     await sql`
       insert into recordings (id, case_id, kind, status, segments)
       values (${intakeId}, ${caseId}, 'intake_call', 'transcribed', ${json(seed.buildIntakeSegments(fixtures.postCall.data.transcript))})`;
@@ -440,6 +444,7 @@ describe.skipIf(!enabled)("ask route (database)", { timeout: 90_000 }, () => {
     vi.unstubAllEnvs();
     if (sql) {
       if (caseId) await sql`delete from cases where id = ${caseId}`;
+      if (childId) await purgeSyntheticChildren(sql, [childId]);
       await sql.end({ timeout: 5 });
     }
     const { askDb } = await import("@/lib/ask/questions");
@@ -568,13 +573,13 @@ describe.skipIf(!enabled)("ask route (database)", { timeout: 90_000 }, () => {
     expect((await ask({ share_token: ref.token, question: "Any self-injury?" })).status).toBe(429);
   });
 
-  it("returns 404 once the referral is revoked (FR-1)", async () => {
+  it("returns 410 once the referral is revoked (020 FR-10; was 404 in 013)", async () => {
     const ref = await newReferral();
     expect((await ask({ share_token: ref.token, question: "Any self-injury?" })).status).toBe(200);
     await sql`update referrals set status = 'revoked' where id = ${ref.id}`;
     const res = await ask({ share_token: ref.token, question: "Any self-injury?" });
-    expect(res.status).toBe(404);
-    expect(await res.json()).toEqual({ error: "Not found" });
+    expect(res.status).toBe(410);
+    expect(await res.json()).toEqual({ error: "This link has expired" });
   });
 
   it("lists only answered questions, oldest first, for the specialist page", async () => {

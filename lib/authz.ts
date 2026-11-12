@@ -4,6 +4,7 @@ import type { User } from "@supabase/supabase-js";
 import { getAuthenticatedUser, getUserRole, requirePageUser, type UserRole } from "@/lib/auth";
 import { FAMILY_LOGIN_PATH, homeForRole } from "@/lib/auth-access";
 import { isUuid } from "@/lib/cases/validation";
+import { getActiveGuardianLink, type ChildRow, type GuardianLinkRow } from "@/lib/children";
 import { supabaseAdmin } from "@/lib/db";
 import { fail } from "@/lib/http";
 
@@ -136,3 +137,51 @@ export const requireGuardianPage = cache(async (): Promise<GuardianSession> => {
   if (profile.role !== "guardian") redirect(homeForRole(profile.role));
   return { user, profile: profile as GuardianSession["profile"] };
 });
+
+// ---------- 020: children (rule 2) ----------
+
+export type ChildGuardianAccess = { session: GuardianSession; link: GuardianLinkRow; child: ChildRow };
+
+/**
+ * FR-15: a guardian reaches a child only through an active link to a live child. Missing, unlinked,
+ * revoked and other families' children all give the same 404. Pass the session from requireGuardian().
+ */
+export async function requireChildGuardian(
+  childId: string,
+  session?: GuardianSession,
+): Promise<ChildGuardianAccess | Response> {
+  let current: GuardianSession | Response | undefined = session;
+  if (!current) current = await requireGuardian();
+  if (current instanceof Response) return current;
+  const found = await getActiveGuardianLink(childId, current.user.id);
+  if (!found) return fail(404, "Child not found");
+  return { session: current, ...found };
+}
+
+export async function requireChildGuardianPage(childId: string): Promise<ChildGuardianAccess> {
+  const session = await requireGuardianPage();
+  const found = await getActiveGuardianLink(childId, session.user.id);
+  if (!found) notFound();
+  return { session, ...found };
+}
+
+/**
+ * FR-15: a provider sees a child only through a case of their own organisation (017 requireCaseAccess)
+ * that belongs to that child. A case of the same child in another org never grants access here.
+ */
+export async function requireChildAccessViaCase(childId: string, caseId: string): Promise<Response | null> {
+  const denied = await requireCaseAccess(caseId);
+  if (denied) return denied;
+  if (!isUuid(childId)) return fail(404, "Case not found");
+  const { data, error } = await supabaseAdmin().from("cases").select("child_id").eq("id", caseId).maybeSingle();
+  if (error) throw new Error(`Could not load case: ${error.message}`);
+  return (data as { child_id: string } | null)?.child_id === childId ? null : fail(404, "Case not found");
+}
+
+/** requireCaseAccess() that also returns the provider (for routes that record who acted, e.g. attestations). */
+export async function requireCaseActor(caseId: string): Promise<{ actor: Actor } | { response: Response }> {
+  const result = await requireProviderApi();
+  if ("response" in result) return result;
+  if (!(await canAccessCase(result.actor.user.id, caseId))) return { response: fail(404, "Case not found") };
+  return result;
+}

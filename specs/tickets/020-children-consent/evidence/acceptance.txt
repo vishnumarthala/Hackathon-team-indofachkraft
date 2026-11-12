@@ -1,0 +1,115 @@
+
+## E-2 guardian adds a child and consents (FR-11, FR-13)
+PASS add child without declaration -> 400 :: 400 {"error":"Invalid request","details":{"declaration":"Please confirm the declaration"}}
+PASS add child acct Asha -> 201 :: 201 {"child":{"id":"b13bf5bc-5dfa-436c-97d6-2279c5c2d28d","display_name":"acct Asha","date_of_birth":"2023-05-01","sex":null}}
+PASS /family/children lists acct Asha with age :: 3 years, 6 months
+PASS child page shows Permissions with Not allowed
+PASS Allow ai_intake_call -> 201 state granted :: 201 {"state":{"ai_intake_call":{"granted":true,"action":"granted","method":"digital","at":"2026-11-12T23:50:53.3338+00:00","paper_signed_on":null,"consent_document_id":"38db7e9a-550a-4121-9705-3fec8e9d5706"},"session_recordi
+PASS consent_records row references displayed version + locale :: {"consent_document_id":"38db7e9a-550a-4121-9705-3fec8e9d5706","version":1,"locale":"en","method":"digital"}
+PASS audit consent.granted :: {"action":"consent.granted","actor":"parent"}
+PASS page now shows Allowed
+PASS unverified-phone guardian -> 422 Verify your mobile number... :: 422 {"error":"Verify your mobile number before giving permission","details":{"settings_url":"/family/settings"}}
+PASS older consent_document_id -> 409 :: 409 {"error":"Please review the updated text"}
+
+## E-3 claim code links a clinic case (FR-12, FR-14)
+seed: seeded case=4277df7b-e311-4451-ae28-7f3da1dfe5c7 session=b9880084-d60b-46d3-9877-983993ad3ff4 intake=a73752f8-385b-4eaf-b4d3-cc794ce35671 token=pzHQHpoNQD0l0aQiFIYUXGKvD5DvgCdYHFLhsN3oc5w | child=463acf6f-d848-4eee-8c64-ac501c5cb238 unclaimed (no guardian, no consent)
+PASS provider panel: No parent account linked yet + Create parent code
+PASS Create parent code -> 201 XXXX-XXXX :: 201 code=NKTQ-YP2Z expires_at=2026-11-15T23:50:53.972271+00:00
+PASS only the sha256 hash is stored
+PASS guardian_b claims -> 201 :: 201 {"child":{"id":"463acf6f-d848-4eee-8c64-ac501c5cb238","display_name":"Ravi (synthetic)","date_of_birth":null,"sex":null}}
+PASS child appears for guardian_b
+PASS provider panel shows Parent account linked
+PASS reuse by guardian_a -> 404 This code is not valid :: 404 {"error":"This code is not valid"}
+PASS random code -> same message :: 404 {"error":"This code is not valid"}
+
+## E-4 gates block real work (FR-7, FR-8, FR-10)
+PASS Create intake link -> 422 ai_intake_call :: 422 {"error":"Guardian consent required","details":{"feature":"ai_intake_call","child_id":"463acf6f-d848-4eee-8c64-ac501c5cb238"}}
+PASS Start upload -> 422 session_recording :: 422 {"error":"Guardian consent required","details":{"feature":"session_recording","child_id":"463acf6f-d848-4eee-8c64-ac501c5cb238"}}
+PASS Transcribe -> 422 ai_transcription :: 422 {"error":"Guardian consent required","details":{"feature":"ai_transcription","child_id":"463acf6f-d848-4eee-8c64-ac501c5cb238"}}
+PASS Extract -> 422 ai_extraction :: 422 {"error":"Guardian consent required","details":{"feature":"ai_extraction","child_id":"463acf6f-d848-4eee-8c64-ac501c5cb238"}}
+PASS Draft report -> 422 ai_extraction :: 422 {"error":"Guardian consent required","details":{"feature":"ai_extraction","child_id":"463acf6f-d848-4eee-8c64-ac501c5cb238"}}
+PASS Parent voice note -> 422 ai_voice_note :: 422 {"error":"Guardian consent required","details":{"feature":"ai_voice_note","child_id":"463acf6f-d848-4eee-8c64-ac501c5cb238"}}
+PASS Refer -> 422 referral_share :: 422 {"error":"Guardian consent required","details":{"feature":"referral_share","child_id":"463acf6f-d848-4eee-8c64-ac501c5cb238"}}
+PASS fixtures were unreachable during the gated calls (no external mock used)
+PASS guardian_b allows ai_intake_call :: 201 {"state":{"ai_intake_call":{"granted":true,"action":"granted","method":"digital","at":"2026-11-12T23:50:54.491905+00:00","paper_signed_on":null,"consent_document_id":"38db7e9a-550a-4121-9705-3fec8e9d5706"},"session_recor
+PASS Create intake link -> 200 :: 200 {"url":"http://localhost:3040/intake/pzHQHpoNQD0l0aQiFIYUXGKvD5DvgCdYHFLhsN3oc5w","whatsapp_url":"https://wa.me/?text=Hello%20Lakshmi%20(synthetic)%2C%20this%20is%20Demo%20Therapist's%20team%20at%20DoctorNearMe.%20Before
+PASS intake page works while allowed
+PASS guardian_b withdraws ai_intake_call :: 200 {"state":{"ai_intake_call":{"granted":false,"action":"withdrawn","method":"digital","at":"2026-11-12T23:50:54.617559+00:00","paper_signed_on":null,"consent_document_id":"38db7e9a-550a-4121-9705-3fec8e9d5706"},"session_re
+PASS /intake/<token> -> expired message
+PASS POST /api/intake/<token>/start -> 410 :: 410 {"error":"This link has expired"}
+PASS guardian_b allows referral_share
+PASS Refer with referral_share -> 201 :: 201 {"referral_id":"d715bedc-3cba-4a5d-adf1-2c4fdfcb3e54","url":"http://localhost:3040/specialist/lJmn6tvZpeu8AA3sSLlnRcAtadSbJgE83W_YyXtxrZk","emailed":false,"email_status":"demo"}
+PASS specialist page loads while allowed
+PASS guardian_b withdraws referral_share
+PASS /specialist/<token> -> This shared case is no longer available.
+PASS POST /api/cases/:id/ask -> 410 :: 410 {"error":"This link has expired"}
+PASS referral status revoked (FR-9)
+PASS re-created link has a new token :: pzHQHp… -> l2Ga2E…
+PASS token older than 7 days -> 410 :: 410 {"error":"This link has expired"}
+PASS DELETE intake-link -> 200 {revoked:true} :: 200 {"revoked":true}
+PASS revoked link -> 410
+
+## E-5 cross-org and authz negatives (FR-15, FR-16, rule 2)
+PASS provider_b creates org B case :: 201 {"case":{"id":"3b100430-8852-4f52-97be-c5e9ae5ad818","child_alias":"Ravi B (synthetic)","child_age_months":null,"parent_alias":"Lakshmi (synthetic)","parent_email":null,"parent_phone":null,"language":"en","therapist_name
+PASS claim page asks Is this one of your children?
+PASS guardian_b claims org B code into the E-3 child -> 201 :: 201 {"child":{"id":"463acf6f-d848-4eee-8c64-ac501c5cb238","display_name":"Ravi (synthetic)","date_of_birth":null,"sex":null}}
+PASS both cases share one child_id :: 4277df7b-e311-4451-ae28-7f3da1dfe5c7,3b100430-8852-4f52-97be-c5e9ae5ad818
+PASS placeholder soft-deleted
+PASS provider_a GET /cases/<orgB> -> 404 :: 404
+PASS provider_a GET /cases/<orgB>/sessions -> 404 :: 404
+PASS provider_a GET /cases/<orgB>/report -> 404 :: 404
+PASS provider_a GET /cases/<orgB>/consent/paper -> 404 :: 404
+PASS provider_a GET /cases/<orgB>/consent-form -> 404 :: 404
+PASS provider_a PATCH /api/cases/<orgB> -> 404 :: 404 {"error":"Case not found"}
+PASS provider_a POST /api/cases/<orgB>/claim-code -> 404 :: 404 {"error":"Case not found"}
+PASS provider_a POST /api/cases/<orgB>/paper-consents/withdraw -> 404 :: 404 {"error":"Case not found"}
+PASS guardian_a GET child of guardian_b -> 404 :: 404
+PASS guardian_a consent API on that child -> 404 :: 404 {"error":"Child not found"}
+PASS provider_a POST family consents -> 403 :: 403 {"error":"Not allowed"}
+
+## E-5a paper consent (FR-18a-e)
+PASS printable form (en) shows all 8 titles + version ids + processors :: 8 docs
+PASS printable form (hi) shows all 8 titles + version ids + processors :: 8 docs
+PASS printable form (te) shows all 8 titles + version ids + processors :: 8 docs
+PASS missing scan -> 400 :: 400 {"error":"Invalid request","details":{"scan":"Attach the signed form (PDF, JPEG or PNG)"}}
+PASS missing attestation -> 400 :: 400 {"error":"Invalid request","details":{"attestation":"Confirm the form was signed in person"}}
+PASS future signed_on -> 400 :: 400 {"error":"Invalid request","details":{"signed_on":"The signing date cannot be in the future"}}
+PASS outdated document version -> 409 :: 409 {"error":"Please review the updated text"}
+PASS forced audit failure -> 503 :: 503 {"error":"Could not save. Please try again."}
+PASS nothing written by the 400/400/400/409/503 attempts :: records=0 scans=0
+PASS record paper consent for ai_transcription -> 201 :: 201 {"state":{"ai_intake_call":{"granted":false,"action":null,"method":null,"at":null,"paper_signed_on":null,"consent_document_id":null},"session_recording":{"granted":false,"action":null,"method":null,"at":null,"paper_signe
+PASS transcription gate now passes (demo Scribe fixture) :: 200 {"recording_id":"56eee28e-f549-48d9-b69f-b057f7df5f09","status":"transcribed","segments_count":36,"duration_sec":240.43,"speaker_map":{"speaker_0":"therapist","speaker_1":"parent"}}
+PASS extraction still blocked with FR-8 error :: 422 {"error":"Guardian consent required","details":{"feature":"ai_extraction","child_id":"3b3b56f2-2692-4961-bafd-a614f2cfc2c2"}}
+PASS panel shows On paper, recorded by <provider> :: On paper, recorded by acct-provider-a@example.test on 13 November 2026
+PASS provider of another org -> 404 (record) :: 404 {"error":"Case not found"}
+PASS provider of another org -> 404 (withdraw) :: 404 {"error":"Case not found"}
+PASS scan: other org -> 404 :: 404
+PASS scan: own org -> 302 signed URL :: 302 http://127.0.0.1:60321/storage/v1/object/sign/consent-forms/3b3b56f2-2692-4961-bafd-a614f2cfc2c2/17552e2a-67a6-4854-b7b7-738bb4a042dd.pdf?token=…
+PASS signed URL serves the PDF
+PASS no public access to consent-forms :: 400
+PASS paper withdrawal -> 200 :: 200 {"state":{"ai_intake_call":{"granted":false,"action":null,"method":null,"at":null,"paper_signed_on":null,"consent_document_id":null},"session_recording":{"granted":false,"action":null,"method":null,"at":null,"paper_signe
+PASS gate blocks again after paper withdrawal :: 422 {"error":"Guardian consent required","details":{"feature":"ai_transcription","child_id":"3b3b56f2-2692-4961-bafd-a614f2cfc2c2"}}
+PASS paper consent for ai_transcription + ai_extraction -> 201
+PASS guardian_a claims the legacy child (new child) :: 201 {"child":{"id":"3b3b56f2-2692-4961-bafd-a614f2cfc2c2","display_name":"Ravi (synthetic)","date_of_birth":null,"sex":null}}
+PASS family page shows Given on paper on <date> :: Given on paper on 13 November 2026
+PASS guardian withdraws the paper consent digitally
+PASS extraction gate blocks after digital withdrawal :: 422 {"error":"Guardian consent required","details":{"feature":"ai_extraction","child_id":"3b3b56f2-2692-4961-bafd-a614f2cfc2c2"}}
+PASS guardian_b sees the child before leaving
+PASS guardian_b leaves -> 200 :: 200 {"left":true}
+PASS next page request -> 404 :: 404
+PASS next API request -> 404 :: 404 {"error":"Child not found"}
+
+## E-6 demo flow still works (FR-18)
+seed: seeded case=7fb12b39-2c9c-4002-b2b7-7951effe6ee7 session=bda622f0-8cde-495b-a1ed-19c53331297a intake=1c93719d-759b-418e-a1f0-5a29256360d4 token=GKulhSQgQoyoSoBc6UaB1V_-ErUqtmEgR1lROAeIFIQ | child=186c4f75-b79d-4052-a368-7a39832e8bfb guardian=demo-guardian@example.com consents=ai_intake_call,session_recording,ai_transcription,ai_extraction,ai_voice_note,referral_share,screen_result_save,ai_follow_up
+PASS seeded synthetic guardian + 8 consents (user_agent seed:synthetic) :: [{"user_agent":"seed:synthetic","n":8}]
+PASS intake simulate -> 200 with brief :: 200 {"received":true,"case_id":"7fb12b39-2c9c-4002-b2b7-7951effe6ee7","recording_id":"13d27cef-81d9-444d-bb09-bf0a8f6b527e","brief":true}
+PASS transcribe -> 200 :: 200 {"recording_id":"bda622f0-8cde-495b-a1ed-19c53331297a","status":"transcribed","segments_count":36,"duration_sec":240.43,"speaker_map":{"speaker_0":"therapist","speaker_1":"parent"}}
+PASS extract -> 200 :: 200 facts=40
+PASS confirm suggested facts :: 200 {"updated":14,"score":{"rated":16,"confirmed":16,"total":null,"minimum_total":83,"suggested_total":83,"band":null,"minimum_band":"mild","suggested_band":"mild","by_domain":[{"domain_id":"social","name":"Social relationsh
+PASS report draft -> 200 :: 200 {"report":{"id":"f3fd8afc-9822-4d7f-be97-38cfd9877101","case_id":"7fb12b39-2c9c-4002-b2b7-7951effe6ee7","recording_id":"bda622f0-8cde-495b-a1ed-19c53331297a","kind":"assessment","content":{"background":"Ravi (synthetic) 
+
+## E-1 checks on this stack
+PASS cases without child_id = 0
+PASS no guardian link on any non-synthetic legacy child
+
+RESULT: ALL PASS

@@ -1,3 +1,4 @@
+import { hasConsent } from "@/lib/consent";
 import { supabaseAdmin } from "@/lib/db";
 import { env } from "@/lib/env";
 import { isUuid } from "@/lib/cases/validation";
@@ -117,6 +118,44 @@ export async function getReferralByToken(token: string): Promise<SharedReferral 
   const { packet: rawPacket, ...referral } = row;
   const packet = parsePacket(rawPacket);
   return packet ? { referral, packet } : null;
+}
+
+export const SHARE_UNAVAILABLE = "This link has expired";
+
+export type SharedReferralState =
+  | { state: "missing" }
+  | { state: "unavailable"; referral: Omit<ReferralRow, "packet"> }
+  | ({ state: "ok" } & SharedReferral);
+
+/**
+ * 020 FR-7/FR-10: a share link works only while it is not revoked, not expired and the child still has
+ * referral_share consent (re-checked on every page load and question). Unknown tokens are `missing` (404);
+ * the rest are `unavailable` (410 / "This shared case is no longer available."). Fails closed.
+ */
+export async function getSharedReferral(token: string, now: number = Date.now()): Promise<SharedReferralState> {
+  if (!TOKEN_PATTERN.test(token)) return { state: "missing" };
+  const db = supabaseAdmin();
+  const { data, error } = await db.from("referrals").select("*").eq("share_token", token).maybeSingle();
+  if (error) throw new Error(`Could not load referral: ${error.message}`);
+  const row = data as ReferralRow | null;
+  if (!row) return { state: "missing" };
+  const { packet: rawPacket, ...referral } = row;
+  if (row.status === "revoked" || !row.expires_at || Date.parse(row.expires_at) <= now) {
+    return { state: "unavailable", referral };
+  }
+  let allowed = false;
+  try {
+    const kase = await db.from("cases").select("child_id").eq("id", row.case_id).maybeSingle();
+    if (kase.error) throw new Error(kase.error.message);
+    const childId = (kase.data as { child_id: string } | null)?.child_id;
+    allowed = Boolean(childId) && (await hasConsent(childId as string, "referral_share"));
+  } catch (err) {
+    console.error(`referral consent check failed (blocking): ${err instanceof Error ? err.message : String(err)}`);
+    allowed = false;
+  }
+  if (!allowed) return { state: "unavailable", referral };
+  const packet = parsePacket(rawPacket);
+  return packet ? { state: "ok", referral, packet } : { state: "missing" };
 }
 
 /** First view only: sent -> viewed. Returns true when this call made the change. */

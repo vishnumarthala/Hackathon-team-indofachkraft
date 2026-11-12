@@ -1,0 +1,6 @@
+# E-1 legacy backfill on pre-020 data (4 synthetic legacy cases, 1 legacy referral), migration applied twice
+diff cases-before.txt cases-after.txt: identical
+diff dependants-before.txt dependants-after.txt: identical
+[{"cases_without_child":"0","children":"4","legacy_children":"4","guardian_links":"0","consent_records":"0","consent_documents":"24","tokens_without_expiry":"0"}]
+second backfill run:
+[{"touched":0}]

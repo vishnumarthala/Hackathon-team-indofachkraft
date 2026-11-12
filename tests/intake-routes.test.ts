@@ -18,6 +18,7 @@ vi.mock("@/lib/authz", () => ({
   requireFactAccess: vi.fn().mockResolvedValue(null),
   requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
 }));
+vi.mock("@/lib/consent", async () => (await import("./helpers/consent")).consentAllowedModule());
 vi.mock("@/lib/queries/cases", () => ({ getCase: m.getCase }));
 vi.mock("@/lib/queries/intake", () => ({
   getCaseByToken: m.getCaseByToken,
@@ -47,6 +48,8 @@ const CASE: CaseRow = {
   facp_score: null,
   status: "booked",
   intake_token: null,
+  intake_token_expires_at: "2999-01-01T00:00:00Z",
+  intake_token_revoked_at: null,
   created_at: "2026-11-07T00:00:00Z",
 };
 

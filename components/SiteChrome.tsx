@@ -17,7 +17,7 @@ export function SiteChrome() {
 
   return (
     <>
-      <header className="border-b border-slate-200 bg-white">
+      <header className="border-b border-slate-200 bg-white print:hidden">
         <nav
           aria-label={t("nav.mainLabel")}
           className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3"
@@ -37,7 +37,7 @@ export function SiteChrome() {
           </div>
         </nav>
       </header>
-      <div role="note" className="bg-yellow-200 px-4 py-2 text-center text-sm font-medium text-yellow-950">
+      <div role="note" className="bg-yellow-200 px-4 py-2 print:hidden text-center text-sm font-medium text-yellow-950">
         {t("banner.pilot")}
       </div>
     </>

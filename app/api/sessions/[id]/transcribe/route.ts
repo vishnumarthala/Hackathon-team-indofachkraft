@@ -2,6 +2,7 @@ import path from "node:path";
 import { audit } from "@/lib/audit";
 import { transcribeAudio, type ScribeResponse } from "@/lib/elevenlabs/stt";
 import { requireRecordingAccess } from "@/lib/authz";
+import { assertConsentOrAbort, childIdForCase, consentRequired, requireConsent } from "@/lib/consent";
 import { fail, ok } from "@/lib/http";
 import {
   claimForTranscription,
@@ -25,13 +26,40 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   if (denied) return denied;
   const recording = await getRecording(id);
   if (!recording || recording.kind !== "session") return fail(404, "Session not found");
+  const childId = await childIdForCase(recording.case_id);
+  const blocked = await requireConsent(childId, "ai_transcription");
+  if (blocked) return blocked;
   if (recording.status === "transcribing") return fail(409, "Transcription already running");
   if (await hasConfirmedFacts(id)) return fail(409, "Items already confirmed; create a new session instead");
 
   const audio = recording.storage_path ? await downloadAudio(recording.storage_path) : null;
   if (!audio || !recording.storage_path) return fail(409, "Audio file not uploaded yet");
+  // 020 FR-7: a `created` recording has just finished uploading and was never processed: upload completion
+  // re-checks session_recording, and without it the unprocessed audio is deleted. (Re-transcribing audio
+  // that was already processed needs only ai_transcription.)
+  const uploadStage = {
+    stage: "upload_completion",
+    caseId: recording.case_id,
+    recordingId: id,
+    markRecordingFailed: true,
+    audioPath: recording.storage_path,
+  };
+  if (recording.status === "created" && !(await assertConsentOrAbort(childId, "session_recording", uploadStage))) {
+    return consentRequired(childId, "session_recording");
+  }
 
   if (!(await claimForTranscription(id))) return fail(409, "Transcription already running");
+
+  // 020 FR-8: last check before the audio leaves for ElevenLabs Scribe. Audio that was already processed
+  // once is kept (withdrawal does not delete processed records); never-processed audio is deleted.
+  const scribeStage = {
+    ...uploadStage,
+    stage: "before_scribe",
+    audioPath: recording.status === "created" ? recording.storage_path : null,
+  };
+  if (!(await assertConsentOrAbort(childId, "ai_transcription", scribeStage))) {
+    return consentRequired(childId, "ai_transcription");
+  }
 
   let scribe: ScribeResponse;
   try {

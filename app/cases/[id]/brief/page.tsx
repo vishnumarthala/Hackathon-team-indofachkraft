@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import { BriefSection } from "@/components/intake/BriefSection";
 import { IntakeLinkCard } from "@/components/intake/IntakeLinkCard";
+import { hasConsent } from "@/lib/consent";
 import { env } from "@/lib/env";
 import { briefStateFrom } from "@/lib/intake/briefMarkdown";
+import { intakeLinkState } from "@/lib/intake/link";
 import { buildIntakeShare } from "@/lib/intake/message";
 import { getCase } from "@/lib/queries/cases";
 import { getIntakeBrief } from "@/lib/queries/intake";
@@ -16,7 +18,10 @@ export default async function BriefPage({ params }: { params: Promise<{ id: stri
   const caseRow = await getCase(id);
   if (!caseRow) notFound();
 
-  const share = caseRow.intake_token ? buildIntakeShare(caseRow, env.NEXT_PUBLIC_APP_URL, caseRow.intake_token) : null;
+  // 020 FR-7/FR-10: expired or revoked links, and links the parent has not allowed (ai_intake_call), are
+  // not shown; "Create intake link" then explains the block or issues a new token.
+  const consented = caseRow.child_id ? await hasConsent(caseRow.child_id, "ai_intake_call").catch(() => false) : false;
+  const share = consented && caseRow.intake_token && intakeLinkState(caseRow) === "active" ? buildIntakeShare(caseRow, env.NEXT_PUBLIC_APP_URL, caseRow.intake_token) : null;
   const intake = await getIntakeBrief(caseRow.id);
   const callCompleted = intake !== null;
 

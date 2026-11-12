@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { withConsentHint } from "@/lib/consent/features";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -15,7 +16,7 @@ async function call(fetchFn: FetchFn, url: string, init: RequestInit, fallback: 
     const res = await fetchFn(url, init);
     const body = (await res.json().catch(() => ({}))) as { report?: EditorReport; error?: string };
     if (res.ok && body.report) return { ok: true, report: body.report };
-    return { ok: false, error: body.error ?? fallback };
+    return { ok: false, error: body.error ? withConsentHint(body.error) : fallback };
   } catch {
     return { ok: false, error: fallback };
   }

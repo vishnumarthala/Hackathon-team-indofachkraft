@@ -1,5 +1,6 @@
 import { audit } from "@/lib/audit";
 import { requireRecordingAccess } from "@/lib/authz";
+import { assertConsentOrAbort, childIdForCase, consentRequired, requireConsent } from "@/lib/consent";
 import { generateJson } from "@/lib/gemini";
 import { fail, ok } from "@/lib/http";
 import { getCase } from "@/lib/queries/cases";
@@ -22,6 +23,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   if (denied) return denied;
   const recording = await getRecording(id);
   if (!recording || recording.kind !== "session") return fail(404, "Session not found");
+  // 020 FR-7: report drafting is AI analysis (ai_extraction).
+  const childId = await childIdForCase(recording.case_id);
+  const blocked = await requireConsent(childId, "ai_extraction");
+  if (blocked) return blocked;
 
   const facts = decidedFacts(await listIsaaFacts(id));
   if (facts.length === 0) return fail(422, CONFIRM_FIRST);
@@ -33,6 +38,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   if (!caseRow) return fail(404, "Session not found");
   const sessionNumber = recording.session_number ?? 1;
   const briefSummary = await getBriefSummary(caseRow.id);
+
+  if (!(await assertConsentOrAbort(childId, "ai_extraction", { stage: "before_gemini_report", caseId: caseRow.id, recordingId: id }))) {
+    return consentRequired(childId, "ai_extraction");
+  }
 
   let output: ReportDraft;
   try {

@@ -1,0 +1,73 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/020
+
+ ✓ tests/legacy-backfill.test.ts > legacy backfill (database) > every case has a child after the migration 12ms
+ ✓ tests/legacy-backfill.test.ts > legacy backfill (database) > running the backfill twice creates no duplicate children, links or consent 31ms
+ ✓ tests/legacy-backfill.test.ts > legacy backfill (database) > new provider cases get their own unclaimed child (rule 2) and an intake token lifetime 7ms
+ ✓ tests/consent-gates.test.ts > pure helpers > intake links: none / active / expired / revoked, fail closed without a lifetime, grace only when asked 3ms
+ ✓ tests/consent-gates.test.ts > pure helpers > FR-14 hint is appended only to the FR-8 error 0ms
+ ✓ tests/consent-gates.test.ts > pure helpers > paper scans are recognised by their bytes, not the declared type 45ms
+ ✓ tests/children-claims.test.ts > claim code helpers > generates XXXX-XXXX from the unambiguous alphabet (no 0/O/1/I/L) 6ms
+ ✓ tests/children-claims.test.ts > claim code helpers > normalises input and hashes with sha256 1ms
+ ✓ tests/children-claims.test.ts > claim code helpers > computes age in years and months 1ms
+ ✓ tests/consent-queued.test.ts > queued work re-checks consent (database) > transcription: withdrawn after the job was accepted -> Scribe never called, recording failed, audio deleted 139ms
+ ✓ tests/consent-queued.test.ts > queued work re-checks consent (database) > re-transcription of already-processed audio: withdrawn -> Scribe never called, audio kept 78ms
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > FR-11: add a child creates the child and an active self-registered link; declaration is required 85ms
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > FR-13 / E-2: grant records the exact document + locale, audits consent.granted; withdraw audits consent.withdrawn 52ms
+ ✓ tests/consent-paper.test.ts > paper consent recorded by the centre (database) > E-5a.2 / FR-18e: paper consent for ai_transcription on a legacy case unblocks only that gate 145ms
+ ✓ tests/consent-paper.test.ts > paper consent recorded by the centre (database) > E-5a.3: missing scan / attestation / future date -> 400, outdated text -> 409; nothing written 61ms
+stderr | tests/consent-paper.test.ts > paper consent recorded by the centre (database) > E-5a.3: a forced audit failure -> 503 and nothing kept (no record, scan removed)
+record_consent failed: forced audit failure (test)
+
+ ✓ tests/consent-queued.test.ts > queued work re-checks consent (database) > upload completion: session_recording withdrawn before transcription -> unprocessed audio deleted 79ms
+ ✓ tests/children-claims.test.ts > claim codes and child links (database) > E-3: code is shown once, stored as a hash, expires in 72 h, works once, and the panel sees the link 98ms
+ ✓ tests/children-claims.test.ts > claim codes and child links (database) > a new code invalidates the older unused one; expired codes are refused with the same message 59ms
+stdout | tests/consent-gates.test.ts > consent gates on every listed processing step (database) > FR-7/FR-8: each gated route returns 422 with the FR-8 body and calls no external processor
+gated-route table:
+POST /api/cases/:id/intake-link            ai_intake_call     -> 422 {"error":"Guardian consent required","details":{"feature":"ai_intake_call","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/intake/:token/start              ai_intake_call     -> 422 {"error":"Guardian consent required","details":{"feature":"ai_intake_call","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/intake/:token/complete           ai_intake_call     -> 422 {"error":"Guardian consent required","details":{"feature":"ai_intake_call","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/dev/simulate-intake/:token       ai_intake_call     -> 422 {"error":"Guardian consent required","details":{"feature":"ai_intake_call","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/cases/:id/sessions               session_recording  -> 422 {"error":"Guardian consent required","details":{"feature":"session_recording","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/sessions/:id/transcribe          ai_transcription   -> 422 {"error":"Guardian consent required","details":{"feature":"ai_transcription","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/sessions/:id/extract             ai_extraction      -> 422 {"error":"Guardian consent required","details":{"feature":"ai_extraction","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/sessions/:id/report              ai_extraction      -> 422 {"error":"Guardian consent required","details":{"feature":"ai_extraction","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/reports/:id/parent-voice-note    ai_voice_note      -> 422 {"error":"Guardian consent required","details":{"feature":"ai_voice_note","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+POST /api/cases/:id/refer                  referral_share     -> 422 {"error":"Guardian consent required","details":{"feature":"referral_share","child_id":"c340fb98-b224-4ba8-9f38-2bf9d4b56de0"}}
+
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > FR-13: no verified phone -> 422; outdated text -> 409; providers can never grant (403) 41ms
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > FR-15/FR-16: unlinked guardians get 404; leaving takes effect on the next request 73ms
+ ✓ tests/consent-gates.test.ts > consent gates on every listed processing step (database) > FR-7/FR-8: each gated route returns 422 with the FR-8 body and calls no external processor 368ms
+ ✓ tests/consent-paper.test.ts > paper consent recorded by the centre (database) > E-5a.3: a forced audit failure -> 503 and nothing kept (no record, scan removed) 50ms
+ ✓ tests/consent-paper.test.ts > paper consent recorded by the centre (database) > E-5a.4: other orgs get 404 on both endpoints; the scan is only a signed URL for the case's org 94ms
+ ✓ tests/consent-queued.test.ts > queued work re-checks consent (database) > extraction: accepted with consent, withdrawn, processor runs -> Gemini never called, recording failed 86ms
+ ✓ tests/consent-queued.test.ts > queued work re-checks consent (database) > voice note: withdrawn while the summary is written -> TTS never called, nothing stored 38ms
+ ✓ tests/consent-gates.test.ts > consent gates on every listed processing step (database) > FR-7: share-link re-checks (specialist page and ask) refuse without referral_share 45ms
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > FR-16: a platform admin can revoke a guardian link; providers cannot 112ms
+ ✓ tests/children-claims.test.ts > claim codes and child links (database) > 5 failed attempts per user per hour -> 429 (even for a valid code) 54ms
+ ✓ tests/children-claims.test.ts > claim codes and child links (database) > E-5.1: claiming org B's code into an existing child shares one child_id and soft-deletes the placeholder 121ms
+stderr | tests/consent-records.test.ts > consent log and guardian flows (database) > FR-17: a forced audit failure -> 503, no consent row, state unchanged
+record_consent failed: forced audit failure (test)
+
+ ✓ tests/consent-queued.test.ts > queued work re-checks consent (database) > intake webhook: call finished, consent withdrawn before processing -> nothing stored, no Gemini 59ms
+ ✓ tests/consent-queued.test.ts > queued work re-checks consent (database) > brief generation: consent withdrawn after the call was saved -> recording failed, Gemini never called 36ms
+stderr | tests/consent-records.test.ts > consent log and guardian flows (database) > FR-17: a forced audit failure -> 503, no consent row, state unchanged
+record_consent failed: forced audit failure (test)
+
+ ✓ tests/consent-gates.test.ts > consent gates on every listed processing step (database) > with consent the same gates let the work through (no 422) 87ms
+ ✓ tests/consent-gates.test.ts > consent gates on every listed processing step (database) > FR-9/FR-10: withdrawing ai_intake_call revokes the link (410); expired links give 410 and the page message 76ms
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > a digital grant stops counting once the granting guardian's link is revoked (fail closed) 19ms
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > FR-5: consent_records cannot be updated or deleted by any role 28ms
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > FR-17: a forced audit failure -> 503, no consent row, state unchanged 41ms
+ ✓ tests/children-claims.test.ts > claim codes and child links (database) > FR-12: a placeholder with other links or cases cannot be merged (409); the code stays usable 96ms
+ ✓ tests/children-claims.test.ts > claim codes and child links (database) > guardians and anonymous users cannot create codes 5ms
+ ✓ tests/consent-paper.test.ts > paper consent recorded by the centre (database) > E-5a.5: a paper withdrawal blocks the gate again and queued work for that feature aborts 92ms
+ ✓ tests/consent-paper.test.ts > paper consent recorded by the centre (database) > E-5a.6 / FR-18d: after a guardian claims the child they see the paper consent and can withdraw it digitally 118ms
+ ✓ tests/consent-gates.test.ts > consent gates on every listed processing step (database) > FR-9: withdrawing referral_share revokes the child's referrals; the share link then gives 410 23ms
+ ✓ tests/consent-records.test.ts > consent log and guardian flows (database) > NFR-2: RLS lets a guardian read only their own children's consent rows 23ms
+
+ Test Files  6 passed (6)
+      Tests  42 passed (42)
+   Start at  00:49:04
+   Duration  1.05s (transform 539ms, setup 0ms, import 460ms, tests 4.24s, environment 0ms)
+

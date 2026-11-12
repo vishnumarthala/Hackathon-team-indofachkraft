@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import postgres, { type Sql } from "postgres";
+import { assertConsentOrAbort, CONSENT_REQUIRED_ERROR } from "@/lib/consent";
 import { env } from "@/lib/env";
 import { generateJson } from "@/lib/gemini";
 import { ISAA } from "@/lib/isaa";
@@ -294,7 +295,7 @@ export type ExtractionResponse = {
 
 export type ExtractionOutcome =
   | { ok: true; body: ExtractionResponse }
-  | { ok: false; status: number; error: string; details?: string };
+  | { ok: false; status: number; error: string; details?: unknown };
 
 export type ExtractionDeps = {
   sql?: Sql;
@@ -330,14 +331,17 @@ export async function runExtraction(recordingId: string, deps: ExtractionDeps = 
   if (!UUID.test(recordingId)) return notFound();
   const sql = deps.sql ?? extractionDb();
 
-  const claimed = await sql<{ previous_status: "transcribed" | "extracted"; segments: unknown }[]>`
+  const claimed = await sql<
+    { previous_status: "transcribed" | "extracted"; segments: unknown; case_id: string; child_id: string }[]
+  >`
     with prev as (
       select id, status from recordings where id = ${recordingId} and kind = 'session' for update
     )
     update recordings r set status = 'extracting'
     from prev
     where r.id = prev.id and prev.status in ('transcribed', 'extracted')
-    returning prev.status as previous_status, r.segments`;
+    returning prev.status as previous_status, r.segments, r.case_id,
+      (select c.child_id from cases c where c.id = r.case_id) as child_id`;
 
   if (claimed.length === 0) {
     const [current] = await sql<{ kind: string; status: string }[]>`
@@ -348,6 +352,12 @@ export async function runExtraction(recordingId: string, deps: ExtractionDeps = 
   }
 
   const previousStatus = claimed[0].previous_status;
+  // 020 FR-8: re-check consent right before the transcript is sent to Gemini.
+  const { case_id: caseId, child_id: childId } = claimed[0];
+  const stage = { stage: "before_gemini_extraction", caseId, recordingId, markRecordingFailed: true };
+  if (!(await assertConsentOrAbort(childId, "ai_extraction", stage))) {
+    return { ok: false, status: 422, error: CONSENT_REQUIRED_ERROR, details: { feature: "ai_extraction", child_id: childId } };
+  }
   try {
     const segments = SegmentSchema.array().parse(claimed[0].segments);
     const system = loadExtractSystemPrompt();

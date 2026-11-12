@@ -135,6 +135,10 @@ export type CaseRow = {
   status: CaseStatus;
   intake_token: string | null;
   created_at: string;
+  // 020: the child this care episode belongs to, and the intake link lifetime (FR-3, FR-6).
+  child_id?: string;
+  intake_token_expires_at?: string | null;
+  intake_token_revoked_at?: string | null;
 };
 
 export type RecordingStatus = "created" | "transcribing" | "transcribed" | "extracting" | "extracted" | "failed";
@@ -183,4 +187,5 @@ export type ReferralRow = {
   emailed: boolean;
   created_at: string;
   viewed_at: string | null;
+  expires_at?: string;
 };

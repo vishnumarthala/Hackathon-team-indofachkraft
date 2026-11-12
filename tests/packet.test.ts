@@ -9,6 +9,7 @@ vi.mock("@/lib/authz", () => ({
   requireFactAccess: vi.fn().mockResolvedValue(null),
   requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
 }));
+vi.mock("@/lib/consent", async () => (await import("./helpers/consent")).consentAllowedModule());
 
 // In-memory stand-in for the Supabase query builder (only what the referral code uses).
 type Row = Record<string, unknown>;
@@ -244,14 +245,13 @@ describe("pickReferralSession", () => {
 });
 
 describe("ReferRequestSchema", () => {
-  it("requires parent consent to be true", () => {
+  it("ignores a client parent_consent flag (020 NFR-1: consent is checked server-side)", () => {
     const base = { specialist_name: "S", specialist_email: "s@example.com", reason: "abc" };
     const result = ReferRequestSchema.safeParse({ ...base, parent_consent: false });
-    expect(result.success).toBe(false);
-    expect(result.error?.issues[0]).toMatchObject({ path: ["parent_consent"], message: "Parent consent is required" });
-    expect(ReferRequestSchema.safeParse(base).error?.issues[0]?.message).toBe("Parent consent is required");
-    expect(ReferRequestSchema.safeParse({ ...base, parent_consent: true }).success).toBe(true);
-    expect(ReferRequestSchema.safeParse({ ...base, specialist_email: "nope", parent_consent: true }).success).toBe(false);
+    expect(result.success).toBe(true);
+    expect(result.data).not.toHaveProperty("parent_consent");
+    expect(ReferRequestSchema.safeParse(base).success).toBe(true);
+    expect(ReferRequestSchema.safeParse({ ...base, specialist_email: "nope" }).success).toBe(false);
   });
 });
 
@@ -310,15 +310,16 @@ describe("POST /api/cases/:id/refer", () => {
     expect(state.tables.referrals).toHaveLength(0);
   });
 
-  it("returns 404 for an unknown case and 400 without consent", async () => {
+  it("returns 404 for an unknown case; a client parent_consent flag is ignored", async () => {
     seed([]);
     const missing = await request(body, "00000000-0000-4000-8000-00000000ffff");
     expect(missing.status).toBe(404);
     expect(await missing.json()).toEqual({ error: "Case not found" });
 
-    const noConsent = await request({ ...body, parent_consent: false });
-    expect(noConsent.status).toBe(400);
-    expect((await noConsent.json()).details).toMatchObject({ parent_consent: "Parent consent is required" });
+    // No body validation error: the flag is stripped and the server's referral_share gate decides.
+    const flagged = await request({ ...body, parent_consent: false });
+    expect(flagged.status).toBe(422);
+    expect(await flagged.json()).toEqual({ error: "Confirm at least one ISAA item before referring" });
   });
 
   it("returns 502 and stores nothing when Gemini fails", async () => {

@@ -1,6 +1,8 @@
+import { requireCaseConsent } from "@/lib/consent";
 import { isDemoMode } from "@/lib/demo";
 import { fail, ok } from "@/lib/http";
 import { demoPostCallData, processPostCall } from "@/lib/intake/process";
+import { intakeLinkState, LINK_EXPIRED } from "@/lib/intake/link";
 import { getCaseByToken } from "@/lib/queries/intake";
 
 export const runtime = "nodejs";
@@ -12,6 +14,9 @@ export async function POST(_req: Request, { params }: { params: Promise<{ token:
   const { token } = await params;
   const caseRow = await getCaseByToken(token);
   if (!caseRow) return fail(404, "This link is not valid.");
+  if (intakeLinkState(caseRow) !== "active") return fail(410, LINK_EXPIRED);
+  const blocked = await requireCaseConsent(caseRow.id, "ai_intake_call");
+  if (blocked) return blocked;
 
   try {
     return ok(await processPostCall(demoPostCallData(token, `demo-${Date.now()}`)));

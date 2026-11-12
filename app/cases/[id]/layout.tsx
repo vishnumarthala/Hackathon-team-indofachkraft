@@ -22,7 +22,7 @@ export default async function CaseLayout({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <header className="mb-4">
+      <header className="mb-4 print:hidden">
         <h1 className="text-2xl font-semibold break-words">{caseRow.child_alias}</h1>
         <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-700">
           {caseRow.child_age_months != null && <span>{caseRow.child_age_months} months</span>}
@@ -30,7 +30,9 @@ export default async function CaseLayout({
           <StatusBadge status={caseRow.status} />
         </p>
       </header>
-      <CaseTabs caseId={caseRow.id} />
+      <div className="print:hidden">
+        <CaseTabs caseId={caseRow.id} />
+      </div>
       <section className="pt-5">{children}</section>
     </div>
   );

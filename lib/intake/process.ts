@@ -7,10 +7,12 @@ import type postgres from "postgres";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
 import { CASE_SHEET_FIELDS, type CaseSheetField } from "@/lib/caseSheet";
+import { assertConsentOrAbort } from "@/lib/consent";
 import { loadFixture } from "@/lib/demo";
 import { env } from "@/lib/env";
 import { generateJson } from "@/lib/gemini";
 import { formatTime, renderBriefMarkdown } from "@/lib/intake/briefMarkdown";
+import { INTAKE_COMPLETION_GRACE_MS, intakeLinkState } from "@/lib/intake/link";
 import { BriefSchema, type Brief, type FactValue, type Segment } from "@/lib/types";
 
 export const POST_CALL_FIXTURE = "elevenlabs-post-call.json";
@@ -170,7 +172,16 @@ async function db(): Promise<Sql> {
   return globalForSql.__carethreadSql;
 }
 
-type CaseLookup = { id: string; status: string };
+type CaseLookup = {
+  id: string;
+  status: string;
+  child_id: string;
+  intake_token: string;
+  intake_token_expires_at: Date | string | null;
+  intake_token_revoked_at: Date | string | null;
+};
+
+const isoOrNull = (value: Date | string | null) => (value instanceof Date ? value.toISOString() : value);
 
 async function saveIntake(
   sql: Sql,
@@ -221,7 +232,9 @@ export async function processPostCall(input: unknown): Promise<ProcessResult> {
   const token = data.conversation_initiation_client_data.dynamic_variables.intake_token;
   const sql = await db();
 
-  const cases = await sql<CaseLookup[]>`select id, status from cases where intake_token = ${token}`;
+  const cases = await sql<CaseLookup[]>`
+    select id, status, child_id, intake_token, intake_token_expires_at, intake_token_revoked_at
+    from cases where intake_token = ${token}`;
   const caseRow = cases[0];
   if (!caseRow) {
     await audit({
@@ -236,10 +249,40 @@ export async function processPostCall(input: unknown): Promise<ProcessResult> {
   const existing = await sql`select 1 from recordings where external_id = ${data.conversation_id}`;
   if (existing.length > 0) return { received: true, duplicate: true };
 
+  // 020 FR-7/FR-8: re-check consent when the queued call is processed; nothing is stored without it.
+  const consentStage = { stage: "intake_processing", caseId: caseRow.id };
+  if (!(await assertConsentOrAbort(caseRow.child_id, "ai_intake_call", consentStage))) {
+    return { received: true, ignored: "consent_withdrawn" };
+  }
+  const linkState = intakeLinkState(
+    {
+      intake_token: caseRow.intake_token,
+      intake_token_expires_at: isoOrNull(caseRow.intake_token_expires_at),
+      intake_token_revoked_at: isoOrNull(caseRow.intake_token_revoked_at),
+    },
+    Date.now(),
+    INTAKE_COMPLETION_GRACE_MS,
+  );
+  if (linkState !== "active") {
+    await audit({
+      caseId: caseRow.id,
+      actor: "system",
+      action: "intake.link_inactive",
+      details: { conversation_id: data.conversation_id, state: linkState },
+    });
+    return { received: true, ignored: "link expired" };
+  }
+
   const segments = buildIntakeSegments(data.transcript);
   const facts = buildCaseSheetFacts(data.analysis?.data_collection_results);
   const recordingId = await saveIntake(sql, caseRow, data, segments, facts);
   if (!recordingId) return { received: true, duplicate: true };
+
+  // Re-check right before the transcript goes to Gemini for the brief.
+  const briefStage = { stage: "brief_generation", caseId: caseRow.id, recordingId, markRecordingFailed: true };
+  if (!(await assertConsentOrAbort(caseRow.child_id, "ai_intake_call", briefStage))) {
+    return { received: true, case_id: caseRow.id, recording_id: recordingId, brief: false };
+  }
 
   try {
     const generated = await generateJson({

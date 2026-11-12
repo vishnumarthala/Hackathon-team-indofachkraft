@@ -1,6 +1,6 @@
 # 020: Children, guardian links and consent gating
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 019: needs guardian accounts, `requireGuardian()` and verified phones
 

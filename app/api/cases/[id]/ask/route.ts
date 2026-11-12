@@ -6,7 +6,7 @@ import { audit } from "@/lib/audit";
 import { isUuid } from "@/lib/cases/validation";
 import { GeminiError, generateJson } from "@/lib/gemini";
 import { fail, fieldErrors, ok, parseJson } from "@/lib/http";
-import { getReferralByToken } from "@/lib/queries/referrals";
+import { getSharedReferral, SHARE_UNAVAILABLE } from "@/lib/queries/referrals";
 import { AskAnswerSchema } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -33,8 +33,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   // Access first: callers without a valid link learn nothing about the question rules.
   if (!isUuid(id)) return notFound();
-  const shared = await getReferralByToken(parsed.data.share_token);
-  if (!shared || shared.referral.case_id !== id) return notFound();
+  const shared = await getSharedReferral(parsed.data.share_token);
+  if (shared.state === "missing" || shared.referral.case_id !== id) return notFound();
+  // 020 FR-7/FR-10: revoked, expired or no longer consented -> 410 before any data reaches Gemini.
+  if (shared.state !== "ok") return fail(410, SHARE_UNAVAILABLE);
   const { referral } = shared;
 
   const checked = QuestionSchema.safeParse({ question: parsed.data.question });

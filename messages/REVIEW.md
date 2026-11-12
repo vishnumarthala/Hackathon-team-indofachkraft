@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 452. Not yet approved: 452.
+Rows: 586. Not yet approved: 586.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -397,6 +397,7 @@ Rows: 452. Not yet approved: 452.
 | `intake.simulate.label` | Simulate completed call (demo) | पूरी हुई कॉल का नमूना चलाएँ (डेमो) | పూర్తయిన కాల్‌ను అనుకరించండి (డెమో) |  | pending |
 | `intake.simulate.done` | Call ended. Thank you! You can close this page. | कॉल ख़त्म हुई। धन्यवाद! आप यह पेज बंद कर सकते हैं। | కాల్ ముగిసింది. ధన్యవాదాలు! మీరు ఈ పేజీని మూసివేయవచ్చు. |  | pending |
 | `intake.simulate.failed` | Could not simulate the call. Please try again. | कॉल का नमूना नहीं चल सका। कृपया फिर से कोशिश करें। | కాల్‌ను అనుకరించలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `intake.expired` | This link has expired. Please ask your therapist for a new link. | यह लिंक समाप्त हो गया है। कृपया अपने थेरेपिस्ट से नया लिंक माँगें। | ఈ లింక్ గడువు ముగిసింది. దయచేసి మీ థెరపిస్ట్‌ను కొత్త లింక్ అడగండి. |  | pending |
 | `family.meta.title` | Family account - DoctorNearMe | परिवार खाता - DoctorNearMe | కుటుంబ ఖాతా - DoctorNearMe |  | pending |
 | `family.login.title` | Sign in to your family account | अपने परिवार खाते में साइन इन करें | మీ కుటుంబ ఖాతాలోకి సైన్ ఇన్ చేయండి |  | pending |
 | `family.login.google` | Continue with Google | Google से जारी रखें | Google తో కొనసాగించండి |  | pending |
@@ -467,3 +468,136 @@ Rows: 452. Not yet approved: 452.
 | `family.settings.linkFailed` | Could not connect this sign-in method. Please try again. | साइन इन का यह तरीका नहीं जुड़ सका। कृपया फिर से कोशिश करें। | ఈ సైన్ ఇన్ పద్ధతిని కనెక్ట్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `family.settings.linked` | Sign-in method added. | साइन इन का तरीका जोड़ दिया गया। | సైన్ ఇన్ పద్ధతి జోడించబడింది. |  | pending |
 | `family.settings.unlinked` | Sign-in method removed. | साइन इन का तरीका हटा दिया गया। | సైన్ ఇన్ పద్ధతి తీసివేయబడింది. |  | pending |
+| `family.children.title` | Children | बच्चे | పిల్లలు |  | pending |
+| `family.children.add` | Add a child | बच्चा जोड़ें | బిడ్డను జోడించండి |  | pending |
+| `family.children.haveCode` | I have a code from my therapist | मेरे पास थेरेपिस्ट का कोड है | నా దగ్గర థెరపిస్ట్ ఇచ్చిన కోడ్ ఉంది |  | pending |
+| `family.children.years_one` | {count} year | {count} वर्ष | {count} సంవత్సరం |  | pending |
+| `family.children.years_other` | {count} years | {count} वर्ष | {count} సంవత్సరాలు |  | pending |
+| `family.children.months_one` | {count} month | {count} महीना | {count} నెల |  | pending |
+| `family.children.months_other` | {count} months | {count} महीने | {count} నెలలు |  | pending |
+| `family.children.age` | {years}, {months} | {years}, {months} | {years}, {months} |  | pending |
+| `family.children.ageUnknown` | Date of birth not added | जन्म तिथि नहीं जोड़ी गई | పుట్టిన తేదీ జోడించలేదు |  | pending |
+| `family.children.open` | Open {name} | {name} खोलें | {name} తెరవండి |  | pending |
+| `family.children.backToList` | All children | सभी बच्चे | అందరు పిల్లలు |  | pending |
+| `family.children.form.title` | Add a child | बच्चा जोड़ें | బిడ్డను జోడించండి |  | pending |
+| `family.children.form.name` | Child's name | बच्चे का नाम | బిడ్డ పేరు |  | pending |
+| `family.children.form.nameHint` | First name or nickname, up to 60 characters. | पहला नाम या उपनाम, 60 अक्षरों तक। | మొదటి పేరు లేదా ముద్దుపేరు, 60 అక్షరాల వరకు. |  | pending |
+| `family.children.form.dob` | Date of birth (optional) | जन्म तिथि (वैकल्पिक) | పుట్టిన తేదీ (ఐచ్ఛికం) |  | pending |
+| `family.children.form.sex` | Sex (optional) | लिंग (वैकल्पिक) | లింగం (ఐచ్ఛికం) |  | pending |
+| `family.children.form.choose` | Choose... | चुनें... | ఎంచుకోండి... |  | pending |
+| `family.children.form.sexOptions.female` | Female | लड़की | అమ్మాయి |  | pending |
+| `family.children.form.sexOptions.male` | Male | लड़का | అబ్బాయి |  | pending |
+| `family.children.form.sexOptions.other` | Other | अन्य | ఇతర |  | pending |
+| `family.children.form.sexOptions.undisclosed` | Prefer not to say | नहीं बताना चाहते | చెప్పకూడదనుకుంటున్నాను |  | pending |
+| `family.children.form.relationship` | Your relationship to the child | बच्चे से आपका संबंध | బిడ్డతో మీ సంబంధం |  | pending |
+| `family.children.form.relationships.mother` | Mother | माँ | తల్లి |  | pending |
+| `family.children.form.relationships.father` | Father | पिता | తండ్రి |  | pending |
+| `family.children.form.relationships.legal_guardian` | Legal guardian | कानूनी अभिभावक | చట్టపరమైన సంరక్షకుడు |  | pending |
+| `family.children.form.relationships.other_family` | Other family member | परिवार का अन्य सदस्य | ఇతర కుటుంబ సభ్యుడు |  | pending |
+| `family.children.form.declaration` | I am this child's parent or legal guardian. | मैं इस बच्चे का माता-पिता या कानूनी अभिभावक हूँ। | నేను ఈ బిడ్డ తల్లి/తండ్రి లేదా చట్టపరమైన సంరక్షకుడిని. |  | pending |
+| `family.children.form.submit` | Add child | बच्चा जोड़ें | బిడ్డను జోడించండి |  | pending |
+| `family.children.form.saving` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `family.children.form.nameError` | Enter the child's name (up to 60 characters). | बच्चे का नाम लिखें (60 अक्षरों तक)। | బిడ్డ పేరు రాయండి (60 అక్షరాల వరకు). |  | pending |
+| `family.children.form.dobError` | Enter a valid date of birth that is not in the future. | सही जन्म तिथि लिखें जो भविष्य की न हो। | భవిష్యత్తులో లేని సరైన పుట్టిన తేదీ రాయండి. |  | pending |
+| `family.children.form.relationshipError` | Choose your relationship to the child. | बच्चे से अपना संबंध चुनें। | బిడ్డతో మీ సంబంధాన్ని ఎంచుకోండి. |  | pending |
+| `family.children.form.declarationError` | Please confirm that you are the parent or legal guardian. | कृपया पुष्टि करें कि आप माता-पिता या कानूनी अभिभावक हैं। | దయచేసి మీరు తల్లి/తండ్రి లేదా చట్టపరమైన సంరక్షకుడని ధృవీకరించండి. |  | pending |
+| `family.children.form.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.children.claim.title` | Link your child's clinic record | अपने बच्चे का क्लिनिक रिकॉर्ड जोड़ें | మీ బిడ్డ క్లినిక్ రికార్డును లింక్ చేయండి |  | pending |
+| `family.children.claim.intro` | Enter the 8-character code your therapist gave you. The code works once and expires after 72 hours. | अपने थेरेपिस्ट से मिला 8 अक्षरों का कोड लिखें। कोड एक ही बार काम करता है और 72 घंटे बाद समाप्त हो जाता है। | మీ థెరపిస్ట్ ఇచ్చిన 8 అక్షరాల కోడ్ రాయండి. కోడ్ ఒక్కసారి మాత్రమే పనిచేస్తుంది మరియు 72 గంటల తర్వాత గడువు ముగుస్తుంది. |  | pending |
+| `family.children.claim.code` | Code | कोड | కోడ్ |  | pending |
+| `family.children.claim.codeHint` | For example ABCD-EF23 | उदाहरण: ABCD-EF23 | ఉదాహరణకు ABCD-EF23 |  | pending |
+| `family.children.claim.existingQuestion` | Is this one of your children? | क्या यह आपके बच्चों में से एक है? | ఇది మీ పిల్లలలో ఒకరా? |  | pending |
+| `family.children.claim.newChild` | No, add as a new child | नहीं, नए बच्चे के रूप में जोड़ें | కాదు, కొత్త బిడ్డగా జోడించండి |  | pending |
+| `family.children.claim.submit` | Link record | रिकॉर्ड जोड़ें | రికార్డును లింక్ చేయండి |  | pending |
+| `family.children.claim.saving` | Linking... | जोड़ा जा रहा है... | లింక్ చేస్తోంది... |  | pending |
+| `family.children.claim.invalid` | This code is not valid | यह कोड मान्य नहीं है | ఈ కోడ్ చెల్లదు |  | pending |
+| `family.children.claim.tooMany` | Too many attempts. Try again in an hour. | बहुत अधिक प्रयास। एक घंटे बाद फिर से कोशिश करें। | చాలా ప్రయత్నాలు. ఒక గంట తర్వాత మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.children.claim.conflict` | This record is already linked | यह रिकॉर्ड पहले से जुड़ा हुआ है | ఈ రికార్డు ఇప్పటికే లింక్ చేయబడింది |  | pending |
+| `family.children.overview.permissions` | Permissions | अनुमतियाँ | అనుమతులు |  | pending |
+| `family.children.overview.permissionsIntro` | Choose what DoctorNearMe may do with your child's information. You can change this at any time. | चुनें कि DoctorNearMe आपके बच्चे की जानकारी के साथ क्या कर सकता है। आप इसे कभी भी बदल सकते हैं। | మీ బిడ్డ సమాచారంతో DoctorNearMe ఏమి చేయవచ్చో ఎంచుకోండి. మీరు దీన్ని ఎప్పుడైనా మార్చవచ్చు. |  | pending |
+| `family.children.overview.allow` | Allow | अनुमति दें | అనుమతించండి |  | pending |
+| `family.children.overview.withdraw` | Withdraw | वापस लें | ఉపసంహరించండి |  | pending |
+| `family.children.overview.saving` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `family.children.overview.agree` | I have read this text and I agree. | मैंने यह पाठ पढ़ लिया है और मैं सहमत हूँ। | నేను ఈ పాఠం చదివాను మరియు అంగీకరిస్తున్నాను. |  | pending |
+| `family.children.overview.verifyPhone` | Verify your mobile number before giving permission | अनुमति देने से पहले अपना मोबाइल नंबर सत्यापित करें | అనుమతి ఇచ్చే ముందు మీ మొబైల్ నంబర్‌ను ధృవీకరించండి |  | pending |
+| `family.children.overview.verifyLink` | Go to settings | सेटिंग्स पर जाएँ | సెట్టింగ్‌లకు వెళ్ళండి |  | pending |
+| `family.children.overview.outdated` | Please review the updated text | कृपया अपडेट किया गया पाठ देखें | దయచేసి నవీకరించిన పాఠాన్ని చూడండి |  | pending |
+| `family.children.overview.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.children.overview.leave` | Remove this child from my account | इस बच्चे को मेरे खाते से हटाएँ | ఈ బిడ్డను నా ఖాతా నుండి తీసివేయండి |  | pending |
+| `family.children.overview.leaveConfirm` | Remove {name} from your account? You will lose access until a new code links you again. | {name} को अपने खाते से हटाएँ? नया कोड जोड़ने तक आपकी पहुँच नहीं रहेगी। | {name} ను మీ ఖాతా నుండి తీసివేయాలా? కొత్త కోడ్ మళ్ళీ లింక్ చేసే వరకు మీకు యాక్సెస్ ఉండదు. |  | pending |
+| `family.children.overview.leaving` | Removing... | हटाया जा रहा है... | తీసివేస్తోంది... |  | pending |
+| `consent.features.ai_intake_call.name` | AI intake voice call | एआई इनटेक वॉइस कॉल | AI ఇన్‌టేక్ వాయిస్ కాల్ |  | pending |
+| `consent.features.ai_intake_call.description` | Before the first session, an AI voice assistant asks you about your child and prepares a summary for the therapist. | पहले सत्र से पहले, एक एआई वॉइस सहायक आपसे आपके बच्चे के बारे में पूछता है और थेरेपिस्ट के लिए सारांश तैयार करता है। | మొదటి సెషన్‌కు ముందు, ఒక AI వాయిస్ అసిస్టెంట్ మీ బిడ్డ గురించి అడిగి థెరపిస్ట్ కోసం సారాంశం తయారు చేస్తుంది. |  | pending |
+| `consent.features.session_recording.name` | Recording sessions | सत्रों की रिकॉर्डिंग | సెషన్‌ల రికార్డింగ్ |  | pending |
+| `consent.features.session_recording.description` | The therapist records the audio of sessions at the centre. | थेरेपिस्ट केंद्र में सत्रों की आवाज़ रिकॉर्ड करते हैं। | థెరపిస్ట్ కేంద్రంలో సెషన్‌ల ఆడియోను రికార్డ్ చేస్తారు. |  | pending |
+| `consent.features.ai_transcription.name` | AI transcription | एआई ट्रांसक्रिप्शन | AI ట్రాన్స్‌క్రిప్షన్ |  | pending |
+| `consent.features.ai_transcription.description` | AI turns session recordings into written text. | एआई सत्र की रिकॉर्डिंग को लिखित पाठ में बदलता है। | AI సెషన్ రికార్డింగ్‌లను రాతగా మారుస్తుంది. |  | pending |
+| `consent.features.ai_extraction.name` | AI analysis | एआई विश्लेषण | AI విశ్లేషణ |  | pending |
+| `consent.features.ai_extraction.description` | AI suggests observations and drafts reports from transcripts. The therapist checks everything. | एआई ट्रांसक्रिप्ट से अवलोकन सुझाता है और रिपोर्ट का मसौदा बनाता है। थेरेपिस्ट सब कुछ जाँचते हैं। | AI ట్రాన్స్‌క్రిప్ట్‌ల నుండి పరిశీలనలను సూచించి నివేదికల ముసాయిదా తయారు చేస్తుంది. థెరపిస్ట్ అన్నీ తనిఖీ చేస్తారు. |  | pending |
+| `consent.features.ai_voice_note.name` | AI voice summary | एआई वॉइस सारांश | AI వాయిస్ సారాంశం |  | pending |
+| `consent.features.ai_voice_note.description` | AI writes a short summary of the final report and reads it aloud for you. | एआई अंतिम रिपोर्ट का छोटा सारांश लिखकर आपके लिए पढ़कर सुनाता है। | AI తుది నివేదిక యొక్క చిన్న సారాంశం రాసి మీ కోసం చదివి వినిపిస్తుంది. |  | pending |
+| `consent.features.referral_share.name` | Sharing with a specialist | विशेषज्ञ के साथ साझा करना | నిపుణుడితో పంచుకోవడం |  | pending |
+| `consent.features.referral_share.description` | The therapist shares a referral packet with a specialist through a private link. | थेरेपिस्ट एक निजी लिंक से विशेषज्ञ के साथ रेफ़रल पैकेट साझा करते हैं। | థెరపిస్ట్ ఒక ప్రైవేట్ లింక్ ద్వారా నిపుణుడితో రెఫరల్ ప్యాకెట్‌ను పంచుకుంటారు. |  | pending |
+| `consent.features.screen_result_save.name` | Saving check-in results | चेक-इन परिणाम सहेजना | చెక్-ఇన్ ఫలితాలను సేవ్ చేయడం |  | pending |
+| `consent.features.screen_result_save.description` | Results of a developmental check-in are saved to your child's record. | विकास चेक-इन के परिणाम आपके बच्चे के रिकॉर्ड में सहेजे जाते हैं। | ఎదుగుదల చెక్-ఇన్ ఫలితాలు మీ బిడ్డ రికార్డులో సేవ్ చేయబడతాయి. |  | pending |
+| `consent.features.ai_follow_up.name` | AI follow-up assistant | एआई फ़ॉलो-अप सहायक | AI ఫాలో-అప్ అసిస్టెంట్ |  | pending |
+| `consent.features.ai_follow_up.description` | An AI assistant answers your questions about your child's published plan and asks about progress. | एक एआई सहायक आपके बच्चे की प्रकाशित योजना के बारे में आपके सवालों के जवाब देता है और प्रगति के बारे में पूछता है। | ఒక AI అసిస్టెంట్ మీ బిడ్డ ప్రచురించిన ప్రణాళిక గురించి మీ ప్రశ్నలకు సమాధానం ఇస్తుంది మరియు పురోగతి గురించి అడుగుతుంది. |  | pending |
+| `consent.allowed` | Allowed | अनुमति है | అనుమతించబడింది |  | pending |
+| `consent.notAllowed` | Not allowed | अनुमति नहीं है | అనుమతించబడలేదు |  | pending |
+| `consent.onPaper` | Given on paper on {date} | {date} को कागज़ पर दी गई | {date} న కాగితంపై ఇవ్వబడింది |  | pending |
+| `consent.processors` | Who processes the data | डेटा कौन प्रोसेस करता है | డేటాను ఎవరు ప్రాసెస్ చేస్తారు |  | pending |
+| `consent.processor` | {name}: {purpose} ({location}) | {name}: {purpose} ({location}) | {name}: {purpose} ({location}) |  | pending |
+| `consent.readFull` | Read full text | पूरा पाठ पढ़ें | పూర్తి పాఠం చదవండి |  | pending |
+| `consent.version` | Version {version} | संस्करण {version} | వెర్షన్ {version} |  | pending |
+| `consentPanel.title` | Consent | सहमति | సమ్మతి |  | pending |
+| `consentPanel.linked` | Parent account linked | माता-पिता का खाता जुड़ा है | తల్లిదండ్రుల ఖాతా లింక్ చేయబడింది |  | pending |
+| `consentPanel.notLinked` | No parent account linked yet | अभी कोई माता-पिता का खाता नहीं जुड़ा है | ఇంకా తల్లిదండ్రుల ఖాతా లింక్ కాలేదు |  | pending |
+| `consentPanel.createCode` | Create parent code | माता-पिता के लिए कोड बनाएँ | తల్లిదండ్రుల కోడ్ సృష్టించండి |  | pending |
+| `consentPanel.creating` | Creating... | बनाया जा रहा है... | సృష్టిస్తోంది... |  | pending |
+| `consentPanel.codeLabel` | Parent code | माता-पिता का कोड | తల్లిదండ్రుల కోడ్ |  | pending |
+| `consentPanel.codeExpires` | Valid until {date}. Works once. Creating a new code cancels this one. | {date} तक मान्य। एक ही बार काम करता है। नया कोड बनाने पर यह रद्द हो जाता है। | {date} వరకు చెల్లుతుంది. ఒక్కసారి మాత్రమే పనిచేస్తుంది. కొత్త కోడ్ సృష్టిస్తే ఇది రద్దవుతుంది. |  | pending |
+| `consentPanel.shareWhatsapp` | Share on WhatsApp | WhatsApp पर भेजें | WhatsApp లో పంపండి |  | pending |
+| `consentPanel.codeFailed` | Could not create the code. Please try again. | कोड नहीं बन सका। कृपया फिर से कोशिश करें। | కోడ్ సృష్టించలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `consentPanel.printForm` | Print consent form | सहमति फ़ॉर्म प्रिंट करें | సమ్మతి ఫారం ప్రింట్ చేయండి |  | pending |
+| `consentPanel.recordPaper` | Record paper consent | कागज़ी सहमति दर्ज करें | కాగితపు సమ్మతిని నమోదు చేయండి |  | pending |
+| `consentPanel.digitalOn` | Allowed by the parent on {date} | {date} को माता-पिता ने अनुमति दी | {date} న తల్లిదండ్రులు అనుమతించారు |  | pending |
+| `consentPanel.paperOn` | On paper, recorded by {provider} on {date} | कागज़ पर, {provider} ने {date} को दर्ज की | కాగితంపై, {provider} {date} న నమోదు చేశారు |  | pending |
+| `consentPanel.withdrawnOn` | Withdrawn on {date} | {date} को वापस ली गई | {date} న ఉపసంహరించబడింది |  | pending |
+| `consentPanel.never` | Not asked yet | अभी पूछा नहीं गया | ఇంకా అడగలేదు |  | pending |
+| `consentPanel.anotherCentre` | another centre | दूसरा केंद्र | మరొక కేంద్రం |  | pending |
+| `consentPanel.viewScan` | View signed form | हस्ताक्षरित फ़ॉर्म देखें | సంతకం చేసిన ఫారం చూడండి |  | pending |
+| `consentPanel.hint` | Ask the parent to allow this in their DoctorNearMe app. | माता-पिता से कहें कि वे अपने DoctorNearMe ऐप में इसकी अनुमति दें। | తల్లిదండ్రులను వారి DoctorNearMe యాప్‌లో దీన్ని అనుమతించమని అడగండి. |  | pending |
+| `paperConsent.title` | Record paper consent | कागज़ी सहमति दर्ज करें | కాగితపు సమ్మతిని నమోదు చేయండి |  | pending |
+| `paperConsent.intro` | For parents without a smartphone: print the consent form, let the parent read and sign it, then record it here with a scan or photo of the signed form. | बिना स्मार्टफ़ोन वाले माता-पिता के लिए: सहमति फ़ॉर्म प्रिंट करें, माता-पिता को पढ़कर हस्ताक्षर करने दें, फिर हस्ताक्षरित फ़ॉर्म के स्कैन या फ़ोटो के साथ यहाँ दर्ज करें। | స్మార్ట్‌ఫోన్ లేని తల్లిదండ్రుల కోసం: సమ్మతి ఫారం ప్రింట్ చేసి, తల్లిదండ్రులు చదివి సంతకం చేసేలా చూసి, సంతకం చేసిన ఫారం స్కాన్ లేదా ఫోటోతో ఇక్కడ నమోదు చేయండి. |  | pending |
+| `paperConsent.formLanguage` | Language of the printed form | प्रिंट किए गए फ़ॉर्म की भाषा | ప్రింట్ చేసిన ఫారం భాష |  | pending |
+| `paperConsent.features` | Permissions the parent ticked | माता-पिता ने जिन अनुमतियों पर टिक किया | తల్లిదండ్రులు టిక్ చేసిన అనుమతులు |  | pending |
+| `paperConsent.guardianName` | Name of the parent or legal guardian | माता-पिता या कानूनी अभिभावक का नाम | తల్లి/తండ్రి లేదా చట్టపరమైన సంరక్షకుడి పేరు |  | pending |
+| `paperConsent.relationship` | Relationship to the child | बच्चे से संबंध | బిడ్డతో సంబంధం |  | pending |
+| `paperConsent.signedOn` | Date signed | हस्ताक्षर की तारीख | సంతకం చేసిన తేదీ |  | pending |
+| `paperConsent.scan` | Signed form (PDF, JPEG or PNG, up to 10 MB) | हस्ताक्षरित फ़ॉर्म (PDF, JPEG या PNG, 10 MB तक) | సంతకం చేసిన ఫారం (PDF, JPEG లేదా PNG, 10 MB వరకు) |  | pending |
+| `paperConsent.attestation` | I confirm the parent or legal guardian signed this form in person. | मैं पुष्टि करता/करती हूँ कि माता-पिता या कानूनी अभिभावक ने यह फ़ॉर्म मेरे सामने हस्ताक्षरित किया। | తల్లి/తండ్రి లేదా చట్టపరమైన సంరక్షకుడు ఈ ఫారంపై నా ఎదుట సంతకం చేశారని నేను ధృవీకరిస్తున్నాను. |  | pending |
+| `paperConsent.submit` | Save paper consent | कागज़ी सहमति सहेजें | కాగితపు సమ్మతిని సేవ్ చేయండి |  | pending |
+| `paperConsent.saving` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `paperConsent.saved` | Saved. | सहेज लिया गया। | సేవ్ అయింది. |  | pending |
+| `paperConsent.invalid` | Check the highlighted fields. | चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
+| `paperConsent.outdated` | The consent text has changed. Print the new form and ask the parent to sign it. | सहमति का पाठ बदल गया है। नया फ़ॉर्म प्रिंट करें और माता-पिता से हस्ताक्षर करवाएँ। | సమ్మతి పాఠం మారింది. కొత్త ఫారం ప్రింట్ చేసి తల్లిదండ్రుల సంతకం తీసుకోండి. |  | pending |
+| `paperConsent.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `paperConsent.withdrawTitle` | Record a withdrawal | वापसी दर्ज करें | ఉపసంహరణను నమోదు చేయండి |  | pending |
+| `paperConsent.withdrawIntro` | Use this when the parent tells the centre that they withdraw a permission. No scan is needed. | इसका उपयोग तब करें जब माता-पिता केंद्र को बताएँ कि वे कोई अनुमति वापस ले रहे हैं। स्कैन की ज़रूरत नहीं है। | తల్లిదండ్రులు ఒక అనుమతిని ఉపసంహరించుకుంటున్నామని కేంద్రానికి చెప్పినప్పుడు దీన్ని ఉపయోగించండి. స్కాన్ అవసరం లేదు. |  | pending |
+| `paperConsent.withdrawFeature` | Permission | अनुमति | అనుమతి |  | pending |
+| `paperConsent.note` | Note (optional) | टिप्पणी (वैकल्पिक) | గమనిక (ఐచ్ఛికం) |  | pending |
+| `paperConsent.withdrawSubmit` | Record withdrawal | वापसी दर्ज करें | ఉపసంహరణను నమోదు చేయండి |  | pending |
+| `paperConsent.back` | Back to case | केस पर वापस जाएँ | కేసుకు తిరిగి వెళ్ళండి |  | pending |
+| `consentForm.title` | Consent form | सहमति फ़ॉर्म | సమ్మతి ఫారం |  | pending |
+| `consentForm.child` | Child | बच्चा | బిడ్డ |  | pending |
+| `consentForm.centre` | Centre | केंद्र | కేంద్రం |  | pending |
+| `consentForm.intro` | Please read each section. Tick the box for each thing you allow. You can withdraw any permission later in the DoctorNearMe app or by telling the centre. | कृपया हर भाग पढ़ें। जिस चीज़ की आप अनुमति देते हैं, उसके बॉक्स पर टिक करें। आप कोई भी अनुमति बाद में DoctorNearMe ऐप में या केंद्र को बताकर वापस ले सकते हैं। | దయచేసి ప్రతి భాగాన్ని చదవండి. మీరు అనుమతించే ప్రతి దానికి బాక్స్‌లో టిక్ చేయండి. మీరు ఏ అనుమతినైనా తర్వాత DoctorNearMe యాప్‌లో లేదా కేంద్రానికి చెప్పి ఉపసంహరించుకోవచ్చు. |  | pending |
+| `consentForm.tick` | I allow this | मैं इसकी अनुमति देता/देती हूँ | నేను దీన్ని అనుమతిస్తున్నాను |  | pending |
+| `consentForm.formVersion` | Form version | फ़ॉर्म संस्करण | ఫారం వెర్షన్ |  | pending |
+| `consentForm.signature` | Signature of the parent or legal guardian | माता-पिता या कानूनी अभिभावक के हस्ताक्षर | తల్లి/తండ్రి లేదా చట్టపరమైన సంరక్షకుడి సంతకం |  | pending |
+| `consentForm.name` | Name | नाम | పేరు |  | pending |
+| `consentForm.relationship` | Relationship to the child | बच्चे से संबंध | బిడ్డతో సంబంధం |  | pending |
+| `consentForm.date` | Date | तारीख | తేదీ |  | pending |
+| `consentForm.print` | Print | प्रिंट करें | ప్రింట్ చేయండి |  | pending |
+| `consentForm.notConsent` | Printing this form is not consent. It counts only after the signed form is recorded by the centre. | यह फ़ॉर्म प्रिंट करना सहमति नहीं है। यह तभी मान्य है जब केंद्र हस्ताक्षरित फ़ॉर्म दर्ज करे। | ఈ ఫారం ప్రింట్ చేయడం సమ్మతి కాదు. సంతకం చేసిన ఫారాన్ని కేంద్రం నమోదు చేసిన తర్వాతే ఇది లెక్కలోకి వస్తుంది. |  | pending |
+| `consentForm.language` | Form language | फ़ॉर्म की भाषा | ఫారం భాష |  | pending |

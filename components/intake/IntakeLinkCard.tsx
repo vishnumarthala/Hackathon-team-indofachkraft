@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { withConsentHint } from "@/lib/consent/features";
 
 type Share = { url: string; whatsapp_url: string };
 
@@ -14,7 +15,7 @@ export type IntakeLinkCardProps = {
 type LinkResponse = Share & { emailed?: boolean; email_error?: string; error?: string };
 
 export function emailStatusText(res: { ok: boolean; body: LinkResponse }): string {
-  if (!res.ok) return res.body.error ?? "Email could not be sent";
+  if (!res.ok) return res.body.error ? withConsentHint(res.body.error) : "Email could not be sent";
   if (res.body.email_error) return "Email could not be sent";
   return res.body.emailed ? "Email sent" : "Email not sent (demo mode)";
 }
@@ -50,7 +51,23 @@ export function IntakeLinkCard({ caseId, initialShare, hasParentEmail, callCompl
 
   async function onCreate() {
     const res = await requestLink(false);
-    if (!res || !res.ok) setError(res?.body.error ?? "Could not create the intake link");
+    if (!res || !res.ok) setError(res?.body.error ? withConsentHint(res.body.error) : "Could not create the intake link");
+  }
+
+  // 020 FR-10: revoke the open link; "Create intake link" afterwards issues a new token.
+  async function onRevoke() {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/cases/${caseId}/intake-link`, { method: "DELETE" });
+      if (!res.ok) throw new Error(String(res.status));
+      setShare(null);
+      setEmailStatus(null);
+    } catch {
+      setError("Could not revoke the intake link");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function onEmail() {
@@ -111,6 +128,14 @@ export function IntakeLinkCard({ caseId, initialShare, hasParentEmail, callCompl
               className={`${buttonClass} border border-slate-300 bg-white text-slate-900`}
             >
               Email to parent
+            </button>
+            <button
+              type="button"
+              onClick={onRevoke}
+              disabled={busy}
+              className={`${buttonClass} border border-red-300 bg-white text-red-800`}
+            >
+              Revoke link
             </button>
             {emailStatus && (
               <span role="status" className="text-sm text-slate-700">
