@@ -43,7 +43,7 @@ main between-session engagement loop for families.
   future or > 14 days ago -> 400. `DELETE /api/family/home-activity-logs/:id` (own logs, same week) -> 200.
   Activities not in the published snapshot (or deactivated) -> 404.
 - **FR-6** - `lib/home-program/adherence.ts` `adherence(logs, activity, weekStart)`; weeks start Monday
-  in `Asia/Kolkata`.
+  in the guardian's time zone (018 `getTimeZone`).
 - **FR-7** - Sharing scope `home_program` registered (published snapshot + adherence) in the 022 registry.
 
 ## Non-functional requirements

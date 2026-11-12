@@ -23,7 +23,7 @@ is derived server-side from provider type **and** verification.
     0-60, photo_path text null, registration_council text check in ('NMC','STATE_MEDICAL_COUNCIL','RCI',
     'OTHER'), registration_state text null, registration_number text null, verification_status text
     check in ('unverified','pending','verified','rejected','suspended') default 'unverified', verified_by,
-    verified_at, listed boolean default false, claimed boolean default false, is_synthetic boolean
+    verified_at, verification_note text null, time_zone text not null default 'Asia/Kolkata', listed boolean default false, claimed boolean default false, is_synthetic boolean
     default false, created_at, updated_at)`.
   - `can_prescribe` = SQL function `provider_can_prescribe(profile_id)` -> `provider_type in
     ('developmental_pediatrician','child_psychiatrist','pediatrician') and verification_status =
@@ -32,7 +32,7 @@ is derived server-side from provider type **and** verification.
     `public_name`, `about`, `phone_public`, `website`, `listed boolean default false`.
   - `practice_locations(id, org_id, name, address_line1, address_line2, locality, city default
     'Hyderabad', state default 'Telangana', pincode text (6 digits), lat numeric null, lng numeric null,
-    created_at)`; `provider_locations(provider_profile_id, location_id, org_id, primary key (...))`
+    time_zone text not null default 'Asia/Kolkata' (IANA), created_at)`; `provider_locations(provider_profile_id, location_id, org_id, primary key (...))`
     (029 adds `geog`).
   - `credential_submissions(id, provider_profile_id, council, state, registration_number, certificate_path text
     (private bucket `credentials`, PDF/JPEG/PNG <= 10 MB, admin-only signed URLs), status text check in ('submitted','approved','rejected'), reviewer_id,
@@ -49,8 +49,11 @@ is derived server-side from provider type **and** verification.
   fields after `verified` sets status back to `pending` and `listed = false`.
 - **FR-4** - Admin verification queue `/admin/verifications` (platform admin): pending submissions with
   profile, council, number, certificate download, a link to the relevant public register search
-  (NMC IMR / state council / RCI CRR), `Approve` (sets `verified`, `verified_by/at`) and `Reject` with a
-  required note; `Suspend` for verified profiles. Audit (strict) `provider.verified/rejected/suspended`.
+  (NMC IMR / state council / RCI CRR; none for `OTHER`), `Approve` (sets `verified`, `verified_by/at`) and `Reject` with a
+  required note. For OT, physiotherapy, ABA and special educators (no statutory register yet) the provider
+  submits council `OTHER` with whatever credential they hold (degree, BCBA/QABA, RCI special-education
+  registration, employer letter) and the platform admin's judgement is the verification: `Approve` then
+  requires a `verification_note` saying what was checked (stored, audited, never shown publicly); `Suspend` for verified profiles. Audit (strict) `provider.verified/rejected/suspended`.
   Provider notified via outbox (032).
 - **FR-5** - Admin seeding `/admin/providers/new` and `POST /api/admin/providers` (platform admin):
   creates an unclaimed profile + org (`kind`) + location from public information; status
@@ -62,8 +65,8 @@ is derived server-side from provider type **and** verification.
   provider profile -> 409 `{ error: "You already have a profile" }`.
 - **FR-7** - Public profile `/p/[slug]` (only `verified` and `listed` profiles, else 404): name, type
   label (translated), qualifications, languages, experience, bio, organisations/locations with
-  addresses, a `Verified by DoctorNearMe` badge with council name and verification date (registration
-  number shown masked except last 4), consultation modes (filled by 030), `Book` button (030). Centre
+  addresses, a `Verified by DoctorNearMe` badge with verification date, plus the council name and masked
+  registration number (last 4) only when the council is not `OTHER`, consultation modes (filled by 030), `Book` button (030). Centre
   pages `/c/[slug]` list listed providers of the org. Metadata title `<name> - <type> in <locality>,
   Hyderabad | DoctorNearMe`; JSON-LD `Physician`/`MedicalBusiness` only with verified fields.
 - **FR-8** - `listed` toggle (`Show my profile publicly`) only enabled when `verified`.
@@ -71,7 +74,9 @@ is derived server-side from provider type **and** verification.
 ## Non-functional requirements
 
 - **NFR-1** - Public pages expose no email, no personal phone (only `phone_public` of orgs), no
-  unverified profiles; `is_synthetic` profiles are hidden unless env `SHOW_SYNTHETIC_LISTINGS=true` (042).
+  unverified profiles; `is_synthetic` profiles are shown (product decision 2026-11-12: do not hide demo
+  doctors in the pilot) with a `Demo profile` badge on cards and profile pages; `SHOW_SYNTHETIC_LISTINGS=false`
+  hides them if ever needed (default `true`).
 - **NFR-2** - Public pages are statically cacheable per slug with revalidation on profile change.
 - **NFR-3** - Translated (en/hi/te) chrome; profile text as written.
 
@@ -97,7 +102,7 @@ is derived server-side from provider type **and** verification.
 | # | Question | Decision | Why |
 |---|----------|----------|-----|
 | D-1 | Provider types | 9 types incl. GP/peds; centres as listing kind | plan §2 "Provider types" |
-| D-2 | Verification | Manual admin check (NMC/State/RCI) | plan §2 "Verification" |
+| D-2 | Verification | Manual admin check (NMC/State/RCI); for OT/physio/ABA/special educators council `OTHER` and the admin's documented judgement | plan §2 "Verification"; product owner 2026-11-12: "admin will verify, trust him for now" |
 | D-3 | Prescriber | Derived server-side: type + verified + medical council | plan §2 "E-Rx", rule 9 |
 | D-4 | Onboarding | Self-register + admin seeding + claim link | plan §2 "Availability / onboarding" |
 | D-5 | Stable identity | `provider_profiles.id` independent of org | rule 10 |
@@ -105,8 +110,5 @@ is derived server-side from provider type **and** verification.
 
 ## Open questions
 
-- Registers for OT, physiotherapy and ABA: no single statutory register equivalent to NMC/RCI (NCAHP
-  registers are being set up; ABA uses BCBA/QABA). Proposed: `OTHER` council with admin note; badge
-  text `Credentials checked by DoctorNearMe` instead of naming a council.
 - Is a provider allowed to stay listed while practising in several orgs with different fees? Handled by
   per-org services in 030.

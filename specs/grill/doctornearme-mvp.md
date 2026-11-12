@@ -104,20 +104,17 @@ Sources merged: current repo, `doctornearme_mvp_product_architecture_plan.md`, `
 (Updated after the ticket specs were written: published versions move to 024 because 025/026 publish
 plans in M1; M2/M3 tickets that touch real child data wait for the 041 privacy baseline.)
 
-### Open product questions found while writing specs
-1. Consent for parents without a smartphone (paper consent recorded by the centre?) - 020.
-2. OT, physio, ABA and special educators have no NMC/RCI-style register: what does "verified" mean? - 028.
-3. "No tracking on child pages" vs. third-party scripts (ElevenLabs SDK, Razorpay checkout): per-route exceptions drafted - 031/040.
-4. Google Meet for phone-only guardians (no Google account) must join as guests - 037.
-5. Synthetic seed listings vs. a real pilot: hidden behind a flag, plus CSV import of real unclaimed providers - 042.
-6. Time zone: new features use Asia/Kolkata; legacy pilot pages show Europe/Berlin - 030.
-7. One-minute outbox cron needs Vercel Pro or an external scheduler - 032.
-8. Care-team "discipline" is free text in M1 because provider types arrive in 028 - 022.
-
-Each ticket gets `rd.md` (requirements), `eval.md` (acceptance), `results.md` per existing convention; BOARD.md gets new tables per milestone.
-
-## 6. Human (non-code) tasks with lead time
-Google OAuth app verification · Meta WhatsApp Business verification + templates · SMS DLT registration · Razorpay test keys · Google Maps/Places key · new ElevenLabs agents (screen, booking, generic intake, follow-up) · privacy policy / DPDP consent copy legal review · recruit Hyderabad pilot providers · domain + brand assets.
+### Product questions resolved on 2026-11-12
+| # | Question | Decision | Tickets |
+|---|---|---|---|
+| 1 | Parents without a smartphone | Paper consent recorded by the centre: printed versioned form, signed scan, provider attestation; counts like digital consent | 020 |
+| 2 | "Verified" for OT, physio, ABA, special educators | Council `OTHER`; the platform admin's documented judgement is the verification | 028 |
+| 3 | Third-party scripts on child pages | ElevenLabs SDK and Razorpay checkout allowlisted per route; analytics/ads/pixels still banned | 019, 041 |
+| 4 | Meet for parents without Google | Google account mandatory for video appointments; parent never added as a calendar guest | 037 |
+| 5 | Demo doctors in the pilot | Stay visible with a `Demo profile` badge; demo bookings need an explicit acknowledgement and send nothing outside the app | 028, 029, 042 |
+| 6 | Time zone | Viewer's own time zone from the browser (fallback Asia/Kolkata); clinic local time shown when different | 018, 026, 030 |
+| 7 | Every-minute scheduler | Vercel Pro cron (already paid) + immediate `after()` drain; Supabase pg_cron as free fallback | 032 |
+| - | Care-team discipline before 028 | Free text in M1 | 022 |
 
 ## 7. Status of this record
 

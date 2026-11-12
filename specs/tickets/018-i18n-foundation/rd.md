@@ -9,7 +9,7 @@
 DoctorNearMe's UI must be usable in English, Hindi and Telugu (Hyderabad pilot). This ticket adds the
 i18n plumbing every later ticket uses: a locale resolver, typed message catalogues, a `t()` helper for
 server and client components, a language switcher, locale-aware date/number/currency formatting in
-`Asia/Kolkata`, and Indic fonts. It translates the shared shell (header, footer, banner), `/login`,
+the viewer's own time zone (from their browser; fallback `Asia/Kolkata`), and Indic fonts. It translates the shared shell (header, footer, banner), `/login`,
 the landing page and the public intake page. Clinical content (ISAA items, AI-generated reports,
 prompts) is **not** translated here. No URL prefixes: the locale lives in a cookie and the user profile.
 
@@ -17,7 +17,7 @@ prompts) is **not** translated here. No URL prefixes: the locale lives in a cook
 
 - **FR-1** - `lib/i18n/config.ts` exports `LOCALES = ["en", "hi", "te"] as const`, `type Locale`,
   `DEFAULT_LOCALE = "en"`, `LOCALE_LABELS = { en: "English", hi: "हिन्दी", te: "తెలుగు" }`,
-  `HTML_LANG = { en: "en-IN", hi: "hi-IN", te: "te-IN" }`, `TIME_ZONE = "Asia/Kolkata"` and
+  `HTML_LANG = { en: "en-IN", hi: "hi-IN", te: "te-IN" }`, `DEFAULT_TIME_ZONE = "Asia/Kolkata"` and
   `isLocale(value): value is Locale`.
 - **FR-2** - Message catalogues `messages/en.json`, `messages/hi.json`, `messages/te.json`: nested JSON,
   keys in dot paths grouped by surface (`common.*`, `nav.*`, `footer.*`, `banner.*`, `login.*`,
@@ -34,8 +34,18 @@ prompts) is **not** translated here. No URL prefixes: the locale lives in a cook
   Plural forms use `Intl.PluralRules` with keys suffixed `_one` / `_other`.
 - **FR-5** - Formatting helpers in `lib/i18n/format.ts`: `formatDate(d, locale, style: "short"|"long")`,
   `formatDateTime(d, locale)`, `formatTime(d, locale)`, `formatNumber(n, locale)`,
-  `formatInr(paise, locale)` (e.g. `₹1,500` / Indian digit grouping `₹1,50,000`). All use
-  `timeZone: "Asia/Kolkata"` and `HTML_LANG[locale]`; digits stay Latin (`numberingSystem: "latn"`).
+  `formatInr(paise, locale)` (e.g. `₹1,500` / Indian digit grouping `₹1,50,000`). All take the
+  viewer's `timeZone` (FR-5a) and `HTML_LANG[locale]`; digits stay Latin (`numberingSystem: "latn"`).
+- **FR-5a** - Viewer time zone (product decision 2026-11-12: "based on the user location").
+  `getTimeZone(): Promise<string>` (server), in order: (1) cookie `dnm_tz` if it is a valid IANA zone
+  (checked with `Intl.DateTimeFormat(undefined, { timeZone })`); (2) signed-in user's
+  `user_profiles.time_zone`; (3) `DEFAULT_TIME_ZONE`. A client component `TimeZoneSync` in the root layout
+  reads `Intl.DateTimeFormat().resolvedOptions().timeZone`; when it differs from the cookie it calls
+  `POST /api/locale` `{ time_zone }` (sets `dnm_tz`, updates the profile when signed in) and then
+  `router.refresh()` once. Every formatted date/time shows the zone abbreviation when it is not the
+  viewer's default display (e.g. `10:30 IST`), so a clinic time is never ambiguous. Storage stays UTC
+  (`timestamptz`). Existing pages switch to these helpers: `lib/pilots.ts` `formatBerlin` is replaced by
+  `formatDateTime` in the viewer's zone, and `lib/cases/format.ts` date helpers take the viewer's zone.
 - **FR-6** - Root layout sets `<html lang={HTML_LANG[locale]}>`; loads Noto Sans, Noto Sans Devanagari
   and Noto Sans Telugu via `next/font/google` (subsets `latin`, `devanagari`, `telugu`, `display: swap`)
   so Hindi/Telugu glyphs never render as boxes.
@@ -48,7 +58,8 @@ prompts) is **not** translated here. No URL prefixes: the locale lives in a cook
   (`Path=/`, `SameSite=Lax`, `Max-Age=31536000`, `HttpOnly`, `Secure` in production), and if a user is signed in updates `user_profiles.preferred_locale`; 200
   `{ locale }`. No audit event (not a clinical mutation).
 - **FR-9** - Migration `<ts>_i18n_preferred_locale.sql`: `alter table user_profiles add column
-  preferred_locale text check (preferred_locale in ('en','hi','te'))` (nullable, additive).
+  preferred_locale text check (preferred_locale in ('en','hi','te'))` and `add column time_zone text`
+  (both nullable, additive; `time_zone` validated server-side as IANA).
 - **FR-10** - Translated surfaces (all visible strings, `aria-label`s, `title`s and metadata):
   `SiteChrome` header/nav/footer/banner, `/login`, landing `/` (including metadata title/description),
   `/book-demo` labels and validation messages, public `/intake/<token>` page text, buttons, status and
@@ -80,7 +91,8 @@ prompts) is **not** translated here. No URL prefixes: the locale lives in a cook
 - `messages/en.json`, `messages/hi.json`, `messages/te.json`, `messages/REVIEW.md` (new)
 - `app/layout.tsx` (fonts, `lang`, provider), `components/SiteChrome.tsx`, `components/LanguageSwitcher.tsx` (new)
 - `app/page.tsx`, `components/landing/**`, `app/book-demo/**`, `app/login/page.tsx`, `app/intake/[token]/**`, `components/intake/IntakeCall.tsx`
-- `app/api/locale/route.ts` (new), `lib/auth-access.ts` (add `/api/locale` to public API paths)
+- `lib/pilots.ts`, `lib/cases/format.ts`, `app/dashboard/pilots/page.tsx` (viewer time zone), `components/TimeZoneSync.tsx` (new)
+- `app/api/locale/route.ts` (new, also accepts `time_zone`), `lib/auth-access.ts` (add `/api/locale` to public API paths)
 - `supabase/migrations/<ts>_i18n_preferred_locale.sql` (new)
 - `docs/i18n.md` (new)
 - `tests/i18n-keys.test.ts`, `tests/i18n-format.test.ts`, `tests/i18n-locale.test.ts` (new)
@@ -105,7 +117,7 @@ prompts) is **not** translated here. No URL prefixes: the locale lives in a cook
 | D-2 | Locale in URL or cookie | Cookie `dnm_locale` + `user_profiles.preferred_locale`; no URL prefix | keeps all existing routes and links (`/intake/<token>`, `/specialist/<token>`) stable |
 | D-3 | Library | No dependency; small typed `t()` over JSON catalogues | App Router guide pattern; fewer moving parts for agent-built code |
 | D-4 | Clinical content | Not translated in this ticket | ISAA items need clinically reviewed translations; risk 1 |
-| D-5 | Time zone | `Asia/Kolkata` for all user-facing dates | launch city Hyderabad |
+| D-5 | Time zone | Viewer's own time zone from the browser; fallback `Asia/Kolkata`; storage UTC | product owner 2026-11-12: "based on the user location" |
 | D-6 | Voice agents | Unaffected; new agents stay English, Child-Dev intake stays en/hi/te | plan §2 "Voice languages" |
 
 ## Open questions

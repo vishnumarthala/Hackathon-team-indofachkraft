@@ -8,7 +8,8 @@
 
 Two scripts. (1) A synthetic Hyderabad dataset so the directory, booking and voice agents can be
 demonstrated and load-tested without real people: fictional providers and centres across real
-Hyderabad localities, flagged `is_synthetic` and hidden in production. (2) A CSV importer for the real
+Hyderabad localities, flagged `is_synthetic`, visible in production with a `Demo profile` badge (product decision
+2026-11-12) and protected so a real parent cannot mistake them for real care (FR-2a). (2) A CSV importer for the real
 pilot: platform admins import recruited providers' public details as **unclaimed, unverified** profiles
 and generate claim links (028).
 
@@ -24,9 +25,14 @@ and generate claim links (028).
   (in-clinic and video, fees ₹500-₹2,500, mixed `payment_mode`) and weekly rules (030).
 - **FR-2** - Every synthetic record: `is_synthetic = true`, names from a fixed fictional list prefixed
   `Dr. (Demo)` / `(Demo) ... Centre`, phone `+91 90000 0xxxx` (test range), emails `@example.com`,
-  registration numbers `DEMO-<n>`, `verification_status = 'verified'` and `listed = true` (so they are
-  searchable when `SHOW_SYNTHETIC_LISTINGS=true`), no auth users (unclaimed). Deterministic with a
+  registration numbers `DEMO-<n>`, `verification_status = 'verified'` and `listed = true` (searchable unless `SHOW_SYNTHETIC_LISTINGS=false`), no auth users (unclaimed). Deterministic with a
   seed value (`--seed 42` default) so evals are reproducible.
+- **FR-2a** - Demo booking safeguard: holding a slot on an `is_synthetic` profile shows
+  `This is a demo profile. No real consultation will take place.` and requires the checkbox
+  `I understand this is a demo` (`demo_ack: true` in the hold body, else 422). Such appointments are stored with
+  `is_demo = true`, skip payment capture and every outbound email/WhatsApp notification (in-app only), and
+  never create a Meet event.
+  Migration `<ts>_demo_appointments.sql` adds `appointments.is_demo boolean not null default false`.
 - **FR-3** - `--reset-synthetic` deletes only `is_synthetic` rows (and their appointments) - never
   touches non-synthetic data; summary printed as JSON `{ providers, centres, locations, services, rules }`.
 - **FR-4** - Real-provider import `npm run -s import:providers -- --file <csv> [--dry-run]`
@@ -37,7 +43,7 @@ and generate claim links (028).
   to stdout only (never written to disk). Dry run prints what would be created.
 - **FR-5** - `docs/pilot-seeding.md`: when to use each script, the production guard, how to run the
   import, consent/permission expectation (only import providers who agreed to be contacted/listed),
-  and how synthetic listings are hidden (`SHOW_SYNTHETIC_LISTINGS`).
+  the `Demo profile` badge and demo-booking safeguard, and the `SHOW_SYNTHETIC_LISTINGS=false` kill switch.
 
 ## Non-functional requirements
 
@@ -63,7 +69,7 @@ and generate claim links (028).
 | # | Question | Decision | Why |
 |---|----------|----------|-----|
 | D-1 | Launch city | Hyderabad | plan §1 |
-| D-2 | Real pilot vs demo | Synthetic data flagged and hidden in production; real providers via import + claim | plan §1 "Real pilot (not demo-only)"; synthetic-data rule |
+| D-2 | Real pilot vs demo | Synthetic profiles stay visible with a `Demo profile` badge and demo-booking safeguard; real providers via import + claim | product owner 2026-11-12: "no need" to hide; safeguard so real parents never wait for a fictional doctor |
 | D-3 | Real imports | Unclaimed + unverified until claim and manual verification | plan §2 "Verification", "Availability / onboarding" |
 
 ## Open questions

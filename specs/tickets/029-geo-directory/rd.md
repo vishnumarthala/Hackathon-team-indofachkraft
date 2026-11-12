@@ -20,8 +20,8 @@ Geo queries run in Postgres with PostGIS; addresses are geocoded server-side whe
   p_language text, p_mode text, p_limit int, p_offset int)` (`security definer`, `stable`) returning
   `profile_id, slug, display_name, provider_type, languages, location_id, locality, distance_km,
   org_public_name, org_kind, offers_video, offers_in_clinic, rating_avg, rating_count` for profiles
-  with `verification_status = 'verified' and listed` (and `is_synthetic = false` unless the caller
-  passes the synthetic flag from env), ordered by distance then name; one row per profile (nearest
+  with `verification_status = 'verified' and listed` (synthetic profiles included unless env
+  `SHOW_SYNTHETIC_LISTINGS=false`; results carry `is_synthetic` so cards show the `Demo profile` badge), ordered by distance then name; one row per profile (nearest
   location). Radius 1-50 km (default 10); `p_mode` `in_clinic | video | any` (video-only providers
   appear regardless of distance when mode is `video`, ordered by name). `rating_*` null until 036.
 - **FR-3** - `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` (public) ->

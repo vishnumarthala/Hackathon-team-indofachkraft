@@ -96,7 +96,9 @@ operational health checks. Later tickets register their data in the same retenti
   failed processor deletions, recordings stuck in `transcribing`/`extracting` > 30 min.
 - **FR-13** - Child pages tracking check: a test crawls rendered `/family/**` routes and fails if any
   `<script src>` points outside the app origin or known exceptions declared in
-  `lib/privacy/third-party-allowlist.ts` (empty in this ticket).
+  `lib/privacy/third-party-allowlist.ts`. Approved entries (product owner 2026-11-12): ElevenLabs SDK
+  origins and Razorpay checkout (`checkout.razorpay.com`), each scoped to the routes that need them. Any analytics,
+  ad, tag-manager or social-pixel origin fails the test.
 
 ## Non-functional requirements
 
@@ -137,7 +139,7 @@ operational health checks. Later tickets register their data in the same retenti
 | D-3 | Fail closed | `auditStrict` in-transaction for listed actions | rule 7 |
 | D-4 | Deletion of external copies | ElevenLabs conversation delete + processor log | rule 7 "incl. external processors" |
 | D-5 | Clinical record retention vs erasure | Admin review step; reject only with cited obligation | Indian clinical record retention rules vs DPDP erasure |
-| D-6 | No tracking on child pages | Automated check | plan §2 "Child consent" |
+| D-6 | No tracking on child pages | Automated check; ElevenLabs and Razorpay allowlisted per route | plan §2 "Child consent"; product owner 2026-11-12 |
 
 ## Open questions
 

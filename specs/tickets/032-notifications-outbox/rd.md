@@ -48,7 +48,13 @@ skipped until credentials and approved templates exist). This must exist before 
 - **FR-4** - Workers (route handlers, protected by header `Authorization: Bearer <CRON_SECRET>`,
   otherwise 401): `POST /api/cron/outbox` fans out due events (`deliver_after <= now()`), then sends up to
   50 due notifications; returns 200 `{ fanned_out, sent, failed, skipped }`. Configured in `vercel.json`
-  crons every minute; locally run `npm run -s outbox:run` (`scripts/outbox-run.ts`, loops every 10 s).
+  crons every minute (the team has Vercel Pro, which allows per-minute cron at no extra plan cost). Cost
+  control: the route first runs one indexed `exists` query and returns in a few ms when nothing is due.
+  Instant events (`appointment.confirmed`, `message.created`, ...) do not wait for cron: the producing
+  route calls `drainSoon()` which uses Next.js `after()` to process that event's notifications right after
+  the response; cron only handles scheduled reminders, retries and anything `after()` missed. Locally run
+  `npm run -s outbox:run` (`scripts/outbox-run.ts`, loops every 10 s). Free fallback if the hosting plan
+  changes: Supabase `pg_cron` + `pg_net` calling the same route every minute (documented, not built).
 - **FR-5** - Retry policy: failures -> `failed`, `next_attempt_at` after 1 min, 5 min, 30 min, 2 h,
   12 h; after 5 attempts -> `dead` + audit `notification.dead`. Permanent errors (invalid address, opted
   out, template rejected) -> `dead` immediately. Sends are idempotent at the provider where possible
@@ -111,11 +117,10 @@ skipped until credentials and approved templates exist). This must exist before 
 |---|----------|----------|-----|
 | D-1 | Channels | In-app + Resend email (.ics) + Meta WhatsApp Cloud API | plan §2 "Notifications" |
 | D-2 | Delivery pattern | Transactional outbox + scheduler + retries + dedup, before booking | rule 12 |
-| D-3 | Scheduler | Vercel Cron -> secret-protected route; `skip locked` leases | no extra infra |
+| D-3 | Scheduler | Vercel Pro cron every minute + `after()` immediate drain; `skip locked` leases | product owner 2026-11-12: cheapest option, Vercel Pro already paid |
 | D-4 | WhatsApp before Meta approval | `skipped` with reason, never fails the domain action | risk 5 |
 | D-5 | Content | No clinical content / full child names outside the app | DPDP minimisation |
 
 ## Open questions
 
-- Vercel Cron minimum interval on the chosen plan (1 min assumed; Hobby allows only daily) - a human
-  must confirm the hosting plan or use Supabase `pg_cron` + `pg_net` to call the route.
+None.

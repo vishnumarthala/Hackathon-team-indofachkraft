@@ -67,6 +67,20 @@
 3. `guardian_b` leaves the child; the next request to that child's pages/APIs -> 404.
 4. `provider_a` calls `POST /api/family/children/:id/consents` -> 403 (providers can never grant consent).
 
+### E-5a: Paper consent (FR-18a-e)
+
+1. On a legacy case with no guardian account, open `Print consent form`: every feature's current text,
+   processors and version id are shown in the chosen language.
+2. Record paper consent for `ai_transcription` only, with a synthetic scan: the transcription gate now
+   passes; extraction is still blocked with the FR-8 error. The panel shows `On paper, recorded by ...`.
+3. Missing scan, missing attestation, a future `signed_on` and an outdated document version give 400/400/400/409
+   and write nothing. A forced audit failure gives 503 and writes nothing.
+4. A provider of another org gets 404 on both paper-consent endpoints. The scan is only reachable by
+   signed URL for members of the case's org.
+5. Record a paper withdrawal: the gate blocks again, and queued work for that feature aborts (FR-8).
+6. Claim the child with a guardian account: the family page shows `Given on paper on <date>`, and a
+   digital withdrawal by the guardian blocks the gate.
+
 ### E-6: Demo flow still works (FR-18)
 
 Run the seeded synthetic demo case through intake simulate -> transcribe -> extract -> report: all succeed.

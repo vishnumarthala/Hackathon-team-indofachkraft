@@ -25,8 +25,9 @@ and all 9 types present (SQL counts in `evidence/`).
 
 ### E-2: Visibility (FR-2)
 
-With `SHOW_SYNTHETIC_LISTINGS=true`, `/find` near Gachibowli shows `(Demo)` providers with slots
-bookable (030). Restart without the flag: none appear.
+By default `/find` near Gachibowli shows `(Demo)` providers with the `Demo profile` badge. Holding a
+slot without `demo_ack` -> 422; with it -> an `is_demo` appointment with no email/WhatsApp outbox rows and no
+payment. Restart with `SHOW_SYNTHETIC_LISTINGS=false`: none appear.
 
 ### E-3: Reset safety (FR-3)
 

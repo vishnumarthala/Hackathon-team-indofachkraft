@@ -118,6 +118,35 @@ design rules 1, 2 and 6.
   its audit insert fails, the API returns 503 `{ error: "Could not save. Please try again." }` and no
   state changes (single DB function `record_consent(...)` doing both inserts in one transaction).
 
+### Paper consent recorded by the centre (product decision 2026-11-12)
+
+For parents without a smartphone, the centre records consent given on paper. Both methods count the same
+for every gate in FR-7, and both are logged in `consent_records`.
+
+- **FR-18a** - `consent_records` gains `method text not null default 'digital' check in ('digital',
+  'paper')`, and for paper rows `attested_by uuid` (the provider), `paper_guardian_name text (1-100)`,
+  `paper_relationship` (FR-2 values), `paper_signed_on date`, `paper_form_path text` (private bucket
+  `consent-forms`, admin/provider signed URLs only). Check constraint: `digital` rows need
+  `guardian_user_id` + `guardian_link_id`; `paper` rows need `attested_by`, guardian name, relationship,
+  signed date (not in the future) and the form path, and have null guardian ids.
+- **FR-18b** - Printable form `/cases/[id]/consent-form?locale=en|hi|te` (case access): child name, centre
+  name, every feature's current consent document text and processors with a tick box each, signature,
+  relationship and date lines, and the form version id. Printing it is not consent.
+- **FR-18c** - `POST /api/cases/:id/paper-consents` (multipart, case access): `features[]` (the boxes the
+  parent ticked), `guardian_name`, `relationship`, `signed_on`, `consent_document_ids[]` (the printed
+  versions), `scan` (PDF/JPEG/PNG <= 10 MB) and `attestation` = true for the text
+  `I confirm the parent or legal guardian signed this form in person.` -> 201 `{ state }`. Missing scan or
+  attestation -> 400; outdated document version -> 409. One strict-audited transaction per request
+  (`consent.paper_recorded`, FR-17 behaviour). `POST /api/cases/:id/paper-consents/withdraw`
+  `{ feature, guardian_name, note }` records a paper withdrawal (no scan needed; withdrawing is never harder
+  than granting).
+- **FR-18d** - The case `Consent` panel (FR-14) gets `Print consent form` and `Record paper consent`, and
+  shows `On paper, recorded by <provider> on <date>` per feature. If a guardian later links an account,
+  `/family/children/[id]` shows paper consents as `Given on paper on <date>` and the guardian can withdraw
+  them digitally.
+- **FR-18e** - Paper consent works for legacy cases too: the centre can unblock a legacy case by
+  recording the parent's signed form.
+
 ### Legacy and demo data
 
 - **FR-18** - `scripts/seed-demo.ts` (and `seed:users`) create, for synthetic demo cases only, a
@@ -144,6 +173,7 @@ design rules 1, 2 and 6.
   `app/api/cases/[id]/{refer,ask}`, `app/specialist/[token]`, `app/intake/[token]`, `lib/intake/process.ts`
 - `app/api/cases/[id]/claim-code/route.ts`, `app/api/family/children/**`, `app/api/family/claims/route.ts` (new)
 - `app/family/children/**` (new), case workspace consent panel component (new)
+- `app/cases/[id]/consent-form/page.tsx`, `app/api/cases/[id]/paper-consents/**` (new); storage bucket `consent-forms` (migration)
 - `messages/*.json`; `tests/consent-*.test.ts`, `tests/children-*.test.ts`, `tests/legacy-backfill.test.ts` (new)
 
 ## Don't touch
@@ -154,7 +184,7 @@ design rules 1, 2 and 6.
 ## Out of scope
 
 - Health profile (021), sharing grants and care team (022), document upload (023).
-- Deletion/export requests and retention (041). Paper/offline consent capture (see open questions).
+- Deletion/export requests and retention (041); 041 registers `consent-forms` scans for retention.
 - Co-guardian invitations by an existing guardian.
 
 ## Decisions
@@ -168,9 +198,8 @@ design rules 1, 2 and 6.
 | D-5 | Cross-border disclosure | Each consent text lists processors + locations | plan §2 "AI on real data" |
 | D-6 | Link lifetime | Intake 7 days, referral 30 days, claim code 72 h; all revocable | rule 6 |
 | D-7 | Consent failure mode | Fail closed (503, no state change) | rule 7 |
+| D-8 | Parents without a smartphone | Paper consent recorded by the centre with a signed scan and provider attestation | product owner 2026-11-12: "paper consent by the center" |
 
 ## Open questions
 
-- In-clinic parents without smartphones: is a provider-attested paper consent (uploaded scan, 023)
-  acceptable under DPDP for the pilot? Not built here; until decided, such children cannot use AI features.
 - Legal review of v1 consent texts in en/hi/te (plan §6) - blocks the real pilot, not this ticket.

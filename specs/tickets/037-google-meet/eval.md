@@ -24,6 +24,12 @@
 Connect (mocked) as `provider_a`; book a video slot as `guardian_a` -> `meet_status = 'created'`,
 `meet_url` stored; both see `Join video call` only inside the time window (time-travel).
 
+### E-1a: Google account and guest privacy (FR-3, FR-5a)
+
+A phone-only guardian trying to hold a video slot gets 422 `Link your Google account to book a video
+consultation` and the page shows `Connect Google`; an in-clinic slot books normally. After linking Google
+the video hold succeeds. The mocked `events.insert` request has no `attendees` and `sendUpdates=none`.
+
 ### E-2: Failure path (FR-4)
 
 Disconnect, book again -> `failed`; provider pastes a Meet URL -> `manual`; guardian sees it.

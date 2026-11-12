@@ -77,7 +77,9 @@ consent and all child data arrive in 020+; the shell shows empty states.
   number per hour and 20 per IP per hour (`429 { error: "Too many codes requested. Try again later." }`).
 - **NFR-2** - `/family/**` pages load no third-party scripts (no analytics, ads, tag managers, social
   pixels); response header `Content-Security-Policy` with `script-src 'self'` (plus Next's nonce if
-  required) on `/family/**`. Exceptions must be added explicitly by later tickets (e.g. 031, 040).
+  required) on `/family/**`. Exceptions must be added explicitly by later tickets. Approved by the product owner
+  (2026-11-12): the ElevenLabs SDK (033, 040) and Razorpay checkout (031) may load on the pages that need them;
+  analytics, ads, tag managers and social pixels stay banned on every child/family page.
 - **NFR-3** - 375 px mobile-first; tap targets >= 44 px; all copy through `t()` in en/hi/te.
 - **NFR-4** - Phone numbers are never logged in full (server logs, audit details, errors).
 
@@ -111,7 +113,7 @@ consent and all child data arrive in 020+; the shell shows empty states.
 | D-1 | Guardian auth methods | Google Sign-In + phone OTP | plan §2 "Auth" |
 | D-2 | Default role for new sign-ups | `guardian` (least privilege) | rule 4: privileged roles server-side only |
 | D-3 | Account linking | Explicit, user-initiated; never auto-merge | rule 4 "safe Google<->phone identity linking" |
-| D-4 | No tracking on family pages | CSP `script-src 'self'` | plan §2 "Child consent ... no tracking/ads on child pages" |
+| D-4 | No tracking on family pages | CSP `script-src 'self'` plus an explicit allowlist; ElevenLabs and Razorpay approved | plan §2 "Child consent ... no tracking/ads"; product owner 2026-11-12: allow ElevenLabs and Razorpay for now |
 | D-5 | SMS before DLT | Supabase test OTP numbers locally; production waits for DLT | risk 5 |
 
 ## Open questions

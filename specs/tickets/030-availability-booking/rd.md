@@ -21,7 +21,8 @@ Payment state lives in 031, not here (rule 12).
     intake_kind text check in ('child_dev','generic','none') (035), active, created_at)`; in-clinic needs `location_id`.
   - `availability_rules(id, provider_profile_id, org_id, location_id null, weekday int 0-6 (0 = Monday),
     start_time time, end_time time, mode text check in ('in_clinic','video','both'), valid_from date,
-    valid_to date null)`; times in `Asia/Kolkata`.
+    valid_to date null)`; rule times are wall-clock times in the location's time zone
+    (`practice_locations.time_zone`, default `Asia/Kolkata`; video-only rules use the provider's profile time zone).
   - `availability_overrides(id, provider_profile_id, date, kind text check in ('unavailable','extra'),
     start_time null, end_time null, mode null, note)` (`unavailable` with null times = whole day).
   - `appointments(id, provider_profile_id, org_id, service_id, service_snapshot jsonb not null
@@ -38,8 +39,8 @@ Payment state lives in 031, not here (rule 12).
     (state history, append-only).
 - **FR-2** - Slot generation `lib/booking/slots.ts` (pure, tested): for a service and date range (max 14
   days ahead, min lead time 2 h), expand rules, apply overrides, step by `duration_min`, subtract
-  blocking appointments (+ buffer), return `{ start, end }` ISO with `+05:30`. DST-free but always
-  computed via `Asia/Kolkata`.
+  blocking appointments (+ buffer), return `{ start, end }` as UTC ISO strings. Rules are expanded in the
+  rule's own time zone (DST-safe via `Intl`), never the server's.
   `GET /api/public/providers/:profileId/slots?service_id=&from=YYYY-MM-DD&days=7` -> 200 `{ slots }`.
 - **FR-3** - State machine as SQL functions (single transaction each, `security definer`, called only by
   the server):
@@ -86,7 +87,8 @@ Payment state lives in 031, not here (rule 12).
 
 - **NFR-1** - Concurrency: 50 parallel hold attempts on one slot -> exactly one `held`; overlapping
   different-duration services cannot overlap; reschedule races leave a consistent state.
-- **NFR-2** - Time: all storage `timestamptz`, ranges `[)`; UI in `Asia/Kolkata` via 018 helpers.
+- **NFR-2** - Time: all storage `timestamptz`, ranges `[)`; UI shows slots in the viewer's time zone (018 `getTimeZone`); when it differs
+  from an in-clinic location's zone, each slot also shows the clinic's local time (`4:00 PM your time · 8:30 PM at the clinic`).
 - **NFR-3** - Translated (en/hi/te), 375 px booking flow.
 - **NFR-4** - Register `appointments` in the 041 privacy registry (retention period per legal review, see Open questions).
 

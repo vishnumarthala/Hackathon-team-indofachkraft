@@ -130,7 +130,7 @@ prompts/  extract.md  brief.md  report.md  referral.md  ask.md  parent-summary.m
 supabase/config.toml  supabase/migrations/20261107120000_init.sql               (001)
 scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
           make-scribe-fixture.ts make-sample-audio.mjs seed-demo.ts (002)
-.githooks/pre-push  .github/pull_request_template.md  .github/workflows/ci.yml (001)
+.github/pull_request_template.md  .github/workflows/ci.yml (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md

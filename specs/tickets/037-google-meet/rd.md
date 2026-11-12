@@ -8,8 +8,9 @@
 
 Providers connect their own (free @gmail or Workspace) Google account; when a video appointment is
 confirmed, DoctorNearMe creates a Google Calendar event with a Meet conference on the provider's
-calendar, invites the guardian, and shows `Join video call` to both. Creation is retry-safe through the
-outbox. Patients join signed in to Google and are admitted from the Meet lobby by the provider. The AI
+calendar (the guardian is never added as a calendar guest), and shows `Join video call` to both inside DoctorNearMe. Creation is retry-safe through the
+outbox. A Google account is mandatory for the guardian of a video appointment: they join signed in to Google and
+are admitted from the Meet lobby by the provider. The AI
 scribe is **not** available on Meet calls (risk 3).
 
 ## Functional requirements
@@ -27,7 +28,7 @@ scribe is **not** available on Meet calls (risk 3).
   Calendar` (unverified apps get 7-day tokens - risk 4).
 - **FR-3** - Outbox topic `meet.create` on `appointment.confirmed` for `mode = 'video'`: calls
   `events.insert` (`conferenceDataVersion=1`, `conferenceData.createRequest.requestId =
-  <appointment_id>` for idempotency; `sendUpdates=all`; attendee = guardian email if known; summary
+  <appointment_id>` for idempotency; `sendUpdates=none`; no attendees, so the guardian's email never reaches the provider's calendar; summary
   `DoctorNearMe video consultation` - no child name; description with the app link). Before inserting,
   looks up an existing event by `privateExtendedProperty=dnm_appointment_id=<id>` so retries never
   create duplicates. Stores `meet_url`/`google_event_id`, `meet_status = 'created'`, emits
@@ -38,8 +39,12 @@ scribe is **not** available on Meet calls (risk 3).
   `Your provider will share the video link soon.`
 - **FR-5** - `Join video call` button for guardian (`/family/appointments`) and provider (agenda) from 10
   minutes before start until 30 minutes after end; guardian text: `Join with your Google account. The
-  provider will admit you from the waiting room.` Guardians without a Google account can join as
-  guests (`Ask to join`).
+  provider will admit you from the waiting room.`
+- **FR-5a** - Google account required for video (product decision 2026-11-12). Holding or confirming an
+  appointment for a `video` service (030 `hold`/`confirm`, and the 034 voice agent's confirm) checks that
+  the guardian has a linked Google identity (019 `linkIdentity`). Without one: 422
+  `{ error: "Link your Google account to book a video consultation" }`, and the booking page shows that text
+  with a `Connect Google` button (019 account page) before slot selection. In-clinic services are unaffected.
 
 ## Non-functional requirements
 
@@ -51,6 +56,7 @@ scribe is **not** available on Meet calls (risk 3).
 
 - `supabase/migrations/<ts>_google_meet.sql` (new); `lib/google/**` (new)
 - `app/dashboard/settings/integrations/**`, `app/api/integrations/google/**` (new); agenda + `/family/appointments` (join button)
+- `lib/booking/**` (FR-5a Google-identity check for video holds/confirms), booking page notice
 - `lib/notify/topics.ts`, `.env.example` (`GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `TOKEN_ENCRYPTION_KEY`)
 - `tests/google-meet.test.ts` (new)
 
@@ -69,8 +75,9 @@ scribe is **not** available on Meet calls (risk 3).
 | D-1 | Video | Google Meet via provider's Google OAuth first | plan §2 "Video" |
 | D-2 | Idempotency | `requestId` = appointment id + extended-property lookup | rule 12 "retry-safe Meet creation" |
 | D-3 | Scribe on Meet | Not supported | plan §2 "Scribe capture"; risk 3 |
+| D-4 | Guardian Google account | Mandatory for video appointments; no guest join | product owner 2026-11-12 |
+| D-5 | Calendar guests | Guardian never added; join link only inside DoctorNearMe and notifications | grill: "accept sign-in, doctor admits from lobby"; plan privacy rule |
 
 ## Open questions
 
-- Guardians who signed up by phone only have no Google email to invite - they join as guests; confirm
-  this is acceptable for the pilot.
+None.
