@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ReviewScreen } from "@/components/session/ReviewScreen";
 import { getSessionReview } from "@/lib/queries/sessions";
 import { needsReextraction } from "@/lib/speakers";
+import { requireCasePage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ export default async function SessionReviewPage({
   params: Promise<{ id: string; recordingId: string }>;
 }) {
   const { id, recordingId } = await params;
+  await requireCasePage(id);
   const review = await getSessionReview(id, recordingId);
   if (!review) notFound();
 

@@ -1,10 +1,10 @@
 import { SignOutButton } from "@/components/auth/SignOutButton";
-import { requirePageUser } from "@/lib/auth";
+import { requireProviderPage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
 export default async function CasesLayout({ children }: { children: React.ReactNode }) {
-  const user = await requirePageUser();
+  const { user } = await requireProviderPage();
 
   return (
     <>

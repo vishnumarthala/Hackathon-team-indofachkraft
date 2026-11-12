@@ -1,5 +1,5 @@
 import { audit } from "@/lib/audit";
-import { requireApiUser } from "@/lib/auth";
+import { requireRecordingAccess } from "@/lib/authz";
 import { generateJson } from "@/lib/gemini";
 import { fail, ok } from "@/lib/http";
 import { getCase } from "@/lib/queries/cases";
@@ -17,10 +17,9 @@ const CONFIRM_FIRST = "Confirm at least one ISAA item first";
 const GENERATION_FAILED = "Report could not be generated";
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireApiUser();
-  if (unauthorized) return unauthorized;
-
   const { id } = await params;
+  const denied = await requireRecordingAccess(id);
+  if (denied) return denied;
   const recording = await getRecording(id);
   if (!recording || recording.kind !== "session") return fail(404, "Session not found");
 

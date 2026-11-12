@@ -11,6 +11,13 @@ const m = vi.hoisted(() => ({
   startAgentSession: vi.fn(),
 }));
 vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
+vi.mock("@/lib/authz", () => ({
+  requireCaseAccess: vi.fn().mockResolvedValue(null),
+  requireRecordingAccess: vi.fn().mockResolvedValue(null),
+  requireReportAccess: vi.fn().mockResolvedValue(null),
+  requireFactAccess: vi.fn().mockResolvedValue(null),
+  requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
+}));
 vi.mock("@/lib/queries/cases", () => ({ getCase: m.getCase }));
 vi.mock("@/lib/queries/intake", () => ({
   getCaseByToken: m.getCaseByToken,
@@ -35,6 +42,8 @@ const CASE: CaseRow = {
   parent_phone: "+91 98765 43210",
   language: "te",
   therapist_name: "Demo Therapist",
+  org_id: "00000000-0000-4000-8000-00000000a001",
+  created_by: null,
   facp_score: null,
   status: "booked",
   intake_token: null,

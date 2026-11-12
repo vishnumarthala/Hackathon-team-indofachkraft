@@ -18,7 +18,8 @@
     "db:sql": "tsx scripts/sql.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
     "fixtures:scribe": "tsx scripts/make-scribe-fixture.ts",
-    "db:push": "tsx scripts/db-apply.ts"
+    "db:push": "tsx scripts/db-apply.ts",
+    "org:grant": "tsx scripts/org-grant.ts"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.77.0",

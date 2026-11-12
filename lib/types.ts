@@ -129,6 +129,8 @@ export type CaseRow = {
   parent_phone: string | null;
   language: Language;
   therapist_name: string;
+  org_id: string;
+  created_by: string | null;
   facp_score: number | null;
   status: CaseStatus;
   intake_token: string | null;

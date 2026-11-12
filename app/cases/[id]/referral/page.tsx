@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/cases/format";
 import { getReferralContext, listReferrals, specialistUrl } from "@/lib/queries/referrals";
 import { assessReferral } from "@/lib/referral/packet";
 import { formatIsaaScore, SUGGESTION_LABEL } from "@/lib/scoring";
+import { requireCasePage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,7 @@ const STATUS_LABELS: Record<string, string> = { sent: "Sent", viewed: "Viewed", 
 
 export default async function ReferralPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  await requireCasePage(id);
   const context = await getReferralContext(id);
   if (!context) notFound();
   const referrals = await listReferrals(id);

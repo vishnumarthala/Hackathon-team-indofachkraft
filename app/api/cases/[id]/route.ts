@@ -1,5 +1,5 @@
 import { audit } from "@/lib/audit";
-import { requireApiUser } from "@/lib/auth";
+import { requireCaseAccess } from "@/lib/authz";
 import { caseUpdateSchema, changedFields, hasUpdates } from "@/lib/cases/validation";
 import { supabaseAdmin } from "@/lib/db";
 import { fail, ok, parseJson } from "@/lib/http";
@@ -8,10 +8,9 @@ import { getCase } from "@/lib/queries/cases";
 export const dynamic = "force-dynamic";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const unauthorized = await requireApiUser();
-  if (unauthorized) return unauthorized;
-
   const { id } = await params;
+  const denied = await requireCaseAccess(id);
+  if (denied) return denied;
   const current = await getCase(id);
   if (!current) return fail(404, "Case not found");
 

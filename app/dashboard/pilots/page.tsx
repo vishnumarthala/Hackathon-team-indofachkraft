@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function PilotSignupsPage() {
   const user = await requirePageUser();
-  if ((await getUserRole(user.id)) !== "admin") notFound();
+  if ((await getUserRole(user.id)) !== "platform_admin") notFound();
 
   const rows = await listPilotSignups();
 

@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { SignOutButton } from "@/components/auth/SignOutButton";
-import { getUserRole, requirePageUser } from "@/lib/auth";
+import { requireProviderPage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const user = await requirePageUser();
-  const role = await getUserRole(user.id);
+  const { user, role } = await requireProviderPage();
 
   return (
     <>
@@ -16,7 +15,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
             Signed in as <span className="font-medium text-slate-900">{user.email}</span>
           </p>
           <div className="flex items-center gap-3">
-            {role === "admin" ? (
+            <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/team">
+              Team
+            </Link>
+            {role === "platform_admin" ? (
               <Link className="text-sm font-medium text-slate-700 underline" href="/admin/users">
                 User accounts
               </Link>

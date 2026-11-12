@@ -2,11 +2,13 @@ import { notFound } from "next/navigation";
 import { FacpForm } from "@/components/case/FacpForm";
 import { NEXT_STEPS, formatDate, type CaseStatus } from "@/lib/cases/format";
 import { getCase } from "@/lib/queries/cases";
+import { requireCasePage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
 export default async function CaseOverviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  await requireCasePage(id);
   const caseRow = await getCase(id);
   if (!caseRow) notFound();
 

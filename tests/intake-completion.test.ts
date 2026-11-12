@@ -23,6 +23,13 @@ const m = vi.hoisted(() => ({
   sdkOptions: null as null | Record<string, (arg?: unknown) => void>,
 }));
 vi.mock("@/lib/auth", () => ({ requireApiUser: vi.fn().mockResolvedValue(null) }));
+vi.mock("@/lib/authz", () => ({
+  requireCaseAccess: vi.fn().mockResolvedValue(null),
+  requireRecordingAccess: vi.fn().mockResolvedValue(null),
+  requireReportAccess: vi.fn().mockResolvedValue(null),
+  requireFactAccess: vi.fn().mockResolvedValue(null),
+  requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
+}));
 vi.mock("@/lib/intake/process", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/intake/process")>()),
   processPostCall: m.process,
@@ -636,8 +643,8 @@ describe.skipIf(!DB_TESTS)("database integration (CT_DB_TESTS=1, isolated a010 c
     const id = randomUUID();
     const token = randomBytes(32).toString("base64url");
     await sql`
-      insert into cases (id, child_alias, parent_alias, language, therapist_name, status, intake_token)
-      values (${id}, 'a010 Ravi (synthetic)', 'a010 Lakshmi (synthetic)', 'te', 'a010 Therapist', ${status}, ${token})`;
+      insert into cases (org_id, id, child_alias, parent_alias, language, therapist_name, status, intake_token)
+      values ('00000000-0000-4000-8000-00000000a001', ${id}, 'a010 Ravi (synthetic)', 'a010 Lakshmi (synthetic)', 'te', 'a010 Therapist', ${status}, ${token})`;
     createdCases.push(id);
     return { id, token };
   }

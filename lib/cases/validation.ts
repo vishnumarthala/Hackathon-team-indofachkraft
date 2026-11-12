@@ -3,6 +3,7 @@ import { z } from "zod";
 export const LANGUAGES = ["en", "hi", "te"] as const;
 export const DEFAULT_THERAPIST = "Demo Therapist";
 export const PHONE_PATTERN = /^\+?[0-9 ]{7,20}$/;
+export const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const MSG = {
   childRequired: "Child alias is required",
@@ -88,6 +89,7 @@ export const caseCreateSchema = z.preprocess(
     parent_phone: phone.optional(),
     language: language.default("en"),
     therapist_name: z.string({ error: MSG.therapistMax }).max(60, { error: MSG.therapistMax }).default(DEFAULT_THERAPIST),
+    org_id: z.string({ error: "Choose an organisation" }).regex(UUID_PATTERN, { error: "Choose an organisation" }).optional(),
   }),
 );
 
@@ -115,8 +117,6 @@ export function changedFields(
 ): (typeof UPDATABLE_FIELDS)[number][] {
   return UPDATABLE_FIELDS.filter((field) => input[field] !== undefined && input[field] !== (current[field] ?? null));
 }
-
-export const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function isUuid(value: string): boolean {
   return UUID_PATTERN.test(value);
