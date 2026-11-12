@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 382. Not yet approved: 382.
+Rows: 611. Not yet approved: 611.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -47,6 +47,235 @@ Rows: 382. Not yet approved: 382.
 | `banner.pilot` | Authenticated pilot - synthetic data only; do not enter real patient information. AI documents, the clinician decides. | लॉग-इन वाला पायलट - केवल नकली (सिंथेटिक) डेटा; असली मरीज़ की जानकारी न डालें। AI लिखता है, फ़ैसला क्लिनिशियन करते हैं। | లాగిన్ ఉన్న పైలట్ - కృత్రిమ (సింథటిక్) డేటా మాత్రమే; నిజమైన రోగి సమాచారం నమోదు చేయవద్దు. AI రాస్తుంది, నిర్ణయం క్లినీషియన్‌దే. |  | pending |
 | `errors.generic` | Something went wrong. Please try again. | कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें। | ఏదో పొరపాటు జరిగింది. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `errors.network` | Network error. Please check your connection and try again. | नेटवर्क की समस्या। कृपया अपना कनेक्शन जाँचें और फिर से कोशिश करें। | నెట్‌వర్క్ సమస్య. దయచేసి మీ కనెక్షన్ చూసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `providers.types.developmental_pediatrician` | Developmental paediatrician | विकासात्मक बाल रोग विशेषज्ञ | డెవలప్‌మెంటల్ పీడియాట్రీషియన్ |  | pending |
+| `providers.types.child_psychiatrist` | Child psychiatrist | बाल मनोचिकित्सक | పిల్లల మానసిక వైద్యులు |  | pending |
+| `providers.types.child_psychologist` | Child psychologist | बाल मनोवैज्ञानिक | పిల్లల మనస్తత్వ నిపుణులు |  | pending |
+| `providers.types.speech_language_pathologist` | Speech-language pathologist | स्पीच-लैंग्वेज पैथोलॉजिस्ट | స్పీచ్-లాంగ్వేజ్ పాథాలజిస్ట్ |  | pending |
+| `providers.types.occupational_therapist` | Occupational therapist | ऑक्यूपेशनल थेरेपिस्ट | ఆక్యుపేషనల్ థెరపిస్ట్ |  | pending |
+| `providers.types.aba_therapist` | ABA therapist | ABA थेरेपिस्ट | ABA థెరపిస్ట్ |  | pending |
+| `providers.types.special_educator` | Special educator | विशेष शिक्षक | ప్రత్యేక విద్యావేత్త |  | pending |
+| `providers.types.physiotherapist` | Physiotherapist | फिज़ियोथेरेपिस्ट | ఫిజియోథెరపిస్ట్ |  | pending |
+| `providers.types.pediatrician` | Paediatrician | बाल रोग विशेषज्ञ | పిల్లల వైద్యులు |  | pending |
+| `providers.councils.NMC` | National Medical Commission (NMC) | राष्ट्रीय आयुर्विज्ञान आयोग (NMC) | జాతీయ వైద్య కమిషన్ (NMC) |  | pending |
+| `providers.councils.STATE_MEDICAL_COUNCIL` | State Medical Council | राज्य चिकित्सा परिषद | రాష్ట్ర వైద్య మండలి |  | pending |
+| `providers.councils.RCI` | Rehabilitation Council of India (RCI) | भारतीय पुनर्वास परिषद (RCI) | భారత పునరావాస మండలి (RCI) |  | pending |
+| `providers.councils.OTHER` | Other credential | अन्य प्रमाण-पत्र | ఇతర ధృవపత్రం |  | pending |
+| `providers.languages.en` | English | अंग्रेज़ी | ఇంగ్లీష్ |  | pending |
+| `providers.languages.hi` | Hindi | हिंदी | హిందీ |  | pending |
+| `providers.languages.te` | Telugu | तेलुगु | తెలుగు |  | pending |
+| `providers.languages.ur` | Urdu | उर्दू | ఉర్దూ |  | pending |
+| `providers.languages.ta` | Tamil | तमिल | తమిళం |  | pending |
+| `providers.languages.kn` | Kannada | कन्नड़ | కన్నడ |  | pending |
+| `providers.languages.mr` | Marathi | मराठी | మరాఠీ |  | pending |
+| `providers.status.unverified` | Not verified | सत्यापित नहीं | ధృవీకరించబడలేదు |  | pending |
+| `providers.status.pending` | Verification pending | सत्यापन बाकी | ధృవీకరణ పెండింగ్‌లో ఉంది |  | pending |
+| `providers.status.verified` | Verified | सत्यापित | ధృవీకరించబడింది |  | pending |
+| `providers.status.rejected` | Not approved | स्वीकृत नहीं | ఆమోదించబడలేదు |  | pending |
+| `providers.status.suspended` | Suspended | निलंबित | నిలిపివేయబడింది |  | pending |
+| `providers.demoBadge` | Demo profile | डेमो प्रोफ़ाइल | డెమో ప్రొఫైల్ |  | pending |
+| `providers.nav.profile` | Public profile | सार्वजनिक प्रोफ़ाइल | పబ్లిక్ ప్రొఫైల్ |  | pending |
+| `providers.nav.verifications` | Verifications | सत्यापन | ధృవీకరణలు |  | pending |
+| `providers.nav.providers` | Providers | प्रदाता | ప్రొవైడర్లు |  | pending |
+| `providers.form.invalid` | Check the highlighted fields. | चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
+| `providers.form.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `providers.form.saved` | Saved | सहेजा गया | సేవ్ అయింది |  | pending |
+| `providers.form.saving` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తున్నాం... |  | pending |
+| `providers.form.optional` | (optional) | (वैकल्पिक) | (ఐచ్ఛికం) |  | pending |
+| `providers.form.choose` | Choose... | चुनें... | ఎంచుకోండి... |  | pending |
+| `providers.join.metaTitle` | Join DoctorNearMe as a provider | प्रदाता के रूप में DoctorNearMe से जुड़ें | ప్రొవైడర్‌గా DoctorNearMe లో చేరండి |  | pending |
+| `providers.join.title` | Join DoctorNearMe as a provider | प्रदाता के रूप में DoctorNearMe से जुड़ें | ప్రొవైడర్‌గా DoctorNearMe లో చేరండి |  | pending |
+| `providers.join.intro` | Create your practice profile. Families see it only after we verify your registration. | अपनी प्रैक्टिस की प्रोफ़ाइल बनाएँ। आपके पंजीकरण के सत्यापन के बाद ही परिवार इसे देख पाएँगे। | మీ ప్రాక్టీస్ ప్రొఫైల్ సృష్టించండి. మీ రిజిస్ట్రేషన్‌ను మేము ధృవీకరించిన తర్వాతే కుటుంబాలు దాన్ని చూస్తాయి. |  | pending |
+| `providers.join.iAm` | I am a | मैं हूँ | నేను |  | pending |
+| `providers.join.choose` | Choose your profession | अपना पेशा चुनें | మీ వృత్తిని ఎంచుకోండి |  | pending |
+| `providers.join.fullName` | Full name | पूरा नाम | పూర్తి పేరు |  | pending |
+| `providers.join.email` | Email | ईमेल | ఈమెయిల్ |  | pending |
+| `providers.join.password` | Password | पासवर्ड | పాస్‌వర్డ్ |  | pending |
+| `providers.join.passwordHint` | At least 8 characters | कम से कम 8 अक्षर | కనీసం 8 అక్షరాలు |  | pending |
+| `providers.join.submit` | Create my account | मेरा खाता बनाएँ | నా ఖాతా సృష్టించండి |  | pending |
+| `providers.join.submitting` | Creating your account... | आपका खाता बन रहा है... | మీ ఖాతా సృష్టిస్తున్నాం... |  | pending |
+| `providers.join.google` | Continue with Google | Google से जारी रखें | Google తో కొనసాగించండి |  | pending |
+| `providers.join.or` | or | या | లేదా |  | pending |
+| `providers.join.haveAccount` | Already have an account? | क्या आपका पहले से खाता है? | ఇప్పటికే ఖాతా ఉందా? |  | pending |
+| `providers.join.signIn` | Sign in | साइन इन करें | సైన్ ఇన్ |  | pending |
+| `providers.join.signedInAs` | Signed in as {email} | {email} के रूप में साइन इन | {email} గా సైన్ ఇన్ అయ్యారు |  | pending |
+| `providers.join.createProfile` | Create my provider profile | मेरी प्रदाता प्रोफ़ाइल बनाएँ | నా ప్రొవైడర్ ప్రొఫైల్ సృష్టించండి |  | pending |
+| `providers.join.creating` | Creating your profile... | आपकी प्रोफ़ाइल बन रही है... | మీ ప్రొఫైల్ సృష్టిస్తున్నాం... |  | pending |
+| `providers.join.checkEmail` | Check your email to confirm your address, then sign in and open this page again. | अपना पता पुष्टि करने के लिए ईमेल देखें, फिर साइन इन करके यह पेज दोबारा खोलें। | మీ చిరునామాను ధృవీకరించడానికి ఈమెయిల్ చూడండి, తర్వాత సైన్ ఇన్ చేసి ఈ పేజీని మళ్ళీ తెరవండి. |  | pending |
+| `providers.join.exists` | An account with this email already exists. Sign in, then open this page again. | इस ईमेल से पहले से खाता है। साइन इन करें, फिर यह पेज दोबारा खोलें। | ఈ ఈమెయిల్‌తో ఇప్పటికే ఖాతా ఉంది. సైన్ ఇన్ చేసి, ఈ పేజీని మళ్ళీ తెరవండి. |  | pending |
+| `providers.join.tooMany` | Too many sign-ups from your network. Try again later. | आपके नेटवर्क से बहुत सारे साइन-अप हुए हैं। बाद में कोशिश करें। | మీ నెట్‌వర్క్ నుండి చాలా సైన్-అప్‌లు వచ్చాయి. తర్వాత ప్రయత్నించండి. |  | pending |
+| `providers.join.notAllowed` | This account cannot become a provider account. Use a separate account for your practice. | यह खाता प्रदाता खाता नहीं बन सकता। अपनी प्रैक्टिस के लिए अलग खाता इस्तेमाल करें। | ఈ ఖాతా ప్రొవైడర్ ఖాతాగా మారదు. మీ ప్రాక్టీస్ కోసం వేరే ఖాతా వాడండి. |  | pending |
+| `providers.join.signInFailed` | Your account was created but we could not sign you in. Please sign in. | आपका खाता बन गया, पर हम आपको साइन इन नहीं कर सके। कृपया साइन इन करें। | మీ ఖాతా సృష్టించబడింది, కానీ మిమ్మల్ని సైన్ ఇన్ చేయలేకపోయాం. దయచేసి సైన్ ఇన్ చేయండి. |  | pending |
+| `providers.editor.metaTitle` | Your public profile - DoctorNearMe | आपकी सार्वजनिक प्रोफ़ाइल - DoctorNearMe | మీ పబ్లిక్ ప్రొఫైల్ - DoctorNearMe |  | pending |
+| `providers.editor.title` | Your public profile | आपकी सार्वजनिक प्रोफ़ाइल | మీ పబ్లిక్ ప్రొఫైల్ |  | pending |
+| `providers.editor.noProfile` | You do not have a provider profile yet. | आपकी अभी कोई प्रदाता प्रोफ़ाइल नहीं है। | మీకు ఇంకా ప్రొవైడర్ ప్రొఫైల్ లేదు. |  | pending |
+| `providers.editor.createOne` | Create your provider profile | अपनी प्रदाता प्रोफ़ाइल बनाएँ | మీ ప్రొవైడర్ ప్రొఫైల్ సృష్టించండి |  | pending |
+| `providers.editor.statusLabel` | Status | स्थिति | స్థితి |  | pending |
+| `providers.editor.viewPublic` | View public page | सार्वजनिक पेज देखें | పబ్లిక్ పేజీ చూడండి |  | pending |
+| `providers.editor.details` | Profile details | प्रोफ़ाइल विवरण | ప్రొఫైల్ వివరాలు |  | pending |
+| `providers.editor.displayName` | Name shown to families | परिवारों को दिखने वाला नाम | కుటుంబాలకు కనిపించే పేరు |  | pending |
+| `providers.editor.type` | Profession | पेशा | వృత్తి |  | pending |
+| `providers.editor.qualifications` | Qualifications | योग्यताएँ | అర్హతలు |  | pending |
+| `providers.editor.qualificationsHint` | For example MBBS, MD (Paediatrics) | जैसे MBBS, MD (बाल रोग) | ఉదాహరణకు MBBS, MD (పీడియాట్రిక్స్) |  | pending |
+| `providers.editor.bio` | About you | आपके बारे में | మీ గురించి |  | pending |
+| `providers.editor.languages` | Languages you consult in | परामर्श की भाषाएँ | మీరు సంప్రదింపులు ఇచ్చే భాషలు |  | pending |
+| `providers.editor.experience` | Years of experience | अनुभव के वर्ष | అనుభవ సంవత్సరాలు |  | pending |
+| `providers.editor.timeZone` | Time zone | समय क्षेत्र | టైమ్ జోన్ |  | pending |
+| `providers.editor.save` | Save profile | प्रोफ़ाइल सहेजें | ప్రొఫైల్ సేవ్ చేయండి |  | pending |
+| `providers.editor.typeWarning` | Changing your profession sends a verified profile back for verification and hides it until it is approved. | पेशा बदलने पर सत्यापित प्रोफ़ाइल फिर से सत्यापन में जाती है और स्वीकृति तक छिपी रहती है। | వృత్తిని మార్చితే ధృవీకరించిన ప్రొఫైల్ మళ్ళీ ధృవీకరణకు వెళ్తుంది, ఆమోదం వచ్చే వరకు దాచబడుతుంది. |  | pending |
+| `providers.photo.title` | Photo | फ़ोटो | ఫోటో |  | pending |
+| `providers.photo.hint` | JPEG or PNG, up to 2 MB. We remove location and camera details from the file. | JPEG या PNG, 2 MB तक। हम फ़ाइल से स्थान और कैमरे की जानकारी हटा देते हैं। | JPEG లేదా PNG, 2 MB వరకు. ఫైల్ నుండి లొకేషన్, కెమెరా వివరాలను మేము తొలగిస్తాం. |  | pending |
+| `providers.photo.choose` | Choose a photo | फ़ोटो चुनें | ఫోటో ఎంచుకోండి |  | pending |
+| `providers.photo.upload` | Upload photo | फ़ोटो अपलोड करें | ఫోటో అప్‌లోడ్ చేయండి |  | pending |
+| `providers.photo.uploading` | Uploading... | अपलोड हो रहा है... | అప్‌లోడ్ అవుతోంది... |  | pending |
+| `providers.photo.remove` | Remove photo | फ़ोटो हटाएँ | ఫోటో తొలగించండి |  | pending |
+| `providers.photo.alt` | Photo of {name} | {name} की फ़ोटो | {name} ఫోటో |  | pending |
+| `providers.photo.tooLarge` | Photo too large (max 2 MB) | फ़ोटो बहुत बड़ी है (अधिकतम 2 MB) | ఫోటో చాలా పెద్దది (గరిష్ఠం 2 MB) |  | pending |
+| `providers.photo.wrongType` | Upload a JPEG or PNG photo | JPEG या PNG फ़ोटो अपलोड करें | JPEG లేదా PNG ఫోటో అప్‌లోడ్ చేయండి |  | pending |
+| `providers.locations.title` | Where you practise | आप कहाँ प्रैक्टिस करते हैं | మీరు ఎక్కడ ప్రాక్టీస్ చేస్తారు |  | pending |
+| `providers.locations.hint` | Families see these addresses on your public page. | परिवार ये पते आपके सार्वजनिक पेज पर देखते हैं। | కుటుంబాలు ఈ చిరునామాలను మీ పబ్లిక్ పేజీలో చూస్తాయి. |  | pending |
+| `providers.locations.none` | No locations on your profile yet. | आपकी प्रोफ़ाइल पर अभी कोई स्थान नहीं है। | మీ ప్రొఫైల్‌లో ఇంకా లొకేషన్లు లేవు. |  | pending |
+| `providers.locations.linked` | On your profile | आपकी प्रोफ़ाइल पर | మీ ప్రొఫైల్‌లో |  | pending |
+| `providers.locations.remove` | Remove | हटाएँ | తొలగించండి |  | pending |
+| `providers.locations.available` | Locations of your organisations | आपके संगठनों के स्थान | మీ సంస్థల లొకేషన్లు |  | pending |
+| `providers.locations.add` | Add to my profile | मेरी प्रोफ़ाइल में जोड़ें | నా ప్రొఫైల్‌కు జోడించండి |  | pending |
+| `providers.locations.newTitle` | Add a new location | नया स्थान जोड़ें | కొత్త లొకేషన్ జోడించండి |  | pending |
+| `providers.locations.org` | Organisation | संगठन | సంస్థ |  | pending |
+| `providers.locations.name` | Location name | स्थान का नाम | లొకేషన్ పేరు |  | pending |
+| `providers.locations.address1` | Address | पता | చిరునామా |  | pending |
+| `providers.locations.address2` | Address line 2 | पता पंक्ति 2 | చిరునామా లైన్ 2 |  | pending |
+| `providers.locations.locality` | Locality | इलाका | ప్రాంతం |  | pending |
+| `providers.locations.city` | City | शहर | నగరం |  | pending |
+| `providers.locations.state` | State | राज्य | రాష్ట్రం |  | pending |
+| `providers.locations.pincode` | PIN code | पिन कोड | పిన్ కోడ్ |  | pending |
+| `providers.locations.create` | Add location | स्थान जोड़ें | లొకేషన్ జోడించండి |  | pending |
+| `providers.locations.noOrgs` | You are not in an organisation yet. Create your practice on the Team page. | आप अभी किसी संगठन में नहीं हैं। टीम पेज पर अपनी प्रैक्टिस बनाएँ। | మీరు ఇంకా ఏ సంస్థలోనూ లేరు. టీమ్ పేజీలో మీ ప్రాక్టీస్ సృష్టించండి. |  | pending |
+| `providers.locations.managersOnly` | Only owners and admins of an organisation can add its locations. | केवल संगठन के मालिक और एडमिन उसके स्थान जोड़ सकते हैं। | సంస్థ యజమానులు, అడ్మిన్‌లు మాత్రమే దాని లొకేషన్లు జోడించగలరు. |  | pending |
+| `providers.verification.title` | Verification | सत्यापन | ధృవీకరణ |  | pending |
+| `providers.verification.intro` | We check your registration with the council before families can see your profile. | परिवारों को आपकी प्रोफ़ाइल दिखाने से पहले हम परिषद से आपका पंजीकरण जाँचते हैं। | కుటుంబాలు మీ ప్రొఫైల్ చూసే ముందు మేము మండలితో మీ రిజిస్ట్రేషన్‌ను తనిఖీ చేస్తాం. |  | pending |
+| `providers.verification.otherHint` | Occupational therapists, physiotherapists, ABA therapists and special educators without a council registration: choose Other credential and upload your degree, BCBA or QABA certificate, RCI special-education registration or an employer letter. | बिना परिषद पंजीकरण वाले ऑक्यूपेशनल थेरेपिस्ट, फिज़ियोथेरेपिस्ट, ABA थेरेपिस्ट और विशेष शिक्षक: अन्य प्रमाण-पत्र चुनें और अपनी डिग्री, BCBA या QABA प्रमाण-पत्र, RCI विशेष-शिक्षा पंजीकरण या नियोक्ता का पत्र अपलोड करें। | మండలి రిజిస్ట్రేషన్ లేని ఆక్యుపేషనల్ థెరపిస్టులు, ఫిజియోథెరపిస్టులు, ABA థెరపిస్టులు, ప్రత్యేక విద్యావేత్తలు: ఇతర ధృవపత్రం ఎంచుకుని మీ డిగ్రీ, BCBA లేదా QABA ధృవపత్రం, RCI ప్రత్యేక-విద్య రిజిస్ట్రేషన్ లేదా యజమాని లేఖ అప్‌లోడ్ చేయండి. |  | pending |
+| `providers.verification.council` | Council | परिषद | మండలి |  | pending |
+| `providers.verification.state` | State | राज्य | రాష్ట్రం |  | pending |
+| `providers.verification.number` | Registration number | पंजीकरण संख्या | రిజిస్ట్రేషన్ నంబర్ |  | pending |
+| `providers.verification.certificate` | Certificate (PDF, JPEG or PNG, up to 10 MB) | प्रमाण-पत्र (PDF, JPEG या PNG, 10 MB तक) | ధృవపత్రం (PDF, JPEG లేదా PNG, 10 MB వరకు) |  | pending |
+| `providers.verification.submit` | Submit for verification | सत्यापन के लिए भेजें | ధృవీకరణకు పంపండి |  | pending |
+| `providers.verification.submitting` | Submitting... | भेजा जा रहा है... | పంపుతున్నాం... |  | pending |
+| `providers.verification.submitted` | Submitted. We will review it soon. | भेज दिया गया। हम जल्द इसकी समीक्षा करेंगे। | పంపబడింది. త్వరలో సమీక్షిస్తాం. |  | pending |
+| `providers.verification.unverifiedInfo` | Submit your registration so we can verify your profile. | अपना पंजीकरण भेजें ताकि हम आपकी प्रोफ़ाइल सत्यापित कर सकें। | మీ ప్రొఫైల్‌ను ధృవీకరించడానికి మీ రిజిస్ట్రేషన్ పంపండి. |  | pending |
+| `providers.verification.pendingInfo` | We are checking your registration. | हम आपका पंजीकरण जाँच रहे हैं। | మేము మీ రిజిస్ట్రేషన్‌ను తనిఖీ చేస్తున్నాం. |  | pending |
+| `providers.verification.verifiedInfo` | Verified on {date}. | {date} को सत्यापित। | {date} న ధృవీకరించబడింది. |  | pending |
+| `providers.verification.rejectedInfo` | We could not approve your registration. Check the details and submit again. | हम आपका पंजीकरण स्वीकृत नहीं कर सके। विवरण जाँचकर फिर से भेजें। | మీ రిజిస్ట్రేషన్‌ను ఆమోదించలేకపోయాం. వివరాలు తనిఖీ చేసి మళ్ళీ పంపండి. |  | pending |
+| `providers.verification.suspendedInfo` | Your profile is suspended. Contact DoctorNearMe support. | आपकी प्रोफ़ाइल निलंबित है। DoctorNearMe सहायता से संपर्क करें। | మీ ప్రొఫైల్ నిలిపివేయబడింది. DoctorNearMe సహాయాన్ని సంప్రదించండి. |  | pending |
+| `providers.verification.current` | Current registration: {council}, {number} | मौजूदा पंजीकरण: {council}, {number} | ప్రస్తుత రిజిస్ట్రేషన్: {council}, {number} |  | pending |
+| `providers.verification.tooLarge` | File too large (max 10 MB) | फ़ाइल बहुत बड़ी है (अधिकतम 10 MB) | ఫైల్ చాలా పెద్దది (గరిష్ఠం 10 MB) |  | pending |
+| `providers.verification.wrongType` | Upload a PDF, JPEG or PNG file | PDF, JPEG या PNG फ़ाइल अपलोड करें | PDF, JPEG లేదా PNG ఫైల్ అప్‌లోడ్ చేయండి |  | pending |
+| `providers.verification.uploadFailed` | Could not upload the file. Please try again. | फ़ाइल अपलोड नहीं हो सकी। कृपया फिर से कोशिश करें। | ఫైల్ అప్‌లోడ్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `providers.verification.reverifyWarning` | Submitting new registration details sends your profile back for verification and hides it until it is approved. | नया पंजीकरण विवरण भेजने पर आपकी प्रोफ़ाइल फिर से सत्यापन में जाती है और स्वीकृति तक छिपी रहती है। | కొత్త రిజిస్ట్రేషన్ వివరాలు పంపితే మీ ప్రొఫైల్ మళ్ళీ ధృవీకరణకు వెళ్తుంది, ఆమోదం వచ్చే వరకు దాచబడుతుంది. |  | pending |
+| `providers.listing.label` | Show my profile publicly | मेरी प्रोफ़ाइल सार्वजनिक रूप से दिखाएँ | నా ప్రొఫైల్‌ను పబ్లిక్‌గా చూపించండి |  | pending |
+| `providers.listing.disabledHint` | Available once your profile is verified. | प्रोफ़ाइल सत्यापित होने के बाद उपलब्ध। | మీ ప్రొఫైల్ ధృవీకరించబడిన తర్వాత అందుబాటులో ఉంటుంది. |  | pending |
+| `providers.listing.on` | Your profile is public. | आपकी प्रोफ़ाइल सार्वजनिक है। | మీ ప్రొఫైల్ పబ్లిక్‌గా ఉంది. |  | pending |
+| `providers.listing.off` | Your profile is hidden from families. | आपकी प्रोफ़ाइल परिवारों से छिपी है। | మీ ప్రొఫైల్ కుటుంబాలకు కనిపించదు. |  | pending |
+| `providers.org.title` | Public page of {name} | {name} का सार्वजनिक पेज | {name} పబ్లిక్ పేజీ |  | pending |
+| `providers.org.publicName` | Public name | सार्वजनिक नाम | పబ్లిక్ పేరు |  | pending |
+| `providers.org.about` | About the organisation | संगठन के बारे में | సంస్థ గురించి |  | pending |
+| `providers.org.phone` | Public phone number | सार्वजनिक फ़ोन नंबर | పబ్లిక్ ఫోన్ నంబర్ |  | pending |
+| `providers.org.website` | Website | वेबसाइट | వెబ్‌సైట్ |  | pending |
+| `providers.org.listed` | Show this organisation publicly | इस संगठन को सार्वजनिक रूप से दिखाएँ | ఈ సంస్థను పబ్లిక్‌గా చూపించండి |  | pending |
+| `providers.org.listedHint` | Available once one of its providers is verified. | इसके किसी प्रदाता के सत्यापित होने के बाद उपलब्ध। | దీని ప్రొవైడర్లలో ఒకరు ధృవీకరించబడిన తర్వాత అందుబాటులో ఉంటుంది. |  | pending |
+| `providers.org.save` | Save organisation | संगठन सहेजें | సంస్థను సేవ్ చేయండి |  | pending |
+| `providers.claim.metaTitle` | Claim your profile - DoctorNearMe | अपनी प्रोफ़ाइल पर दावा करें - DoctorNearMe | మీ ప్రొఫైల్‌ను క్లెయిమ్ చేయండి - DoctorNearMe |  | pending |
+| `providers.claim.title` | Claim your DoctorNearMe profile | अपनी DoctorNearMe प्रोफ़ाइल पर दावा करें | మీ DoctorNearMe ప్రొఫైల్‌ను క్లెయిమ్ చేయండి |  | pending |
+| `providers.claim.invalid` | This link is not valid. | यह लिंक मान्य नहीं है। | ఈ లింక్ చెల్లదు. |  | pending |
+| `providers.claim.invalidHint` | Ask the DoctorNearMe team for a new link. | DoctorNearMe टीम से नया लिंक माँगें। | కొత్త లింక్ కోసం DoctorNearMe బృందాన్ని అడగండి. |  | pending |
+| `providers.claim.intro` | This link lets you take over the profile of {name} ({type}). | इस लिंक से आप {name} ({type}) की प्रोफ़ाइल अपने नाम कर सकते हैं। | ఈ లింక్‌తో మీరు {name} ({type}) ప్రొఫైల్‌ను మీ పేరుకు తీసుకోవచ్చు. |  | pending |
+| `providers.claim.signInFirst` | Sign in or create an account first, then come back to this link. | पहले साइन इन करें या खाता बनाएँ, फिर इस लिंक पर लौटें। | ముందుగా సైన్ ఇన్ చేయండి లేదా ఖాతా సృష్టించండి, తర్వాత ఈ లింక్‌కు తిరిగి రండి. |  | pending |
+| `providers.claim.signIn` | Sign in | साइन इन करें | సైన్ ఇన్ |  | pending |
+| `providers.claim.createAccount` | Create an account | खाता बनाएँ | ఖాతా సృష్టించండి |  | pending |
+| `providers.claim.signedInAs` | Signed in as {email} | {email} के रूप में साइन इन | {email} గా సైన్ ఇన్ అయ్యారు |  | pending |
+| `providers.claim.button` | Claim this profile | इस प्रोफ़ाइल पर दावा करें | ఈ ప్రొఫైల్‌ను క్లెయిమ్ చేయండి |  | pending |
+| `providers.claim.claiming` | Claiming... | दावा किया जा रहा है... | క్లెయిమ్ చేస్తున్నాం... |  | pending |
+| `providers.claim.hasProfile` | You already have a profile | आपकी पहले से एक प्रोफ़ाइल है | మీకు ఇప్పటికే ఒక ప్రొఫైల్ ఉంది |  | pending |
+| `providers.claim.notAllowed` | This account cannot claim a provider profile. | यह खाता प्रदाता प्रोफ़ाइल पर दावा नहीं कर सकता। | ఈ ఖాతా ప్రొవైడర్ ప్రొఫైల్‌ను క్లెయిమ్ చేయలేదు. |  | pending |
+| `providers.public.verifiedBadge` | Verified by DoctorNearMe | DoctorNearMe द्वारा सत्यापित | DoctorNearMe ద్వారా ధృవీకరించబడింది |  | pending |
+| `providers.public.verifiedOn` | Verified on {date} | {date} को सत्यापित | {date} న ధృవీకరించబడింది |  | pending |
+| `providers.public.registration` | {council} registration {number} | {council} पंजीकरण {number} | {council} రిజిస్ట్రేషన్ {number} |  | pending |
+| `providers.public.registrationState` | {council} ({state}) registration {number} | {council} ({state}) पंजीकरण {number} | {council} ({state}) రిజిస్ట్రేషన్ {number} |  | pending |
+| `providers.public.experience_one` | {count} year of experience | {count} वर्ष का अनुभव | {count} సంవత్సరం అనుభవం |  | pending |
+| `providers.public.experience_other` | {count} years of experience | {count} वर्ष का अनुभव | {count} సంవత్సరాల అనుభవం |  | pending |
+| `providers.public.languages` | Languages | भाषाएँ | భాషలు |  | pending |
+| `providers.public.qualifications` | Qualifications | योग्यताएँ | అర్హతలు |  | pending |
+| `providers.public.about` | About | परिचय | పరిచయం |  | pending |
+| `providers.public.locations` | Practice locations | प्रैक्टिस के स्थान | ప్రాక్టీస్ లొకేషన్లు |  | pending |
+| `providers.public.phone` | Phone | फ़ोन | ఫోన్ |  | pending |
+| `providers.public.website` | Website | वेबसाइट | వెబ్‌సైట్ |  | pending |
+| `providers.public.consultModes` | Consultation modes | परामर्श के तरीके | సంప్రదింపు విధానాలు |  | pending |
+| `providers.public.consultModesSoon` | Video and in-clinic options will be shown here soon. | वीडियो और क्लिनिक के विकल्प जल्द यहाँ दिखेंगे। | వీడియో, క్లినిక్ ఎంపికలు త్వరలో ఇక్కడ కనిపిస్తాయి. |  | pending |
+| `providers.public.book` | Book | बुक करें | బుక్ చేయండి |  | pending |
+| `providers.public.bookSoon` | Online booking is coming soon. | ऑनलाइन बुकिंग जल्द आ रही है। | ఆన్‌లైన్ బుకింగ్ త్వరలో వస్తోంది. |  | pending |
+| `providers.public.providers` | Providers | प्रदाता | ప్రొవైడర్లు |  | pending |
+| `providers.public.centre` | Centre | केंद्र | కేంద్రం |  | pending |
+| `providers.public.solo` | Solo practice | एकल प्रैक्टिस | సోలో ప్రాక్టీస్ |  | pending |
+| `providers.public.viewProfile` | View profile | प्रोफ़ाइल देखें | ప్రొఫైల్ చూడండి |  | pending |
+| `providers.public.demoNote` | This is a demo profile with synthetic details. It is not a real practitioner. | यह कृत्रिम विवरण वाली डेमो प्रोफ़ाइल है। यह कोई असली चिकित्सक नहीं है। | ఇది కృత్రిమ వివరాలతో ఉన్న డెమో ప్రొఫైల్. ఇది నిజమైన వైద్య నిపుణులది కాదు. |  | pending |
+| `providers.public.metaTitle` | {name} - {type} in {locality}, Hyderabad \| DoctorNearMe | {name} - {locality}, हैदराबाद में {type} \| DoctorNearMe | {name} - {locality}, హైదరాబాద్‌లో {type} \| DoctorNearMe |  | pending |
+| `providers.public.centreMetaTitle` | {name} - child development centre in {locality}, Hyderabad \| DoctorNearMe | {name} - {locality}, हैदराबाद में बाल विकास केंद्र \| DoctorNearMe | {name} - {locality}, హైదరాబాద్‌లో పిల్లల అభివృద్ధి కేంద్రం \| DoctorNearMe |  | pending |
+| `providers.public.metaTitleNoLocality` | {name} - {type} in Hyderabad \| DoctorNearMe | {name} - हैदराबाद में {type} \| DoctorNearMe | {name} - హైదరాబాద్‌లో {type} \| DoctorNearMe |  | pending |
+| `providers.public.centreMetaTitleNoLocality` | {name} - child development centre in Hyderabad \| DoctorNearMe | {name} - हैदराबाद में बाल विकास केंद्र \| DoctorNearMe | {name} - హైదరాబాద్‌లో పిల్లల అభివృద్ధి కేంద్రం \| DoctorNearMe |  | pending |
+| `providers.public.metaDescription` | {name}, {type} in {locality}, Hyderabad. Verified by DoctorNearMe. | {name}, {locality}, हैदराबाद में {type}। DoctorNearMe द्वारा सत्यापित। | {name}, {locality}, హైదరాబాద్‌లో {type}. DoctorNearMe ద్వారా ధృవీకరించబడింది. |  | pending |
+| `providers.adminVerifications.metaTitle` | Verification queue - DoctorNearMe | सत्यापन कतार - DoctorNearMe | ధృవీకరణ క్యూ - DoctorNearMe |  | pending |
+| `providers.adminVerifications.title` | Verification queue | सत्यापन कतार | ధృవీకరణ క్యూ |  | pending |
+| `providers.adminVerifications.empty` | No submissions are waiting. | कोई आवेदन प्रतीक्षा में नहीं है। | ఎలాంటి దరఖాస్తులు వేచి లేవు. |  | pending |
+| `providers.adminVerifications.submittedOn` | Submitted {date} | {date} को भेजा गया | {date} న పంపబడింది |  | pending |
+| `providers.adminVerifications.certificate` | Download certificate | प्रमाण-पत्र डाउनलोड करें | ధృవపత్రం డౌన్‌లోడ్ చేయండి |  | pending |
+| `providers.adminVerifications.noCertificate` | No certificate uploaded | कोई प्रमाण-पत्र अपलोड नहीं हुआ | ధృవపత్రం అప్‌లోడ్ కాలేదు |  | pending |
+| `providers.adminVerifications.register` | Search the public register | सार्वजनिक रजिस्टर में खोजें | పబ్లిక్ రిజిస్టర్‌లో వెతకండి |  | pending |
+| `providers.adminVerifications.noRegister` | No public register for this credential. Record what you checked. | इस प्रमाण-पत्र का कोई सार्वजनिक रजिस्टर नहीं है। आपने क्या जाँचा, लिखें। | ఈ ధృవపత్రానికి పబ్లిక్ రిజిస్టర్ లేదు. మీరు ఏమి తనిఖీ చేశారో రాయండి. |  | pending |
+| `providers.adminVerifications.note` | Note | नोट | నోట్ |  | pending |
+| `providers.adminVerifications.noteHintOther` | Required: what you checked (degree, BCBA or QABA, RCI special-education registration, employer letter). Never shown publicly. | ज़रूरी: आपने क्या जाँचा (डिग्री, BCBA या QABA, RCI विशेष-शिक्षा पंजीकरण, नियोक्ता का पत्र)। कभी सार्वजनिक नहीं दिखता। | తప్పనిసరి: మీరు ఏమి తనిఖీ చేశారు (డిగ్రీ, BCBA లేదా QABA, RCI ప్రత్యేక-విద్య రిజిస్ట్రేషన్, యజమాని లేఖ). ఎప్పుడూ పబ్లిక్‌గా చూపబడదు. |  | pending |
+| `providers.adminVerifications.noteHint` | Required to reject. Never shown publicly. | अस्वीकार करने के लिए ज़रूरी। कभी सार्वजनिक नहीं दिखता। | తిరస్కరించడానికి తప్పనిసరి. ఎప్పుడూ పబ్లిక్‌గా చూపబడదు. |  | pending |
+| `providers.adminVerifications.approve` | Approve | स्वीकृत करें | ఆమోదించండి |  | pending |
+| `providers.adminVerifications.reject` | Reject | अस्वीकार करें | తిరస్కరించండి |  | pending |
+| `providers.adminVerifications.noteRequired` | Write a note first. | पहले नोट लिखें। | ముందుగా నోట్ రాయండి. |  | pending |
+| `providers.adminVerifications.failed` | Could not save the decision. Please try again. | निर्णय सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | నిర్ణయాన్ని సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `providers.adminProviders.metaTitle` | Provider profiles - DoctorNearMe | प्रदाता प्रोफ़ाइलें - DoctorNearMe | ప్రొవైడర్ ప్రొఫైల్స్ - DoctorNearMe |  | pending |
+| `providers.adminProviders.title` | Provider profiles | प्रदाता प्रोफ़ाइलें | ప్రొవైడర్ ప్రొఫైల్స్ |  | pending |
+| `providers.adminProviders.seed` | Seed a provider | प्रदाता जोड़ें | ప్రొవైడర్‌ను జోడించండి |  | pending |
+| `providers.adminProviders.empty` | No provider profiles yet. | अभी कोई प्रदाता प्रोफ़ाइल नहीं है। | ఇంకా ప్రొవైడర్ ప్రొఫైల్స్ లేవు. |  | pending |
+| `providers.adminProviders.name` | Name | नाम | పేరు |  | pending |
+| `providers.adminProviders.type` | Profession | पेशा | వృత్తి |  | pending |
+| `providers.adminProviders.status` | Status | स्थिति | స్థితి |  | pending |
+| `providers.adminProviders.listed` | Listed | सूचीबद्ध | జాబితాలో |  | pending |
+| `providers.adminProviders.claimed` | Claimed | दावा किया गया | క్లెయిమ్ అయింది |  | pending |
+| `providers.adminProviders.actions` | Actions | कार्रवाई | చర్యలు |  | pending |
+| `providers.adminProviders.yes` | Yes | हाँ | అవును |  | pending |
+| `providers.adminProviders.no` | No | नहीं | కాదు |  | pending |
+| `providers.adminProviders.claimLink` | Create claim link | दावा लिंक बनाएँ | క్లెయిమ్ లింక్ సృష్టించండి |  | pending |
+| `providers.adminProviders.claimLinkLabel` | Claim link | दावा लिंक | క్లెయిమ్ లింక్ |  | pending |
+| `providers.adminProviders.claimLinkCreated` | Valid until {date}. A new link cancels this one. | {date} तक मान्य। नया लिंक इसे रद्द कर देता है। | {date} వరకు చెల్లుతుంది. కొత్త లింక్ దీన్ని రద్దు చేస్తుంది. |  | pending |
+| `providers.adminProviders.suspend` | Suspend | निलंबित करें | నిలిపివేయండి |  | pending |
+| `providers.adminProviders.suspendNote` | Reason for suspension | निलंबन का कारण | నిలిపివేతకు కారణం |  | pending |
+| `providers.adminProviders.suspendConfirm` | Suspend this profile? It is hidden from families immediately. | इस प्रोफ़ाइल को निलंबित करें? यह तुरंत परिवारों से छिप जाएगी। | ఈ ప్రొఫైల్‌ను నిలిపివేయాలా? ఇది వెంటనే కుటుంబాలకు కనిపించదు. |  | pending |
+| `providers.adminProviders.failed` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर से कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `providers.adminSeed.metaTitle` | Seed a provider - DoctorNearMe | प्रदाता जोड़ें - DoctorNearMe | ప్రొవైడర్‌ను జోడించండి - DoctorNearMe |  | pending |
+| `providers.adminSeed.title` | Seed a provider profile | प्रदाता प्रोफ़ाइल जोड़ें | ప్రొవైడర్ ప్రొఫైల్ జోడించండి |  | pending |
+| `providers.adminSeed.intro` | Create an unclaimed profile from public information. It stays unverified and hidden unless you verify the registration here. | सार्वजनिक जानकारी से बिना दावे वाली प्रोफ़ाइल बनाएँ। जब तक आप यहाँ पंजीकरण सत्यापित नहीं करते, यह असत्यापित और छिपी रहती है। | పబ్లిక్ సమాచారం నుండి క్లెయిమ్ కాని ప్రొఫైల్ సృష్టించండి. మీరు ఇక్కడ రిజిస్ట్రేషన్‌ను ధృవీకరించకపోతే ఇది ధృవీకరించబడని, దాచిన ప్రొఫైల్‌గా ఉంటుంది. |  | pending |
+| `providers.adminSeed.orgSection` | Organisation | संगठन | సంస్థ |  | pending |
+| `providers.adminSeed.orgName` | Organisation name | संगठन का नाम | సంస్థ పేరు |  | pending |
+| `providers.adminSeed.orgKind` | Type | प्रकार | రకం |  | pending |
+| `providers.adminSeed.centre` | Centre | केंद्र | కేంద్రం |  | pending |
+| `providers.adminSeed.solo` | Solo practice | एकल प्रैक्टिस | సోలో ప్రాక్టీస్ |  | pending |
+| `providers.adminSeed.phone` | Public phone number | सार्वजनिक फ़ोन नंबर | పబ్లిక్ ఫోన్ నంబర్ |  | pending |
+| `providers.adminSeed.website` | Website | वेबसाइट | వెబ్‌సైట్ |  | pending |
+| `providers.adminSeed.locationSection` | Location | स्थान | లొకేషన్ |  | pending |
+| `providers.adminSeed.providerSection` | Provider | प्रदाता | ప్రొవైడర్ |  | pending |
+| `providers.adminSeed.providerName` | Provider name | प्रदाता का नाम | ప్రొవైడర్ పేరు |  | pending |
+| `providers.adminSeed.registrationSection` | Registration | पंजीकरण | రిజిస్ట్రేషన్ |  | pending |
+| `providers.adminSeed.verified` | I checked this registration on the public register | मैंने यह पंजीकरण सार्वजनिक रजिस्टर में जाँचा है | ఈ రిజిస్ట్రేషన్‌ను పబ్లిక్ రిజిస్టర్‌లో తనిఖీ చేశాను |  | pending |
+| `providers.adminSeed.verifiedNote` | What did you check? | आपने क्या जाँचा? | మీరు ఏమి తనిఖీ చేశారు? |  | pending |
+| `providers.adminSeed.synthetic` | Demo profile (synthetic data) | डेमो प्रोफ़ाइल (कृत्रिम डेटा) | డెమో ప్రొఫైల్ (కృత్రిమ డేటా) |  | pending |
+| `providers.adminSeed.submit` | Create profile | प्रोफ़ाइल बनाएँ | ప్రొఫైల్ సృష్టించండి |  | pending |
+| `providers.adminSeed.submitting` | Creating... | बनाई जा रही है... | సృష్టిస్తున్నాం... |  | pending |
+| `providers.adminSeed.created` | Profile created. Create a claim link from the provider list. | प्रोफ़ाइल बन गई। प्रदाता सूची से दावा लिंक बनाएँ। | ప్రొఫైల్ సృష్టించబడింది. ప్రొవైడర్ జాబితా నుండి క్లెయిమ్ లింక్ సృష్టించండి. |  | pending |
+| `providers.adminSeed.backToList` | Back to providers | प्रदाताओं पर वापस | ప్రొవైడర్లకు తిరిగి |  | pending |
 | `login.title` | Welcome back | फिर से स्वागत है | మళ్ళీ స్వాగతం |  | pending |
 | `login.intro` | Sign in to DoctorNearMe with the email and password from your centre's administrator. | अपने सेंटर के एडमिनिस्ट्रेटर से मिले ईमेल और पासवर्ड से DoctorNearMe में साइन इन करें। | మీ సెంటర్ అడ్మినిస్ట్రేటర్ ఇచ్చిన ఈమెయిల్ మరియు పాస్‌వర్డ్‌తో DoctorNearMe లో సైన్ ఇన్ చేయండి. |  | pending |
 | `login.email` | Email | ईमेल | ఈమెయిల్ |  | pending |

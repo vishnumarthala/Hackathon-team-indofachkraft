@@ -12,6 +12,7 @@ export function isPublicApiPath(pathname: string): boolean {
     pathname === "/api/pilot-signups" ||
     pathname === "/api/locale" ||
     pathname === "/api/demo/voice-token" ||
+    pathname === "/api/providers/join" ||
     pathname === "/api/webhooks/elevenlabs" ||
     /^\/api\/cases\/[^/]+\/ask$/.test(pathname) ||
     pathname.startsWith("/api/intake/") ||
