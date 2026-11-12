@@ -34,6 +34,38 @@ public register links; E-1 flow incl. resubmission; bad certificates; OTHER/reje
 routes and certificate redirect; E-2 seed + claim; link rotation/expiry; 409/403/concurrency; verified
 seeding + centre page.
 
+## Merge with 019 (main at `2bfeced`)
+
+`git merge main` brought in 019 (guardian sign-in, `/family`, default role `guardian`, the
+`app_metadata.role` trigger, `seed:users`, `/auth/callback`). Only `messages/REVIEW.md` conflicted (regenerated
+with `npx tsx scripts/i18n-review.ts`, 681 rows); `lib/authz.ts`, `lib/auth-access.ts`, `messages/*.json`,
+`docs/system-design.md`, `.env.example`, `tests/auth-access.test.ts` merged cleanly with both features kept.
+Reconciliation:
+
+- New accounts (including `POST /api/providers/join`) are now `guardian`; `register_provider` and
+  `claim_provider_profile` promote them to `provider` in SQL (019's trigger only promotes from server-set
+  `app_metadata.role` and never demotes, so the promotion sticks). The join test now asserts the account is
+  `guardian` until register.
+- `postSignInPath` (019) lets every role land on `/join` and `/claim/<token>`, so a guardian-by-default
+  account returning from email confirmation or Google is not bounced to `/family`. The `/join` Google
+  button now returns through `/auth/callback?next=/join` and is shown when `isGoogleAuthEnabled()` (019)
+  reports the provider on; the separate `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` variable was removed.
+- Guardians are redirected from `/dashboard/**` (incl. `/dashboard/profile`) to `/family` by 019's proxy;
+  the dashboard layout keeps a server-side redirect as backstop.
+- After `dnm-db.sh 5 reset` (migrations ...001800, ...001900, ...002800): `npm run lint` and
+  `npm run typecheck` clean; `npx vitest run` 44 files, 609 passed, 10 skipped (the same opt-in
+  `CT_DB_TESTS` block), DB suites ran, including 019's `requireGuardian` scan of every `/api/family/**`
+  route; `npm run build` exit 0.
+- E-1..E-4 re-checked with curl on `next start` using `npm run -s seed:users -- --prefix e028`: join 201
+  (role `guardian`) -> register (body `role` ignored) -> `provider`, `/dashboard/profile` 200, `/p` 404;
+  location 201; signed upload + RCI submission -> `pending`, listing 409; admin queue lists it, approve 200
+  with `provider.verified` audit; listing 200; `/p` shows `Verified by DoctorNearMe` and `registration ••••-001`,
+  0 email / full-number leaks; new number -> `/p` 404. Seed centre + paediatrician 201, 43-char token not
+  stored in plain, guardian_b claims 200 -> `claimed`, `owner`, role `provider`; reused link and superseded
+  link show `This link is not valid.`; provider with a profile -> 409. provider_a -> admin API 403, foreign
+  profile PATCH 404; guardian_a `/dashboard/profile` -> 307 `/family`, `/family` 200, `/join` 200;
+  unverified seeded `/p` and its centre `/c` 404. E-3 stays covered by the DB tests.
+
 ## Deviations
 
 - **Notifications (FR-4 "Provider notified via outbox", E-1 step 3).** The outbox (032) does not exist.
@@ -43,12 +75,12 @@ seeding + centre page.
 - **Account creation for `/join`.** Supabase public sign-up is disabled in `supabase/config.toml` (not
   editable here), so `POST /api/providers/join` creates the email/password account server-side (confirmed
   immediately in `DEMO_MODE`; otherwise unconfirmed with a confirmation link sent through Resend), then the
-  page signs in and calls `POST /api/providers/register`. "Continue with Google" is behind
-  `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` (needs the Supabase Google provider from 019); not exercised locally.
+  page signs in and calls `POST /api/providers/register`. "Continue with Google" appears when the Supabase
+  Google provider is on (019's `isGoogleAuthEnabled()`); not exercised locally.
 - **Guardian child links.** 020's `guardian_links` table does not exist yet; `user_has_guardian_links()`
   checks it dynamically once it exists (`user_id`, `status = 'active'`). The 403 test uses a temporary
   stand-in table.
-- **`seed:users`** (019) is not on this base: test accounts were created with the Supabase admin API.
+- **`seed:users`** (019) was not on the original base; the post-merge re-check uses it.
 - **Static caching.** The root layout reads the locale cookie, so pages render per request; the profile
   data is cached per slug (`unstable_cache`, tag `public-providers`) and invalidated with
   `revalidateTag(..., { expire: 0 })` on every change.

@@ -47,8 +47,10 @@ organisations' locations. The server uses the service-role client and gates ever
   no active guardian links - checked against 020's `guardian_links` once that table exists; platform
   admins are refused), creates a solo organisation (owner), sets role `provider`, and creates a draft
   `unverified` profile. Body fields other than `provider_type` and `full_name` are ignored.
-  "Continue with Google" is shown when `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` (needs the Supabase
-  Google provider; 019 configures it) and returns to `/join`.
+  New accounts are `guardian` by default (019); the promotion to `provider` happens only in
+  `register_provider` / `claim_provider_profile`. "Continue with Google" is shown when the Supabase Google
+  provider is on (`isGoogleAuthEnabled()`, 019) and returns through `/auth/callback?next=/join`;
+  `postSignInPath` lets every role land on `/join` and `/claim/<token>`.
 - **Profile editor** (`/dashboard/profile`, owner only; guardians are redirected to `/family`). Profile
   fields, photo (bytes sniffed, EXIF/XMP/comment segments and PNG text/eXIf chunks stripped server-side
   by `lib/providers/images.ts`), locations of the provider's organisations (owners/admins can add new

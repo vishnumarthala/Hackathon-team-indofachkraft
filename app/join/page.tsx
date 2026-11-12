@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { JoinForm } from "@/components/providers/JoinForm";
 import { getAuthenticatedUser } from "@/lib/auth";
-import { env } from "@/lib/env";
+import { isGoogleAuthEnabled } from "@/lib/family/auth-settings";
 import { getT } from "@/lib/i18n/server";
 import { getProfileByUserId } from "@/lib/providers";
 import { PROVIDER_TYPES, type ProviderType } from "@/lib/providers/constants";
@@ -35,7 +35,7 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
       <p className="mb-6 mt-2 text-slate-700">{t("intro")}</p>
       <JoinForm
         signedInEmail={user?.email ?? null}
-        googleEnabled={env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED}
+        googleEnabled={user ? false : await isGoogleAuthEnabled()}
         claimPath={claimPath}
         defaultName={typeof meta.full_name === "string" ? meta.full_name.slice(0, 120) : ""}
         defaultType={isProviderType(meta.provider_type) ? meta.provider_type : null}

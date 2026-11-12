@@ -65,10 +65,6 @@ export const env = {
   get SHOW_SYNTHETIC_LISTINGS() {
     return process.env.SHOW_SYNTHETIC_LISTINGS !== "false";
   },
-  // 028 FR-2: show "Continue with Google" on /join once the Supabase Google provider is configured.
-  get NEXT_PUBLIC_GOOGLE_AUTH_ENABLED() {
-    return process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
-  },
   get ELEVENLABS_VOICE_ID_EN() {
     return read("ELEVENLABS_VOICE_ID_EN");
   },

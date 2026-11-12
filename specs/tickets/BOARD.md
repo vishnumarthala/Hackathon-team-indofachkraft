@@ -67,7 +67,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 016 | Rebrand to DoctorNearMe (user-facing) | done | solo | alongside |
 | 017 | Organisations, roles, resource-level authorisation and provider onboarding | done | solo | alongside |
 | 018 | i18n foundation (English, Hindi, Telugu) | done | solo | alongside |
-| 019 | Guardian sign-in and family portal shell | draft | solo | waits for 017, 018 |
+| 019 | Guardian sign-in and family portal shell | done | solo | waits for 017, 018 |
 | 020 | Children, guardian links and consent gating | draft | solo | waits for 019 |
 | 021 | Child health profile | draft | solo | waits for 020 |
 | 022 | Care team, provider assignments and cross-org sharing grants | draft | solo | waits for 020 |

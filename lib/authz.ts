@@ -1,6 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { cache } from "react";
 import type { User } from "@supabase/supabase-js";
 import { getAuthenticatedUser, getUserRole, requirePageUser, type UserRole } from "@/lib/auth";
+import { FAMILY_LOGIN_PATH, homeForRole } from "@/lib/auth-access";
 import { isUuid } from "@/lib/cases/validation";
 import { supabaseAdmin } from "@/lib/db";
 import { fail } from "@/lib/http";
@@ -127,3 +129,41 @@ export async function requireCasePage(caseId: string): Promise<Actor> {
   if (!(await canAccessCase(actor.user.id, caseId))) notFound();
   return actor;
 }
+
+// ---------- 019: guardians ----------
+
+export type UserProfile = {
+  id: string;
+  role: UserRole;
+  display_name: string | null;
+  preferred_locale: string | null;
+  phone_verified_at: string | null;
+};
+
+export type GuardianSession = { user: User; profile: UserProfile & { role: "guardian" } };
+
+export const PROFILE_COLUMNS = "id, role, display_name, preferred_locale, phone_verified_at";
+
+export async function loadUserProfile(userId: string): Promise<UserProfile> {
+  const { data, error } = await supabaseAdmin().from("user_profiles").select(PROFILE_COLUMNS).eq("id", userId).single();
+  if (error) throw new Error(`Could not load user profile: ${error.message}`);
+  return data as UserProfile;
+}
+
+/** FR-5: every `/api/family/**` route calls this (or a stricter helper) before reading data. */
+export async function requireGuardian(): Promise<GuardianSession | Response> {
+  const user = await getAuthenticatedUser();
+  if (!user) return fail(401, "Authentication required");
+  const profile = await loadUserProfile(user.id);
+  if (profile.role !== "guardian") return fail(403, "Not allowed");
+  return { user, profile: profile as GuardianSession["profile"] };
+}
+
+/** FR-5 for `/family/**` server components: anonymous -> sign-in page, other roles -> their own home. */
+export const requireGuardianPage = cache(async (): Promise<GuardianSession> => {
+  const user = await getAuthenticatedUser();
+  if (!user) redirect(FAMILY_LOGIN_PATH);
+  const profile = await loadUserProfile(user.id);
+  if (profile.role !== "guardian") redirect(homeForRole(profile.role));
+  return { user, profile: profile as GuardianSession["profile"] };
+});

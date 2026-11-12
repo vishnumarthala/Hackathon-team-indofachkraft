@@ -51,6 +51,19 @@ describe("request schemas ignore privileged fields", () => {
   });
 });
 
+describe("post-sign-in routing for onboarding pages", () => {
+  it("lets every role return to /join and /claim/<token>, other rules unchanged", async () => {
+    const { postSignInPath } = await import("@/lib/auth-access");
+    const claim = "/claim/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    for (const role of ["guardian", "provider", "platform_admin"] as const) {
+      expect(postSignInPath(role, "/join")).toBe("/join");
+      expect(postSignInPath(role, claim)).toBe(claim);
+    }
+    expect(postSignInPath("guardian", "/dashboard")).toBe("/family");
+    expect(postSignInPath("guardian", "//evil.com/join")).toBe("/family");
+  });
+});
+
 describe("image metadata stripping", () => {
   it("removes EXIF and comments from JPEG but keeps the image data", () => {
     const input = syntheticJpeg();
@@ -164,7 +177,7 @@ describe.skipIf(!enabled)("provider profiles (database)", { timeout: 60_000 }, (
       fx.track(user.id);
       expect(user.confirmed).toBe(true);
       const [profile] = await sql`select role from user_profiles where id = ${user.id}`;
-      expect(profile.role).not.toBe("platform_admin");
+      expect(profile.role).toBe("guardian"); // 019 default; only register/claim promote it
       expect(await sql`select 1 from provider_profiles where user_id = ${user.id}`).toHaveLength(0);
 
       expect((await join(body)).status).toBe(409);

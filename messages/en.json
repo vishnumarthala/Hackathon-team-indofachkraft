@@ -707,5 +707,89 @@
       "done": "Call ended. Thank you! You can close this page.",
       "failed": "Could not simulate the call. Please try again."
     }
+  },
+  "family": {
+    "meta": {
+      "title": "Family account - DoctorNearMe"
+    },
+    "login": {
+      "title": "Sign in to your family account",
+      "google": "Continue with Google",
+      "googleUnavailable": "Google sign-in is not available yet. Use your mobile number.",
+      "or": "or",
+      "mobile": "Mobile number",
+      "countryCode": "India country code",
+      "invalidMobile": "Enter a 10-digit Indian mobile number",
+      "sendCode": "Send code",
+      "sending": "Sending...",
+      "codeSent": "We sent a 6-digit code to {phone}.",
+      "code": "6-digit code",
+      "invalidCode": "Enter the 6-digit code",
+      "verify": "Verify",
+      "verifying": "Verifying...",
+      "resend": "Resend code",
+      "resendIn": "Resend code in {seconds} s",
+      "changeNumber": "Use a different number",
+      "wrongCode": "That code is not correct or has expired.",
+      "tooMany": "Too many codes requested. Try again later.",
+      "oauthFailed": "Google sign-in did not work. Please try again.",
+      "clinician": "Are you a clinician? Sign in here",
+      "privacy": "We use your number only to sign you in and send appointment updates."
+    },
+    "shell": {
+      "navLabel": "Family account",
+      "home": "Home",
+      "children": "Children",
+      "appointments": "Appointments",
+      "messages": "Messages",
+      "documents": "Documents",
+      "settings": "Settings",
+      "signOut": "Sign out",
+      "signingOut": "Signing out...",
+      "signOutFailed": "Could not sign out. Please try again.",
+      "emergency": "In an emergency call 108 (ambulance) or 112."
+    },
+    "home": {
+      "hello": "Hello, {name}",
+      "there": "there",
+      "addChild": "Add your child",
+      "addChildText": "Keep your child's care, appointments and documents in one place.",
+      "findSpecialist": "Find a specialist near you",
+      "findSpecialistText": "Developmental paediatricians, therapists and centres in Hyderabad.",
+      "comingSoon": "Coming soon"
+    },
+    "empty": {
+      "children": "No children added yet.",
+      "appointments": "No appointments yet.",
+      "messages": "No messages yet.",
+      "documents": "No documents yet."
+    },
+    "settings": {
+      "title": "Settings",
+      "profile": "Your profile",
+      "name": "Your name",
+      "nameHint": "Up to 80 characters. Your child's care team sees this name.",
+      "nameInvalid": "Enter a name between 1 and 80 characters.",
+      "save": "Save",
+      "saving": "Saving...",
+      "saved": "Saved.",
+      "methods": "Sign-in methods",
+      "google": "Google",
+      "phone": "Phone",
+      "connectedAs": "Connected as {email}",
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "connectGoogle": "Connect Google",
+      "addPhone": "Add phone",
+      "changePhone": "Change number",
+      "unlink": "Unlink",
+      "unlinkDisabled": "Add another sign-in method first",
+      "cancel": "Cancel",
+      "googleInUse": "This Google account is already used by another DoctorNearMe account.",
+      "phoneInUse": "This number is already linked to another account.",
+      "linkFailed": "Could not connect this sign-in method. Please try again.",
+      "linked": "Sign-in method added.",
+      "unlinked": "Sign-in method removed."
+    }
   }
 }

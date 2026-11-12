@@ -7,7 +7,7 @@ import { getT } from "@/lib/i18n/server";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  // Guardians have no provider workspace; send them to their own portal (ticket 019 builds /family).
+  // Guardians have no provider workspace (proxy.ts redirects them too; this is the server-side backstop).
   const user = await requirePageUser();
   const role = await getUserRole(user.id);
   if (role === "guardian") redirect("/family");

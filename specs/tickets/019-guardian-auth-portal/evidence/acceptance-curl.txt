@@ -1,0 +1,40 @@
+## redirect matrix (next start)
+anon            /family                                            307 http://localhost:3040/family/login?next=%2Ffamily
+anon            /family/login                                      200 
+anon            /cases/00000000-0000-4000-8000-000000000001        307 http://localhost:3040/login?next=%2Fcases%2F00000000-0000-4000-8000-000000000001
+anon            /dashboard                                         307 http://localhost:3040/login?next=%2Fdashboard
+anon            /admin/users                                       307 http://localhost:3040/login?next=%2Fadmin%2Fusers
+guardian_a      /family                                            200 
+guardian_a      /family/login                                      307 http://localhost:3040/family
+guardian_a      /cases/00000000-0000-4000-8000-000000000001        307 http://localhost:3040/family
+guardian_a      /dashboard                                         307 http://localhost:3040/family
+guardian_a      /admin/users                                       307 http://localhost:3040/family
+provider_a      /family                                            307 http://localhost:3040/dashboard
+provider_a      /family/login                                      307 http://localhost:3040/dashboard
+provider_a      /cases/00000000-0000-4000-8000-000000000001        404 
+provider_a      /dashboard                                         200 
+provider_a      /admin/users                                       404 
+platform_admin  /family                                            307 http://localhost:3040/admin
+platform_admin  /family/login                                      307 http://localhost:3040/admin
+platform_admin  /cases/00000000-0000-4000-8000-000000000001        404 
+platform_admin  /dashboard                                         200 
+platform_admin  /admin/users                                       200 
+## APIs
+provider_a PATCH /api/family/profile -> {"error":"Not allowed"} [403]
+anon PATCH /api/family/profile -> {"error":"Authentication required"} [401]
+guardian_a POST /api/cases -> {"error":"Provider access required"} [403]
+guardian_a PATCH {role: platform_admin} -> {"error":"Invalid request","details":{"body":"Unrecognized key: \"role\""}} [400]
+guardian_a PATCH display_name -> {"profile":{"id":"90b67672-69e8-4fce-8c7d-26b2a39501a0","role":"guardian","display_name":"acct Parent","preferred_locale":null,"phone_verified_at":"2026-11-12T22:56:53.999358+00:00"}} [200]
+guardian_a add guardian_b phone -> {"error":"This number is already linked to another account."} [409]
+guardian_a unlink only method -> {"error":"Add another sign-in method first"} [409]
+## family page headers
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-C6Gw2ef584TwzQ86vOIdbQ==' 'strict-dynamic'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' http://127.0.0.1:60321; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+display name in header: data-testid="family-display-name">acct Parent
+script tags with external src: 0
+script tags without nonce: 0
+## DB
+[{"email":"acct-guardian-a@example.test","role":"guardian","display_name":"acct Parent"},{"email":"acct-guardian-b@example.test","role":"guardian","display_name":null}]
+[{"action":"guardian.profile_updated","details":{"fields":["display_name"]}},{"action":"guardian.profile_updated","details":{"fields":["display_name"]}},{"action":"guardian.profile_updated","details":{"fields":["display_name"]}}]
+[{"role":"guardian","phone_verified":true}]
+## server log phone grep
+lines in prod log: 5; matches for 9000000: 0

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useT } from "@/lib/i18n/client";
 import { PROVIDER_TYPES, type ProviderType } from "@/lib/providers/constants";
 import { supabaseBrowser } from "@/lib/supabase-browser";
@@ -28,19 +28,6 @@ export function JoinForm({ signedInEmail, googleEnabled, claimPath, defaultName 
   const [info, setInfo] = useState("");
   const [invalid, setInvalid] = useState<string[]>([]);
 
-  // Back from Google: let the browser client finish the code exchange, then reload signed in.
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("code")) {
-      void supabaseBrowser()
-        .auth.getSession()
-        .then(() => {
-          const url = new URL(window.location.href);
-          url.searchParams.delete("code");
-          window.location.replace(url.toString());
-        });
-    }
-  }, []);
 
   async function register(): Promise<boolean> {
     const res = await send("/api/providers/register", "POST", { provider_type: providerType, full_name: fullName });
@@ -105,10 +92,11 @@ export function JoinForm({ signedInEmail, googleEnabled, claimPath, defaultName 
   }
 
   async function onGoogle() {
-    const next = claimPath ? `?next=${encodeURIComponent(claimPath)}` : "";
+    // /auth/callback (019) exchanges the code and returns here: onboarding paths are allowed for every role.
+    const next = encodeURIComponent(claimPath ?? "/join");
     await supabaseBrowser().auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/join${next}` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${next}` },
     });
   }
 
