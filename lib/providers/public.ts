@@ -10,7 +10,7 @@ import { listProfileLocations, LOCATION_COLUMNS, ORG_PUBLIC_COLUMNS, photoUrl, t
 const SLUG = /^[a-z0-9][a-z0-9-]{1,78}[a-z0-9]$/;
 const PUBLIC_COLUMNS =
   "id, slug, display_name, provider_type, qualifications, bio, languages, years_experience, photo_path, " +
-  "registration_council, registration_state, registration_number, verified_at, time_zone, is_synthetic";
+  "registration_council, registration_state, registration_number, verified_at, time_zone, is_synthetic, offers_video, offers_in_clinic";
 
 type PublicRow = {
   id: string;
@@ -28,6 +28,8 @@ type PublicRow = {
   verified_at: string | null;
   time_zone: string;
   is_synthetic: boolean;
+  offers_video: boolean;
+  offers_in_clinic: boolean;
 };
 
 export type PublicProvider = Omit<PublicRow, "photo_path" | "registration_number" | "registration_council" | "registration_state"> & {

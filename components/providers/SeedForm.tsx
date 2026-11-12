@@ -9,6 +9,7 @@ import { buttonClass, fieldKeys, inputClass, labelClass, send } from "./request"
 // FR-5 admin seeding form: organisation + location + unclaimed profile from public information.
 export function SeedForm() {
   const t = useT("providers");
+  const td = useT("directory.editor");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [created, setCreated] = useState(false);
@@ -52,6 +53,8 @@ export function SeedForm() {
       verified,
       verification_note: v("verification_note"),
       is_synthetic: form.get("is_synthetic") === "on",
+      offers_in_clinic: form.get("offers_in_clinic") === "on",
+      offers_video: form.get("offers_video") === "on",
     });
     setBusy(false);
     if (!res.ok) {
@@ -162,6 +165,19 @@ export function SeedForm() {
           <input type="checkbox" name="is_synthetic" className="h-4 w-4" />
           {t("adminSeed.synthetic")}
         </label>
+        <fieldset className="sm:col-span-2">
+          <legend className={labelClass}>{td("modes")}</legend>
+          <div className="flex flex-wrap gap-x-4">
+            <label className="flex min-h-11 items-center gap-2 text-sm">
+              <input type="checkbox" name="offers_in_clinic" defaultChecked className="h-4 w-4" />
+              {td("offersInClinic")}
+            </label>
+            <label className="flex min-h-11 items-center gap-2 text-sm">
+              <input type="checkbox" name="offers_video" className="h-4 w-4" />
+              {td("offersVideo")}
+            </label>
+          </div>
+        </fieldset>
       </fieldset>
 
       <fieldset className="grid gap-3 rounded border border-slate-200 bg-white p-4 sm:grid-cols-2">

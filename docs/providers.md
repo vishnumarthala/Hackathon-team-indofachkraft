@@ -94,15 +94,15 @@ root layout reads the viewer's locale cookie.
 |---|---|---|---|
 | `POST /api/providers/join` | public | `{ provider_type?, full_name, email, password }` | 201 `{ confirm_email }`; 409 exists; 429 limit |
 | `POST /api/providers/register` | signed in | `{ provider_type, full_name }` | 201/200 `{ profile_id, redirect }`; 403 not allowed |
-| `PATCH /api/providers/:id` | owner | any of `{ display_name, provider_type, qualifications, bio, languages, years_experience, time_zone }` | 200 `{ profile }` (with derived `can_prescribe`) |
+| `PATCH /api/providers/:id` | owner | any of `{ display_name, provider_type, qualifications, bio, languages, years_experience, time_zone, offers_in_clinic, offers_video }` (modes: 029) | 200 `{ profile }` (with derived `can_prescribe`) |
 | `PATCH /api/providers/:id/listing` | owner | `{ listed }` | 200 `{ listed }`; 409 not verified |
 | `POST` / `DELETE /api/providers/:id/photo` | owner | multipart `file` | 201 `{ photo_url }` |
-| `POST /api/providers/:id/locations` | owner | `{ location_id }` or `{ org_id, name, address_line1, address_line2?, locality, city, state, pincode }` | 201 `{ location }` |
+| `POST /api/providers/:id/locations` | owner | `{ location_id }` or `{ org_id, name, address_line1, address_line2?, locality, city, state, pincode }` | 201 `{ location, geocoded }` (029: new addresses are geocoded server-side, see `docs/maps.md`) |
 | `DELETE /api/providers/:id/locations/:locationId` | owner | - | 200 `{ removed: true }` |
 | `POST /api/providers/:id/credentials/upload-url` | owner | `{ file_name, mime_type, size_bytes }` | 201 `{ path, token }` |
 | `POST /api/providers/:id/credentials` | owner | `{ council, state?, registration_number, certificate_path }` | 201 `{ submission_id, verification_status: "pending" }`; 409 suspended |
 | `PATCH /api/orgs/:id/public` | org owner/admin | any of `{ public_name, about, phone_public, website, listed }` | 200 `{ org }`; 409 no verified provider |
-| `POST /api/admin/providers` | platform admin | seed body (see `SeedSchema`) | 201 `{ profile_id, org_id, location_id, slug }` |
+| `POST /api/admin/providers` | platform admin | seed body (see `SeedSchema`; 029 adds `offers_in_clinic`, `offers_video`) | 201 `{ profile_id, org_id, location_id, slug, geocoded }` |
 | `POST /api/admin/providers/:id/claim-link` | platform admin | - | 201 `{ url, expires_at }`; 409 claimed |
 | `POST /api/admin/providers/:id/suspend` | platform admin | `{ note }` | 200; 409 not verified |
 | `POST /api/admin/verifications/:id` | platform admin | `{ action: "approve" \| "reject", note? }` | 200 `{ profile_id, verification_status }` |

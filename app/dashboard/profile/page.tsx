@@ -69,7 +69,10 @@ export default async function ProfileEditorPage() {
     rejected: t("verification.rejectedInfo"),
     suspended: t("verification.suspendedInfo"),
   }[status];
-  const toView = (loc: { id: string; name: string; address_line1: string; locality: string; city: string; pincode: string }, orgName: string) => ({
+  const toView = (
+    loc: { id: string; name: string; address_line1: string; locality: string; city: string; pincode: string; lat: number | null; lng: number | null },
+    orgName: string,
+  ) => ({
     id: loc.id,
     name: loc.name,
     address_line1: loc.address_line1,
@@ -77,6 +80,7 @@ export default async function ProfileEditorPage() {
     city: loc.city,
     pincode: loc.pincode,
     orgName,
+    mapped: loc.lat !== null && loc.lng !== null,
   });
 
   return (
@@ -108,6 +112,8 @@ export default async function ProfileEditorPage() {
             languages: profile.languages,
             years_experience: profile.years_experience,
             time_zone: profile.time_zone,
+            offers_in_clinic: profile.offers_in_clinic,
+            offers_video: profile.offers_video,
           }}
         />
       </Section>

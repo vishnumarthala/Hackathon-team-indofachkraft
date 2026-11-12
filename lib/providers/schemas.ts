@@ -69,6 +69,9 @@ export const ProfileUpdateSchema = z
         }
       }, { error: "Unknown time zone" })
       .optional(),
+    // 029: consultation modes shown in the directory (030 will derive them from active services).
+    offers_in_clinic: z.boolean({ error: "offers_in_clinic must be true or false" }).optional(),
+    offers_video: z.boolean({ error: "offers_video must be true or false" }).optional(),
   })
   .refine((v) => Object.values(v).some((x) => x !== undefined), { error: "Nothing to update" });
 
@@ -158,6 +161,8 @@ export const SeedSchema = z
     verified: z.boolean().default(false),
     verification_note: optionalText(1000, "Verification note").optional(),
     is_synthetic: z.boolean().default(false),
+    offers_in_clinic: z.boolean().optional(),
+    offers_video: z.boolean().optional(),
   })
   .superRefine((v, ctx) => {
     if (!v.org_id && !v.org_name) ctx.addIssue({ code: "custom", path: ["org_name"], message: "Organisation name is required" });

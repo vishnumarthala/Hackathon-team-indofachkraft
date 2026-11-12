@@ -95,10 +95,13 @@ export type EditableProfile = {
   languages: string[];
   years_experience: number | null;
   time_zone: string;
+  offers_in_clinic: boolean;
+  offers_video: boolean;
 };
 
 export function ProfileForm({ profile, verified }: { profile: EditableProfile; verified: boolean }) {
   const t = useT("providers");
+  const td = useT("directory.editor");
   const { busy, error, saved, invalid, run } = useSaver();
   const [languages, setLanguages] = useState<string[]>(profile.languages);
   const [type, setType] = useState(profile.provider_type);
@@ -115,6 +118,8 @@ export function ProfileForm({ profile, verified }: { profile: EditableProfile; v
       languages,
       years_experience: years === "" ? null : Number(years),
       time_zone: String(form.get("time_zone") ?? ""),
+      offers_in_clinic: form.get("offers_in_clinic") === "on",
+      offers_video: form.get("offers_video") === "on",
     });
   }
 
@@ -170,6 +175,22 @@ export function ProfileForm({ profile, verified }: { profile: EditableProfile; v
               {t(`languages.${lang}`)}
             </label>
           ))}
+        </div>
+      </fieldset>
+      <fieldset aria-describedby="pf-modes-hint">
+        <legend className={labelClass}>{td("modes")}</legend>
+        <p id="pf-modes-hint" className="text-xs text-slate-600">
+          {td("modesHint")}
+        </p>
+        <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+          <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
+            <input type="checkbox" name="offers_in_clinic" className="h-4 w-4" defaultChecked={profile.offers_in_clinic} />
+            {td("offersInClinic")}
+          </label>
+          <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
+            <input type="checkbox" name="offers_video" className="h-4 w-4" defaultChecked={profile.offers_video} />
+            {td("offersVideo")}
+          </label>
         </div>
       </fieldset>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -249,20 +270,25 @@ export function PhotoForm({ profileId, photoUrl, name }: { profileId: string; ph
   );
 }
 
-type LocationView = { id: string; name: string; address_line1: string; locality: string; city: string; pincode: string; orgName: string };
+type LocationView = { id: string; name: string; address_line1: string; locality: string; city: string; pincode: string; orgName: string; mapped: boolean };
 type OrgView = { id: string; name: string; canManage: boolean; locations: LocationView[] };
 
 function Address({ loc }: { loc: LocationView }) {
+  const td = useT("directory.editor");
   return (
     <span>
       <span className="font-medium text-slate-900">{loc.name}</span> ({loc.orgName}) - {loc.address_line1}, {loc.locality}, {loc.city} {loc.pincode}
+      {/* 029 FR-4: a location without coordinates is not searchable. */}
+      {loc.mapped ? null : <span className="block text-xs text-amber-800">{td("notOnMap")}</span>}
     </span>
   );
 }
 
 export function LocationsPanel({ profileId, linked, orgs }: { profileId: string; linked: LocationView[]; orgs: OrgView[] }) {
   const t = useT("providers");
+  const td = useT("directory.editor");
   const { busy, error, invalid, run } = useSaver();
+  const [unmapped, setUnmapped] = useState(false);
   const linkedIds = new Set(linked.map((l) => l.id));
   const available = orgs.flatMap((o) => o.locations).filter((l) => !linkedIds.has(l.id));
   const managed = orgs.filter((o) => o.canManage);
@@ -282,6 +308,7 @@ export function LocationsPanel({ profileId, linked, orgs }: { profileId: string;
       state: value("state"),
       pincode: value("pincode"),
     });
+    setUnmapped(res.ok && res.json.geocoded === false);
     if (res.ok) formEl.reset();
   }
 
@@ -379,6 +406,11 @@ export function LocationsPanel({ profileId, linked, orgs }: { profileId: string;
           </button>
         </form>
       )}
+      {unmapped ? (
+        <p role="alert" className="text-sm text-amber-800">
+          {td("geocodeFailed")}
+        </p>
+      ) : null}
       <Feedback error={error} saved={false} />
     </div>
   );
