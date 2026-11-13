@@ -132,7 +132,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   await audit({
     caseId: caseRow.id,
-    actor: "therapist",
     action: "referral.created",
     entity: "referral",
     entityId: referralId,

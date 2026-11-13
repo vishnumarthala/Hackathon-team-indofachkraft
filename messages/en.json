@@ -748,7 +748,8 @@
       "signOut": "Sign out",
       "signingOut": "Signing out...",
       "signOutFailed": "Could not sign out. Please try again.",
-      "emergency": "In an emergency call 108 (ambulance) or 112."
+      "emergency": "In an emergency call 108 (ambulance) or 112.",
+      "assessments": "Questionnaires"
     },
     "home": {
       "hello": "Hello, {name}",
@@ -892,6 +893,49 @@
         "notShared": "Not shared",
         "chooseScope": "Choose at least one type of record.",
         "notTreating": "This organisation is not treating your child",
+        "saveFailed": "Could not save. Please try again."
+      }
+    },
+    "assessments": {
+      "title": "Questionnaires",
+      "intro": "Questionnaires your child's care team asked you to fill in.",
+      "empty": "No questionnaires yet.",
+      "forChild": "For {child}",
+      "due": "Please answer by {date}",
+      "noDue": "No due date",
+      "start": "Start",
+      "continue": "Continue",
+      "view": "View answers",
+      "viewResult": "View result",
+      "backToList": "Back to questionnaires",
+      "englishOnly": "Questions are in English for now. A checked translation is coming.",
+      "englishOnlyResult": "The result is in English for now.",
+      "questionOf": "Question {n} of {total}",
+      "safetyQuestion": "Safety question {n} of {total}",
+      "previous": "Previous",
+      "next": "Next",
+      "saveLater": "Save and continue later",
+      "saving": "Saving...",
+      "saved": "Saved. You can continue later.",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "submitted": "Thank you. Your answers were sent to your child's care team. They will review them.",
+      "reviewedNotShared": "Your child's care team has reviewed your answers. Ask them about the result at your next visit.",
+      "resultTitle": "Result from your child's care team",
+      "yourAnswers": "Your answers",
+      "missingList": "Questions not answered yet: {list}",
+      "reload": "Reload",
+      "errors": {
+        "notLinked": "This parent is not linked to the child.",
+        "alreadyOpen": "This questionnaire is already open for this parent.",
+        "chooseTemplate": "Choose a questionnaire.",
+        "notOpen": "Only open questionnaires can be cancelled.",
+        "alreadyReviewed": "Already reviewed.",
+        "notSubmitted": "The parent has not submitted it yet.",
+        "answerAll": "Please answer all questions.",
+        "alreadySubmitted": "Already submitted.",
+        "cancelled": "This questionnaire was cancelled.",
+        "stale": "These answers were changed in another window. Reload to continue.",
         "saveFailed": "Could not save. Please try again."
       }
     }
@@ -1149,6 +1193,8 @@
     "shared": "Shared with us",
     "health": "Health",
     "documents": "Documents",
+    "assessments": "Assessments",
+    "goals": "Goals",
     "messages": "Messages"
   },
   "sharing": {
@@ -1360,6 +1406,531 @@
       "uploadFailed": "The upload did not finish. Please try again.",
       "saveFailed": "Could not save. Please try again.",
       "forbidden": "You cannot change this document."
+    }
+  },
+  "speakers": {
+    "clinician": "Clinician",
+    "parentOrCaregiver": "Parent or caregiver",
+    "child": "Child",
+    "otherAdult": "Other adult",
+    "aiAssistant": "AI assistant",
+    "unknown": "Unknown"
+  },
+  "assessments": {
+    "disclaimer": "This is a developmental check-in, not a diagnosis.",
+    "urgent": "Please contact your child's doctor now. In an emergency call 108 (ambulance) or 112.",
+    "status": {
+      "assigned": "Not started",
+      "inProgress": "In progress",
+      "submitted": "Submitted",
+      "reviewed": "Reviewed",
+      "cancelled": "Cancelled"
+    },
+    "bands": {
+      "noStrongSigns": "No strong signs",
+      "discussWithProfessional": "Discuss with a professional",
+      "seeProfessionalSoon": "See a professional soon"
+    },
+    "redFlags": {
+      "skillRegression": "Lost words or skills",
+      "selfInjury": "Hurts themselves",
+      "seizure": "Fits (seizures)",
+      "breathing": "Breathing problems",
+      "notEatingDrinking": "Not eating or drinking",
+      "safetyConcern": "Worried about safety"
+    },
+    "answers": {
+      "never": "Never",
+      "sometimes": "Sometimes",
+      "often": "Often",
+      "always": "Always",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "provider": {
+      "title": "Assessments",
+      "intro": "Send questionnaires to the child's parents. They answer in their DoctorNearMe app; you review the answers here.",
+      "send": "Send questionnaire",
+      "sending": "Sending...",
+      "sent": "Questionnaire sent.",
+      "template": "Questionnaire",
+      "parent": "Parent",
+      "parentFallback": "Parent",
+      "dueDate": "Due date (optional)",
+      "noGuardians": "No parent is linked to this child yet. Give the parent a code from the Overview tab so they can add the child in their app.",
+      "empty": "No questionnaires sent yet.",
+      "listLabel": "Questionnaires",
+      "sentTo": "Sent to {name}",
+      "due": "Due {date}",
+      "noDue": "No due date",
+      "redFlags_one": "{count} red flag",
+      "redFlags_other": "{count} red flags",
+      "sharedBadge": "Shared with parent",
+      "open": "Open",
+      "cancel": "Cancel",
+      "cancelling": "Cancelling...",
+      "cancelConfirm": "Cancel \"{title}\"? The parent can no longer answer it.",
+      "back": "Back to assessments",
+      "submittedOn": "Submitted {date}",
+      "reviewedOn": "Reviewed {date}",
+      "redFlagTitle": "Red flags: the parent answered yes",
+      "scoreTitle": "Score",
+      "partial": "Not submitted yet: score of the answers saved so far ({answered} of {total} questions).",
+      "scoreValue": "{total} of {max} points",
+      "domains": {
+        "social": "Social: {points}/{max}",
+        "emotional": "Emotional: {points}/{max}",
+        "speech": "Speech and communication: {points}/{max}",
+        "behaviour": "Behaviour: {points}/{max}",
+        "sensory": "Sensory: {points}/{max}",
+        "cognitive": "Attention and thinking: {points}/{max}"
+      },
+      "answersTitle": "Answers",
+      "safetyTitle": "Safety questions",
+      "notAnswered": "Not answered",
+      "reviewTitle": "Review",
+      "note": "Note for the care team (not shown to the parent)",
+      "share": "Share result with parent",
+      "shareHint": "The parent sees the result summary in their DoctorNearMe app.",
+      "markReviewed": "Mark reviewed",
+      "reviewing": "Saving...",
+      "reviewDone": "Reviewed",
+      "reviewerNote": "Reviewer note:",
+      "sharedYes": "The result is shared with the parent.",
+      "sharedNo": "The result is not shared with the parent.",
+      "summaryTitle": "Published summary (version {version})",
+      "errors": {
+        "notLinked": "This parent is not linked to the child.",
+        "alreadyOpen": "This questionnaire is already open for this parent.",
+        "chooseTemplate": "Choose a questionnaire.",
+        "notOpen": "Only open questionnaires can be cancelled.",
+        "alreadyReviewed": "Already reviewed.",
+        "notSubmitted": "The parent has not submitted it yet.",
+        "answerAll": "Please answer all questions.",
+        "alreadySubmitted": "Already submitted.",
+        "cancelled": "This questionnaire was cancelled.",
+        "stale": "These answers were changed in another window. Reload to continue.",
+        "saveFailed": "Could not save. Please try again."
+      }
+    }
+  },
+  "iep": {
+    "statuses": {
+      "draft": "Draft",
+      "active": "Active",
+      "completed": "Completed",
+      "archived": "Archived"
+    },
+    "goalStatuses": {
+      "active": "Active",
+      "achieved": "Achieved",
+      "discontinued": "Discontinued"
+    },
+    "domains": {
+      "communication": "Communication",
+      "social": "Social",
+      "behaviour": "Behaviour",
+      "fineMotor": "Fine motor",
+      "grossMotor": "Gross motor",
+      "selfCare": "Self-care",
+      "cognitive": "Cognitive",
+      "sensory": "Sensory",
+      "academic": "Academic"
+    },
+    "measures": {
+      "percent": "Percentage of opportunities (0 to 100)",
+      "count": "Count (0 or more)",
+      "rating15": "Rating from 1 to 5",
+      "yesNo": "Yes or no (1 = yes, 0 = no)"
+    },
+    "values": {
+      "percent": "{value}%",
+      "rating": "{value} of 5",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "provider": {
+      "title": "Goals",
+      "intro": "Write the child's plan with SMART goals, record progress and share the plan with the parents.",
+      "plansLabel": "Plans for this case",
+      "newPlan": "Create a plan",
+      "planTitle": "Plan title",
+      "startDate": "Start date",
+      "reviewDate": "Review date",
+      "reviewHint": "At most 12 months after the start date.",
+      "create": "Create plan",
+      "creating": "Creating...",
+      "empty": "No plan yet. Create one to start adding goals.",
+      "dates": "{start} to {review} (review date)",
+      "publishToParent": "Publish to parent",
+      "publishChanges": "Publish changes",
+      "publishing": "Publishing...",
+      "unpublishedChanges": "Unpublished changes",
+      "publishedInfo": "Parents see version {version}, shared on {date}.",
+      "notPublished": "Not shared with the parents yet.",
+      "upToDate": "Parents see the latest version.",
+      "published": "The plan is now shared with the parents.",
+      "publishHint": "Publishing a new plan makes it the active plan for this case. The current active plan is then archived.",
+      "publishNeedsGoal": "Add at least one goal before you publish.",
+      "editPlan": "Edit plan",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "markCompleted": "Mark completed",
+      "archive": "Archive",
+      "archiveConfirm": "Archive this plan? It can no longer be changed.",
+      "completeConfirm": "Mark this plan as completed? It can no longer be changed.",
+      "closedNote": "This plan is closed and can no longer be changed.",
+      "goalsLabel": "Goals",
+      "noGoals": "No goals yet.",
+      "addGoal": "Add goal"
+    },
+    "goal": {
+      "domain": "Domain",
+      "statement": "Goal",
+      "statementHint": "One sentence: what the child will do, how well and by when.",
+      "specific": "Specific",
+      "specificHint": "What exactly will the child do?",
+      "measurable": "Measurable",
+      "measurableHint": "How will you count or score it?",
+      "achievable": "Achievable",
+      "achievableHint": "Why is this realistic for the child now?",
+      "relevant": "Relevant",
+      "relevantHint": "Why does it matter for the child and family?",
+      "timeBound": "Time-bound",
+      "timeBoundHint": "By when, and how often you will check.",
+      "measureType": "How we measure",
+      "baseline": "Baseline",
+      "target": "Target",
+      "targetDate": "Target date",
+      "baselineToTarget": "Baseline to target",
+      "baselineToTargetValue": "{baseline} to {target} by {date}",
+      "number": "Goal {n}:",
+      "save": "Save goal",
+      "edit": "Edit goal",
+      "markAchieved": "Mark achieved",
+      "reopen": "Make active again",
+      "delete": "Delete goal",
+      "discontinue": "Discontinue goal",
+      "deleteConfirm": "Delete this goal?",
+      "discontinueConfirm": "Discontinue this goal? It stays in the plan with its progress."
+    },
+    "progress": {
+      "record": "Record progress",
+      "date": "Date",
+      "value": "Value",
+      "note": "Note (optional)",
+      "save": "Save progress",
+      "saving": "Saving...",
+      "saved": "Progress saved."
+    },
+    "chart": {
+      "title": "Progress chart: {goal}",
+      "baseline": "Baseline",
+      "target": "Target",
+      "showData": "Show data",
+      "date": "Date",
+      "value": "Value",
+      "note": "Note",
+      "noData": "No progress recorded yet."
+    },
+    "trend": {
+      "label": "Progress summary",
+      "none": "No progress recorded yet.",
+      "latest": "Latest: {value}",
+      "change": "Change from baseline: {change}",
+      "percent": "{percent}% of the way to the target",
+      "onTrack": "On track",
+      "notOnTrack": "Not on track yet",
+      "needMore": "Record at least 2 values to see a trend."
+    },
+    "errors": {
+      "stale": "This plan was changed by someone else. Reload to see the latest version.",
+      "closed": "This plan is closed and can no longer be changed.",
+      "tooManyGoals": "A plan can have at most 20 goals.",
+      "noGoals": "Add at least one goal before publishing.",
+      "nothingToPublish": "There are no changes to publish.",
+      "goalDiscontinued": "This goal was discontinued.",
+      "measureLocked": "The measure cannot change after progress has been recorded.",
+      "targetDateRange": "The target date must be between the plan's start and review dates.",
+      "planDatesExcludeGoals": "Some goals have target dates outside these plan dates. Change those goals first.",
+      "futureDate": "The date cannot be in the future.",
+      "valueRange": "Enter a value that fits the measure.",
+      "statusChange": "This change is not allowed.",
+      "notFound": "Not found. Reload the page.",
+      "invalid": "Please check the highlighted fields.",
+      "saveFailed": "Could not save. Please try again.",
+      "reload": "Reload"
+    },
+    "fieldErrors": {
+      "title": "Enter a title of up to 120 characters.",
+      "startDate": "Enter a valid start date.",
+      "reviewDate": "The review date must be on or after the start date and within 12 months of it.",
+      "domain": "Choose a domain.",
+      "statement": "Write the goal in 10 to 500 characters.",
+      "smart": "Fill in this field (3 to 300 characters).",
+      "measureType": "Choose how we measure.",
+      "baseline": "Enter a baseline that fits the measure.",
+      "target": "Enter a target that fits the measure and is different from the baseline.",
+      "targetDate": "Choose a target date between the plan's start and review dates.",
+      "observedOn": "Enter a date that is not in the future.",
+      "value": "Enter a value that fits the measure.",
+      "note": "The note can have at most 500 characters."
+    },
+    "family": {
+      "link": "Plan and goals",
+      "title": "{name}'s plan",
+      "back": "Back to {name}",
+      "intro": "The goals your child's therapist set, and how your child is doing. Goals are shown as the therapist wrote them.",
+      "empty": "Your child's therapist has not shared a plan yet.",
+      "from": "From {org}",
+      "sharedOn": "Shared on {date}",
+      "progressTitle": "Progress",
+      "progressIntro": "Values the care team recorded for each goal."
+    }
+  },
+  "privacy": {
+    "link": "Privacy notice",
+    "notice": {
+      "metaTitle": "Privacy notice",
+      "title": "Privacy notice",
+      "draftBadge": "Draft - pending legal review",
+      "intro": "DoctorNearMe helps families and child development professionals work together. This notice explains what we collect, why, who processes it, how long we keep it and the rights you have under India's Digital Personal Data Protection Act, 2023.",
+      "controllerTitle": "Who is responsible",
+      "controller": "DoctorNearMe (pilot operator) decides how this data is used (data fiduciary). Each clinic or therapist you work with is responsible for the clinical records they create.",
+      "collectTitle": "What we collect, by feature",
+      "collect": {
+        "account": "Your account: name, email address, mobile number and sign-in details.",
+        "children": "Your children: name, date of birth, sex (optional) and your relationship to them.",
+        "consent": "Your permissions (consents): what you allowed or withdrew, when, and the version of the text you saw.",
+        "health": "Health profile: blood group, allergies, medicines, conditions, birth and development history, emergency contact.",
+        "documents": "Documents you or the care team upload (reports, prescriptions, school letters).",
+        "intake": "AI intake voice call (only with your permission): the call audio and its transcript, and the summary prepared for the therapist.",
+        "sessions": "Session recordings (only with your permission): audio recorded at the centre, transcripts, observations suggested by AI and confirmed by the therapist, reports and referrals.",
+        "assessments": "Questionnaires your care team sends you (for example the developmental check-in): your answers and the summary the team publishes.",
+        "plans": "Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you.",
+        "messages": "Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them.",
+        "notifications": "Notifications we send you in the app, by email or WhatsApp.",
+        "website": "If you ask for a demo on our website: name, email, role and centre."
+      },
+      "purposesTitle": "Why we use it",
+      "purposes": "To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising.",
+      "processorsTitle": "Who processes it for us, and where",
+      "processorName": "Processor",
+      "processorPurpose": "What for",
+      "processorLocation": "Where",
+      "processors": {
+        "elevenlabs": {
+          "name": "ElevenLabs",
+          "purpose": "AI voice calls, speech-to-text, voice summaries",
+          "location": "USA"
+        },
+        "gemini": {
+          "name": "Google Gemini",
+          "purpose": "AI analysis, draft reports and answers",
+          "location": "Outside India (Google data centres)"
+        },
+        "resend": {
+          "name": "Resend",
+          "purpose": "Email",
+          "location": "USA"
+        },
+        "whatsapp": {
+          "name": "Meta WhatsApp",
+          "purpose": "WhatsApp messages (only if you turn them on)",
+          "location": "Outside India (Meta data centres)"
+        },
+        "supabase": {
+          "name": "Supabase",
+          "purpose": "Database and file storage",
+          "location": "{region}"
+        }
+      },
+      "crossBorder": "AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time.",
+      "retentionTitle": "How long we keep it",
+      "retentionWhat": "Data",
+      "retentionHow": "Kept for",
+      "retention": {
+        "audio": {
+          "what": "Raw audio of intake calls and sessions",
+          "how": "{days} days after it is transcribed (the transcript stays with the clinical record)"
+        },
+        "pending": {
+          "what": "Uploads that were never finished",
+          "how": "Deleted within 24 hours"
+        },
+        "inApp": {
+          "what": "In-app notifications",
+          "how": "{days} days"
+        },
+        "delivery": {
+          "what": "Email and WhatsApp message text in our delivery log",
+          "how": "{days} days (then only the date and status remain)"
+        },
+        "exports": {
+          "what": "Data downloads you request",
+          "how": "{days} days"
+        },
+        "signups": {
+          "what": "Website demo requests",
+          "how": "{months} months"
+        },
+        "clinical": {
+          "what": "Clinical records (cases, transcripts, confirmed observations, reports)",
+          "how": "While your child is in care, and as long as the law requires clinics to keep them"
+        },
+        "messages": {
+          "what": "Messages with the care team",
+          "how": "While your child is in care, with the clinical record; a deleted message's text is removed at once"
+        },
+        "consent": {
+          "what": "Consent records",
+          "how": "Kept as proof of consent, also after deletion (without free text)"
+        },
+        "audit": {
+          "what": "Security audit log",
+          "how": "{years} years"
+        }
+      },
+      "rightsTitle": "Your rights",
+      "rights": {
+        "access": "Access: download a copy of your child's data from the child's Privacy page in the app.",
+        "correction": "Correction: change details in the app, or ask the clinic to correct a record.",
+        "erasure": "Erasure: ask us to stop AI processing or to delete your child's data from the child's Privacy page. We review each request; a clinic may have to keep some clinical records by law, and we tell you if so.",
+        "withdraw": "Withdraw consent: switch off any AI feature on your child's page at any time. Work that has not started yet is stopped and its audio deleted.",
+        "grievance": "Grievance: contact our grievance officer. If you are not satisfied, you can complain to the Data Protection Board of India.",
+        "nominate": "Nominate: you can name another person to use these rights for you if you cannot."
+      },
+      "childrenTitle": "Children's data",
+      "children": "We process a child's data only with verifiable consent from their parent or legal guardian, separately for each child and each feature. Child pages have no tracking, no analytics and no targeted advertising.",
+      "contactTitle": "Grievance officer",
+      "contact": "Email {email}. We reply within 7 days.",
+      "contactMissing": "Grievance officer contact will be published before the pilot starts.",
+      "updated": "This notice may change; we will tell you in the app before important changes."
+    },
+    "family": {
+      "link": "Privacy and data",
+      "title": "Privacy and data",
+      "intro": "Download a copy of {name}'s data, or ask us to delete it.",
+      "exportTitle": "Download a copy",
+      "exportIntro": "You get a ZIP file with everything about {name} that you can see in the app, including the documents. We send you a notification when it is ready.",
+      "exportLimit": "Up to 3 downloads per day. Each file can be downloaded for 7 days.",
+      "exportButton": "Download {name}'s data",
+      "exportRequesting": "Requesting...",
+      "exportRequested": "We are preparing the file. This usually takes a minute.",
+      "exportRunning": "A download is already being prepared.",
+      "exportLimitReached": "You can request 3 downloads per day. Please try again tomorrow.",
+      "exportFailedRequest": "Could not save. Please try again.",
+      "exportsListTitle": "Your downloads",
+      "exportStatus": {
+        "queued": "Preparing",
+        "building": "Preparing",
+        "ready": "Ready",
+        "failed": "Could not be prepared",
+        "expired": "Expired"
+      },
+      "download": "Download",
+      "requestedOn": "Requested {date}",
+      "availableUntil": "Available until {date}",
+      "deleteTitle": "Delete data",
+      "deleteIntro": "Choose what to delete. A DoctorNearMe administrator reviews every request before anything is deleted.",
+      "scope": {
+        "all_ai_processing": {
+          "label": "Stop AI processing and delete AI data",
+          "description": "Withdraws all AI permissions, deletes recordings, transcripts and AI suggestions, and deletes the copies of AI voice calls held by ElevenLabs. Records confirmed by the therapist stay."
+        },
+        "everything": {
+          "label": "Delete everything about {name}",
+          "description": "Deletes records at every clinic, documents, the health profile and all recordings, including copies held by our processors. The name is replaced by \"Deleted child\". Consent records and the security log are kept as the law requires, without free text."
+        }
+      },
+      "reasonLabel": "Reason (optional)",
+      "confirmLabel": "I understand that deleted data cannot be recovered.",
+      "deleteButton": "Request deletion",
+      "deleteSending": "Sending...",
+      "deleteSent": "Request sent. We will notify you when it has been reviewed.",
+      "deleteOpen": "A deletion request for this child is already open.",
+      "deleteFailed": "Could not save. Please try again.",
+      "chooseScope": "Choose what to delete",
+      "requestsTitle": "Your requests",
+      "requestStatus": {
+        "requested": "Waiting for review",
+        "approved": "Approved, deleting",
+        "in_progress": "Deleting",
+        "completed": "Completed",
+        "rejected": "Not carried out",
+        "failed": "Deleting (retrying)"
+      },
+      "rejectedReason": "Reason: {note}",
+      "noticeLink": "Read the privacy notice"
+    },
+    "admin": {
+      "nav": {
+        "users": "Accounts",
+        "audit": "Audit log",
+        "requests": "Deletion requests",
+        "ops": "Operations",
+        "notifications": "Notifications"
+      },
+      "audit": {
+        "title": "Audit log",
+        "intro": "Who did what, newest first. Details of health and consent content are not shown. Viewing this page is itself audited.",
+        "action": "Action",
+        "actor": "Actor",
+        "actorHint": "User id or role",
+        "organisation": "Organisation",
+        "child": "Child",
+        "case": "Case",
+        "from": "From",
+        "to": "To",
+        "filter": "Filter",
+        "clear": "Clear",
+        "time": "Time",
+        "role": "Role",
+        "actorId": "Actor id",
+        "entity": "Entity",
+        "ids": "Ids",
+        "none": "No audit events match.",
+        "older": "Older events"
+      },
+      "requests": {
+        "title": "Deletion requests",
+        "intro": "Approve to delete the child's data everywhere (including processor copies). Reject only for a legal record-keeping obligation, and cite it.",
+        "none": "No deletion requests.",
+        "child": "Child",
+        "scope": "Scope",
+        "status": "Status",
+        "requested": "Requested",
+        "reason": "Guardian's reason",
+        "note": "Note (required to reject: cite the obligation)",
+        "approve": "Approve",
+        "reject": "Reject",
+        "saving": "Saving...",
+        "saved": "Saved.",
+        "failed": "Could not save. Please try again.",
+        "noteRequired": "Explain why (at least 10 characters), citing the record-keeping obligation",
+        "processorsPending": "Processor deletions pending: {count}",
+        "lastError": "Last error: {error}"
+      },
+      "ops": {
+        "title": "Operations",
+        "outbox": "Notifications outbox",
+        "pendingEvents": "Events waiting",
+        "oldestPending": "Oldest waiting (minutes)",
+        "deliveries": "Deliveries by status",
+        "retention": "Retention job",
+        "lastRun": "Last run",
+        "never": "Never",
+        "privacy": "Privacy jobs",
+        "openRequests": "Open deletion requests",
+        "failedRequests": "Deletion requests retrying",
+        "queuedExports": "Exports being prepared",
+        "failedExports": "Failed exports",
+        "processorFailures": "Failed processor deletions",
+        "stuck": "Recordings stuck for more than 30 minutes",
+        "none": "None.",
+        "minutes": "{count} min"
+      }
     }
   },
   "messaging": {

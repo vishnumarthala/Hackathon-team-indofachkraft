@@ -37,7 +37,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const org = await updateOrgPublic(orgId, parsed.data);
   await audit({
-    actor: "therapist",
     actorUserId: userId,
     action: "org.public_updated",
     entity: "organization",

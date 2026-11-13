@@ -27,7 +27,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   await audit({
     caseId: id,
-    actor: "therapist",
     action: "case.updated",
     entity: "case",
     entityId: id,

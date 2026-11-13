@@ -1,7 +1,9 @@
 // Ticket 027 FR-2/FR-3/FR-6: thread and message reads and writes. Server only. Every write is one database
 // function (message + outbox event + strict audit in one transaction); callers have passed lib/messaging/access.ts.
 // Message bodies are never logged (NFR-3): errors carry the Postgres error code only.
+import { auditWouldFail } from "@/lib/audit";
 import { getDocumentAccess, loadDocument } from "@/lib/documents/access";
+import { logger } from "@/lib/log";
 import { supabaseAdmin } from "@/lib/db";
 import type { Result } from "@/lib/orgs";
 import type { ProviderType } from "@/lib/providers/constants";
@@ -30,8 +32,10 @@ type MessageRow = {
   deleted_at: string | null;
 };
 
+const log = logger("messaging");
+
 function failed(op: string, error: { code?: string } | null): { ok: false; status: number; error: string } {
-  console.error(`[messaging] ${op} failed: ${error?.code ?? "error"}`);
+  log.error(`${op} failed`, { code: error?.code ?? "error" });
   return { ok: false, status: 503, error: MESSAGING_ERRORS.saveFailed };
 }
 
@@ -146,6 +150,8 @@ export async function createThread(
   userId: string,
   input: ThreadCreateInput,
 ): Promise<Result<{ thread: ThreadJson; message: MessageView; created: boolean }>> {
+  // 041 E-2 dev/test hook: behave as if the audit row (written by the database function) could not be saved.
+  if (auditWouldFail("thread.created")) return failed("create thread", { code: "audit_hook" });
   const { data, error } = await supabaseAdmin().rpc("create_message_thread", {
     p_case: input.case_id,
     p_user: userId,
@@ -170,6 +176,8 @@ export async function sendMessage(
   userId: string,
   input: MessageCreateInput,
 ): Promise<Result<{ message: MessageView; created: boolean }>> {
+  // 041 E-2 dev/test hook: behave as if the audit row (written by the database function) could not be saved.
+  if (auditWouldFail("message.sent")) return failed("send message", { code: "audit_hook" });
   const { data, error } = await supabaseAdmin().rpc("send_thread_message", {
     p_thread: thread.id,
     p_user: userId,
@@ -187,6 +195,8 @@ export async function sendMessage(
 
 /** FR-2 `DELETE /api/messages/:id`: own message within 15 minutes; the body is replaced for everyone. */
 export async function deleteMessage(thread: ThreadRow, messageId: string, userId: string): Promise<Result<{ message: MessageView }>> {
+  // 041 E-2 dev/test hook: behave as if the audit row (written by the database function) could not be saved.
+  if (auditWouldFail("message.deleted")) return failed("delete message", { code: "audit_hook" });
   const { data, error } = await supabaseAdmin().rpc("delete_thread_message", { p_message: messageId, p_user: userId });
   if (error) return failed("delete message", error);
   const out = data as WriteResult;
@@ -208,6 +218,8 @@ export async function markThreadRead(threadId: string, userId: string): Promise<
 
 /** FR-6 `POST /api/threads/:id/archive`: owners/admins of the case's org; archived threads are read-only. */
 export async function archiveThread(threadId: string, userId: string): Promise<Result<{ thread: ThreadJson }>> {
+  // 041 E-2 dev/test hook: behave as if the audit row (written by the database function) could not be saved.
+  if (auditWouldFail("thread.archived")) return failed("archive thread", { code: "audit_hook" });
   const { data, error } = await supabaseAdmin().rpc("archive_message_thread", { p_thread: threadId, p_user: userId });
   if (error) return failed("archive thread", error);
   const out = data as WriteResult;

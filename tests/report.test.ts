@@ -22,6 +22,8 @@ vi.mock("@/lib/authz", () => ({
   requireCaseAccess: vi.fn().mockResolvedValue(null),
   requireRecordingAccess: vi.fn().mockResolvedValue(null),
   requireReportAccess: vi.fn().mockResolvedValue(null),
+  // 024: PATCH /api/reports/:id records who finalised (published_by).
+  requireReportActor: vi.fn(async () => ({ actor: { user: { id: "user-1" }, role: "provider" } })),
   requireFactAccess: vi.fn().mockResolvedValue(null),
   requireProviderApi: vi.fn().mockResolvedValue({ actor: { user: { id: "user-1" }, role: "provider" } }),
 }));

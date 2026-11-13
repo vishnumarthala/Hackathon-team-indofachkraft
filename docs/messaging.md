@@ -132,6 +132,21 @@ through `realtime.apply_rls` (the core of `realtime.list_changes`).
 - Components: `components/messaging/*` (`ThreadView`, `ThreadPage`, `ThreadList`, `NewThreadForm`,
   `LiveThreadsRefresher`, `EmergencyBanner`, `threadSync.ts`, `realtime.ts`, `client.ts`).
 
+## Privacy and audit (041)
+
+- Registry entry `messages` (`lib/privacy/registry.ts`): the guardian export contains the conversations of the child
+  that this guardian can open (`thread_access_level = 'guardian'`), with the text they see (deleted messages as
+  `This message was deleted.`), sender kind, `own`, attachment ids (files come from the `documents` category) and
+  only their own read marker. Erasure (`everything`) deletes every organisation's threads of the child (messages and
+  read markers cascade) and their `thread` outbox events. The privacy notice lists messages under what we collect and
+  in the retention table.
+- Audit rows are written inside the database functions with `actor_user_id`; 041's `audit_events_fill` trigger adds
+  `actor_role`, `case_ref`, `org_id` and `child_id` (requests through supabase-js RPC carry no `request_id` /
+  `ip_hash`, as for 020-023). The four actions are registered as strict (`kind: "sql"`) in
+  `lib/audit/strict-actions.ts` and honour the `AUDIT_FAIL_ACTIONS` dev hook. Errors are logged through
+  `lib/log.ts` with the Postgres code only. Audit rows survive case deletion; tests remove their synthetic rows with
+  `purgeTestAudit` (`tests/helpers/audit.ts`).
+
 ## Not in this ticket
 
 Cross-org or group threads, voice notes, per-message read receipts, typing indicators, push notifications,

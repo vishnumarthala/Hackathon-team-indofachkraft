@@ -38,7 +38,6 @@ export async function DELETE(req: Request) {
   }
 
   await audit({
-    actor: "parent",
     actorUserId: session.user.id,
     action: "guardian.identity_unlinked",
     entity: "user",

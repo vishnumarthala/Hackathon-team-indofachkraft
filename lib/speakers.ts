@@ -1,6 +1,7 @@
 // Speaker swap (008 FR-6). Pure rules are unit tested; the transaction locks the recording row
 // the same way updateFact/bulkUpdate do, so it is serialized against manual decisions and extraction.
 import type postgres from "postgres";
+import { setTxAuditActor, type SessionAuditActor } from "@/lib/audit";
 import { isUuid } from "@/lib/cases/validation";
 import { EXTRACTION_RUNNING, SESSION_NOT_FOUND, db } from "@/lib/facts";
 import { isManualDecision, swapSegments, swapSpeakerMap } from "@/lib/speaker-swap";
@@ -68,10 +69,13 @@ export async function swapSpeakersInTx(tx: Tx, recordingId: string): Promise<Swa
   return { ok: true, data: { speaker_map, segments_count: segments.length } };
 }
 
-export async function swapSpeakers(recordingId: string): Promise<SwapResult> {
+export async function swapSpeakers(recordingId: string, actor?: SessionAuditActor): Promise<SwapResult> {
   if (!isUuid(recordingId)) return { ok: false, status: 404, error: SESSION_NOT_FOUND };
   const sql = await db();
-  return sql.begin((tx) => swapSpeakersInTx(tx, recordingId)) as Promise<SwapResult>;
+  return sql.begin(async (tx) => {
+    await setTxAuditActor(tx, actor);
+    return swapSpeakersInTx(tx, recordingId);
+  }) as Promise<SwapResult>;
 }
 
 // True when the speakers were swapped after the last completed extraction, i.e. the ISAA form was

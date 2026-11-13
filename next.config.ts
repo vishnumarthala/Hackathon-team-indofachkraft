@@ -6,7 +6,12 @@ const nextConfig: NextConfig = {
   // multipart overhead.
   experimental: { proxyClientMaxBodySize: "12mb" },
   // 029 D-3: the dev server's request log never prints a searcher's coordinates (/find, /api/public/providers).
-  logging: { incomingRequests: { ignore: [/[?&](lat|lng|q)=/] } },
+  // 041 NFR-2: nor URLs that carry a bearer token in the path (intake, referral, invitation and claim links).
+  logging: {
+    incomingRequests: {
+      ignore: [/[?&](lat|lng|q)=/, /\/(intake|specialist|invite|claim)\/[^/?#]{16,}/, /\/api\/(intake|claims)\/[^/?#]{16,}/],
+    },
+  },
   turbopack: {
     rules: {
       "*.css": {

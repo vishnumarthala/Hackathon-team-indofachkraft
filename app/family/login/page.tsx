@@ -38,7 +38,12 @@ export default async function FamilyLoginPage({
           googleEnabled={await isGoogleAuthEnabled()}
           initialError={error === "oauth" ? "oauth" : null}
         />
-        <p className="mt-6 text-sm text-slate-600">{t("privacy")}</p>
+        <p className="mt-6 text-sm text-slate-600">
+          {t("privacy")}{" "}
+          <Link href="/privacy" className="font-semibold text-teal-800 underline">
+            {(await getT("privacy"))("link")}
+          </Link>
+        </p>
       </div>
       <p className="mt-6 text-center text-sm">
         <Link href="/login" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline-offset-4 hover:underline">

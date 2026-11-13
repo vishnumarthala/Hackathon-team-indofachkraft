@@ -69,7 +69,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return fail(500, "Could not create the upload URL");
   }
 
-  const base = { caseId, actor: "therapist" as const, entity: "recording", entityId: recordingId };
+  const base = { caseId, entity: "recording", entityId: recordingId };
   await audit({ ...base, action: "recording.created", details: { session_number: sessionNumber, mime_type } });
   if (consent === true) await audit({ ...base, action: "recording.consent", details: { consent: true } });
 

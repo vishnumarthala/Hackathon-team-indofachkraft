@@ -59,7 +59,12 @@ export async function SiteFooter() {
       </div>
       <div className="border-t border-[#0b1f1d]/10">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:justify-between sm:px-6">
-          <p>{t("footer.copyright")}</p>
+          <p>
+            {t("footer.copyright")}{" "}
+            <Link href="/privacy" className="underline hover:text-teal-800">
+              {t("privacy.link")}
+            </Link>
+          </p>
           <p>{t("footer.builtOn")}</p>
         </div>
       </div>

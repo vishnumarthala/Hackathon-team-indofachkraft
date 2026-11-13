@@ -4,6 +4,7 @@ import { PrintButton } from "@/components/consent/PrintButton";
 import { requireCasePage } from "@/lib/authz";
 import { currentDocuments } from "@/lib/consent/records";
 import { supabaseAdmin } from "@/lib/db";
+import { env } from "@/lib/env";
 import { isLocale, LOCALE_LABELS, LOCALES, type Locale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n/messages";
 import { createTranslator } from "@/lib/i18n/translate";
@@ -29,6 +30,7 @@ export default async function ConsentFormPage({
   const t = createTranslator(locale, messages, "consentForm");
   const tc = createTranslator(locale, messages, "consent");
   const tr = createTranslator(locale, messages, "family.children.form");
+  const tp = createTranslator(locale, messages, "privacy");
   const docs = await currentDocuments(locale);
   const { data: org } = await supabaseAdmin().from("organizations").select("name").eq("id", caseRow.org_id).maybeSingle();
 
@@ -87,6 +89,9 @@ export default async function ConsentFormPage({
           </div>
         ))}
       </section>
+      <p className="text-xs text-slate-600" data-testid="consent-form-privacy">
+        {tp("link")}: {env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")}/privacy
+      </p>
       <p className="text-xs text-slate-600">
         {tr("relationships.mother")} / {tr("relationships.father")} / {tr("relationships.legal_guardian")} /{" "}
         {tr("relationships.other_family")}

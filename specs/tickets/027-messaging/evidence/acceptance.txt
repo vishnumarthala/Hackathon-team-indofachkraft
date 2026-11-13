@@ -40,3 +40,19 @@ PASS CSP: no violations in the guardian page
 PASS E-3 (provider page polling) shows `You no longer have access to this conversation.` on its next check - 15412 ms after removing the assignment (page mode before: polling)
 PASS E-3 provider never received the new message
 PASS E-5 server log has no message text (E-3 run)
+
+027 re-check after merging main (024, 025, 041) 2026-11-13T02:22:00.735Z
+PASS NFR-4 no third-party scripts on /family/messages - 19 scripts, all same-origin; CSP script-src: script-src 'self' 'nonce-XWD0Q3wJOVloP14k/GFATQ==' 'strict-dynamic' 'unsafe-eval'
+PASS NFR-4 375 px no horizontal scroll (/family/messages)
+PASS E-1 guardian starts thread (201) - thread d770fb50-a98c-4afb-be0d-48ff58d32289
+PASS E-1 provider sees the new thread on the case Messages tab without reload - 15202 ms after send (sync mode: polling; Realtime is not running locally, polling every 15 s)
+PASS FR-4 sender name + role label - Meera (synthetic) · Parent · 13 Nov 2026, 3:22 am GMT+1
+PASS E-1 banner on provider thread
+PASS E-1 banner on guardian thread
+PASS FR-4 Enter sends on desktop (201)
+PASS E-1 guardian sees the reply live without reload - 779 ms after send
+PASS FR-4 provider label = care-team discipline - Dr Kavya (synthetic) · Speech therapist · 13 Nov 2026, 3:22 am GMT+1
+PASS NFR-4 375 px no horizontal scroll (guardian thread)
+PASS E-3 (provider page polling) shows `You no longer have access to this conversation.` on its next check - 15400 ms after removing the assignment (page mode before: polling)
+PASS E-3 provider never received the new message
+PASS E-5 server log has no message text (E-3 run)

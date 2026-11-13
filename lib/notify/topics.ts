@@ -8,14 +8,17 @@ import type { Queryable } from "@/lib/pg";
 import {
   activeGrantRecipients,
   activeGuardians,
+  assignedAssessmentGuardian,
   caseProviders,
   existingUser,
   profileOwner,
+  platformAdmins,
   threadMessageRecipients,
   visibleDocumentGuardians,
 } from "./recipients";
 import type { TemplateName } from "./templates";
 import type { Channel, OutboxEventRow } from "./types";
+import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
 
 const uuid = z.uuid();
 const userList = z.array(uuid).min(1).max(100);
@@ -69,7 +72,7 @@ export const TOPICS = {
     template: "document_shared",
     recipients: (p, { sql }) => visibleDocumentGuardians(sql, p.document_id, p.child_id),
   }),
-  // 025
+  // 025: enqueued by publishPlan() in the publishing transaction (dedup `iep:<plan id>:v<published version>`).
   "iep.published": topic({
     payload: z.object({ plan_id: uuid, child_id: uuid, case_id: uuid.optional() }).strict(),
     channels: GUARDIAN_CHANNELS,
@@ -83,14 +86,16 @@ export const TOPICS = {
     template: "home_program_published",
     recipients: (p, { sql }) => activeGuardians(sql, p.child_id),
   }),
-  // 024
+  // 024: enqueued by createAssessment() in the assigning transaction. Only the assigned guardian, and only while the
+  // questionnaire is still open and their link to the child is active.
   "assessment.assigned": topic({
     payload: z.object({ assessment_id: uuid, child_id: uuid, case_id: uuid.optional() }).strict(),
     channels: GUARDIAN_CHANNELS,
     template: "assessment_assigned",
-    recipients: (p, { sql }) => activeGuardians(sql, p.child_id),
+    recipients: (p, { sql }) => assignedAssessmentGuardian(sql, p.assessment_id, p.child_id),
   }),
-  // 024: providers of the case (optionally only the named ones, still re-checked against the case org).
+  // 024: enqueued by saveResponses() when a red-flag question is newly answered yes. Providers of the case (org
+  // owners/admins + assigned care team; optionally only the named ones, still re-checked against the case org).
   "assessment.red_flag": topic({
     payload: z
       .object({ assessment_id: uuid, child_id: uuid, case_id: uuid, recipient_user_ids: userList.optional() })
@@ -101,6 +106,13 @@ export const TOPICS = {
       const providers = await caseProviders(sql, p.case_id, p.child_id);
       return p.recipient_user_ids ? providers.filter((id) => p.recipient_user_ids?.includes(id)) : providers;
     },
+  }),
+  // 024: enqueued by submitAssessment(). Providers of the case (022 rule), re-checked at fan-out.
+  "assessment.submitted": topic({
+    payload: z.object({ assessment_id: uuid, child_id: uuid, case_id: uuid }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "assessment_submitted",
+    recipients: (p, { sql }) => caseProviders(sql, p.case_id, p.child_id),
   }),
   // 022: emitted by a trigger on sharing_grants inside create_sharing_grant (migration 20261113003201). Owners/admins
   // of the grantee org, only while the grant is in force and the granting guardian's link is still active.
@@ -137,6 +149,33 @@ export const TOPICS = {
     template: "provider_claimed",
     recipients: (p, { sql }) => profileOwner(sql, p.provider_profile_id),
   }),
+  // 041 FR-7: the requesting guardian, while still linked to the live child and the export is ready.
+  "privacy.export_ready": topic({
+    payload: z.object({ export_id: uuid, child_id: uuid }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "privacy_export_ready",
+    recipients: (p, { sql }) => exportRequester(sql, p.export_id, p.child_id),
+  }),
+  // 041 FR-8: platform admins review deletion requests.
+  "privacy.deletion_requested": topic({
+    payload: z.object({ request_id: uuid, child_id: uuid }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "privacy_deletion_requested",
+    recipients: (_p, { sql }) => platformAdmins(sql),
+  }),
+  // 041 FR-8: the requesting guardian (their link may already be revoked by the erasure: account only).
+  "privacy.deletion_completed": topic({
+    payload: z.object({ request_id: uuid }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "privacy_deletion_completed",
+    recipients: (p, { sql }) => deletionRequester(sql, p.request_id, "completed"),
+  }),
+  "privacy.deletion_rejected": topic({
+    payload: z.object({ request_id: uuid, child_id: uuid }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "privacy_deletion_rejected",
+    recipients: (p, { sql }) => deletionRequester(sql, p.request_id, "rejected"),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -158,9 +197,24 @@ export const MESSAGE_TOPICS = {
   created: "message.created",
 } as const satisfies Record<string, Topic>;
 
+// 024: questionnaires (enqueued in the producing transactions in lib/assessments).
+export const ASSESSMENT_TOPICS = {
+  assigned: "assessment.assigned",
+  submitted: "assessment.submitted",
+  redFlag: "assessment.red_flag",
+} as const satisfies Record<string, Topic>;
+
 // 023 FR-9: enqueued by `complete_document` / `set_document_visibility` (migration 20261113002300).
 export const DOCUMENT_TOPICS = {
   sharedWithGuardian: "document.shared_with_guardian",
+} as const satisfies Record<string, Topic>;
+
+// 041: privacy export / deletion notifications.
+export const PRIVACY_TOPICS = {
+  exportReady: "privacy.export_ready",
+  deletionRequested: "privacy.deletion_requested",
+  deletionCompleted: "privacy.deletion_completed",
+  deletionRejected: "privacy.deletion_rejected",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

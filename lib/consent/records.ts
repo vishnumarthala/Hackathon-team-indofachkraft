@@ -1,5 +1,6 @@
 // Ticket 020 FR-4/FR-5/FR-13/FR-17/FR-18: consent documents and the strict write path. Server only.
 import { createHash } from "node:crypto";
+import { auditWouldFail } from "@/lib/audit";
 import { supabaseAdmin } from "@/lib/db";
 import { env } from "@/lib/env";
 import type { Locale } from "@/lib/i18n/config";
@@ -114,6 +115,10 @@ const ERRORS: Record<string, { status: number; error: string }> = {
  * function in one transaction. Any unexpected failure (including the audit insert) -> 503, nothing saved.
  */
 export async function recordConsent(input: RecordConsentInput): Promise<RecordConsentResult> {
+  // 041 E-2 dev hook: behave exactly like a failed audit insert inside record_consent.
+  const auditAction =
+    input.action === "withdrawn" ? "consent.withdrawn" : input.method === "paper" ? "consent.paper_recorded" : "consent.granted";
+  if (auditWouldFail(auditAction)) return { ok: false, status: 503, error: SAVE_FAILED };
   const p: Record<string, unknown> = {
     child_id: input.childId,
     action: input.action,

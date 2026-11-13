@@ -9,6 +9,7 @@ import { loadEnvConfig } from "@next/env";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import postgres, { type Sql } from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { purgeTestAudit } from "./helpers/audit";
 import { buildMessagingWorld, purgeThreadEvents, type MessagingWorld } from "./helpers/messaging";
 import { createWorld, type TestUser } from "./helpers/world";
 
@@ -117,8 +118,11 @@ describe.skipIf(!enabled)("messaging RLS and Realtime authorisation (database, r
     }
     for (const c of clients.values()) await c.auth.signOut().catch(() => {});
     if (world) {
-      await purgeThreadEvents(sql, [w.caseA, w.caseB, w.caseNoGuardian]);
+      const cases = [w.caseA, w.caseB, w.caseNoGuardian];
+      await purgeThreadEvents(sql, cases);
       await world.cleanup();
+      await purgeTestAudit(sql, (tx) => tx`
+        delete from audit_events where case_ref in ${tx(cases)} and action in ('thread.created', 'message.sent')`);
     }
     await sql?.end({ timeout: 5 });
   });

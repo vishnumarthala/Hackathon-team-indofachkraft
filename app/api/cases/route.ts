@@ -28,7 +28,6 @@ export async function POST(req: Request) {
 
   await audit({
     caseId: data.id,
-    actor: "therapist",
     actorUserId: userId,
     action: "case.created",
     entity: "case",

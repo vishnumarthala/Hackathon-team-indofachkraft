@@ -1,5 +1,7 @@
+import { setActor } from "@/lib/clinical/publish";
 import { supabaseAdmin } from "@/lib/db";
 import { isUuid } from "@/lib/cases/validation";
+import { db } from "@/lib/facts";
 import type { FactRow, RecordingRow, ReportRow } from "@/lib/types";
 
 export type ExtractedSession = Pick<RecordingRow, "id" | "session_number" | "created_at">;
@@ -100,7 +102,10 @@ export async function saveAssessmentDraft(
 export type ReportPatch = { content_md?: string; status?: "final" };
 
 // Only a draft row changes; returns null when the row is final (or vanished) by the time we write.
-export async function updateDraftReport(id: string, patch: ReportPatch): Promise<ReportRow | null> {
+// 024 FR-3: finalising runs in one transaction with the actor set, so the `reports_publish_final` trigger
+// publishes version 1 (published_versions, published_by = actor) atomically with the status change.
+export async function updateDraftReport(id: string, patch: ReportPatch, actorUserId?: string): Promise<ReportRow | null> {
+  if (patch.status === "final") return finalizeDraftReport(id, patch, actorUserId ?? null);
   const { data, error } = await supabaseAdmin()
     .from("reports")
     .update({ ...patch, updated_at: new Date().toISOString() })
@@ -109,4 +114,19 @@ export async function updateDraftReport(id: string, patch: ReportPatch): Promise
     .select("*");
   if (error) throw new Error(`Could not save the report: ${error.message}`);
   return (data?.[0] ?? null) as ReportRow | null;
+}
+
+async function finalizeDraftReport(id: string, patch: ReportPatch, actorUserId: string | null): Promise<ReportRow | null> {
+  if (!isUuid(id)) return null;
+  const sql = await db();
+  const updated = await sql.begin(async (tx) => {
+    if (actorUserId) await setActor(tx, actorUserId);
+    const rows = await tx<{ id: string }[]>`
+      update reports
+      set status = 'final', content_md = coalesce(${patch.content_md ?? null}::text, content_md), updated_at = now()
+      where id = ${id} and status = 'draft'
+      returning id`;
+    return rows.length > 0;
+  });
+  return updated ? getReport(id) : null;
 }

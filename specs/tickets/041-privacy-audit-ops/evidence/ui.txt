@@ -1,0 +1,9 @@
+PASS UI guardian: Download <child>'s data -> Ready with a Download link
+PASS UI guardian: deletion request sent; 375 px without horizontal scroll - 375 / 375
+PASS UI guardian: no external scripts, no console errors -  
+PASS UI /privacy in Telugu at 375 px - te-IN / 375 / 375
+PASS UI admin: rejecting without a note is refused
+PASS UI admin: request rejected
+PASS UI admin: audit log table
+PASS UI guardian: sees `Not carried out` with the reason
+ALL PASS (ui)

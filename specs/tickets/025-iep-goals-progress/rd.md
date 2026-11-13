@@ -1,6 +1,6 @@
 # 025: IEP plans, SMART goals and progress tracking
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 022, 024: plans are case-scoped, use assignments and register the `iep` sharing scope (publishing uses 024's `publishVersion` - see Open questions); publishVersion and the shared clinical contracts (024)
 

@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1222. Not yet approved: 1222.
+Rows: 1679. Not yet approved: 1679.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -661,6 +661,7 @@ Rows: 1222. Not yet approved: 1222.
 | `family.shell.signingOut` | Signing out... | साइन आउट हो रहा है... | సైన్ అవుట్ అవుతోంది... |  | pending |
 | `family.shell.signOutFailed` | Could not sign out. Please try again. | साइन आउट नहीं हो सका। कृपया फिर से कोशिश करें। | సైన్ అవుట్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `family.shell.emergency` | In an emergency call 108 (ambulance) or 112. | आपात स्थिति में 108 (एम्बुलेंस) या 112 पर कॉल करें। | అత్యవసర పరిస్థితిలో 108 (అంబులెన్స్) లేదా 112 కు కాల్ చేయండి. |  | pending |
+| `family.shell.assessments` | Questionnaires | प्रश्नावली | ప్రశ్నావళులు |  | pending |
 | `family.home.hello` | Hello, {name} | नमस्ते, {name} | నమస్తే, {name} |  | pending |
 | `family.home.there` | there | जी | మిత్రమా |  | pending |
 | `family.home.addChild` | Add your child | अपने बच्चे को जोड़ें | మీ బిడ్డను జోడించండి |  | pending |
@@ -786,6 +787,45 @@ Rows: 1222. Not yet approved: 1222.
 | `family.children.team.chooseScope` | Choose at least one type of record. | कम से कम एक तरह का रिकॉर्ड चुनें। | కనీసం ఒక రకమైన రికార్డును ఎంచుకోండి. |  | pending |
 | `family.children.team.notTreating` | This organisation is not treating your child | यह संस्था आपके बच्चे का इलाज नहीं कर रही है | ఈ సంస్థ మీ పిల్లలకు చికిత్స చేయడం లేదు |  | pending |
 | `family.children.team.saveFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.assessments.title` | Questionnaires | प्रश्नावली | ప్రశ్నావళులు |  | pending |
+| `family.assessments.intro` | Questionnaires your child's care team asked you to fill in. | आपके बच्चे की केयर टीम ने जो प्रश्नावली भरने को कहा है। | మీ బిడ్డ కేర్ టీమ్ మిమ్మల్ని నింపమని అడిగిన ప్రశ్నావళులు. |  | pending |
+| `family.assessments.empty` | No questionnaires yet. | अभी कोई प्रश्नावली नहीं है। | ఇంకా ప్రశ్నావళులు లేవు. |  | pending |
+| `family.assessments.forChild` | For {child} | {child} के लिए | {child} కోసం |  | pending |
+| `family.assessments.due` | Please answer by {date} | कृपया {date} तक जवाब दें | దయచేసి {date} లోపు జవాబు ఇవ్వండి |  | pending |
+| `family.assessments.noDue` | No due date | कोई अंतिम तारीख नहीं | చివరి తేదీ లేదు |  | pending |
+| `family.assessments.start` | Start | शुरू करें | ప్రారంభించండి |  | pending |
+| `family.assessments.continue` | Continue | जारी रखें | కొనసాగించండి |  | pending |
+| `family.assessments.view` | View answers | जवाब देखें | జవాబులు చూడండి |  | pending |
+| `family.assessments.viewResult` | View result | परिणाम देखें | ఫలితం చూడండి |  | pending |
+| `family.assessments.backToList` | Back to questionnaires | प्रश्नावली पर वापस | ప్రశ్నావళులకు తిరిగి |  | pending |
+| `family.assessments.englishOnly` | Questions are in English for now. A checked translation is coming. | प्रश्न अभी अंग्रेज़ी में हैं। जाँचा हुआ अनुवाद जल्द आएगा। | ప్రశ్నలు ప్రస్తుతం ఇంగ్లీష్‌లో ఉన్నాయి. పరిశీలించిన అనువాదం త్వరలో వస్తుంది. |  | pending |
+| `family.assessments.englishOnlyResult` | The result is in English for now. | परिणाम अभी अंग्रेज़ी में है। | ఫలితం ప్రస్తుతం ఇంగ్లీష్‌లో ఉంది. |  | pending |
+| `family.assessments.questionOf` | Question {n} of {total} | प्रश्न {n} / {total} | ప్రశ్న {n} / {total} |  | pending |
+| `family.assessments.safetyQuestion` | Safety question {n} of {total} | सुरक्षा प्रश्न {n} / {total} | భద్రత ప్రశ్న {n} / {total} |  | pending |
+| `family.assessments.previous` | Previous | पिछला | వెనుకటి |  | pending |
+| `family.assessments.next` | Next | अगला | తదుపరి |  | pending |
+| `family.assessments.saveLater` | Save and continue later | सहेजें और बाद में जारी रखें | సేవ్ చేసి తర్వాత కొనసాగించండి |  | pending |
+| `family.assessments.saving` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `family.assessments.saved` | Saved. You can continue later. | सहेज लिया। आप बाद में जारी रख सकते हैं। | సేవ్ అయింది. మీరు తర్వాత కొనసాగించవచ్చు. |  | pending |
+| `family.assessments.submit` | Submit | भेजें | పంపండి |  | pending |
+| `family.assessments.submitting` | Submitting... | भेजा जा रहा है... | పంపుతోంది... |  | pending |
+| `family.assessments.submitted` | Thank you. Your answers were sent to your child's care team. They will review them. | धन्यवाद। आपके जवाब आपके बच्चे की केयर टीम को भेज दिए गए हैं। वे उनकी समीक्षा करेंगे। | ధన్యవాదాలు. మీ జవాబులు మీ బిడ్డ కేర్ టీమ్‌కు పంపబడ్డాయి. వారు వాటిని సమీక్షిస్తారు. |  | pending |
+| `family.assessments.reviewedNotShared` | Your child's care team has reviewed your answers. Ask them about the result at your next visit. | आपके बच्चे की केयर टीम ने आपके जवाबों की समीक्षा कर ली है। अगली मुलाक़ात में उनसे परिणाम के बारे में पूछें। | మీ బిడ్డ కేర్ టీమ్ మీ జవాబులను సమీక్షించింది. తదుపరి సందర్శనలో ఫలితం గురించి వారిని అడగండి. |  | pending |
+| `family.assessments.resultTitle` | Result from your child's care team | आपके बच्चे की केयर टीम से परिणाम | మీ బిడ్డ కేర్ టీమ్ నుంచి ఫలితం |  | pending |
+| `family.assessments.yourAnswers` | Your answers | आपके जवाब | మీ జవాబులు |  | pending |
+| `family.assessments.missingList` | Questions not answered yet: {list} | जिन प्रश्नों के जवाब अभी बाकी हैं: {list} | ఇంకా జవాబు ఇవ్వని ప్రశ్నలు: {list} |  | pending |
+| `family.assessments.reload` | Reload | दोबारा लोड करें | మళ్ళీ లోడ్ చేయండి |  | pending |
+| `family.assessments.errors.notLinked` | This parent is not linked to the child. | ये माता-पिता इस बच्चे से जुड़े नहीं हैं। | ఈ తల్లిదండ్రులు ఈ బిడ్డకు లింక్ కాలేదు. |  | pending |
+| `family.assessments.errors.alreadyOpen` | This questionnaire is already open for this parent. | यह प्रश्नावली इन माता-पिता के लिए पहले से खुली है। | ఈ ప్రశ్నావళి ఈ తల్లిదండ్రుల కోసం ఇప్పటికే తెరిచి ఉంది. |  | pending |
+| `family.assessments.errors.chooseTemplate` | Choose a questionnaire. | कोई प्रश्नावली चुनें। | ఒక ప్రశ్నావళిని ఎంచుకోండి. |  | pending |
+| `family.assessments.errors.notOpen` | Only open questionnaires can be cancelled. | केवल खुली प्रश्नावली रद्द की जा सकती है। | తెరిచి ఉన్న ప్రశ్నావళులను మాత్రమే రద్దు చేయగలరు. |  | pending |
+| `family.assessments.errors.alreadyReviewed` | Already reviewed. | समीक्षा पहले ही हो चुकी है। | ఇప్పటికే సమీక్షించబడింది. |  | pending |
+| `family.assessments.errors.notSubmitted` | The parent has not submitted it yet. | माता-पिता ने इसे अभी तक नहीं भेजा है। | తల్లిదండ్రులు దీన్ని ఇంకా పంపలేదు. |  | pending |
+| `family.assessments.errors.answerAll` | Please answer all questions. | कृपया सभी प्रश्नों के जवाब दें। | దయచేసి అన్ని ప్రశ్నలకు జవాబు ఇవ్వండి. |  | pending |
+| `family.assessments.errors.alreadySubmitted` | Already submitted. | पहले ही भेजा जा चुका है। | ఇప్పటికే పంపబడింది. |  | pending |
+| `family.assessments.errors.cancelled` | This questionnaire was cancelled. | यह प्रश्नावली रद्द कर दी गई थी। | ఈ ప్రశ్నావళి రద్దు చేయబడింది. |  | pending |
+| `family.assessments.errors.stale` | These answers were changed in another window. Reload to continue. | ये जवाब किसी दूसरी विंडो में बदले गए थे। जारी रखने के लिए पेज दोबारा लोड करें। | ఈ జవాబులు మరో విండోలో మార్చబడ్డాయి. కొనసాగించడానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `family.assessments.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `directory.title` | Find a provider near you | अपने पास कोई विशेषज्ञ खोजें | మీ దగ్గర నిపుణులను కనుగొనండి |  | pending |
 | `directory.intro` | Verified child-development specialists and centres in Hyderabad. Search by locality or PIN code. | हैदराबाद में सत्यापित बाल-विकास विशेषज्ञ और केंद्र। इलाके या पिन कोड से खोजें। | హైదరాబాద్‌లో ధృవీకరించబడిన పిల్లల అభివృద్ధి నిపుణులు మరియు కేంద్రాలు. ప్రాంతం లేదా పిన్ కోడ్‌తో వెతకండి. |  | pending |
 | `directory.metaTitle` | Find child-development specialists near you in Hyderabad \| DoctorNearMe | हैदराबाद में अपने पास बाल-विकास विशेषज्ञ खोजें \| DoctorNearMe | హైదరాబాద్‌లో మీ దగ్గర పిల్లల అభివృద్ధి నిపుణులను కనుగొనండి \| DoctorNearMe |  | pending |
@@ -986,6 +1026,8 @@ Rows: 1222. Not yet approved: 1222.
 | `caseTabs.shared` | Shared with us | हमसे साझा | మాతో పంచుకున్నవి |  | pending |
 | `caseTabs.health` | Health | स्वास्थ्य | ఆరోగ్యం |  | pending |
 | `caseTabs.documents` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
+| `caseTabs.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
+| `caseTabs.goals` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
 | `caseTabs.messages` | Messages | संदेश | సందేశాలు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
@@ -1172,6 +1214,421 @@ Rows: 1222. Not yet approved: 1222.
 | `documents.errors.uploadFailed` | The upload did not finish. Please try again. | अपलोड पूरा नहीं हुआ। कृपया फिर से कोशिश करें। | అప్‌లోడ్ పూర్తి కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `documents.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `documents.errors.forbidden` | You cannot change this document. | आप इस दस्तावेज़ को नहीं बदल सकते। | మీరు ఈ పత్రాన్ని మార్చలేరు. |  | pending |
+| `speakers.clinician` | Clinician | क्लिनिशियन | క్లినీషియన్ |  | pending |
+| `speakers.parentOrCaregiver` | Parent or caregiver | माता-पिता या देखभाल करने वाले | తల్లిదండ్రులు లేదా సంరక్షకులు |  | pending |
+| `speakers.child` | Child | बच्चा | బిడ్డ |  | pending |
+| `speakers.otherAdult` | Other adult | अन्य वयस्क | ఇతర పెద్దవారు |  | pending |
+| `speakers.aiAssistant` | AI assistant | AI सहायक | AI సహాయకుడు |  | pending |
+| `speakers.unknown` | Unknown | अज्ञात | తెలియదు |  | pending |
+| `assessments.disclaimer` | This is a developmental check-in, not a diagnosis. | यह विकास की एक जाँच है, निदान नहीं। | ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. |  | pending |
+| `assessments.urgent` | Please contact your child's doctor now. In an emergency call 108 (ambulance) or 112. | कृपया अभी अपने बच्चे के डॉक्टर से संपर्क करें। आपात स्थिति में 108 (एम्बुलेंस) या 112 पर कॉल करें। | దయచేసి వెంటనే మీ బిడ్డ డాక్టర్‌ను సంప్రదించండి. అత్యవసర పరిస్థితిలో 108 (అంబులెన్స్) లేదా 112 కు కాల్ చేయండి. |  | pending |
+| `assessments.status.assigned` | Not started | शुरू नहीं हुआ | ప్రారంభించలేదు |  | pending |
+| `assessments.status.inProgress` | In progress | जारी है | కొనసాగుతోంది |  | pending |
+| `assessments.status.submitted` | Submitted | भेजा गया | పంపబడింది |  | pending |
+| `assessments.status.reviewed` | Reviewed | समीक्षा हो गई | సమీక్షించబడింది |  | pending |
+| `assessments.status.cancelled` | Cancelled | रद्द | రద్దు చేయబడింది |  | pending |
+| `assessments.bands.noStrongSigns` | No strong signs | कोई गंभीर संकेत नहीं | బలమైన సంకేతాలు లేవు |  | pending |
+| `assessments.bands.discussWithProfessional` | Discuss with a professional | किसी विशेषज्ञ से बात करें | నిపుణులతో మాట్లాడండి |  | pending |
+| `assessments.bands.seeProfessionalSoon` | See a professional soon | जल्द किसी विशेषज्ञ से मिलें | త్వరలో నిపుణులను కలవండి |  | pending |
+| `assessments.redFlags.skillRegression` | Lost words or skills | शब्द या कौशल खो दिए | మాటలు లేదా నైపుణ్యాలు కోల్పోయారు |  | pending |
+| `assessments.redFlags.selfInjury` | Hurts themselves | खुद को चोट पहुँचाता है | తమను తాము గాయపరుచుకుంటున్నారు |  | pending |
+| `assessments.redFlags.seizure` | Fits (seizures) | दौरे (फ़िट्स) | ఫిట్స్ (మూర్ఛ) |  | pending |
+| `assessments.redFlags.breathing` | Breathing problems | साँस लेने में परेशानी | శ్వాస తీసుకోవడంలో ఇబ్బంది |  | pending |
+| `assessments.redFlags.notEatingDrinking` | Not eating or drinking | खाना-पीना बंद | తినడం లేదా తాగడం మానేశారు |  | pending |
+| `assessments.redFlags.safetyConcern` | Worried about safety | सुरक्षा की चिंता | భద్రతపై ఆందోళన |  | pending |
+| `assessments.answers.never` | Never | कभी नहीं | ఎప్పుడూ లేదు |  | pending |
+| `assessments.answers.sometimes` | Sometimes | कभी-कभी | కొన్నిసార్లు |  | pending |
+| `assessments.answers.often` | Often | अक्सर | తరచుగా |  | pending |
+| `assessments.answers.always` | Always | हमेशा | ఎల్లప్పుడూ |  | pending |
+| `assessments.answers.yes` | Yes | हाँ | అవును |  | pending |
+| `assessments.answers.no` | No | नहीं | లేదు |  | pending |
+| `assessments.provider.title` | Assessments | आकलन | అంచనాలు |  | pending |
+| `assessments.provider.intro` | Send questionnaires to the child's parents. They answer in their DoctorNearMe app; you review the answers here. | बच्चे के माता-पिता को प्रश्नावली भेजें। वे अपने DoctorNearMe ऐप में जवाब देते हैं; आप यहाँ जवाबों की समीक्षा करते हैं। | బిడ్డ తల్లిదండ్రులకు ప్రశ్నావళులు పంపండి. వారు తమ DoctorNearMe యాప్‌లో జవాబులు ఇస్తారు; మీరు ఇక్కడ వాటిని సమీక్షిస్తారు. |  | pending |
+| `assessments.provider.send` | Send questionnaire | प्रश्नावली भेजें | ప్రశ్నావళి పంపండి |  | pending |
+| `assessments.provider.sending` | Sending... | भेजा जा रहा है... | పంపుతోంది... |  | pending |
+| `assessments.provider.sent` | Questionnaire sent. | प्रश्नावली भेज दी गई। | ప్రశ్నావళి పంపబడింది. |  | pending |
+| `assessments.provider.template` | Questionnaire | प्रश्नावली | ప్రశ్నావళి |  | pending |
+| `assessments.provider.parent` | Parent | माता-पिता | తల్లిదండ్రులు |  | pending |
+| `assessments.provider.parentFallback` | Parent | माता-पिता | తల్లిదండ్రులు |  | pending |
+| `assessments.provider.dueDate` | Due date (optional) | अंतिम तारीख (वैकल्पिक) | చివరి తేదీ (ఐచ్ఛికం) |  | pending |
+| `assessments.provider.noGuardians` | No parent is linked to this child yet. Give the parent a code from the Overview tab so they can add the child in their app. | इस बच्चे से अभी कोई माता-पिता जुड़े नहीं हैं। माता-पिता को सारांश टैब से एक कोड दें ताकि वे अपने ऐप में बच्चे को जोड़ सकें। | ఈ బిడ్డకు ఇంకా తల్లిదండ్రులు ఎవరూ లింక్ కాలేదు. తల్లిదండ్రులు తమ యాప్‌లో బిడ్డను జోడించేందుకు సారాంశం ట్యాబ్ నుంచి ఒక కోడ్ ఇవ్వండి. |  | pending |
+| `assessments.provider.empty` | No questionnaires sent yet. | अभी तक कोई प्रश्नावली नहीं भेजी गई। | ఇంకా ఏ ప్రశ్నావళీ పంపలేదు. |  | pending |
+| `assessments.provider.listLabel` | Questionnaires | प्रश्नावली | ప్రశ్నావళులు |  | pending |
+| `assessments.provider.sentTo` | Sent to {name} | {name} को भेजी गई | {name} కు పంపబడింది |  | pending |
+| `assessments.provider.due` | Due {date} | अंतिम तारीख {date} | చివరి తేదీ {date} |  | pending |
+| `assessments.provider.noDue` | No due date | कोई अंतिम तारीख नहीं | చివరి తేదీ లేదు |  | pending |
+| `assessments.provider.redFlags_one` | {count} red flag | {count} खतरे का संकेत | {count} ప్రమాద సంకేతం |  | pending |
+| `assessments.provider.redFlags_other` | {count} red flags | {count} खतरे के संकेत | {count} ప్రమాద సంకేతాలు |  | pending |
+| `assessments.provider.sharedBadge` | Shared with parent | माता-पिता से साझा | తల్లిదండ్రులతో పంచుకున్నారు |  | pending |
+| `assessments.provider.open` | Open | खोलें | తెరవండి |  | pending |
+| `assessments.provider.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `assessments.provider.cancelling` | Cancelling... | रद्द किया जा रहा है... | రద్దు చేస్తోంది... |  | pending |
+| `assessments.provider.cancelConfirm` | Cancel "{title}"? The parent can no longer answer it. | "{title}" रद्द करें? माता-पिता इसका जवाब नहीं दे पाएँगे। | "{title}" రద్దు చేయాలా? తల్లిదండ్రులు ఇక దీనికి జవాబు ఇవ్వలేరు. |  | pending |
+| `assessments.provider.back` | Back to assessments | आकलन पर वापस | అంచనాలకు తిరిగి |  | pending |
+| `assessments.provider.submittedOn` | Submitted {date} | {date} को भेजा गया | {date} న పంపబడింది |  | pending |
+| `assessments.provider.reviewedOn` | Reviewed {date} | {date} को समीक्षा हुई | {date} న సమీక్షించబడింది |  | pending |
+| `assessments.provider.redFlagTitle` | Red flags: the parent answered yes | खतरे के संकेत: माता-पिता ने हाँ कहा | ప్రమాద సంకేతాలు: తల్లిదండ్రులు అవును అన్నారు |  | pending |
+| `assessments.provider.scoreTitle` | Score | स्कोर | స్కోర్ |  | pending |
+| `assessments.provider.partial` | Not submitted yet: score of the answers saved so far ({answered} of {total} questions). | अभी भेजा नहीं गया: अब तक सहेजे गए जवाबों का स्कोर ({total} में से {answered} प्रश्न)। | ఇంకా పంపలేదు: ఇప్పటివరకు సేవ్ చేసిన జవాబుల స్కోర్ ({total} లో {answered} ప్రశ్నలు). |  | pending |
+| `assessments.provider.scoreValue` | {total} of {max} points | {max} में से {total} अंक | {max} లో {total} పాయింట్లు |  | pending |
+| `assessments.provider.domains.social` | Social: {points}/{max} | सामाजिक: {points}/{max} | సామాజిక: {points}/{max} |  | pending |
+| `assessments.provider.domains.emotional` | Emotional: {points}/{max} | भावनात्मक: {points}/{max} | భావోద్వేగ: {points}/{max} |  | pending |
+| `assessments.provider.domains.speech` | Speech and communication: {points}/{max} | बोलना और संवाद: {points}/{max} | మాట మరియు సంభాషణ: {points}/{max} |  | pending |
+| `assessments.provider.domains.behaviour` | Behaviour: {points}/{max} | व्यवहार: {points}/{max} | ప్రవర్తన: {points}/{max} |  | pending |
+| `assessments.provider.domains.sensory` | Sensory: {points}/{max} | संवेदी: {points}/{max} | ఇంద్రియ: {points}/{max} |  | pending |
+| `assessments.provider.domains.cognitive` | Attention and thinking: {points}/{max} | ध्यान और सोच: {points}/{max} | శ్రద్ధ మరియు ఆలోచన: {points}/{max} |  | pending |
+| `assessments.provider.answersTitle` | Answers | जवाब | జవాబులు |  | pending |
+| `assessments.provider.safetyTitle` | Safety questions | सुरक्षा के प्रश्न | భద్రత ప్రశ్నలు |  | pending |
+| `assessments.provider.notAnswered` | Not answered | जवाब नहीं दिया | జవాబు ఇవ్వలేదు |  | pending |
+| `assessments.provider.reviewTitle` | Review | समीक्षा | సమీక్ష |  | pending |
+| `assessments.provider.note` | Note for the care team (not shown to the parent) | केयर टीम के लिए नोट (माता-पिता को नहीं दिखेगा) | కేర్ టీమ్ కోసం నోట్ (తల్లిదండ్రులకు కనిపించదు) |  | pending |
+| `assessments.provider.share` | Share result with parent | परिणाम माता-पिता से साझा करें | ఫలితాన్ని తల్లిదండ్రులతో పంచుకోండి |  | pending |
+| `assessments.provider.shareHint` | The parent sees the result summary in their DoctorNearMe app. | माता-पिता अपने DoctorNearMe ऐप में परिणाम का सारांश देखेंगे। | తల్లిదండ్రులు తమ DoctorNearMe యాప్‌లో ఫలితాల సారాంశాన్ని చూస్తారు. |  | pending |
+| `assessments.provider.markReviewed` | Mark reviewed | समीक्षा पूरी करें | సమీక్షించినట్లు గుర్తించండి |  | pending |
+| `assessments.provider.reviewing` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `assessments.provider.reviewDone` | Reviewed | समीक्षा हो गई | సమీక్షించబడింది |  | pending |
+| `assessments.provider.reviewerNote` | Reviewer note: | समीक्षक का नोट: | సమీక్షకుల నోట్: |  | pending |
+| `assessments.provider.sharedYes` | The result is shared with the parent. | परिणाम माता-पिता से साझा है। | ఫలితం తల్లిదండ్రులతో పంచుకోబడింది. |  | pending |
+| `assessments.provider.sharedNo` | The result is not shared with the parent. | परिणाम माता-पिता से साझा नहीं है। | ఫలితం తల్లిదండ్రులతో పంచుకోలేదు. |  | pending |
+| `assessments.provider.summaryTitle` | Published summary (version {version}) | प्रकाशित सारांश (संस्करण {version}) | ప్రచురించిన సారాంశం (వెర్షన్ {version}) |  | pending |
+| `assessments.provider.errors.notLinked` | This parent is not linked to the child. | ये माता-पिता इस बच्चे से जुड़े नहीं हैं। | ఈ తల్లిదండ్రులు ఈ బిడ్డకు లింక్ కాలేదు. |  | pending |
+| `assessments.provider.errors.alreadyOpen` | This questionnaire is already open for this parent. | यह प्रश्नावली इन माता-पिता के लिए पहले से खुली है। | ఈ ప్రశ్నావళి ఈ తల్లిదండ్రుల కోసం ఇప్పటికే తెరిచి ఉంది. |  | pending |
+| `assessments.provider.errors.chooseTemplate` | Choose a questionnaire. | कोई प्रश्नावली चुनें। | ఒక ప్రశ్నావళిని ఎంచుకోండి. |  | pending |
+| `assessments.provider.errors.notOpen` | Only open questionnaires can be cancelled. | केवल खुली प्रश्नावली रद्द की जा सकती है। | తెరిచి ఉన్న ప్రశ్నావళులను మాత్రమే రద్దు చేయగలరు. |  | pending |
+| `assessments.provider.errors.alreadyReviewed` | Already reviewed. | समीक्षा पहले ही हो चुकी है। | ఇప్పటికే సమీక్షించబడింది. |  | pending |
+| `assessments.provider.errors.notSubmitted` | The parent has not submitted it yet. | माता-पिता ने इसे अभी तक नहीं भेजा है। | తల్లిదండ్రులు దీన్ని ఇంకా పంపలేదు. |  | pending |
+| `assessments.provider.errors.answerAll` | Please answer all questions. | कृपया सभी प्रश्नों के जवाब दें। | దయచేసి అన్ని ప్రశ్నలకు జవాబు ఇవ్వండి. |  | pending |
+| `assessments.provider.errors.alreadySubmitted` | Already submitted. | पहले ही भेजा जा चुका है। | ఇప్పటికే పంపబడింది. |  | pending |
+| `assessments.provider.errors.cancelled` | This questionnaire was cancelled. | यह प्रश्नावली रद्द कर दी गई थी। | ఈ ప్రశ్నావళి రద్దు చేయబడింది. |  | pending |
+| `assessments.provider.errors.stale` | These answers were changed in another window. Reload to continue. | ये जवाब किसी दूसरी विंडो में बदले गए थे। जारी रखने के लिए पेज दोबारा लोड करें। | ఈ జవాబులు మరో విండోలో మార్చబడ్డాయి. కొనసాగించడానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `assessments.provider.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `iep.statuses.draft` | Draft | ड्राफ़्ट | డ్రాఫ్ట్ |  | pending |
+| `iep.statuses.active` | Active | सक्रिय | సక్రియం |  | pending |
+| `iep.statuses.completed` | Completed | पूरी हुई | పూర్తయింది |  | pending |
+| `iep.statuses.archived` | Archived | संग्रहीत | ఆర్కైవ్ చేయబడింది |  | pending |
+| `iep.goalStatuses.active` | Active | सक्रिय | సక్రియం |  | pending |
+| `iep.goalStatuses.achieved` | Achieved | हासिल | సాధించబడింది |  | pending |
+| `iep.goalStatuses.discontinued` | Discontinued | बंद किया गया | నిలిపివేయబడింది |  | pending |
+| `iep.domains.communication` | Communication | संवाद | సంభాషణ |  | pending |
+| `iep.domains.social` | Social | सामाजिक | సామాజిక |  | pending |
+| `iep.domains.behaviour` | Behaviour | व्यवहार | ప్రవర్తన |  | pending |
+| `iep.domains.fineMotor` | Fine motor | सूक्ष्म गतिक (फ़ाइन मोटर) | సూక్ష్మ కదలికలు (ఫైన్ మోటార్) |  | pending |
+| `iep.domains.grossMotor` | Gross motor | स्थूल गतिक (ग्रॉस मोटर) | స్థూల కదలికలు (గ్రాస్ మోటార్) |  | pending |
+| `iep.domains.selfCare` | Self-care | आत्म-देखभाल | స్వీయ సంరక్షణ |  | pending |
+| `iep.domains.cognitive` | Cognitive | संज्ञानात्मक | జ్ఞానాత్మక |  | pending |
+| `iep.domains.sensory` | Sensory | संवेदी | ఇంద్రియ |  | pending |
+| `iep.domains.academic` | Academic | पढ़ाई | చదువు |  | pending |
+| `iep.measures.percent` | Percentage of opportunities (0 to 100) | मौकों का प्रतिशत (0 से 100) | అవకాశాలలో శాతం (0 నుండి 100) |  | pending |
+| `iep.measures.count` | Count (0 or more) | गिनती (0 या अधिक) | లెక్క (0 లేదా ఎక్కువ) |  | pending |
+| `iep.measures.rating15` | Rating from 1 to 5 | 1 से 5 तक रेटिंग | 1 నుండి 5 వరకు రేటింగ్ |  | pending |
+| `iep.measures.yesNo` | Yes or no (1 = yes, 0 = no) | हाँ या नहीं (1 = हाँ, 0 = नहीं) | అవును లేదా కాదు (1 = అవును, 0 = కాదు) |  | pending |
+| `iep.values.percent` | {value}% | {value}% | {value}% |  | pending |
+| `iep.values.rating` | {value} of 5 | 5 में से {value} | 5 లో {value} |  | pending |
+| `iep.values.yes` | Yes | हाँ | అవును |  | pending |
+| `iep.values.no` | No | नहीं | కాదు |  | pending |
+| `iep.provider.title` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
+| `iep.provider.intro` | Write the child's plan with SMART goals, record progress and share the plan with the parents. | बच्चे की योजना SMART लक्ष्यों के साथ लिखें, प्रगति दर्ज करें और योजना माता-पिता के साथ साझा करें। | పిల్లల ప్రణాళికను SMART లక్ష్యాలతో రాయండి, పురోగతిని నమోదు చేయండి, ప్రణాళికను తల్లిదండ్రులతో పంచుకోండి. |  | pending |
+| `iep.provider.plansLabel` | Plans for this case | इस केस की योजनाएँ | ఈ కేసు ప్రణాళికలు |  | pending |
+| `iep.provider.newPlan` | Create a plan | योजना बनाएँ | ప్రణాళిక సృష్టించండి |  | pending |
+| `iep.provider.planTitle` | Plan title | योजना का नाम | ప్రణాళిక పేరు |  | pending |
+| `iep.provider.startDate` | Start date | शुरू होने की तारीख़ | ప్రారంభ తేదీ |  | pending |
+| `iep.provider.reviewDate` | Review date | समीक्षा की तारीख़ | సమీక్ష తేదీ |  | pending |
+| `iep.provider.reviewHint` | At most 12 months after the start date. | शुरू होने की तारीख़ से अधिकतम 12 महीने बाद। | ప్రారంభ తేదీ నుండి గరిష్ఠంగా 12 నెలల లోపు. |  | pending |
+| `iep.provider.create` | Create plan | योजना बनाएँ | ప్రణాళిక సృష్టించండి |  | pending |
+| `iep.provider.creating` | Creating... | बनाई जा रही है... | సృష్టిస్తోంది... |  | pending |
+| `iep.provider.empty` | No plan yet. Create one to start adding goals. | अभी कोई योजना नहीं है। लक्ष्य जोड़ने के लिए एक योजना बनाएँ। | ఇంకా ప్రణాళిక లేదు. లక్ష్యాలు జోడించడానికి ఒక ప్రణాళిక సృష్టించండి. |  | pending |
+| `iep.provider.dates` | {start} to {review} (review date) | {start} से {review} (समीक्षा की तारीख़) | {start} నుండి {review} వరకు (సమీక్ష తేదీ) |  | pending |
+| `iep.provider.publishToParent` | Publish to parent | माता-पिता के साथ साझा करें | తల్లిదండ్రులతో పంచుకోండి |  | pending |
+| `iep.provider.publishChanges` | Publish changes | बदलाव साझा करें | మార్పులను పంచుకోండి |  | pending |
+| `iep.provider.publishing` | Publishing... | साझा किया जा रहा है... | పంచుకుంటోంది... |  | pending |
+| `iep.provider.unpublishedChanges` | Unpublished changes | बदलाव साझा नहीं हुए | పంచుకోని మార్పులు |  | pending |
+| `iep.provider.publishedInfo` | Parents see version {version}, shared on {date}. | माता-पिता संस्करण {version} देखते हैं, {date} को साझा किया गया। | తల్లిదండ్రులు వెర్షన్ {version} చూస్తున్నారు, {date}న పంచుకోబడింది. |  | pending |
+| `iep.provider.notPublished` | Not shared with the parents yet. | अभी माता-पिता के साथ साझा नहीं किया गया। | ఇంకా తల్లిదండ్రులతో పంచుకోలేదు. |  | pending |
+| `iep.provider.upToDate` | Parents see the latest version. | माता-पिता नया संस्करण देख रहे हैं। | తల్లిదండ్రులు తాజా వెర్షన్ చూస్తున్నారు. |  | pending |
+| `iep.provider.published` | The plan is now shared with the parents. | योजना अब माता-पिता के साथ साझा है। | ప్రణాళిక ఇప్పుడు తల్లిదండ్రులతో పంచుకోబడింది. |  | pending |
+| `iep.provider.publishHint` | Publishing a new plan makes it the active plan for this case. The current active plan is then archived. | नई योजना साझा करने पर वह इस केस की सक्रिय योजना बन जाती है। मौजूदा सक्रिय योजना संग्रहीत हो जाती है। | కొత్త ప్రణాళికను పంచుకుంటే అది ఈ కేసుకు సక్రియ ప్రణాళిక అవుతుంది. ప్రస్తుత సక్రియ ప్రణాళిక ఆర్కైవ్ అవుతుంది. |  | pending |
+| `iep.provider.publishNeedsGoal` | Add at least one goal before you publish. | साझा करने से पहले कम से कम एक लक्ष्य जोड़ें। | పంచుకునే ముందు కనీసం ఒక లక్ష్యం జోడించండి. |  | pending |
+| `iep.provider.editPlan` | Edit plan | योजना बदलें | ప్రణాళిక మార్చండి |  | pending |
+| `iep.provider.save` | Save | सेव करें | సేవ్ చేయండి |  | pending |
+| `iep.provider.saving` | Saving... | सेव हो रहा है... | సేవ్ అవుతోంది... |  | pending |
+| `iep.provider.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `iep.provider.markCompleted` | Mark completed | पूरी हुई चिह्नित करें | పూర్తయినట్లు గుర్తించండి |  | pending |
+| `iep.provider.archive` | Archive | संग्रहीत करें | ఆర్కైవ్ చేయండి |  | pending |
+| `iep.provider.archiveConfirm` | Archive this plan? It can no longer be changed. | यह योजना संग्रहीत करें? इसके बाद इसे बदला नहीं जा सकेगा। | ఈ ప్రణాళికను ఆర్కైవ్ చేయాలా? తర్వాత దీన్ని మార్చలేరు. |  | pending |
+| `iep.provider.completeConfirm` | Mark this plan as completed? It can no longer be changed. | यह योजना पूरी हुई चिह्नित करें? इसके बाद इसे बदला नहीं जा सकेगा। | ఈ ప్రణాళిక పూర్తయినట్లు గుర్తించాలా? తర్వాత దీన్ని మార్చలేరు. |  | pending |
+| `iep.provider.closedNote` | This plan is closed and can no longer be changed. | यह योजना बंद है और अब बदली नहीं जा सकती। | ఈ ప్రణాళిక మూసివేయబడింది, ఇక మార్చలేరు. |  | pending |
+| `iep.provider.goalsLabel` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
+| `iep.provider.noGoals` | No goals yet. | अभी कोई लक्ष्य नहीं। | ఇంకా లక్ష్యాలు లేవు. |  | pending |
+| `iep.provider.addGoal` | Add goal | लक्ष्य जोड़ें | లక్ష్యం జోడించండి |  | pending |
+| `iep.goal.domain` | Domain | क्षेत्र | రంగం |  | pending |
+| `iep.goal.statement` | Goal | लक्ष्य | లక్ష్యం |  | pending |
+| `iep.goal.statementHint` | One sentence: what the child will do, how well and by when. | एक वाक्य: बच्चा क्या करेगा, कितनी अच्छी तरह और कब तक। | ఒక వాక్యం: పిల్లవాడు ఏమి చేస్తారు, ఎంత బాగా, ఎప్పటికి. |  | pending |
+| `iep.goal.specific` | Specific | विशिष्ट (Specific) | నిర్దిష్టం (Specific) |  | pending |
+| `iep.goal.specificHint` | What exactly will the child do? | बच्चा ठीक-ठीक क्या करेगा? | పిల్లవాడు సరిగ్గా ఏమి చేస్తారు? |  | pending |
+| `iep.goal.measurable` | Measurable | मापने योग्य (Measurable) | కొలవదగినది (Measurable) |  | pending |
+| `iep.goal.measurableHint` | How will you count or score it? | आप इसे कैसे गिनेंगे या आँकेंगे? | దీన్ని ఎలా లెక్కిస్తారు లేదా అంచనా వేస్తారు? |  | pending |
+| `iep.goal.achievable` | Achievable | हासिल करने योग्य (Achievable) | సాధించదగినది (Achievable) |  | pending |
+| `iep.goal.achievableHint` | Why is this realistic for the child now? | यह अभी बच्चे के लिए क्यों संभव है? | ఇది ఇప్పుడు పిల్లలకు ఎందుకు సాధ్యం? |  | pending |
+| `iep.goal.relevant` | Relevant | प्रासंगिक (Relevant) | సంబంధితం (Relevant) |  | pending |
+| `iep.goal.relevantHint` | Why does it matter for the child and family? | यह बच्चे और परिवार के लिए क्यों ज़रूरी है? | ఇది పిల్లలకు, కుటుంబానికి ఎందుకు ముఖ్యం? |  | pending |
+| `iep.goal.timeBound` | Time-bound | समय-सीमा (Time-bound) | కాల పరిమితి (Time-bound) |  | pending |
+| `iep.goal.timeBoundHint` | By when, and how often you will check. | कब तक, और आप कितनी बार जाँचेंगे। | ఎప్పటికి, మరియు ఎంత తరచుగా తనిఖీ చేస్తారు. |  | pending |
+| `iep.goal.measureType` | How we measure | हम कैसे मापते हैं | మేము ఎలా కొలుస్తాము |  | pending |
+| `iep.goal.baseline` | Baseline | शुरुआती स्तर | ప్రారంభ స్థాయి |  | pending |
+| `iep.goal.target` | Target | लक्ष्य स्तर | లక్ష్య స్థాయి |  | pending |
+| `iep.goal.targetDate` | Target date | लक्ष्य की तारीख़ | లక్ష్య తేదీ |  | pending |
+| `iep.goal.baselineToTarget` | Baseline to target | शुरुआती स्तर से लक्ष्य स्तर | ప్రారంభ స్థాయి నుండి లక్ష్య స్థాయి |  | pending |
+| `iep.goal.baselineToTargetValue` | {baseline} to {target} by {date} | {baseline} से {target}, {date} तक | {baseline} నుండి {target}, {date} నాటికి |  | pending |
+| `iep.goal.number` | Goal {n}: | लक्ष्य {n}: | లక్ష్యం {n}: |  | pending |
+| `iep.goal.save` | Save goal | लक्ष्य सेव करें | లక్ష్యం సేవ్ చేయండి |  | pending |
+| `iep.goal.edit` | Edit goal | लक्ष्य बदलें | లక్ష్యం మార్చండి |  | pending |
+| `iep.goal.markAchieved` | Mark achieved | हासिल चिह्नित करें | సాధించినట్లు గుర్తించండి |  | pending |
+| `iep.goal.reopen` | Make active again | फिर से सक्रिय करें | మళ్ళీ సక్రియం చేయండి |  | pending |
+| `iep.goal.delete` | Delete goal | लक्ष्य हटाएँ | లక్ష్యం తొలగించండి |  | pending |
+| `iep.goal.discontinue` | Discontinue goal | लक्ष्य बंद करें | లక్ష్యం నిలిపివేయండి |  | pending |
+| `iep.goal.deleteConfirm` | Delete this goal? | यह लक्ष्य हटाएँ? | ఈ లక్ష్యాన్ని తొలగించాలా? |  | pending |
+| `iep.goal.discontinueConfirm` | Discontinue this goal? It stays in the plan with its progress. | यह लक्ष्य बंद करें? यह अपनी प्रगति के साथ योजना में बना रहेगा। | ఈ లక్ష్యాన్ని నిలిపివేయాలా? ఇది దాని పురోగతితో పాటు ప్రణాళికలోనే ఉంటుంది. |  | pending |
+| `iep.progress.record` | Record progress | प्रगति दर्ज करें | పురోగతిని నమోదు చేయండి |  | pending |
+| `iep.progress.date` | Date | तारीख़ | తేదీ |  | pending |
+| `iep.progress.value` | Value | मान | విలువ |  | pending |
+| `iep.progress.note` | Note (optional) | टिप्पणी (वैकल्पिक) | గమనిక (ఐచ్ఛికం) |  | pending |
+| `iep.progress.save` | Save progress | प्रगति सेव करें | పురోగతి సేవ్ చేయండి |  | pending |
+| `iep.progress.saving` | Saving... | सेव हो रहा है... | సేవ్ అవుతోంది... |  | pending |
+| `iep.progress.saved` | Progress saved. | प्रगति सेव हो गई। | పురోగతి సేవ్ అయింది. |  | pending |
+| `iep.chart.title` | Progress chart: {goal} | प्रगति चार्ट: {goal} | పురోగతి చార్ట్: {goal} |  | pending |
+| `iep.chart.baseline` | Baseline | शुरुआत | ప్రారంభం |  | pending |
+| `iep.chart.target` | Target | लक्ष्य | లక్ష్యం |  | pending |
+| `iep.chart.showData` | Show data | आँकड़े दिखाएँ | డేటా చూపించు |  | pending |
+| `iep.chart.date` | Date | तारीख़ | తేదీ |  | pending |
+| `iep.chart.value` | Value | मान | విలువ |  | pending |
+| `iep.chart.note` | Note | टिप्पणी | గమనిక |  | pending |
+| `iep.chart.noData` | No progress recorded yet. | अभी कोई प्रगति दर्ज नहीं है। | ఇంకా పురోగతి నమోదు కాలేదు. |  | pending |
+| `iep.trend.label` | Progress summary | प्रगति का सार | పురోగతి సారాంశం |  | pending |
+| `iep.trend.none` | No progress recorded yet. | अभी कोई प्रगति दर्ज नहीं है। | ఇంకా పురోగతి నమోదు కాలేదు. |  | pending |
+| `iep.trend.latest` | Latest: {value} | नवीनतम: {value} | తాజా విలువ: {value} |  | pending |
+| `iep.trend.change` | Change from baseline: {change} | शुरुआती स्तर से बदलाव: {change} | ప్రారంభ స్థాయి నుండి మార్పు: {change} |  | pending |
+| `iep.trend.percent` | {percent}% of the way to the target | लक्ष्य की ओर {percent}% रास्ता तय | లక్ష్యం వైపు {percent}% దూరం పూర్తయింది |  | pending |
+| `iep.trend.onTrack` | On track | सही राह पर (on track) | సరైన దారిలో ఉంది (on track) |  | pending |
+| `iep.trend.notOnTrack` | Not on track yet | अभी सही राह पर नहीं | ఇంకా సరైన దారిలో లేదు |  | pending |
+| `iep.trend.needMore` | Record at least 2 values to see a trend. | रुझान देखने के लिए कम से कम 2 मान दर्ज करें। | ధోరణి చూడడానికి కనీసం 2 విలువలు నమోదు చేయండి. |  | pending |
+| `iep.errors.stale` | This plan was changed by someone else. Reload to see the latest version. | यह योजना किसी और ने बदली है। नया संस्करण देखने के लिए पेज दोबारा लोड करें। | ఈ ప్రణాళికను వేరొకరు మార్చారు. తాజా వెర్షన్ చూడడానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `iep.errors.closed` | This plan is closed and can no longer be changed. | यह योजना बंद है और अब बदली नहीं जा सकती। | ఈ ప్రణాళిక మూసివేయబడింది, ఇక మార్చలేరు. |  | pending |
+| `iep.errors.tooManyGoals` | A plan can have at most 20 goals. | एक योजना में अधिकतम 20 लक्ष्य हो सकते हैं। | ఒక ప్రణాళికలో గరిష్ఠంగా 20 లక్ష్యాలు ఉండవచ్చు. |  | pending |
+| `iep.errors.noGoals` | Add at least one goal before publishing. | साझा करने से पहले कम से कम एक लक्ष्य जोड़ें। | పంచుకునే ముందు కనీసం ఒక లక్ష్యం జోడించండి. |  | pending |
+| `iep.errors.nothingToPublish` | There are no changes to publish. | साझा करने के लिए कोई बदलाव नहीं है। | పంచుకోవడానికి మార్పులు ఏవీ లేవు. |  | pending |
+| `iep.errors.goalDiscontinued` | This goal was discontinued. | यह लक्ष्य बंद कर दिया गया है। | ఈ లక్ష్యం నిలిపివేయబడింది. |  | pending |
+| `iep.errors.measureLocked` | The measure cannot change after progress has been recorded. | प्रगति दर्ज होने के बाद मापने का तरीका नहीं बदल सकता। | పురోగతి నమోదు అయిన తర్వాత కొలిచే విధానం మార్చలేరు. |  | pending |
+| `iep.errors.targetDateRange` | The target date must be between the plan's start and review dates. | लक्ष्य की तारीख़ योजना की शुरू और समीक्षा की तारीख़ों के बीच होनी चाहिए। | లక్ష్య తేదీ ప్రణాళిక ప్రారంభ మరియు సమీక్ష తేదీల మధ్య ఉండాలి. |  | pending |
+| `iep.errors.planDatesExcludeGoals` | Some goals have target dates outside these plan dates. Change those goals first. | कुछ लक्ष्यों की तारीख़ इन योजना तारीख़ों से बाहर है। पहले उन लक्ष्यों को बदलें। | కొన్ని లక్ష్యాల తేదీలు ఈ ప్రణాళిక తేదీల బయట ఉన్నాయి. ముందు ఆ లక్ష్యాలను మార్చండి. |  | pending |
+| `iep.errors.futureDate` | The date cannot be in the future. | तारीख़ भविष्य की नहीं हो सकती। | తేదీ భవిష్యత్తులో ఉండకూడదు. |  | pending |
+| `iep.errors.valueRange` | Enter a value that fits the measure. | ऐसा मान डालें जो मापने के तरीके में फ़िट हो। | కొలిచే విధానానికి సరిపడే విలువను నమోదు చేయండి. |  | pending |
+| `iep.errors.statusChange` | This change is not allowed. | यह बदलाव संभव नहीं है। | ఈ మార్పు అనుమతించబడదు. |  | pending |
+| `iep.errors.notFound` | Not found. Reload the page. | नहीं मिला। पेज दोबारा लोड करें। | కనబడలేదు. పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `iep.errors.invalid` | Please check the highlighted fields. | कृपया चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
+| `iep.errors.saveFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `iep.errors.reload` | Reload | दोबारा लोड करें | మళ్ళీ లోడ్ చేయండి |  | pending |
+| `iep.fieldErrors.title` | Enter a title of up to 120 characters. | 120 अक्षरों तक का नाम डालें। | 120 అక్షరాల లోపు పేరు నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.startDate` | Enter a valid start date. | शुरू होने की सही तारीख़ डालें। | సరైన ప్రారంభ తేదీ నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.reviewDate` | The review date must be on or after the start date and within 12 months of it. | समीक्षा की तारीख़ शुरू की तारीख़ के बाद और उससे 12 महीनों के भीतर होनी चाहिए। | సమీక్ష తేదీ ప్రారంభ తేదీ తర్వాత, దాని నుండి 12 నెలల లోపు ఉండాలి. |  | pending |
+| `iep.fieldErrors.domain` | Choose a domain. | क्षेत्र चुनें। | రంగాన్ని ఎంచుకోండి. |  | pending |
+| `iep.fieldErrors.statement` | Write the goal in 10 to 500 characters. | लक्ष्य 10 से 500 अक्षरों में लिखें। | లక్ష్యాన్ని 10 నుండి 500 అక్షరాలలో రాయండి. |  | pending |
+| `iep.fieldErrors.smart` | Fill in this field (3 to 300 characters). | यह फ़ील्ड भरें (3 से 300 अक्षर)। | ఈ ఫీల్డ్ నింపండి (3 నుండి 300 అక్షరాలు). |  | pending |
+| `iep.fieldErrors.measureType` | Choose how we measure. | मापने का तरीका चुनें। | కొలిచే విధానాన్ని ఎంచుకోండి. |  | pending |
+| `iep.fieldErrors.baseline` | Enter a baseline that fits the measure. | ऐसा शुरुआती स्तर डालें जो मापने के तरीके में फ़िट हो। | కొలిచే విధానానికి సరిపడే ప్రారంభ స్థాయిని నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.target` | Enter a target that fits the measure and is different from the baseline. | ऐसा लक्ष्य स्तर डालें जो मापने के तरीके में फ़िट हो और शुरुआती स्तर से अलग हो। | కొలిచే విధానానికి సరిపడే, ప్రారంభ స్థాయికి భిన్నమైన లక్ష్య స్థాయిని నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.targetDate` | Choose a target date between the plan's start and review dates. | योजना की शुरू और समीक्षा की तारीख़ों के बीच लक्ष्य की तारीख़ चुनें। | ప్రణాళిక ప్రారంభ మరియు సమీక్ష తేదీల మధ్య లక్ష్య తేదీని ఎంచుకోండి. |  | pending |
+| `iep.fieldErrors.observedOn` | Enter a date that is not in the future. | ऐसी तारीख़ डालें जो भविष्य की न हो। | భవిష్యత్తులో లేని తేదీని నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.value` | Enter a value that fits the measure. | ऐसा मान डालें जो मापने के तरीके में फ़िट हो। | కొలిచే విధానానికి సరిపడే విలువను నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.note` | The note can have at most 500 characters. | टिप्पणी में अधिकतम 500 अक्षर हो सकते हैं। | గమనికలో గరిష్ఠంగా 500 అక్షరాలు ఉండవచ్చు. |  | pending |
+| `iep.family.link` | Plan and goals | योजना और लक्ष्य | ప్రణాళిక మరియు లక్ష్యాలు |  | pending |
+| `iep.family.title` | {name}'s plan | {name} की योजना | {name} ప్రణాళిక |  | pending |
+| `iep.family.back` | Back to {name} | {name} पर वापस जाएँ | {name} కి తిరిగి వెళ్ళండి |  | pending |
+| `iep.family.intro` | The goals your child's therapist set, and how your child is doing. Goals are shown as the therapist wrote them. | आपके बच्चे के थेरेपिस्ट द्वारा तय लक्ष्य, और आपका बच्चा कैसा कर रहा है। लक्ष्य वैसे ही दिखाए गए हैं जैसे थेरेपिस्ट ने लिखे। | మీ పిల్లల థెరపిస్ట్ నిర్ణయించిన లక్ష్యాలు, మీ పిల్లవాడు ఎలా చేస్తున్నారు. లక్ష్యాలు థెరపిస్ట్ రాసినట్లే చూపబడతాయి. |  | pending |
+| `iep.family.empty` | Your child's therapist has not shared a plan yet. | आपके बच्चे के थेरेपिस्ट ने अभी कोई योजना साझा नहीं की है। | మీ పిల్లల థెరపిస్ట్ ఇంకా ప్రణాళికను పంచుకోలేదు. |  | pending |
+| `iep.family.from` | From {org} | {org} से | {org} నుండి |  | pending |
+| `iep.family.sharedOn` | Shared on {date} | {date} को साझा किया गया | {date}న పంచుకోబడింది |  | pending |
+| `iep.family.progressTitle` | Progress | प्रगति | పురోగతి |  | pending |
+| `iep.family.progressIntro` | Values the care team recorded for each goal. | हर लक्ष्य के लिए केयर टीम द्वारा दर्ज मान। | ప్రతి లక్ష్యానికి కేర్ టీమ్ నమోదు చేసిన విలువలు. |  | pending |
+| `privacy.link` | Privacy notice | गोपनीयता सूचना | గోప్యతా ప్రకటన |  | pending |
+| `privacy.notice.metaTitle` | Privacy notice | गोपनीयता सूचना | గోప్యతా ప్రకటన |  | pending |
+| `privacy.notice.title` | Privacy notice | गोपनीयता सूचना | గోప్యతా ప్రకటన |  | pending |
+| `privacy.notice.draftBadge` | Draft - pending legal review | मसौदा - कानूनी समीक्षा बाकी | ముసాయిదా - చట్టపరమైన సమీక్ష పెండింగ్‌లో ఉంది |  | pending |
+| `privacy.notice.intro` | DoctorNearMe helps families and child development professionals work together. This notice explains what we collect, why, who processes it, how long we keep it and the rights you have under India's Digital Personal Data Protection Act, 2023. | DoctorNearMe परिवारों और बाल विकास विशेषज्ञों को साथ मिलकर काम करने में मदद करता है। यह सूचना बताती है कि हम क्या जानकारी लेते हैं, क्यों, कौन उसे प्रोसेस करता है, हम उसे कितने समय तक रखते हैं, और भारत के डिजिटल व्यक्तिगत डेटा संरक्षण अधिनियम, 2023 के तहत आपके क्या अधिकार हैं। | DoctorNearMe కుటుంబాలు మరియు పిల్లల అభివృద్ధి నిపుణులు కలిసి పనిచేయడానికి సహాయపడుతుంది. మేము ఏమి సేకరిస్తాము, ఎందుకు, దాన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎంతకాలం ఉంచుతాము, మరియు భారతదేశ డిజిటల్ వ్యక్తిగత డేటా సంరక్షణ చట్టం, 2023 ప్రకారం మీకు ఉన్న హక్కులను ఈ ప్రకటన వివరిస్తుంది. |  | pending |
+| `privacy.notice.controllerTitle` | Who is responsible | कौन ज़िम्मेदार है | ఎవరు బాధ్యులు |  | pending |
+| `privacy.notice.controller` | DoctorNearMe (pilot operator) decides how this data is used (data fiduciary). Each clinic or therapist you work with is responsible for the clinical records they create. | DoctorNearMe (पायलट संचालक) तय करता है कि यह डेटा कैसे उपयोग होता है (डेटा फ़िड्यूशियरी)। आप जिस क्लिनिक या थेरेपिस्ट के साथ काम करते हैं, वे अपने बनाए क्लिनिकल रिकॉर्ड के लिए ज़िम्मेदार हैं। | ఈ డేటాను ఎలా ఉపయోగించాలో DoctorNearMe (పైలట్ నిర్వాహకుడు) నిర్ణయిస్తుంది (డేటా ఫిడ్యూషియరీ). మీరు పనిచేసే ప్రతి క్లినిక్ లేదా థెరపిస్ట్ తాము సృష్టించే క్లినికల్ రికార్డులకు బాధ్యులు. |  | pending |
+| `privacy.notice.collectTitle` | What we collect, by feature | हम क्या लेते हैं, सुविधा के अनुसार | మేము ఏమి సేకరిస్తాము, సౌకర్యం వారీగా |  | pending |
+| `privacy.notice.collect.account` | Your account: name, email address, mobile number and sign-in details. | आपका खाता: नाम, ईमेल पता, मोबाइल नंबर और साइन-इन विवरण। | మీ ఖాతా: పేరు, ఇమెయిల్ చిరునామా, మొబైల్ నంబర్ మరియు సైన్-ఇన్ వివరాలు. |  | pending |
+| `privacy.notice.collect.children` | Your children: name, date of birth, sex (optional) and your relationship to them. | आपके बच्चे: नाम, जन्म तिथि, लिंग (वैकल्पिक) और उनसे आपका रिश्ता। | మీ పిల్లలు: పేరు, పుట్టిన తేదీ, లింగం (ఐచ్ఛికం) మరియు వారితో మీ సంబంధం. |  | pending |
+| `privacy.notice.collect.consent` | Your permissions (consents): what you allowed or withdrew, when, and the version of the text you saw. | आपकी अनुमतियाँ (सहमति): आपने क्या अनुमति दी या वापस ली, कब, और आपने पाठ का कौन सा संस्करण देखा। | మీ అనుమతులు (సమ్మతి): మీరు ఏమి అనుమతించారు లేదా ఉపసంహరించారు, ఎప్పుడు, మరియు మీరు చూసిన పాఠం యొక్క వెర్షన్. |  | pending |
+| `privacy.notice.collect.health` | Health profile: blood group, allergies, medicines, conditions, birth and development history, emergency contact. | स्वास्थ्य प्रोफ़ाइल: ब्लड ग्रुप, एलर्जी, दवाइयाँ, बीमारियाँ, जन्म और विकास का इतिहास, आपातकालीन संपर्क। | ఆరోగ్య ప్రొఫైల్: బ్లడ్ గ్రూప్, అలర్జీలు, మందులు, ఆరోగ్య సమస్యలు, పుట్టుక మరియు అభివృద్ధి చరిత్ర, అత్యవసర సంప్రదింపు. |  | pending |
+| `privacy.notice.collect.documents` | Documents you or the care team upload (reports, prescriptions, school letters). | आप या देखभाल टीम द्वारा अपलोड किए गए दस्तावेज़ (रिपोर्ट, पर्चे, स्कूल के पत्र)। | మీరు లేదా సంరక్షణ బృందం అప్‌లోడ్ చేసే పత్రాలు (రిపోర్టులు, ప్రిస్క్రిప్షన్లు, పాఠశాల లేఖలు). |  | pending |
+| `privacy.notice.collect.intake` | AI intake voice call (only with your permission): the call audio and its transcript, and the summary prepared for the therapist. | AI इनटेक वॉयस कॉल (केवल आपकी अनुमति से): कॉल की ऑडियो और उसका लिखित रूप, और थेरेपिस्ट के लिए तैयार सारांश। | AI ఇన్‌టేక్ వాయిస్ కాల్ (మీ అనుమతితో మాత్రమే): కాల్ ఆడియో మరియు దాని లిఖిత రూపం, థెరపిస్ట్ కోసం సిద్ధం చేసిన సారాంశం. |  | pending |
+| `privacy.notice.collect.sessions` | Session recordings (only with your permission): audio recorded at the centre, transcripts, observations suggested by AI and confirmed by the therapist, reports and referrals. | सत्र की रिकॉर्डिंग (केवल आपकी अनुमति से): केंद्र में रिकॉर्ड की गई ऑडियो, लिखित रूप, AI द्वारा सुझाए और थेरेपिस्ट द्वारा पुष्टि किए गए अवलोकन, रिपोर्ट और रेफ़रल। | సెషన్ రికార్డింగ్‌లు (మీ అనుమతితో మాత్రమే): కేంద్రంలో రికార్డ్ చేసిన ఆడియో, లిఖిత రూపాలు, AI సూచించి థెరపిస్ట్ ధృవీకరించిన పరిశీలనలు, రిపోర్టులు మరియు రిఫరల్స్. |  | pending |
+| `privacy.notice.collect.assessments` | Questionnaires your care team sends you (for example the developmental check-in): your answers and the summary the team publishes. | आपकी देखभाल टीम द्वारा भेजी गई प्रश्नावली (जैसे विकास की जाँच): आपके जवाब और टीम द्वारा प्रकाशित सारांश। | మీ సంరక్షణ బృందం పంపే ప్రశ్నావళులు (ఉదాహరణకు అభివృద్ధి చెక్-ఇన్): మీ సమాధానాలు మరియు బృందం ప్రచురించే సారాంశం. |  | pending |
+| `privacy.notice.collect.plans` | Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you. | थेरेपी योजनाएँ (IEP): लक्ष्य, देखभाल टीम द्वारा दर्ज की गई प्रगति, और आपके लिए प्रकाशित योजना के संस्करण। | థెరపీ ప్రణాళికలు (IEP): లక్ష్యాలు, సంరక్షణ బృందం నమోదు చేసే పురోగతి, మరియు మీకు ప్రచురించిన ప్రణాళిక వెర్షన్లు. |  | pending |
+| `privacy.notice.collect.messages` | Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them. | देखभाल टीम के साथ संदेश: DoctorNearMe बातचीत में आप और देखभाल टीम जो लिखते हैं, जोड़े गए दस्तावेज़ों के लिंक, और आपने उन्हें आखिरी बार कब पढ़ा। | సంరక్షణ బృందంతో సందేశాలు: DoctorNearMe సంభాషణల్లో మీరు మరియు సంరక్షణ బృందం రాసేవి, జోడించిన పత్రాల లింకులు, మరియు మీరు వాటిని చివరిసారి ఎప్పుడు చదివారు. |  | pending |
+| `privacy.notice.collect.notifications` | Notifications we send you in the app, by email or WhatsApp. | ऐप में, ईमेल या WhatsApp पर हमारी भेजी सूचनाएँ। | యాప్‌లో, ఇమెయిల్ లేదా WhatsApp ద్వారా మేము పంపే నోటిఫికేషన్లు. |  | pending |
+| `privacy.notice.collect.website` | If you ask for a demo on our website: name, email, role and centre. | अगर आप हमारी वेबसाइट पर डेमो माँगते हैं: नाम, ईमेल, भूमिका और केंद्र। | మీరు మా వెబ్‌సైట్‌లో డెమో అడిగితే: పేరు, ఇమెయిల్, పాత్ర మరియు కేంద్రం. |  | pending |
+| `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
+| `privacy.notice.purposes` | To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising. | आपका पारिवारिक खाता और आपके चुने विशेषज्ञों के साथ बच्चे की देखभाल चलाने के लिए; इनटेक सारांश, लिखित रूप और मसौदा रिपोर्ट तैयार करने के लिए जिन्हें एक विशेषज्ञ जाँचता है; आपको रिमाइंडर और अपडेट भेजने के लिए; कानून द्वारा ज़रूरी रिकॉर्ड रखने के लिए; और सेवा को सुरक्षित रखने के लिए। हम डेटा कभी नहीं बेचते और विज्ञापन के लिए कभी उपयोग नहीं करते। | మీ కుటుంబ ఖాతాను మరియు మీరు ఎంచుకున్న నిపుణులతో మీ పిల్లల సంరక్షణను నడపడానికి; ఒక నిపుణుడు తనిఖీ చేసే ఇన్‌టేక్ సారాంశాలు, లిఖిత రూపాలు మరియు ముసాయిదా రిపోర్టులు సిద్ధం చేయడానికి; మీకు రిమైండర్లు మరియు అప్‌డేట్లు పంపడానికి; చట్టం కోరే రికార్డులను ఉంచడానికి; మరియు సేవను సురక్షితంగా ఉంచడానికి. మేము డేటాను ఎప్పుడూ అమ్మము, ప్రకటనల కోసం ఎప్పుడూ ఉపయోగించము. |  | pending |
+| `privacy.notice.processorsTitle` | Who processes it for us, and where | हमारे लिए इसे कौन प्रोसेस करता है, और कहाँ | మా కోసం దీన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎక్కడ |  | pending |
+| `privacy.notice.processorName` | Processor | प्रोसेसर | ప్రాసెసర్ |  | pending |
+| `privacy.notice.processorPurpose` | What for | किसलिए | దేనికోసం |  | pending |
+| `privacy.notice.processorLocation` | Where | कहाँ | ఎక్కడ |  | pending |
+| `privacy.notice.processors.elevenlabs.name` | ElevenLabs | ElevenLabs | ElevenLabs |  | pending |
+| `privacy.notice.processors.elevenlabs.purpose` | AI voice calls, speech-to-text, voice summaries | AI वॉयस कॉल, बोली से लिखित रूप, वॉयस सारांश | AI వాయిస్ కాల్స్, మాటను లిఖిత రూపంలోకి మార్చడం, వాయిస్ సారాంశాలు |  | pending |
+| `privacy.notice.processors.elevenlabs.location` | USA | अमेरिका | అమెరికా |  | pending |
+| `privacy.notice.processors.gemini.name` | Google Gemini | Google Gemini | Google Gemini |  | pending |
+| `privacy.notice.processors.gemini.purpose` | AI analysis, draft reports and answers | AI विश्लेषण, मसौदा रिपोर्ट और जवाब | AI విశ్లేషణ, ముసాయిదా రిపోర్టులు మరియు సమాధానాలు |  | pending |
+| `privacy.notice.processors.gemini.location` | Outside India (Google data centres) | भारत के बाहर (Google डेटा केंद्र) | భారతదేశం బయట (Google డేటా కేంద్రాలు) |  | pending |
+| `privacy.notice.processors.resend.name` | Resend | Resend | Resend |  | pending |
+| `privacy.notice.processors.resend.purpose` | Email | ईमेल | ఇమెయిల్ |  | pending |
+| `privacy.notice.processors.resend.location` | USA | अमेरिका | అమెరికా |  | pending |
+| `privacy.notice.processors.whatsapp.name` | Meta WhatsApp | Meta WhatsApp | Meta WhatsApp |  | pending |
+| `privacy.notice.processors.whatsapp.purpose` | WhatsApp messages (only if you turn them on) | WhatsApp संदेश (केवल अगर आप चालू करें) | WhatsApp సందేశాలు (మీరు ఆన్ చేస్తే మాత్రమే) |  | pending |
+| `privacy.notice.processors.whatsapp.location` | Outside India (Meta data centres) | भारत के बाहर (Meta डेटा केंद्र) | భారతదేశం బయట (Meta డేటా కేంద్రాలు) |  | pending |
+| `privacy.notice.processors.supabase.name` | Supabase | Supabase | Supabase |  | pending |
+| `privacy.notice.processors.supabase.purpose` | Database and file storage | डेटाबेस और फ़ाइल भंडारण | డేటాబేస్ మరియు ఫైల్ నిల్వ |  | pending |
+| `privacy.notice.processors.supabase.location` | {region} | {region} | {region} |  | pending |
+| `privacy.notice.crossBorder` | AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time. | AI सुविधाएँ आपके बच्चे का डेटा भारत के बाहर भेजती हैं। वे तभी चलती हैं जब आप उस बच्चे के लिए अनुमति देते हैं, और आप कभी भी अनुमति वापस ले सकते हैं। | AI సౌకర్యాలు మీ పిల్లల డేటాను భారతదేశం బయటకు పంపుతాయి. ఆ పిల్లల కోసం మీరు అనుమతించిన తర్వాతే అవి పనిచేస్తాయి, మరియు మీరు ఎప్పుడైనా ఉపసంహరించుకోవచ్చు. |  | pending |
+| `privacy.notice.retentionTitle` | How long we keep it | हम इसे कितने समय तक रखते हैं | మేము దీన్ని ఎంతకాలం ఉంచుతాము |  | pending |
+| `privacy.notice.retentionWhat` | Data | डेटा | డేటా |  | pending |
+| `privacy.notice.retentionHow` | Kept for | कितने समय तक | ఎంతకాలం |  | pending |
+| `privacy.notice.retention.audio.what` | Raw audio of intake calls and sessions | इनटेक कॉल और सत्रों की मूल ऑडियो | ఇన్‌టేక్ కాల్స్ మరియు సెషన్ల అసలు ఆడియో |  | pending |
+| `privacy.notice.retention.audio.how` | {days} days after it is transcribed (the transcript stays with the clinical record) | लिखित रूप बनने के {days} दिन बाद तक (लिखित रूप क्लिनिकल रिकॉर्ड के साथ रहता है) | లిఖిత రూపం తయారైన {days} రోజుల వరకు (లిఖిత రూపం క్లినికల్ రికార్డుతో ఉంటుంది) |  | pending |
+| `privacy.notice.retention.pending.what` | Uploads that were never finished | अधूरे रह गए अपलोड | పూర్తికాని అప్‌లోడ్‌లు |  | pending |
+| `privacy.notice.retention.pending.how` | Deleted within 24 hours | 24 घंटे के भीतर हटाए जाते हैं | 24 గంటల్లో తొలగించబడతాయి |  | pending |
+| `privacy.notice.retention.inApp.what` | In-app notifications | ऐप की सूचनाएँ | యాప్‌లోని నోటిఫికేషన్లు |  | pending |
+| `privacy.notice.retention.inApp.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
+| `privacy.notice.retention.delivery.what` | Email and WhatsApp message text in our delivery log | हमारे डिलीवरी लॉग में ईमेल और WhatsApp संदेश का पाठ | మా డెలివరీ లాగ్‌లో ఇమెయిల్ మరియు WhatsApp సందేశ పాఠం |  | pending |
+| `privacy.notice.retention.delivery.how` | {days} days (then only the date and status remain) | {days} दिन (फिर केवल तारीख और स्थिति रहती है) | {days} రోజులు (తర్వాత తేదీ మరియు స్థితి మాత్రమే ఉంటాయి) |  | pending |
+| `privacy.notice.retention.exports.what` | Data downloads you request | आपके माँगे गए डेटा डाउनलोड | మీరు అడిగిన డేటా డౌన్‌లోడ్‌లు |  | pending |
+| `privacy.notice.retention.exports.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
+| `privacy.notice.retention.signups.what` | Website demo requests | वेबसाइट पर डेमो अनुरोध | వెబ్‌సైట్ డెమో అభ్యర్థనలు |  | pending |
+| `privacy.notice.retention.signups.how` | {months} months | {months} महीने | {months} నెలలు |  | pending |
+| `privacy.notice.retention.clinical.what` | Clinical records (cases, transcripts, confirmed observations, reports) | क्लिनिकल रिकॉर्ड (केस, लिखित रूप, पुष्टि किए गए अवलोकन, रिपोर्ट) | క్లినికల్ రికార్డులు (కేసులు, లిఖిత రూపాలు, ధృవీకరించిన పరిశీలనలు, రిపోర్టులు) |  | pending |
+| `privacy.notice.retention.clinical.how` | While your child is in care, and as long as the law requires clinics to keep them | जब तक आपका बच्चा देखभाल में है, और जब तक कानून क्लिनिक से उन्हें रखने को कहता है | మీ పిల్లలు సంరక్షణలో ఉన్నంతకాలం, మరియు క్లినిక్‌లు వాటిని ఉంచాలని చట్టం కోరినంతకాలం |  | pending |
+| `privacy.notice.retention.messages.what` | Messages with the care team | देखभाल टीम के साथ संदेश | సంరక్షణ బృందంతో సందేశాలు |  | pending |
+| `privacy.notice.retention.messages.how` | While your child is in care, with the clinical record; a deleted message's text is removed at once | जब तक आपका बच्चा देखभाल में है, क्लिनिकल रिकॉर्ड के साथ; हटाए गए संदेश का पाठ तुरंत मिटा दिया जाता है | మీ పిల్లలు సంరక్షణలో ఉన్నంతకాలం, క్లినికల్ రికార్డుతో పాటు; తొలగించిన సందేశం యొక్క పాఠం వెంటనే తీసివేయబడుతుంది |  | pending |
+| `privacy.notice.retention.consent.what` | Consent records | सहमति के रिकॉर्ड | సమ్మతి రికార్డులు |  | pending |
+| `privacy.notice.retention.consent.how` | Kept as proof of consent, also after deletion (without free text) | सहमति के प्रमाण के रूप में रखे जाते हैं, हटाने के बाद भी (बिना मुक्त पाठ के) | సమ్మతికి రుజువుగా ఉంచబడతాయి, తొలగించిన తర్వాత కూడా (స్వేచ్ఛా పాఠం లేకుండా) |  | pending |
+| `privacy.notice.retention.audit.what` | Security audit log | सुरक्षा ऑडिट लॉग | భద్రతా ఆడిట్ లాగ్ |  | pending |
+| `privacy.notice.retention.audit.how` | {years} years | {years} साल | {years} సంవత్సరాలు |  | pending |
+| `privacy.notice.rightsTitle` | Your rights | आपके अधिकार | మీ హక్కులు |  | pending |
+| `privacy.notice.rights.access` | Access: download a copy of your child's data from the child's Privacy page in the app. | पहुँच: ऐप में बच्चे के गोपनीयता पेज से बच्चे के डेटा की कॉपी डाउनलोड करें। | యాక్సెస్: యాప్‌లో పిల్లల గోప్యతా పేజీ నుండి పిల్లల డేటా కాపీని డౌన్‌లోడ్ చేయండి. |  | pending |
+| `privacy.notice.rights.correction` | Correction: change details in the app, or ask the clinic to correct a record. | सुधार: ऐप में विवरण बदलें, या क्लिनिक से रिकॉर्ड ठीक करने को कहें। | సవరణ: యాప్‌లో వివరాలు మార్చండి, లేదా రికార్డును సరిచేయమని క్లినిక్‌ను అడగండి. |  | pending |
+| `privacy.notice.rights.erasure` | Erasure: ask us to stop AI processing or to delete your child's data from the child's Privacy page. We review each request; a clinic may have to keep some clinical records by law, and we tell you if so. | मिटाना: बच्चे के गोपनीयता पेज से AI प्रोसेसिंग रोकने या बच्चे का डेटा हटाने को कहें। हम हर अनुरोध की समीक्षा करते हैं; कानून के अनुसार क्लिनिक को कुछ क्लिनिकल रिकॉर्ड रखने पड़ सकते हैं, और ऐसा होने पर हम आपको बताते हैं। | తొలగింపు: పిల్లల గోప్యతా పేజీ నుండి AI ప్రాసెసింగ్ ఆపమని లేదా పిల్లల డేటాను తొలగించమని అడగండి. మేము ప్రతి అభ్యర్థనను సమీక్షిస్తాము; చట్టం ప్రకారం క్లినిక్ కొన్ని క్లినికల్ రికార్డులను ఉంచవలసి రావచ్చు, అలా అయితే మీకు చెబుతాము. |  | pending |
+| `privacy.notice.rights.withdraw` | Withdraw consent: switch off any AI feature on your child's page at any time. Work that has not started yet is stopped and its audio deleted. | सहमति वापस लेना: बच्चे के पेज पर कभी भी कोई भी AI सुविधा बंद करें। जो काम शुरू नहीं हुआ है, वह रोक दिया जाता है और उसकी ऑडियो हटा दी जाती है। | సమ్మతి ఉపసంహరణ: పిల్లల పేజీలో ఏ AI సౌకర్యాన్నైనా ఎప్పుడైనా ఆపివేయండి. ఇంకా ప్రారంభం కాని పని ఆపివేయబడుతుంది మరియు దాని ఆడియో తొలగించబడుతుంది. |  | pending |
+| `privacy.notice.rights.grievance` | Grievance: contact our grievance officer. If you are not satisfied, you can complain to the Data Protection Board of India. | शिकायत: हमारे शिकायत अधिकारी से संपर्क करें। अगर आप संतुष्ट नहीं हैं, तो भारतीय डेटा संरक्षण बोर्ड में शिकायत कर सकते हैं। | ఫిర్యాదు: మా ఫిర్యాదుల అధికారిని సంప్రదించండి. మీకు సంతృప్తి లేకపోతే, భారత డేటా సంరక్షణ బోర్డుకు ఫిర్యాదు చేయవచ్చు. |  | pending |
+| `privacy.notice.rights.nominate` | Nominate: you can name another person to use these rights for you if you cannot. | नामांकन: अगर आप ख़ुद न कर सकें, तो इन अधिकारों का उपयोग करने के लिए किसी और व्यक्ति को नामित कर सकते हैं। | నామినేషన్: మీరు చేయలేని పక్షంలో మీ కోసం ఈ హక్కులను ఉపయోగించడానికి మరొకరిని నియమించవచ్చు. |  | pending |
+| `privacy.notice.childrenTitle` | Children's data | बच्चों का डेटा | పిల్లల డేటా |  | pending |
+| `privacy.notice.children` | We process a child's data only with verifiable consent from their parent or legal guardian, separately for each child and each feature. Child pages have no tracking, no analytics and no targeted advertising. | हम बच्चे का डेटा केवल उसके माता-पिता या कानूनी अभिभावक की सत्यापन योग्य सहमति से प्रोसेस करते हैं, हर बच्चे और हर सुविधा के लिए अलग से। बच्चों के पेजों पर कोई ट्रैकिंग, कोई एनालिटिक्स और कोई लक्षित विज्ञापन नहीं है। | పిల్లల తల్లిదండ్రులు లేదా చట్టపరమైన సంరక్షకుల నుండి ధృవీకరించదగిన సమ్మతితో మాత్రమే, ప్రతి పిల్లవాడికి మరియు ప్రతి సౌకర్యానికి విడిగా, మేము పిల్లల డేటాను ప్రాసెస్ చేస్తాము. పిల్లల పేజీలలో ట్రాకింగ్, అనలిటిక్స్ లేదా లక్షిత ప్రకటనలు ఉండవు. |  | pending |
+| `privacy.notice.contactTitle` | Grievance officer | शिकायत अधिकारी | ఫిర్యాదుల అధికారి |  | pending |
+| `privacy.notice.contact` | Email {email}. We reply within 7 days. | ईमेल {email}। हम 7 दिनों के भीतर जवाब देते हैं। | ఇమెయిల్ {email}. మేము 7 రోజుల్లో సమాధానం ఇస్తాము. |  | pending |
+| `privacy.notice.contactMissing` | Grievance officer contact will be published before the pilot starts. | शिकायत अधिकारी का संपर्क पायलट शुरू होने से पहले प्रकाशित किया जाएगा। | పైలట్ ప్రారంభానికి ముందు ఫిర్యాదుల అధికారి సంప్రదింపు వివరాలు ప్రచురించబడతాయి. |  | pending |
+| `privacy.notice.updated` | This notice may change; we will tell you in the app before important changes. | यह सूचना बदल सकती है; महत्वपूर्ण बदलावों से पहले हम आपको ऐप में बताएँगे। | ఈ ప్రకటన మారవచ్చు; ముఖ్యమైన మార్పులకు ముందు యాప్‌లో మీకు తెలియజేస్తాము. |  | pending |
+| `privacy.family.link` | Privacy and data | गोपनीयता और डेटा | గోప్యత మరియు డేటా |  | pending |
+| `privacy.family.title` | Privacy and data | गोपनीयता और डेटा | గోప్యత మరియు డేటా |  | pending |
+| `privacy.family.intro` | Download a copy of {name}'s data, or ask us to delete it. | {name} के डेटा की कॉपी डाउनलोड करें, या हमसे उसे हटाने को कहें। | {name} డేటా కాపీని డౌన్‌లోడ్ చేయండి, లేదా దాన్ని తొలగించమని మమ్మల్ని అడగండి. |  | pending |
+| `privacy.family.exportTitle` | Download a copy | कॉपी डाउनलोड करें | కాపీని డౌన్‌లోడ్ చేయండి |  | pending |
+| `privacy.family.exportIntro` | You get a ZIP file with everything about {name} that you can see in the app, including the documents. We send you a notification when it is ready. | आपको एक ZIP फ़ाइल मिलती है जिसमें {name} के बारे में वह सब होता है जो आप ऐप में देख सकते हैं, दस्तावेज़ों सहित। तैयार होने पर हम आपको सूचना भेजते हैं। | యాప్‌లో మీరు చూడగలిగే {name} గురించిన అన్నింటితో, పత్రాలతో సహా, మీకు ఒక ZIP ఫైల్ వస్తుంది. అది సిద్ధమైనప్పుడు మీకు నోటిఫికేషన్ పంపుతాము. |  | pending |
+| `privacy.family.exportLimit` | Up to 3 downloads per day. Each file can be downloaded for 7 days. | दिन में अधिकतम 3 डाउनलोड। हर फ़ाइल 7 दिनों तक डाउनलोड की जा सकती है। | రోజుకు గరిష్టంగా 3 డౌన్‌లోడ్‌లు. ప్రతి ఫైల్‌ను 7 రోజుల పాటు డౌన్‌లోడ్ చేసుకోవచ్చు. |  | pending |
+| `privacy.family.exportButton` | Download {name}'s data | {name} का डेटा डाउनलोड करें | {name} డేటాను డౌన్‌లోడ్ చేయండి |  | pending |
+| `privacy.family.exportRequesting` | Requesting... | अनुरोध भेजा जा रहा है... | అభ్యర్థిస్తోంది... |  | pending |
+| `privacy.family.exportRequested` | We are preparing the file. This usually takes a minute. | हम फ़ाइल तैयार कर रहे हैं। आमतौर पर इसमें एक मिनट लगता है। | మేము ఫైల్‌ను సిద్ధం చేస్తున్నాము. సాధారణంగా దీనికి ఒక నిమిషం పడుతుంది. |  | pending |
+| `privacy.family.exportRunning` | A download is already being prepared. | एक डाउनलोड पहले से तैयार किया जा रहा है। | ఒక డౌన్‌లోడ్ ఇప్పటికే సిద్ధమవుతోంది. |  | pending |
+| `privacy.family.exportLimitReached` | You can request 3 downloads per day. Please try again tomorrow. | आप दिन में 3 डाउनलोड माँग सकते हैं। कृपया कल फिर कोशिश करें। | మీరు రోజుకు 3 డౌన్‌లోడ్‌లు అడగవచ్చు. దయచేసి రేపు మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.family.exportFailedRequest` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.family.exportsListTitle` | Your downloads | आपके डाउनलोड | మీ డౌన్‌లోడ్‌లు |  | pending |
+| `privacy.family.exportStatus.queued` | Preparing | तैयार हो रहा है | సిద్ధమవుతోంది |  | pending |
+| `privacy.family.exportStatus.building` | Preparing | तैयार हो रहा है | సిద్ధమవుతోంది |  | pending |
+| `privacy.family.exportStatus.ready` | Ready | तैयार | సిద్ధంగా ఉంది |  | pending |
+| `privacy.family.exportStatus.failed` | Could not be prepared | तैयार नहीं हो सका | సిద్ధం చేయలేకపోయాం |  | pending |
+| `privacy.family.exportStatus.expired` | Expired | समय समाप्त | గడువు ముగిసింది |  | pending |
+| `privacy.family.download` | Download | डाउनलोड करें | డౌన్‌లోడ్ చేయండి |  | pending |
+| `privacy.family.requestedOn` | Requested {date} | {date} को माँगा गया | {date}న అభ్యర్థించబడింది |  | pending |
+| `privacy.family.availableUntil` | Available until {date} | {date} तक उपलब्ध | {date} వరకు అందుబాటులో ఉంది |  | pending |
+| `privacy.family.deleteTitle` | Delete data | डेटा हटाएँ | డేటాను తొలగించండి |  | pending |
+| `privacy.family.deleteIntro` | Choose what to delete. A DoctorNearMe administrator reviews every request before anything is deleted. | चुनें कि क्या हटाना है। कुछ भी हटाने से पहले DoctorNearMe का एक प्रशासक हर अनुरोध की समीक्षा करता है। | ఏమి తొలగించాలో ఎంచుకోండి. ఏదైనా తొలగించే ముందు DoctorNearMe నిర్వాహకుడు ప్రతి అభ్యర్థనను సమీక్షిస్తారు. |  | pending |
+| `privacy.family.scope.all_ai_processing.label` | Stop AI processing and delete AI data | AI प्रोसेसिंग रोकें और AI डेटा हटाएँ | AI ప్రాసెసింగ్ ఆపి, AI డేటాను తొలగించండి |  | pending |
+| `privacy.family.scope.all_ai_processing.description` | Withdraws all AI permissions, deletes recordings, transcripts and AI suggestions, and deletes the copies of AI voice calls held by ElevenLabs. Records confirmed by the therapist stay. | सभी AI अनुमतियाँ वापस लेता है, रिकॉर्डिंग, लिखित रूप और AI सुझाव हटाता है, और ElevenLabs के पास रखी AI वॉयस कॉल की कॉपी हटाता है। थेरेपिस्ट द्वारा पुष्टि किए गए रिकॉर्ड बने रहते हैं। | అన్ని AI అనుమతులను ఉపసంహరిస్తుంది, రికార్డింగ్‌లు, లిఖిత రూపాలు మరియు AI సూచనలను తొలగిస్తుంది, మరియు ElevenLabs వద్ద ఉన్న AI వాయిస్ కాల్స్ కాపీలను తొలగిస్తుంది. థెరపిస్ట్ ధృవీకరించిన రికార్డులు ఉంటాయి. |  | pending |
+| `privacy.family.scope.everything.label` | Delete everything about {name} | {name} के बारे में सब कुछ हटाएँ | {name} గురించి అన్నింటినీ తొలగించండి |  | pending |
+| `privacy.family.scope.everything.description` | Deletes records at every clinic, documents, the health profile and all recordings, including copies held by our processors. The name is replaced by "Deleted child". Consent records and the security log are kept as the law requires, without free text. | हर क्लिनिक के रिकॉर्ड, दस्तावेज़, स्वास्थ्य प्रोफ़ाइल और सभी रिकॉर्डिंग हटाता है, हमारे प्रोसेसरों के पास रखी कॉपी सहित। नाम की जगह "Deleted child" लिखा जाता है। सहमति के रिकॉर्ड और सुरक्षा लॉग कानून के अनुसार रखे जाते हैं, बिना मुक्त पाठ के। | ప్రతి క్లినిక్‌లోని రికార్డులు, పత్రాలు, ఆరోగ్య ప్రొఫైల్ మరియు అన్ని రికార్డింగ్‌లను, మా ప్రాసెసర్ల వద్ద ఉన్న కాపీలతో సహా తొలగిస్తుంది. పేరు స్థానంలో "Deleted child" అని ఉంటుంది. సమ్మతి రికార్డులు మరియు భద్రతా లాగ్ చట్టం ప్రకారం, స్వేచ్ఛా పాఠం లేకుండా ఉంచబడతాయి. |  | pending |
+| `privacy.family.reasonLabel` | Reason (optional) | कारण (वैकल्पिक) | కారణం (ఐచ్ఛికం) |  | pending |
+| `privacy.family.confirmLabel` | I understand that deleted data cannot be recovered. | मैं समझता/समझती हूँ कि हटाया गया डेटा वापस नहीं लाया जा सकता। | తొలగించిన డేటాను తిరిగి పొందలేమని నాకు అర్థమైంది. |  | pending |
+| `privacy.family.deleteButton` | Request deletion | हटाने का अनुरोध करें | తొలగింపును అభ్యర్థించండి |  | pending |
+| `privacy.family.deleteSending` | Sending... | भेजा जा रहा है... | పంపుతోంది... |  | pending |
+| `privacy.family.deleteSent` | Request sent. We will notify you when it has been reviewed. | अनुरोध भेजा गया। समीक्षा होने पर हम आपको सूचित करेंगे। | అభ్యర్థన పంపబడింది. సమీక్ష పూర్తయినప్పుడు మీకు తెలియజేస్తాము. |  | pending |
+| `privacy.family.deleteOpen` | A deletion request for this child is already open. | इस बच्चे के लिए हटाने का एक अनुरोध पहले से खुला है। | ఈ పిల్లల కోసం తొలగింపు అభ్యర్థన ఇప్పటికే తెరిచి ఉంది. |  | pending |
+| `privacy.family.deleteFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.family.chooseScope` | Choose what to delete | चुनें कि क्या हटाना है | ఏమి తొలగించాలో ఎంచుకోండి |  | pending |
+| `privacy.family.requestsTitle` | Your requests | आपके अनुरोध | మీ అభ్యర్థనలు |  | pending |
+| `privacy.family.requestStatus.requested` | Waiting for review | समीक्षा की प्रतीक्षा में | సమీక్ష కోసం వేచి ఉంది |  | pending |
+| `privacy.family.requestStatus.approved` | Approved, deleting | स्वीकृत, हटाया जा रहा है | ఆమోదించబడింది, తొలగిస్తోంది |  | pending |
+| `privacy.family.requestStatus.in_progress` | Deleting | हटाया जा रहा है | తొలగిస్తోంది |  | pending |
+| `privacy.family.requestStatus.completed` | Completed | पूरा हुआ | పూర్తయింది |  | pending |
+| `privacy.family.requestStatus.rejected` | Not carried out | पूरा नहीं किया गया | అమలు చేయలేదు |  | pending |
+| `privacy.family.requestStatus.failed` | Deleting (retrying) | हटाया जा रहा है (फिर से कोशिश) | తొలగిస్తోంది (మళ్ళీ ప్రయత్నిస్తోంది) |  | pending |
+| `privacy.family.rejectedReason` | Reason: {note} | कारण: {note} | కారణం: {note} |  | pending |
+| `privacy.family.noticeLink` | Read the privacy notice | गोपनीयता सूचना पढ़ें | గోప్యతా ప్రకటన చదవండి |  | pending |
+| `privacy.admin.nav.users` | Accounts | खाते | ఖాతాలు |  | pending |
+| `privacy.admin.nav.audit` | Audit log | ऑडिट लॉग | ఆడిట్ లాగ్ |  | pending |
+| `privacy.admin.nav.requests` | Deletion requests | हटाने के अनुरोध | తొలగింపు అభ్యర్థనలు |  | pending |
+| `privacy.admin.nav.ops` | Operations | संचालन | కార్యకలాపాలు |  | pending |
+| `privacy.admin.nav.notifications` | Notifications | सूचनाएँ | నోటిఫికేషన్లు |  | pending |
+| `privacy.admin.audit.title` | Audit log | ऑडिट लॉग | ఆడిట్ లాగ్ |  | pending |
+| `privacy.admin.audit.intro` | Who did what, newest first. Details of health and consent content are not shown. Viewing this page is itself audited. | किसने क्या किया, नवीनतम पहले। स्वास्थ्य और सहमति सामग्री का विवरण नहीं दिखाया जाता। इस पेज को देखना भी ऑडिट होता है। | ఎవరు ఏమి చేశారు, తాజావి ముందు. ఆరోగ్య మరియు సమ్మతి విషయాల వివరాలు చూపబడవు. ఈ పేజీని చూడటం కూడా ఆడిట్ అవుతుంది. |  | pending |
+| `privacy.admin.audit.action` | Action | कार्य | చర్య |  | pending |
+| `privacy.admin.audit.actor` | Actor | करने वाला | చేసినవారు |  | pending |
+| `privacy.admin.audit.actorHint` | User id or role | उपयोगकर्ता id या भूमिका | వినియోగదారు id లేదా పాత్ర |  | pending |
+| `privacy.admin.audit.organisation` | Organisation | संगठन | సంస్థ |  | pending |
+| `privacy.admin.audit.child` | Child | बच्चा | పిల్లవాడు |  | pending |
+| `privacy.admin.audit.case` | Case | केस | కేసు |  | pending |
+| `privacy.admin.audit.from` | From | से | నుండి |  | pending |
+| `privacy.admin.audit.to` | To | तक | వరకు |  | pending |
+| `privacy.admin.audit.filter` | Filter | फ़िल्टर करें | ఫిల్టర్ చేయండి |  | pending |
+| `privacy.admin.audit.clear` | Clear | साफ़ करें | క్లియర్ చేయండి |  | pending |
+| `privacy.admin.audit.time` | Time | समय | సమయం |  | pending |
+| `privacy.admin.audit.role` | Role | भूमिका | పాత్ర |  | pending |
+| `privacy.admin.audit.actorId` | Actor id | करने वाले की id | చేసినవారి id |  | pending |
+| `privacy.admin.audit.entity` | Entity | इकाई | అంశం |  | pending |
+| `privacy.admin.audit.ids` | Ids | Id | Id లు |  | pending |
+| `privacy.admin.audit.none` | No audit events match. | कोई ऑडिट घटना मेल नहीं खाती। | సరిపోలే ఆడిట్ సంఘటనలు లేవు. |  | pending |
+| `privacy.admin.audit.older` | Older events | पुरानी घटनाएँ | పాత సంఘటనలు |  | pending |
+| `privacy.admin.requests.title` | Deletion requests | हटाने के अनुरोध | తొలగింపు అభ్యర్థనలు |  | pending |
+| `privacy.admin.requests.intro` | Approve to delete the child's data everywhere (including processor copies). Reject only for a legal record-keeping obligation, and cite it. | बच्चे का डेटा हर जगह से हटाने के लिए स्वीकृत करें (प्रोसेसर की कॉपी सहित)। केवल रिकॉर्ड रखने की कानूनी बाध्यता होने पर अस्वीकार करें, और उसका उल्लेख करें। | పిల్లల డేటాను అన్నిచోట్ల నుండి (ప్రాసెసర్ కాపీలతో సహా) తొలగించడానికి ఆమోదించండి. రికార్డులు ఉంచాల్సిన చట్టపరమైన బాధ్యత ఉన్నప్పుడు మాత్రమే తిరస్కరించండి, దాన్ని పేర్కొనండి. |  | pending |
+| `privacy.admin.requests.none` | No deletion requests. | हटाने का कोई अनुरोध नहीं। | తొలగింపు అభ్యర్థనలు లేవు. |  | pending |
+| `privacy.admin.requests.child` | Child | बच्चा | పిల్లవాడు |  | pending |
+| `privacy.admin.requests.scope` | Scope | दायरा | పరిధి |  | pending |
+| `privacy.admin.requests.status` | Status | स्थिति | స్థితి |  | pending |
+| `privacy.admin.requests.requested` | Requested | माँगा गया | అభ్యర్థించినది |  | pending |
+| `privacy.admin.requests.reason` | Guardian's reason | अभिभावक का कारण | సంరక్షకుని కారణం |  | pending |
+| `privacy.admin.requests.note` | Note (required to reject: cite the obligation) | टिप्पणी (अस्वीकार करने के लिए ज़रूरी: बाध्यता का उल्लेख करें) | గమనిక (తిరస్కరించడానికి తప్పనిసరి: బాధ్యతను పేర్కొనండి) |  | pending |
+| `privacy.admin.requests.approve` | Approve | स्वीकृत करें | ఆమోదించండి |  | pending |
+| `privacy.admin.requests.reject` | Reject | अस्वीकार करें | తిరస్కరించండి |  | pending |
+| `privacy.admin.requests.saving` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `privacy.admin.requests.saved` | Saved. | सहेजा गया। | సేవ్ అయింది. |  | pending |
+| `privacy.admin.requests.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.admin.requests.noteRequired` | Explain why (at least 10 characters), citing the record-keeping obligation | कारण बताएँ (कम से कम 10 अक्षर), रिकॉर्ड रखने की बाध्यता का उल्लेख करते हुए | కారణం వివరించండి (కనీసం 10 అక్షరాలు), రికార్డులు ఉంచాల్సిన బాధ్యతను పేర్కొంటూ |  | pending |
+| `privacy.admin.requests.processorsPending` | Processor deletions pending: {count} | प्रोसेसर से हटाना बाकी: {count} | ప్రాసెసర్ తొలగింపులు పెండింగ్: {count} |  | pending |
+| `privacy.admin.requests.lastError` | Last error: {error} | पिछली त्रुटि: {error} | చివరి లోపం: {error} |  | pending |
+| `privacy.admin.ops.title` | Operations | संचालन | కార్యకలాపాలు |  | pending |
+| `privacy.admin.ops.outbox` | Notifications outbox | सूचना आउटबॉक्स | నోటిఫికేషన్ అవుట్‌బాక్స్ |  | pending |
+| `privacy.admin.ops.pendingEvents` | Events waiting | प्रतीक्षा में घटनाएँ | వేచి ఉన్న సంఘటనలు |  | pending |
+| `privacy.admin.ops.oldestPending` | Oldest waiting (minutes) | सबसे पुरानी प्रतीक्षा (मिनट) | అత్యంత పాత నిరీక్షణ (నిమిషాలు) |  | pending |
+| `privacy.admin.ops.deliveries` | Deliveries by status | स्थिति के अनुसार डिलीवरी | స్థితి వారీగా డెలివరీలు |  | pending |
+| `privacy.admin.ops.retention` | Retention job | डेटा अवधि का काम | డేటా నిల్వ కాల పని |  | pending |
+| `privacy.admin.ops.lastRun` | Last run | पिछली बार चला | చివరిసారి నడిచింది |  | pending |
+| `privacy.admin.ops.never` | Never | कभी नहीं | ఎప్పుడూ లేదు |  | pending |
+| `privacy.admin.ops.privacy` | Privacy jobs | गोपनीयता के काम | గోప్యతా పనులు |  | pending |
+| `privacy.admin.ops.openRequests` | Open deletion requests | खुले हटाने के अनुरोध | తెరిచి ఉన్న తొలగింపు అభ్యర్థనలు |  | pending |
+| `privacy.admin.ops.failedRequests` | Deletion requests retrying | फिर से कोशिश हो रहे हटाने के अनुरोध | మళ్ళీ ప్రయత్నిస్తున్న తొలగింపు అభ్యర్థనలు |  | pending |
+| `privacy.admin.ops.queuedExports` | Exports being prepared | तैयार हो रहे डाउनलोड | సిద్ధమవుతున్న డౌన్‌లోడ్‌లు |  | pending |
+| `privacy.admin.ops.failedExports` | Failed exports | विफल डाउनलोड | విఫలమైన డౌన్‌లోడ్‌లు |  | pending |
+| `privacy.admin.ops.processorFailures` | Failed processor deletions | प्रोसेसर से हटाने में विफलता | విఫలమైన ప్రాసెసర్ తొలగింపులు |  | pending |
+| `privacy.admin.ops.stuck` | Recordings stuck for more than 30 minutes | 30 मिनट से ज़्यादा अटकी रिकॉर्डिंग | 30 నిమిషాలకు పైగా నిలిచిపోయిన రికార్డింగ్‌లు |  | pending |
+| `privacy.admin.ops.none` | None. | कोई नहीं। | ఏవీ లేవు. |  | pending |
+| `privacy.admin.ops.minutes` | {count} min | {count} मिनट | {count} ని. |  | pending |
 | `messaging.title` | Messages | संदेश | సందేశాలు |  | pending |
 | `messaging.navLink` | Messages | संदेश | సందేశాలు |  | pending |
 | `messaging.familyIntro` | Write to your child's care team. Their replies appear here. | अपने बच्चे की देखभाल टीम को लिखें। उनके जवाब यहाँ दिखेंगे। | మీ పిల్లల సంరక్షణ బృందానికి రాయండి. వారి జవాబులు ఇక్కడ కనిపిస్తాయి. |  | pending |

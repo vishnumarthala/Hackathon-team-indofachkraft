@@ -324,7 +324,8 @@ grant execute on function public.message_notification_recipients(uuid) to servic
 -- mapped to HTTP statuses by lib/messaging/store.ts.
 -- =====================================================================================================
 
--- Shared by create/send: message insert + thread bump + the sender's read marker + outbox event + strict audit.
+-- Shared by create/send: message insert + thread bump + the sender's read marker + outbox event. The callers write
+-- the `message.sent` audit row in the same transaction.
 create or replace function public.insert_thread_message(
   p_thread public.message_threads, p_user uuid, p_kind text, p_body text, p_client_id uuid, p_document uuid
 ) returns public.messages
@@ -344,11 +345,6 @@ begin
   -- FR-3: delivered in 2 minutes, to participants who have not read the thread by then (re-checked at fan-out).
   perform public.outbox_enqueue('message.created', 'thread', p_thread.id, jsonb_build_object('message_id', m.id),
                                 'message:' || m.id, now() + interval '2 minutes');
-  -- NFR-3: ids only, never the body.
-  insert into public.audit_events (case_id, actor, actor_user_id, action, entity, entity_id, details)
-  values (p_thread.case_id, case when p_kind = 'guardian' then 'parent' else 'therapist' end, p_user,
-          'message.sent', 'message', m.id::text,
-          jsonb_build_object('thread_id', p_thread.id, 'document_id', p_document));
   return m;
 end;
 $$;
@@ -426,6 +422,10 @@ begin
           'thread.created', 'message_thread', t.id::text,
           jsonb_build_object('org_id', c.org_id, 'child_id', c.child_id));
   m := public.insert_thread_message(t, p_user, v_kind, p_body, p_client_id, p_document);
+  -- Strict audit in the same transaction; ids only, never the body (NFR-3).
+  insert into public.audit_events (case_id, actor, actor_user_id, action, entity, entity_id, details)
+  values (t.case_id, case when m.sender_kind = 'guardian' then 'parent' else 'therapist' end, p_user,
+          'message.sent', 'message', m.id::text, jsonb_build_object('thread_id', t.id, 'document_id', m.document_id));
   select * into t from public.message_threads where id = t.id;
   return jsonb_build_object('result', 'created', 'thread', to_jsonb(t), 'message', to_jsonb(m));
 end;
@@ -474,6 +474,10 @@ begin
 
   m := public.insert_thread_message(t, p_user, case when v_level = 'guardian' then 'guardian' else 'provider' end,
                                     p_body, p_client_id, p_document);
+  -- Strict audit in the same transaction; ids only, never the body (NFR-3).
+  insert into public.audit_events (case_id, actor, actor_user_id, action, entity, entity_id, details)
+  values (t.case_id, case when m.sender_kind = 'guardian' then 'parent' else 'therapist' end, p_user,
+          'message.sent', 'message', m.id::text, jsonb_build_object('thread_id', t.id, 'document_id', m.document_id));
   return jsonb_build_object('result', 'created', 'message', to_jsonb(m));
 end;
 $$;

@@ -66,3 +66,35 @@ messages and PDFs only.
 - Hindi and Telugu strings are drafts awaiting native review (`messages/REVIEW.md`).
 - Docs: `docs/messaging.md` (new, incl. how Realtime RLS is configured for hosted Supabase),
   `docs/system-design.md`, `docs/notifications.md`, `docs/guardian-auth.md`.
+
+## Merge of `main` (024 assessments / published versions, 025 IEP, 041 privacy and audit baseline)
+
+- Conflicts resolved keeping both sides: `lib/notify/topics.ts` / `recipients.ts` (024/041 recipients and topic
+  groups next to `threadMessageRecipients` / `MESSAGE_TOPICS`), `docs/system-design.md`, `messages/*.json`
+  (main's catalogues + `messaging.*` + `caseTabs.messages`; `messages/REVIEW.md` regenerated with
+  `npx tsx scripts/i18n-review.ts`). Case tabs and the dashboard header merged automatically (`Assessments`, `Goals`
+  and `Messages`).
+- **041 privacy registry:** new category `messages` (`message_threads`, `messages`, `thread_reads`) in
+  `lib/privacy/registry.ts`: guardian export = the child's conversations this guardian can open, with the text they
+  see, sender kind, `own`, attachment ids and only their own read marker (another family gets nothing); erasure
+  (`everything`) deletes every organisation's threads of the child and their `thread` outbox events. Privacy notice
+  (`/privacy`): messages added to "what we collect" and the retention table (en/hi/te); `docs/privacy/retention.md`
+  updated.
+- **041 audit:** the four messaging actions (`thread.created`, `message.sent`, `message.deleted`,
+  `thread.archived`) are registered as strict `kind: "sql"` actions in `lib/audit/strict-actions.ts`; the database
+  functions write the audit row themselves (the `message.sent` insert moved from the shared helper into
+  `create_message_thread` / `send_thread_message`, still in the same transaction), the 041 fill trigger attributes
+  `actor_role`, `case_ref`, `org_id`, `child_id` from `actor_user_id`, and `lib/messaging/store.ts` honours
+  `AUDIT_FAIL_ACTIONS` and logs through `lib/log.ts`. Test cleanups never delete audit rows directly: the messaging
+  suites remove only their own synthetic rows through `purgeTestAudit` (`tests/helpers/audit.ts`).
+- New tests: `AUDIT_FAIL_ACTIONS=message.sent` -> 503 and nothing saved, attributed audit row; registry export
+  (own child only) and erasure (rolled back).
+- After `dnm-db.sh 6 <worktree> reset` (all migrations incl. 0024xx, 0025xx, 0041xx): `npm run lint` (exit 0, no
+  warnings), `npm run typecheck` (exit 0), `npx vitest run` 71 files, **1064 passed, 11 skipped** (10 = the opt-in
+  `CT_DB_TESTS` suite, 1 = the opt-in live crawl in `tests/no-tracking.test.ts`; every DB suite ran), messaging suites
+  31 passed (`evidence/vitest-027-verbose.txt`), `tests/audit-hardening.test.ts` green with the new entries,
+  `npm run build` exit 0.
+- E-1 / E-3 re-checked in the headless browser (fresh `seed:users --prefix m027` data): guardian starts a thread,
+  provider's case tab shows it after 15 202 ms (polling), reply reaches the guardian live, banners present; removing
+  provider_a's assignment -> `You no longer have access to this conversation.` after 15 400 ms, new message never
+  shown (`evidence/acceptance.txt`, last section; screenshots refreshed).

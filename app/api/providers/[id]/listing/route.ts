@@ -19,7 +19,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const result = await setListed(id, parsed.data.listed);
   if (!result.ok) return fail(result.status, result.error);
   await audit({
-    actor: "therapist",
     actorUserId: gate.actor.user.id,
     action: parsed.data.listed ? "provider.listed" : "provider.unlisted",
     entity: "provider_profile",

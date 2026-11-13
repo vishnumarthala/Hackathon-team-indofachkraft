@@ -6,6 +6,7 @@ import postgres, { type Sql } from "postgres";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { geocodeLocationFields, getGeocoder, googleGeocoder, lookupLocality, lookupPincode, tableGeocoder, type AddressInput } from "@/lib/geo/geocode";
 import { jsonRequest, params, providerFixtures, type TestUser } from "./helpers/providers";
+import { purgeTestAudit } from "./helpers/audit";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
 const enabled = Boolean(process.env.DATABASE_URL) && process.env.SKIP_DB_TESTS !== "1";
@@ -176,7 +177,7 @@ describe.skipIf(!enabled)("location geocoding through the APIs (database)", { ti
 
   afterAll(async () => {
     session.user = null;
-    if (orgId) await sql`delete from audit_events where action = 'org.location_created' and details ->> 'org_id' = ${orgId}`;
+    if (orgId) await purgeTestAudit(sql, (tx) => tx`delete from audit_events where action = 'org.location_created' and details ->> 'org_id' = ${orgId}`);
     await fx.cleanup();
     await sql.end({ timeout: 5 });
   });

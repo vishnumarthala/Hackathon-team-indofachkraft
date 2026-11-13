@@ -323,13 +323,17 @@ describe("demo folder rules", () => {
 
 describe("seed helpers", () => {
   it("parses seed options", () => {
-    expect(parseArgs([])).toEqual({ isNew: false, confirmed: false, stage: "extracted", noGuardian: false });
+    expect(parseArgs([])).toEqual({ isNew: false, confirmed: false, stage: "extracted", noGuardian: false, finalReport: false });
     expect(parseArgs(["--new", "--confirmed", "--stage", "transcribed"])).toEqual({
       isNew: true,
       confirmed: true,
       stage: "transcribed",
       noGuardian: false,
+      finalReport: false,
     });
+    // 024 FR-6: a final (published) assessment report needs confirmed facts.
+    expect(parseArgs(["--final-report"])).toMatchObject({ finalReport: true, confirmed: true });
+    expect(() => parseArgs(["--final-report", "--stage", "transcribed"])).toThrow();
     expect(parseArgs(["--new", "--no-guardian"])).toMatchObject({ isNew: true, noGuardian: true });
     expect(() => parseArgs(["--stage", "bogus"])).toThrow();
     expect(() => parseArgs(["--nope"])).toThrow();

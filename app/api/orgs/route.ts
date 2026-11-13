@@ -15,7 +15,6 @@ export async function POST(req: Request) {
 
   const org = await createOrganization(userId, parsed.data);
   await audit({
-    actor: "therapist",
     actorUserId: userId,
     action: "org.created",
     entity: "organization",

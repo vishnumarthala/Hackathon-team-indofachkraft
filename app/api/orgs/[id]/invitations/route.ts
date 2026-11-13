@@ -1,4 +1,4 @@
-import { audit } from "@/lib/audit";
+import { auditActorOf, auditFailure } from "@/lib/audit";
 import { requireProviderApi } from "@/lib/authz";
 import { isUuid } from "@/lib/cases/validation";
 import { sendEmail } from "@/lib/email";
@@ -21,7 +21,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const parsed = await parseJson(req, InviteCreateSchema);
   if ("response" in parsed) return parsed.response;
 
-  const { token, invitationId, orgName } = await createInvitation(orgId, userId, parsed.data);
+  let created: Awaited<ReturnType<typeof createInvitation>>;
+  try {
+    created = await createInvitation(orgId, userId, parsed.data, new Date(), auditActorOf(gate.actor.user, gate.actor.role));
+  } catch (err) {
+    return auditFailure(err);
+  }
+  const { token, orgName } = created;
   const url = inviteUrl(env.NEXT_PUBLIC_APP_URL, token);
 
   let emailed = false;
@@ -39,13 +45,5 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     console.error(`invitation email failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 
-  await audit({
-    actor: "therapist",
-    actorUserId: userId,
-    action: "org.invitation_created",
-    entity: "org_invitation",
-    entityId: invitationId,
-    details: { org_id: orgId, org_role: parsed.data.org_role, emailed },
-  });
   return ok({ url, emailed }, 201);
 }

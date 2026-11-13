@@ -14,6 +14,7 @@ import { messagingErrorKey, mergeMessages } from "@/components/messaging/client"
 import { startThreadSync, type Subscribe } from "@/components/messaging/threadSync";
 import { DELETED_BODY } from "@/lib/messaging/constants";
 import type { MessageView } from "@/lib/messaging/types";
+import { purgeTestAudit } from "./helpers/audit";
 import { buildMessagingWorld, familyDocument, providerDocument, purgeThreadEvents, type MessagingWorld } from "./helpers/messaging";
 import { createWorld, ctx, post, type TestUser } from "./helpers/world";
 
@@ -250,8 +251,14 @@ describe.skipIf(!enabled)("messaging API (database)", { timeout: 180_000 }, () =
   afterAll(async () => {
     vi.restoreAllMocks();
     if (world) {
-      await purgeThreadEvents(sql, [w.caseA, w.caseB, w.caseNoGuardian]);
+      const cases = [w.caseA, w.caseB, w.caseNoGuardian];
+      await purgeThreadEvents(sql, cases);
       await world.cleanup();
+      // 041: audit rows survive case deletion and are append-only; remove this suite's synthetic messaging rows
+      // through the documented maintenance path.
+      await purgeTestAudit(sql, (tx) => tx`
+        delete from audit_events where case_ref in ${tx(cases)}
+          and action in ('thread.created', 'message.sent', 'message.deleted', 'thread.archived')`);
     }
     await sql?.end({ timeout: 5 });
   });
@@ -552,6 +559,49 @@ describe.skipIf(!enabled)("messaging API (database)", { timeout: 180_000 }, () =
       select n.body, n.title from notifications n join outbox_events e on e.id = n.event_id
       where e.aggregate_type = 'thread' and e.aggregate_id = ${thread.id}`;
     for (const n of all) expect(`${n.title} ${n.body}`).not.toContain(SECRET);
+  });
+
+  it("041: AUDIT_FAIL_ACTIONS hook -> 503 and nothing saved; audit rows are attributed by the 041 trigger", async () => {
+    const { thread } = await newThread(w.guardianA, "t027 audit hook");
+    vi.stubEnv("AUDIT_FAIL_ACTIONS", "message.sent");
+    try {
+      const res = await send(w.assignedA, thread.id, { body: "blocked (synthetic)", client_id: cid() });
+      expect(res.status).toBe(503);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+    expect((await sql`select id from messages where thread_id = ${thread.id} and body = 'blocked (synthetic)'`).length).toBe(0);
+    expect((await send(w.assignedA, thread.id, { body: "allowed (synthetic)", client_id: cid() })).status).toBe(201);
+    const [row] = await sql<{ actor_role: string; org_id: string; child_id: string; case_ref: string }[]>`
+      select actor_role, org_id, child_id, case_ref from audit_events
+      where action = 'message.sent' and actor_user_id = ${w.assignedA.id} and details ->> 'thread_id' = ${thread.id}`;
+    expect(row).toEqual({ actor_role: "provider", org_id: w.orgA, child_id: w.childId, case_ref: w.caseA });
+  });
+
+  it("041 privacy registry: guardian export holds only their child's threads; erasure removes every org's threads", async () => {
+    const { REGISTRY } = await import("@/lib/privacy/registry");
+    const category = REGISTRY.find((c) => c.key === "messages");
+    expect(category?.tables).toEqual(["message_threads", "messages", "thread_reads"]);
+    const mine = (await category!.export!({ sql, childId: w.childId, guardianUserId: w.guardianA.id }))?.data as {
+      id: string; subject: string; org_name: string; last_read_at: string | null; messages: { body: string; own: boolean; sender_kind: string }[];
+    }[];
+    const sleep = mine.find((t) => t.subject === "t027 Sleep question");
+    expect(sleep?.messages[0]).toMatchObject({ body: SECRET, own: true, sender_kind: "guardian" });
+    expect(sleep?.org_name).toContain("Centre A");
+    expect(mine.find((t) => t.subject === "t027 delete")?.messages.some((m) => m.body === DELETED_BODY)).toBe(true);
+    // Another family (not linked) gets nothing, even with this child's id.
+    expect((await category!.export!({ sql, childId: w.childId, guardianUserId: w.guardianB.id }))?.data).toEqual([]);
+
+    const rollback = new Error("rollback");
+    await expect(
+      sql.begin(async (tx) => {
+        const n = await category!.erase!.rows!(tx, { childId: w.childId, requestId: crypto.randomUUID(), scope: "everything", requestedBy: w.guardianA.id, caseIds: [w.caseA, w.caseB] });
+        expect(n).toBe(mine.length);
+        expect((await tx`select id from message_threads where child_id = ${w.childId}`).length).toBe(0);
+        expect((await tx`select id from outbox_events where aggregate_type = 'thread' and aggregate_id in ${tx(mine.map((t) => t.id))}`).length).toBe(0);
+        throw rollback;
+      }),
+    ).rejects.toBe(rollback);
   });
 
   it("E-5 / NFR-3: audit rows and logs never contain message text", async () => {

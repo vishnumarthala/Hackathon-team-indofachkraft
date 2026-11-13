@@ -1,0 +1,16 @@
+# E-1.3 / FR-1 / FR-3 backfill on a database that already had data (slot 4, base migrations only):
+# npm run -s seed:demo -- --confirmed, plus one legacy final `assessment` and one final `parent_summary` report,
+# then the two 024 migrations applied on top with `npm run -s db:sql -- "$(cat <migration>)"`.
+
+before:  select count(*) filter (where status='final') from reports           -> [{"final_reports":"2"}]
+apply:   20261113002400_clinical_contracts.sql                                  -> backfill_published_reports = 2
+apply:   20261113002401_assessments.sql                                         -> ok
+check:   per final report: versions | content_md equal | visible_to_guardian | content_hash = sha256(content_md)
+         assessment      1 | true | false | true
+         parent_summary  1 | true | true  | true
+re-run:  20261113002400_clinical_contracts.sql again                            -> backfill_published_reports = 0 (idempotent)
+append-only: update published_versions set visible_to_guardian = true          -> ERROR published_versions is append-only
+             delete from published_versions                                     -> ERROR published_versions is append-only
+FK:      insert into facts (... instrument 'MCHAT' ...)                         -> ERROR violates foreign key constraint "facts_instrument_fkey"
+         facts constraints like 'facts_instrument%'                            -> only facts_instrument_fkey (old check dropped)
+cascade: npm run -s seed:demo (deletes + re-creates the canonical case)         -> published_versions count 0 (removed with the case)

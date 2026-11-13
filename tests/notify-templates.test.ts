@@ -22,11 +22,16 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "home_program.published": { program_id: ID, child_id: CHILD },
   "assessment.assigned": { assessment_id: ID, child_id: CHILD },
   "assessment.red_flag": { assessment_id: ID, child_id: CHILD, case_id: CASE },
+  "assessment.submitted": { assessment_id: ID, child_id: CHILD, case_id: CASE },
   "sharing.granted": { grant_id: ID, child_id: CHILD, source_org_id: ID, grantee_org_id: USER, grantee_case_id: CASE },
   "provider.verified": { provider_profile_id: ID, submission_id: ID },
   "provider.rejected": { provider_profile_id: ID, submission_id: ID },
   "provider.suspended": { provider_profile_id: ID },
   "provider.claimed": { provider_profile_id: ID },
+  "privacy.export_ready": { export_id: ID, child_id: CHILD },
+  "privacy.deletion_requested": { request_id: ID, child_id: CHILD },
+  "privacy.deletion_completed": { request_id: ID },
+  "privacy.deletion_rejected": { request_id: ID, child_id: CHILD },
 };
 
 const topics = Object.entries(TOPICS) as [keyof typeof TOPICS, (typeof TOPICS)[keyof typeof TOPICS]][];
@@ -55,6 +60,7 @@ describe("topic registry", () => {
       [
         "assessment.assigned",
         "assessment.red_flag",
+        "assessment.submitted",
         "document.shared_with_guardian",
         "home_program.published",
         "iep.published",
@@ -65,6 +71,10 @@ describe("topic registry", () => {
         "provider.verified",
         "sharing.granted",
         "test.ping",
+        "privacy.export_ready",
+        "privacy.deletion_requested",
+        "privacy.deletion_completed",
+        "privacy.deletion_rejected",
       ].sort(),
     );
     for (const [, def] of topics) expect(TEMPLATES[def.template]).toBeDefined();

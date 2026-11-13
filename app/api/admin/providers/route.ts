@@ -29,7 +29,6 @@ export async function POST(req: Request) {
   const result = await seedProvider(gate.actor.user.id, input);
   if (!result.ok) return fail(result.status, result.error);
   await audit({
-    actor: "system",
     actorUserId: gate.actor.user.id,
     action: "provider.seeded",
     entity: "provider_profile",

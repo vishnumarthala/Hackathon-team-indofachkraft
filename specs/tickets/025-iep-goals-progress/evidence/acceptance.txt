@@ -1,0 +1,62 @@
+# Ticket 025 acceptance: scripted API/HTML run against the dev server (:3040, DEMO_MODE=true, slot-4 stack after
+# `db reset` with all 17 migrations; `seed:users -- --prefix acct --extra-member`). Script: .tmp/acceptance-025.ts (not
+# committed; signs in with the seeded passwords and calls the real routes/pages). Synthetic data only. 2026-11-13T01:46:42Z
+
+## setup: guardian_a's child with an org A case (provider_a lead) and an org B case
+PASS guardian_a adds child Asha :: 201
+PASS provider_a creates org A case, provider_b creates org B case :: [201,201]
+
+## E-4.2 (part) unassigned member before assignment
+PASS E-4.2 provider_a2 (unassigned member of org A) -> 404 on the case plans API :: 404
+PASS org_admin_a assigns provider_a2 to the org A case :: 201
+
+## E-1 create, publish, view
+PASS provider_a Goals tab renders with `Create a plan` :: 200
+PASS E-1.1 create plan `acct Term 1` -> 201 draft v1 :: {"plan":{"id":"094caab7-71f4-4765-abfe-339944fd15aa","case_id":"0c7dee9c-e677-4f3e-a1b4-80695055d71e","child_id":"91dc97e6-d434-4003-b0d2-6826c07c5a0e","org_id":"e67a8bc5-375a-448e-be7d-4f7dd6d1f977","title":"acct Term 1","start_date":"2026-11-13","review_date":"2027-05-12","status":"draft","version":1,"created_by":"abed2812-2497-4979-9f1a-228a4ba56b4f","created_at":"2026-11-13T01:46:44.309Z",
+PASS E-1.1 goal without `Measurable` -> 400 validation error :: {"error":"Invalid request","details":{"measurable":"Measurable is required"}}
+PASS E-1.1 add goal (Communication, all SMART fields, count, baseline 1, target 5, target date in 3 months) -> 201 :: {"domain":"communication","measure_type":"count","baseline":1,"target":5,"target_date":"2027-02-11"}
+PASS E-1.2 Goals tab shows `Publish to parent`
+PASS E-1.2 Publish to parent -> 200 { published_version: 1 } :: 1
+PASS E-1.2 outbox `iep.published` committed with the publish (payload ids only) :: [{"topic":"iep.published","payload":{"case_id":"0c7dee9c-e677-4f3e-a1b4-80695055d71e","plan_id":"094caab7-71f4-4765-abfe-339944fd15aa","child_id":"91dc97e6-d434-4003-b0d2-6826c07c5a0e"},"status":"pending"}]
+PASS E-1.2 fanned out to guardian_a (drainSoon), link to the plan page :: [{"channel":"email","status":"sent","link":"/family/children/91dc97e6-d434-4003-b0d2-6826c07c5a0e/plan","to_guardian_a":true},{"channel":"in_app","status":"sent","link":"/family/children/91dc97e6-d434-4003-b0d2-6826c07c5a0e/plan","to_guardian_a":true},{"channel":"whatsapp","status":"skipped","link":"/family/children/91dc97e6-d434-4003-b0d2-6826c07c5a0e/plan","to_guardian_a":true}]
+PASS E-1.2 guardian_a /family/children/<id>/plan shows the plan text :: 
+PASS E-1.3 provider_a edits the goal statement (not republished) -> 200 :: 200
+PASS E-1.3 badge `Unpublished changes` and `Publish changes`
+PASS E-1.3 guardian still sees the old text, not the draft
+PASS NFR-1 guardian API response has no draft text :: 200
+PASS E-1.3 republish -> published_version 2 :: 2
+PASS E-1.3 guardian now sees the new text
+PASS E-1.3 published_versions has versions 1 and 2 :: [1,2]
+
+## E-2 progress
+PASS E-2 record value 1 on 2026-10-30 -> 201 :: {"latest":1,"change_from_baseline":0,"percent_to_target":0,"on_track":null}
+PASS E-2 record value 2 on 2026-10-31 -> 201 :: {"latest":2,"change_from_baseline":1,"percent_to_target":25,"on_track":true}
+PASS E-2 record value 3 on 2026-11-01 -> 201 :: {"latest":3,"change_from_baseline":2,"percent_to_target":50,"on_track":true}
+PASS E-2 future date -> 400 :: {"error":"Invalid request","details":{"observed_on":"The date cannot be in the future"}}
+PASS E-2 provider chart: 3 points + baseline and target lines
+PASS E-2 provider: `On track` text and `Show data` table with 1, 2, 3 (+ note)
+PASS E-2 guardian chart: 3 points + baseline and target lines
+PASS E-2 guardian: `On track`, `Show data` table lists 1, 2, 3; notes not shown
+
+## E-3 concurrent edit
+PASS E-3 provider_a saves from version 5 -> 200 :: 200
+PASS E-3 provider_a2 saves from the same version -> 409 with the reload message :: {"error":"This plan was changed by someone else. Reload to see the latest version.","details":{"version":6}}
+
+## E-4 authz negatives
+PASS E-4.1 provider_b reads org A's plan API -> 404 :: {"error":"Plan not found"}
+PASS E-4.1 before a grant: nothing shared
+PASS E-4.1 guardian_a grants `iep` from org A to org B -> 201 :: 201
+PASS E-4.1 provider_b `Shared with us` lists the plan :: Shared with us Shared with us Records that the child's parent has shared with your organisation from their other providers. Read only. From acct Centre A (synthetic) Shared until the parent stops it Goals (IEP) acct Term 1 · 13 Nov 2026 Open 
+PASS E-4.1 provider_b opens it read-only: published text + progress table :: 200
+PASS E-4.1 audit sharing.viewed :: {"n":1}
+PASS E-4.1 provider_b PATCH plan/goal with the grant -> 404 :: [404,404]
+PASS E-4.2 guardian_b -> 404 on the plan API and page :: [404,404]
+PASS E-4.2 unassigned member (provider_a2 after removal) -> 404 :: 404
+PASS E-4.3 guardian on provider plan APIs -> 403 :: [403,403,403]
+PASS anonymous -> 401 :: 401
+
+## empty state
+PASS FR-6 empty state
+
+ALL PASS (42 checks passed)
+{"childId":"91dc97e6-d434-4003-b0d2-6826c07c5a0e","caseAId":"0c7dee9c-e677-4f3e-a1b4-80695055d71e","caseBId":"667bd7a6-e872-4b6a-bd1e-b2c9ff44ac85","planId":"094caab7-71f4-4765-abfe-339944fd15aa","goalId":"7520efb2-14d2-4f03-b1ae-9f2e05a8c071"}
