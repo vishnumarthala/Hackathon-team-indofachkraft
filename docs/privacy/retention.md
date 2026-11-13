@@ -16,10 +16,12 @@ effect.
 | Guardian data exports (`exports` bucket) | Deleted 7 days after they are ready (`status = expired`) | `expired_exports` | `RETENTION_EXPORT_DAYS` (7) |
 | In-app notifications | Deleted after 180 days | `in_app_notifications` | `RETENTION_IN_APP_NOTIFICATION_DAYS` (180) |
 | Email / WhatsApp delivery rows | `title` / `body` stripped after 90 days (date, status, channel stay) | `delivery_content` | `RETENTION_DELIVERY_CONTENT_DAYS` (90) |
+| Public developmental check-ins not saved to a child (`screen_sessions`, 033) | Deleted **30 days** after they started; check-ins saved to a child (consent `screen_result_save`) stay with the child until erasure | `unsaved_screen_sessions` | - |
 | Website pilot sign-ups (`pilot_signups`) | Deleted after 24 months | `pilot_signups` | `RETENTION_PILOT_SIGNUP_MONTHS` (24) |
 | Audit events | Kept **7 years**, then deleted by `audit_purge_expired()` (refuses anything younger than 1 year) | `audit_events` | `RETENTION_AUDIT_YEARS` (7) |
 | Consent records (020) and signed paper forms | Kept (legal proof of consent), also after erasure, with free text stripped | - | - |
 | Appointments (030: `appointments`, `appointment_events`) | Kept as the provider's appointment record (period pending legal review). Erasure (`everything`): future appointments cancelled (provider notified), the child removed from every appointment (`booking_erase_child`) | - | - |
+| Payments (031: `payments`, `payment_events`) | Kept as a financial record (period pending legal review; Indian accounting rules usually require 8 years), also after erasure (`retainedOnErasure`). Amounts, statuses and Razorpay ids only; no child data, no card/UPI details (webhook payloads allowlisted). Export: the requesting guardian's payments for the child's appointments | - | - |
 | Messages with the care team (027: `message_threads`, `messages`, `thread_reads`) | Kept with the clinical record of the case; a deleted message's text is overwritten at once; removed with the child's threads (every organisation) and their outbox events on erasure | - | - |
 | Clinical records (cases, transcripts, confirmed facts, final reports) | Kept while the child is in care and as long as the law requires the clinic to keep them; erasure is reviewed (D-5) | - | - |
 

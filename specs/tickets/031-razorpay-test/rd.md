@@ -1,6 +1,6 @@
 # 031: Razorpay payments (test mode)
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 030: pays for `pending_payment` appointments
 

@@ -7,6 +7,8 @@ import { GUARDIAN_CANCEL_WINDOW_MINUTES } from "@/lib/booking/slots";
 import { listGuardianAppointments, type AppointmentView } from "@/lib/booking/store";
 import { getMeetInfo } from "@/lib/google/meet";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { PAYMENT_LABEL_STYLE, paymentHoldOpen, paymentLabel } from "@/lib/payments/display";
+import { listPaymentsForAppointments } from "@/lib/payments/store";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +28,9 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
   const format = await getFormatter();
   const { moved } = await searchParams;
   const all = await listGuardianAppointments(user.id);
+  // 031 FR-8: payment status next to the appointment status.
+  const tp = await getT("payments");
+  const payments = await listPaymentsForAppointments(all.map((a) => a.id));
   const { upcoming, past } = splitAppointments(all);
   // 037: Meet link state of the guardian's own video appointments (Join video call inside the join window).
   const meet = await getMeetInfo(upcoming.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
@@ -34,6 +39,8 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
     const snap = a.service_snapshot;
     const clinic = snap.mode === "in_clinic" ? clinicTimeIfDifferent(a.starts_at, format.locale, format.timeZone, snap.location?.time_zone ?? snap.time_zone) : null;
     const changeable = actions && guardianCanChange(a, GUARDIAN_CANCEL_WINDOW_MINUTES);
+    const pay = paymentLabel(a, payments.get(a.id), "guardian");
+    const payable = paymentHoldOpen(a);
     return (
       <li key={a.id} className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
         <div className="flex flex-wrap items-start justify-between gap-2">
@@ -53,17 +60,29 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
             </p>
             {a.child_name ? <p className="text-sm text-slate-700">{t("list.forChild", { child: a.child_name })}</p> : null}
           </div>
-          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLE[a.status] ?? "bg-slate-100 text-slate-700"}`}>
-            {a.status === "cancelled" && a.cancel_reason === "rescheduled"
-              ? t("list.movedTo")
-              : a.status === "cancelled" && a.cancelled_by
-                ? t(`list.cancelledBy.${a.cancelled_by}`)
-                : t(`status.${a.status}`)}
-          </span>
+          <div className="flex flex-wrap gap-1">
+            <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLE[a.status] ?? "bg-slate-100 text-slate-700"}`}>
+              {a.status === "cancelled" && a.cancel_reason === "rescheduled"
+                ? t("list.movedTo")
+                : a.status === "cancelled" && a.cancelled_by
+                  ? t(`list.cancelledBy.${a.cancelled_by}`)
+                  : t(`status.${a.status}`)}
+            </span>
+            {pay ? (
+              <span data-testid="payment-label" className={`rounded-full px-3 py-1 text-xs font-semibold ${PAYMENT_LABEL_STYLE[pay]}`}>
+                {tp(`labels.${pay}`)}
+              </span>
+            ) : null}
+          </div>
         </div>
         {actions && snap.mode === "video" ? <MeetPanel appointment={a} meet={meet.get(a.id)} side="guardian" /> : null}
         {actions && (a.status === "confirmed" || a.status === "pending_payment") ? (
           <div className="flex flex-wrap items-center gap-2">
+            {actions && payable ? (
+              <Link href={`/book/${a.provider_profile_id}/pay/${a.id}`} className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700">
+                {tp("list.payNow")}
+              </Link>
+            ) : null}
             {a.status === "confirmed" ? (
               <a href={`/api/appointments/${a.id}/ics`} className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-4 text-sm font-medium text-slate-800 hover:bg-slate-50">
                 {t("list.addToCalendar")}

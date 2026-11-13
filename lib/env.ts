@@ -41,6 +41,11 @@ export const env = {
   get ELEVENLABS_AGENT_ID() {
     return required("ELEVENLABS_AGENT_ID");
   },
+  // 033: the English-only public developmental check-in agent (docs/elevenlabs-screen-agent.md). Optional: without
+  // it (and outside DEMO_MODE) `/screen` offers only the tap-through form.
+  get ELEVENLABS_SCREEN_AGENT_ID() {
+    return read("ELEVENLABS_SCREEN_AGENT_ID");
+  },
   get ELEVENLABS_WEBHOOK_SECRET() {
     return required("ELEVENLABS_WEBHOOK_SECRET");
   },
@@ -123,6 +128,17 @@ export const env = {
   },
   get RETENTION_AUDIO_DAYS() {
     return read("RETENTION_AUDIO_DAYS");
+  },
+  // 031: Razorpay (test mode only; lib/payments/razorpay.ts refuses any key id that does not start with rzp_test_).
+  // Optional with DEMO_MODE=true (the demo gateway simulates payments); required for real test-mode checkout.
+  get RAZORPAY_KEY_ID() {
+    return read("RAZORPAY_KEY_ID");
+  },
+  get RAZORPAY_KEY_SECRET() {
+    return read("RAZORPAY_KEY_SECRET");
+  },
+  get RAZORPAY_WEBHOOK_SECRET() {
+    return read("RAZORPAY_WEBHOOK_SECRET");
   },
   /** Dev/test hook (lib/audit.ts `auditWouldFail`); ignored in production builds. */
   get AUDIT_FAIL_ACTIONS() {

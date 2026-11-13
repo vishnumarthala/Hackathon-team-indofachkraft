@@ -83,6 +83,8 @@ export function bookingWorld(sql: Sql, db: Db, prefix: string) {
         // 037: Meet jobs and Meet notifications carry the appointment id in the payload under their own aggregate types.
         await sql`delete from outbox_events where (aggregate_type = 'appointment' and aggregate_id in ${sql(ids)}) or payload ->> 'appointment_id' in ${sql(ids)}`;
         await purgeTestAudit(sql, (tx) => tx`delete from audit_events where entity = 'appointment' and entity_id in ${tx(ids)}`);
+        // 031: payments block appointment deletes.
+        await sql`delete from payments where appointment_id in ${sql(ids)}`;
         await sql`delete from appointments where id in ${sql(ids)}`;
       }
       await purgeTestAudit(sql, (tx) => tx`delete from audit_events where entity in ('service', 'availability_rule', 'availability_override') and actor_user_id in (select user_id from provider_profiles where id in ${tx(profiles)})`);

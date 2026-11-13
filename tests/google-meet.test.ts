@@ -12,6 +12,7 @@ import { decryptSecret, encryptSecret, openJson, parseEncryptionKey, refreshToke
 import { EVENT_PROPERTY, EVENT_SUMMARY, eventBody } from "@/lib/google/client";
 import { joinState, normalizeMeetUrl } from "@/lib/google/meet";
 import { checkOAuthState, startOAuth } from "@/lib/google/oauth";
+import { purgeTestAudit } from "./helpers/audit";
 import { bookingWorld, futureSlot, key, type TestProvider } from "./helpers/booking";
 import { ctx, post, type TestUser } from "./helpers/world";
 
@@ -264,6 +265,7 @@ describe.skipIf(!enabled)("Google Meet (database, route handlers, outbox worker,
   let providerB: TestProvider;
   let videoA: string;
   let clinicA: string;
+  let paidVideoA: string;
   let guardianA: { user: TestUser; childId: string };
   let guardianB: { user: TestUser; childId: string };
   const logs: string[] = [];
@@ -277,6 +279,9 @@ describe.skipIf(!enabled)("Google Meet (database, route handlers, outbox worker,
     confirm: typeof import("@/app/api/appointments/[id]/confirm/route");
     cancel: typeof import("@/app/api/appointments/[id]/cancel/route");
     reschedule: typeof import("@/app/api/appointments/[id]/reschedule/route");
+    order: typeof import("@/app/api/appointments/[id]/payment-order/route");
+    payDemo: typeof import("@/app/api/payments/demo/route");
+    verify: typeof import("@/app/api/payments/verify/route");
   };
   let runOutbox: typeof import("@/lib/notify/worker").runOutbox;
 
@@ -340,6 +345,9 @@ describe.skipIf(!enabled)("Google Meet (database, route handlers, outbox worker,
     vi.stubEnv("GOOGLE_OAUTH_CLIENT_ID", CLIENT_ID);
     vi.stubEnv("GOOGLE_OAUTH_CLIENT_SECRET", CLIENT_SECRET);
     vi.stubEnv("NEXT_PUBLIC_APP_URL", APP);
+    // 031 demo gateway (DEMO_MODE without a Razorpay key id); the secret signs the demo checkout response.
+    vi.stubEnv("RAZORPAY_KEY_ID", "");
+    vi.stubEnv("RAZORPAY_KEY_SECRET", "t037-razorpay-secret");
     vi.stubGlobal("fetch", fakeFetch);
     for (const level of ["log", "info", "warn", "error"] as const) {
       vi.spyOn(console, level).mockImplementation((...args: unknown[]) => void logs.push(args.map(String).join(" ")));
@@ -351,6 +359,7 @@ describe.skipIf(!enabled)("Google Meet (database, route handlers, outbox worker,
     providerB = await world.provider("pb");
     videoA = await world.service(providerA, { mode: "video", duration: 30, payment: "free" });
     clinicA = await world.service(providerA, { duration: 30, payment: "free" });
+    paidVideoA = await world.service(providerA, { mode: "video", duration: 30, payment: "online", fee: 600 });
     guardianA = await world.guardian("ga");
     guardianB = await world.guardian("gb");
     routes = {
@@ -363,6 +372,9 @@ describe.skipIf(!enabled)("Google Meet (database, route handlers, outbox worker,
       confirm: await import("@/app/api/appointments/[id]/confirm/route"),
       cancel: await import("@/app/api/appointments/[id]/cancel/route"),
       reschedule: await import("@/app/api/appointments/[id]/reschedule/route"),
+      order: await import("@/app/api/appointments/[id]/payment-order/route"),
+      payDemo: await import("@/app/api/payments/demo/route"),
+      verify: await import("@/app/api/payments/verify/route"),
     };
     ({ runOutbox } = await import("@/lib/notify/worker"));
   });
@@ -377,6 +389,15 @@ describe.skipIf(!enabled)("Google Meet (database, route handlers, outbox worker,
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
+    if (sql && providerA) {
+      const pays = await sql<{ id: string }[]>`
+        select p.id from payments p join appointments a on a.id = p.appointment_id where a.provider_profile_id = ${providerA.profileId}`;
+      if (pays.length) {
+        const ids = pays.map((p) => p.id);
+        await sql`delete from outbox_events where aggregate_type = 'payment' and aggregate_id in ${sql(ids)}`;
+        await purgeTestAudit(sql, (tx) => tx`delete from audit_events where entity = 'payment' and entity_id in ${tx(ids)}`);
+      }
+    }
     await world?.cleanup();
     await sql?.end({ timeout: 5 });
   });
@@ -588,6 +609,31 @@ describe.skipIf(!enabled)("Google Meet (database, route handlers, outbox worker,
     // Reconnecting makes it active again.
     google.failRefresh = false;
     expect((await connect(providerA)).back.res.headers.get("location")).toContain("connected=1");
+  });
+
+  it("031: a paid video appointment gets its Meet event only after payment capture", async () => {
+    as(guardianA.user);
+    const h = await hold(paidVideoA, futureSlot(62));
+    expect(h.status, JSON.stringify(h.json)).toBe(201);
+    const id = h.json.appointment_id as string;
+    const c = await confirm(id, guardianA.childId);
+    expect((c.json.appointment as Json).status).toBe("pending_payment");
+    expect(await jobAttempts(id)).toEqual([]); // no Meet before payment
+    expect((await appointment(id)).meet_status).toBeNull();
+    const o = await call(routes.order.POST, post(`http://localhost/api/appointments/${id}/payment-order`), { id });
+    expect(o.status, JSON.stringify(o.json)).toBe(200);
+    const d = await call(routes.payDemo.POST, post("http://localhost/api/payments/demo", { appointment_id: id, outcome: "success" }));
+    expect(d.status, JSON.stringify(d.json)).toBe(200);
+    const v = await call(routes.verify.POST, post("http://localhost/api/payments/verify", d.json));
+    expect(v.status, JSON.stringify(v.json)).toBe(200);
+    expect(v.json).toMatchObject({ appointment_status: "confirmed", payment_status: "captured" });
+    // Capture emits 030's appointment.confirmed (booking_enqueue_confirmed) -> meet.create in the same transaction.
+    expect(await jobAttempts(id)).toMatchObject([{ topic: "meet.create", status: "pending" }]);
+    expect((await appointment(id)).meet_status).toBe("pending");
+    await runMeetJobs(id);
+    expect(await appointment(id)).toMatchObject({ status: "confirmed", meet_status: "created" });
+    expect(eventsFor(id)).toHaveLength(1);
+    expect(JSON.parse(google.calendar("POST")[0].body)).not.toHaveProperty("attendees");
   });
 
   it("E-2 disconnect revokes and deletes; next booking fails -> manual Meet link (non-Meet 400, provider_b 404)", async () => {

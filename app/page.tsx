@@ -36,6 +36,7 @@ const AUDIENCE_ICONS = {
 
 export default async function Home() {
   const t = await getT("landing");
+  const ts = await getT("screen.landing");
 
   // Pitch deck slide 1 (sources listed under the section).
   const problemStats = ([1, 2, 3, 4] as const).map((n, i) => ({
@@ -128,6 +129,23 @@ export default async function Home() {
             <p className="text-xs text-slate-500">{t("problem.sources")}</p>
           </Reveal>
         </div>
+      </section>
+
+      {/* ---------- 033: PARENT DEVELOPMENTAL CHECK-IN ---------- */}
+      <section id="check-in" aria-labelledby="check-in-title" className="scroll-mt-20 bg-white px-4 pb-16 sm:px-6">
+        <Reveal className="mx-auto grid w-full max-w-6xl gap-6 rounded-3xl bg-teal-50 p-7 ring-1 ring-teal-200 sm:p-10 lg:grid-cols-[1.4fr_auto] lg:items-center">
+          <div>
+            <Eyebrow>{ts("eyebrow")}</Eyebrow>
+            <h2 id="check-in-title" className="lp-display text-4xl leading-[1.05] text-[#0b1f1d] sm:text-5xl">
+              {ts("title")}
+            </h2>
+            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-slate-700">{ts("text")}</p>
+          </div>
+          <ButtonLink href="/screen" className="min-h-14 text-base">
+            {ts("cta")}
+            <Arrow />
+          </ButtonLink>
+        </Reveal>
       </section>
 
       {/* ---------- STEP 1: THE AI INTAKE CALL ---------- */}

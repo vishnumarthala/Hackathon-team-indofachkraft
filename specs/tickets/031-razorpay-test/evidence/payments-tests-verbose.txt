@@ -1,0 +1,100 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/031
+
+ ✓ tests/razorpay-signature.test.ts > checkout signature (FR-4) > is HMAC_SHA256(order_id|payment_id, key_secret) in hex 1ms
+ ✓ tests/razorpay-signature.test.ts > checkout signature (FR-4) > accepts the valid signature 0ms
+ ✓ tests/razorpay-signature.test.ts > checkout signature (FR-4) > rejects a tampered payment id, order id or signature 0ms
+ ✓ tests/razorpay-signature.test.ts > checkout signature (FR-4) > rejects a signature made with another secret 0ms
+ ✓ tests/razorpay-signature.test.ts > checkout signature (FR-4) > compares in constant time (crypto.timingSafeEqual) 0ms
+ ✓ tests/razorpay-signature.test.ts > webhook signature (FR-5) > accepts HMAC_SHA256(raw body, webhook secret) 0ms
+ ✓ tests/razorpay-signature.test.ts > webhook signature (FR-5) > rejects a tampered body (even whitespace) 0ms
+ ✓ tests/razorpay-signature.test.ts > webhook signature (FR-5) > rejects the wrong secret, a missing signature and a missing secret 0ms
+ ✓ tests/razorpay-signature.test.ts > webhook signature (FR-5) > compares in constant time (crypto.timingSafeEqual) 0ms
+ ✓ tests/razorpay-signature.test.ts > test mode only (D-1) > rejects rzp_live_ keys everywhere 1ms
+ ✓ tests/razorpay-signature.test.ts > test mode only (D-1) > razorpaySettings refuses a live key even in DEMO_MODE 0ms
+ ✓ tests/razorpay-signature.test.ts > test mode only (D-1) > the server refuses to start with a live key (instrumentation register) 0ms
+ ✓ tests/razorpay-signature.test.ts > test mode only (D-1) > outside DEMO_MODE the keys are required; DEMO_MODE uses the demo gateway with a test-shaped key id 1ms
+ ✓ tests/razorpay-signature.test.ts > demo gateway > returns deterministic Razorpay-shaped ids and processes refunds at once 0ms
+ ✓ tests/razorpay-signature.test.ts > Razorpay HTTP client (mocked fetch) > creates orders with basic auth and maps errors (retryable for 5xx / network) 9ms
+ ✓ tests/razorpay-signature.test.ts > webhook payload stripping (NFR-1) > keeps ids, amounts and statuses; drops card, VPA, bank, wallet, email, phone and notes 0ms
+ ✓ tests/razorpay-signature.test.ts > webhook payload stripping (NFR-1) > parses refunds and failures; rejects non-events 0ms
+ ✓ tests/razorpay-signature.test.ts > checkout script allowed on the payment route only (grill Q3, 041) > adds Razorpay to script-src, frame-src and connect-src on /book/<profile>/pay/<appointment> 0ms
+ ✓ tests/razorpay-signature.test.ts > checkout script allowed on the payment route only (grill Q3, 041) > keeps every other booking and family page free of it 0ms
+ ✓ tests/razorpay-signature.test.ts > checkout script allowed on the payment route only (grill Q3, 041) > the 041 allowlist agrees 0ms
+ ✓ tests/razorpay-signature.test.ts > payment labels (FR-8) > guardian: Paid / Payment pending / Refunded; provider: Paid online / Pay at clinic 0ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > payment order (FR-3) and authz (E-5) > creates one order per appointment: amount = fee * 100, key id rzp_test_, prefill name; repeat -> same order 97ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > payment order (FR-3) and authz (E-5) > guardian_b -> 404 for guardian_a's appointment (order, demo, verify); anonymous 401 39ms
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > E-1: demo success -> verify -> appointment confirmed, payment captured, confirmation enqueued; webhook replay -> duplicate
+[payments.webhook] webhook processed {"event":"payment.captured","outcome":"already_captured"}
+
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > payment order (FR-3) and authz (E-5) > a confirmed free appointment -> 409; an expired one -> 410 42ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > E-1: demo success -> verify -> appointment confirmed, payment captured, confirmation enqueued; webhook replay -> duplicate 47ms
+stderr | tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > a wrong checkout signature -> 400 and nothing changes
+[payments.verify] checkout signature mismatch {"payment":"6908ccd1-dce5-4668-b56d-1c7cd5425989"}
+
+stderr | tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > a wrong checkout signature -> 400 and nothing changes
+[payments.verify] checkout signature mismatch {"payment":"6908ccd1-dce5-4668-b56d-1c7cd5425989"}
+
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > a wrong checkout signature -> 400 and nothing changes 28ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > apply_payment_captured called 3x -> one capture, one confirmation, one outbox event 25ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > concurrent captures (5 connections) -> exactly one confirmation 32ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > demo failure -> payment failed; the next order request reuses the same order; then success confirms 37ms
+stderr | tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > strict audit (041): an audit failure on payment.captured -> 503 and nothing changes
+[audit] Audit write failed for payment.captured: AUDIT_FAIL_ACTIONS test hook
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > payment.captured webhook confirms; unknown event types and unknown orders -> 200 ignored; missing event id -> 400
+[payments.webhook] webhook processed {"event":"payment.captured","outcome":"confirmed"}
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > payment.captured webhook confirms; unknown event types and unknown orders -> 200 ignored; missing event id -> 400
+[payments.webhook] webhook processed {"event":"settlement.processed","outcome":"ignored"}
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > payment.captured webhook confirms; unknown event types and unknown orders -> 200 ignored; missing event id -> 400
+[payments.webhook] webhook processed {"event":"payment.captured","outcome":"unknown_order"}
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > payment.authorized records the payment; payment.failed marks the attempt failed (appointment keeps waiting)
+[payments.webhook] webhook processed {"event":"payment.authorized","outcome":"authorized"}
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > payment.authorized records the payment; payment.failed marks the attempt failed (appointment keeps waiting)
+[payments.webhook] webhook processed {"event":"payment.failed","outcome":"failed"}
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > a captured amount different from the order -> refund, appointment not confirmed
+[payments.webhook] webhook processed {"event":"payment.captured","outcome":"refund_amount_mismatch"}
+
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > checkout (FR-4) and the capture path (FR-6) > strict audit (041): an audit failure on payment.captured -> 503 and nothing changes 27ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > wrong signature / tampered body / no signature -> 401, nothing stored 17ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > payment.captured webhook confirms; unknown event types and unknown orders -> 200 ignored; missing event id -> 400 28ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > payment.authorized records the payment; payment.failed marks the attempt failed (appointment keeps waiting) 22ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > webhooks (FR-5, E-2) > a captured amount different from the order -> refund, appointment not confirmed 22ms
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > late payment after the hold expired (FR-6, E-3) > E-3.1: slot still free -> the same appointment is confirmed
+[payments.webhook] webhook processed {"event":"payment.captured","outcome":"late_confirmed"}
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > late payment after the hold expired (FR-6, E-3) > E-3.2: guardian_b booked the slot first -> refund_pending -> refunded (job), guardian_a notified, guardian_b untouched
+[payments.webhook] webhook processed {"event":"payment.captured","outcome":"refund_slot_unavailable"}
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > late payment after the hold expired (FR-6, E-3) > E-3.2: guardian_b booked the slot first -> refund_pending -> refunded (job), guardian_a notified, guardian_b untouched
+[payments.webhook] webhook processed {"event":"refund.processed","outcome":"already_refunded"}
+
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > late payment after the hold expired (FR-6, E-3) > E-3.1: slot still free -> the same appointment is confirmed 27ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > late payment after the hold expired (FR-6, E-3) > E-3.2: guardian_b booked the slot first -> refund_pending -> refunded (job), guardian_a notified, guardian_b untouched 133ms
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > late payment after the hold expired (FR-6, E-3) > a payment for an appointment the guardian cancelled -> refunded, the appointment stays cancelled
+[payments.webhook] webhook processed {"event":"payment.captured","outcome":"refund_appointment_cancelled"}
+
+stdout | tests/payments-flow.test.ts > payments flow (database, route handlers) > cancellation refunds (FR-7, E-4) > provider cancels a paid appointment -> full refund (refund.processed webhook finishes it)
+[payments.webhook] webhook processed {"event":"refund.processed","outcome":"refunded"}
+
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > late payment after the hold expired (FR-6, E-3) > a payment for an appointment the guardian cancelled -> refunded, the appointment stays cancelled 30ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > cancellation refunds (FR-7, E-4) > provider cancels a paid appointment -> full refund (refund.processed webhook finishes it) 44ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > cancellation refunds (FR-7, E-4) > guardian cancels >= 24 h before -> refund; 3 h before -> no refund (stays captured) 70ms
+stderr | tests/payments-flow.test.ts > payments flow (database, route handlers) > refund job > retries after a gateway error, reuses an existing refund, never refunds twice
+[payments.jobs] refund attempt failed {"payment":"775a8c42-1c80-4543-a5dd-***3156","attempts":1,"error":"503 SERVER_ERROR"}
+
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > cancellation refunds (FR-7, E-4) > a rescheduled paid appointment keeps its payment (no refund) 32ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > refund job > retries after a gateway error, reuses an existing refund, never refunds twice 39ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > refund job > the cron route needs CRON_SECRET 0ms
+ ✓ tests/payments-flow.test.ts > payments flow (database, route handlers) > privacy registry: payments export only the requesting guardian's payments; retained on erasure 30ms
+
+ Test Files  2 passed (2)
+      Tests  43 passed (43)
+   Start at  04:40:11
+   Duration  1.60s (transform 270ms, setup 0ms, import 170ms, tests 1.44s, environment 0ms)
+

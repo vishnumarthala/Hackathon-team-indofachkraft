@@ -87,3 +87,26 @@ synthetic providers/children only. Evidence: `evidence/acceptance.txt` (37 brows
   `docs/google-meet.md`; WhatsApp template `appointment_meet_ready` for Meta.
 - The E2E data (`e037-*` accounts, their profiles, appointments) is left in the slot 4 database; test suites clean up
   after themselves.
+
+## Merge with `main` (031 Razorpay test mode, 033 voice screen)
+
+- `git merge main`. Conflicts resolved keeping both sides: `lib/notify/topics.ts`, `lib/notify/templates/index.ts`,
+  `tests/notify-templates.test.ts` (031's `payment.refunded` + 037's three topics), `lib/audit/strict-actions.ts`
+  (`payment.captured` + 037's three), `lib/privacy/registry.ts` (`Processor` includes `razorpay` and `google`),
+  `app/privacy/page.tsx` (collect `screen`, `videoCalls`, `payments`; processors `razorpay`, `google`),
+  `app/dashboard/schedule/page.tsx` (payment labels + Meet panel), `messages/{en,hi,te}.json` (deep-merged, no value
+  clashes; `messages/REVIEW.md` regenerated with `npx tsx scripts/i18n-review.ts`, 2216 rows), `docs/notifications.md`,
+  `docs/privacy/processors.md`, `docs/system-design.md`. `lib/booking/hooks.ts`, `lib/csp.ts`, `lib/env.ts`, `.env.example`,
+  `vercel.json`, `tests/no-tracking.test.ts` merged automatically.
+- **Paid video appointments (031):** verified by a new test in `tests/google-meet.test.ts`: online video service -> hold
+  -> confirm (`pending_payment`, no Meet job, `meet_status` null) -> payment order -> demo checkout -> `POST
+  /api/payments/verify` -> `confirmed` + `captured`; the capture's `appointment.confirmed` (030
+  `booking_enqueue_confirmed`) queues `meet.create` in the same transaction -> job -> `created`, one event, no attendees.
+  The verify route now also calls `drainMeetJobs()` (one additive line); webhook captures are picked up by the cron.
+- Test cleanup: `tests/helpers/booking.ts` deletes an appointment's `payments` before the appointment (031 blocks
+  appointment deletes); `tests/google-meet.test.ts` purges its payment outbox/audit rows.
+- After `dnm-db.sh 4 <worktree> reset` (all 27 migrations): `npm run lint` exit 0, `npm run typecheck` exit 0,
+  `npx vitest run` 81 files, 1310 passed, 11 skipped (the pre-existing opt-in `CT_DB_TESTS` block of 10 + the live
+  no-tracking crawl; every DB suite ran, incl. 031's `payments-flow`), `npm run build` exit 0,
+  `npx vitest run tests/google-meet.test.ts` 20 passed.
+- For 034: `checkHoldPreconditions()` / `checkConfirmPreconditions()` in `lib/booking/hooks.ts` are unchanged by the merge.

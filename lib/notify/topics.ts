@@ -21,6 +21,7 @@ import type { TemplateName } from "./templates";
 import type { Channel, OutboxEventRow } from "./types";
 import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
 import { meetFailedRecipients, meetReadyRecipients, reconnectRecipients } from "@/lib/google/recipients";
+import { refundedPaymentGuardian } from "@/lib/payments/recipients";
 
 const uuid = z.uuid();
 // 030 appointment events (display values for the templates; no child data).
@@ -245,6 +246,20 @@ export const TOPICS = {
     template: "google_calendar_reconnect",
     recipients: (p, { sql }) => reconnectRecipients(sql, p.provider_profile_id),
   }),
+  // 031: enqueued by payment_mark_refunded in the refunding transaction (dedup `payment:<id>:refunded`). The booking
+  // guardian only, while the payment is refunded. In-app + email (no approved WhatsApp template yet).
+  "payment.refunded": topic({
+    payload: z
+      .object({
+        payment_id: uuid,
+        appointment_id: uuid,
+        reason: z.enum(["slot_unavailable", "appointment_cancelled", "provider_cancelled", "guardian_cancelled", "system_cancelled", "amount_mismatch", "external"]),
+      })
+      .strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "payment_refunded",
+    recipients: (p, { sql }) => refundedPaymentGuardian(sql, p.payment_id),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -293,6 +308,11 @@ export const APPOINTMENT_TOPICS = {
   reminder2h: "appointment.reminder_two_hours",
   cancelled: "appointment.cancelled",
   rescheduled: "appointment.rescheduled",
+} as const satisfies Record<string, Topic>;
+
+// 031: payments (enqueued by the payment SQL functions).
+export const PAYMENT_TOPICS = {
+  refunded: "payment.refunded",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

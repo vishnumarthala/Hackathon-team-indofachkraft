@@ -120,6 +120,11 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
     setBusy(false);
     if (res.ok) {
       const status = (res.json.appointment as { status: string } | undefined)?.status;
+      // 031: online services continue on the checkout page.
+      if (status === "pending_payment") {
+        router.push(`/book/${profile.id}/pay/${hold.id}`);
+        return;
+      }
       setDone(status === "pending_payment" ? "pending_payment" : "confirmed");
       return;
     }

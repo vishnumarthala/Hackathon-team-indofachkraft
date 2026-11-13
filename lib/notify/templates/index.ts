@@ -15,6 +15,7 @@ import google_calendar_reconnect from "./google_calendar_reconnect";
 import home_program_published from "./home_program_published";
 import iep_published from "./iep_published";
 import message_created from "./message_created";
+import payment_refunded from "./payment_refunded";
 import provider_claimed from "./provider_claimed";
 import provider_rejected from "./provider_rejected";
 import provider_suspended from "./provider_suspended";
@@ -52,6 +53,7 @@ export const TEMPLATES = {
   appointment_meet_ready,
   appointment_meet_failed,
   google_calendar_reconnect,
+  payment_refunded,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

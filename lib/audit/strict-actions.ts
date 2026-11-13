@@ -224,6 +224,14 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "reviewDeletionRequest",
     impl: { kind: "auditStrict", module: "lib/privacy/deletion.ts" },
   },
+  // ---------- 033 public check-in ----------
+  {
+    action: "screen.result_saved",
+    description: "Guardian saves a public developmental check-in result to a child",
+    routes: ["app/api/family/screen-results/route.ts"],
+    call: "saveScreenResult",
+    impl: { kind: "auditStrict", module: "lib/screen/store.ts" },
+  },
   // ---------- 038 AI scribe: publishing a session note (guardian visibility) ----------
   {
     action: "scribe.note_finalized",
@@ -304,6 +312,14 @@ export const STRICT_ACTIONS: StrictAction[] = [
     routes: ["app/api/appointments/[id]/meet-link/route.ts"],
     call: "setManualMeetLink",
     impl: { kind: "auditStrict", module: "lib/google/meet.ts" },
+  },
+  // ---------- 031 payments ----------
+  {
+    action: "payment.captured",
+    description: "A payment is captured and the appointment confirmed (checkout handler; the webhook uses the same function)",
+    routes: ["app/api/payments/verify/route.ts"],
+    call: "applyPaymentCaptured",
+    impl: { kind: "auditStrict", module: "lib/payments/store.ts" },
   },
 ];
 

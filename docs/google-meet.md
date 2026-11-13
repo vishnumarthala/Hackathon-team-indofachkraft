@@ -59,8 +59,10 @@ fan-out transaction while the event row is locked (`for update skip locked`), so
   connection + reconnect notice, `meet_status = 'failed'` + `appointment.meet_failed`).
 - Dedup keys `meet:<appointment id>:create|update|delete` (outside `appt:<id>:`, so `booking_cancel`'s
   `outbox_cancel` never drops a job). The confirm / reschedule / cancel routes call `drainMeetJobs(id)` so the job runs
-  right after the response (`after()`); the every-minute cron (`/api/cron/outbox`, locally `npm run -s outbox:run`)
-  is the fallback.
+  right after the response (`after()`); so does 031's `POST /api/payments/verify` after a capture. The every-minute
+  cron (`/api/cron/outbox`, locally `npm run -s outbox:run`) is the fallback (e.g. captures via the Razorpay webhook).
+- Paid video appointments (031): no Meet job while `pending_payment`; `payment_apply_captured` confirms through 030's
+  `booking_enqueue_confirmed`, whose `appointment.confirmed` event queues `meet.create` in the capture transaction.
 
 Idempotency (D-2, rule 12): before inserting, `meet.create` lists events with
 `privateExtendedProperty=dnm_appointment_id=<appointment id>`; the insert sets `conferenceData.createRequest.requestId =

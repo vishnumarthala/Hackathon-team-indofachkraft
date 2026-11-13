@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { env } from "@/lib/env";
 import { getT } from "@/lib/i18n/server";
 import { retentionPolicy } from "@/lib/privacy/retention";
+import { UNSAVED_RETENTION_DAYS } from "@/lib/screen/questions";
 
 export const dynamic = "force-dynamic";
 
@@ -10,8 +11,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: `${t("metaTitle")} | DoctorNearMe` };
 }
 
-const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "scribe", "assessments", "plans", "homeProgram", "appointments", "videoCalls", "messages", "notifications", "website"] as const;
-const PROCESSORS = ["elevenlabs", "gemini", "resend", "whatsapp", "supabase", "google"] as const;
+const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "scribe", "assessments", "plans", "screen", "homeProgram", "appointments", "videoCalls", "payments", "messages", "notifications", "website"] as const;
+const PROCESSORS = ["elevenlabs", "gemini", "resend", "whatsapp", "supabase", "razorpay", "google"] as const;
 const RIGHTS = ["access", "correction", "erasure", "withdraw", "grievance", "nominate"] as const;
 
 // 041 FR-10: public privacy notice (en/hi/te). The draft badge stays until a human sets PRIVACY_NOTICE_REVIEWED=true
@@ -27,9 +28,11 @@ export default async function PrivacyNoticePage() {
     { key: "inApp", what: t("retention.inApp.what"), how: t("retention.inApp.how", { days: policy.inAppNotificationDays }) },
     { key: "delivery", what: t("retention.delivery.what"), how: t("retention.delivery.how", { days: policy.deliveryContentDays }) },
     { key: "exports", what: t("retention.exports.what"), how: t("retention.exports.how", { days: policy.exportDays }) },
+    { key: "screen", what: t("retention.screen.what"), how: t("retention.screen.how", { days: UNSAVED_RETENTION_DAYS }) },
     { key: "signups", what: t("retention.signups.what"), how: t("retention.signups.how", { months: policy.pilotSignupMonths }) },
     { key: "clinical", what: t("retention.clinical.what"), how: t("retention.clinical.how") },
     { key: "appointments", what: t("retention.appointments.what"), how: t("retention.appointments.how") },
+    { key: "payments", what: t("retention.payments.what"), how: t("retention.payments.how") },
     { key: "messages", what: t("retention.messages.what"), how: t("retention.messages.how") },
     { key: "consent", what: t("retention.consent.what"), how: t("retention.consent.how") },
     { key: "audit", what: t("retention.audit.what"), how: t("retention.audit.how", { years: policy.auditYears }) },

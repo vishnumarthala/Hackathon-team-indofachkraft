@@ -139,6 +139,7 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `appointment.meet_ready` (037, enqueued by the `meet.create` job or a manual link; dedup `appt:<id>:meet_ready`) | booking guardian + profile provider while the appointment is confirmed and has a link | in-app, email, WhatsApp | `appointment_meet_ready` (app page only, never the Meet URL) |
 | `appointment.meet_failed` (037, final `meet.create` failure) | profile provider while still `failed` | in-app, email | `appointment_meet_failed` (`Add a video link`) |
 | `google_calendar.reconnect_required` (037, `invalid_grant` on refresh) | profile provider while the connection is `expired` | in-app, email | `google_calendar_reconnect` |
+| `payment.refunded` (031, enqueued by `payment_mark_refunded` in the refunding transaction, dedup `payment:<id>:refunded`, payload `{ payment_id, appointment_id, reason }`) | the booking guardian, while the payment is refunded | in-app, email | `payment_refunded` (`Your payment was refunded because the time was no longer available.` for late payments; links to `/family/appointments`; see `docs/payments.md`) |
 | `privacy.deletion_completed` / `privacy.deletion_rejected` (041) | the requesting guardian (account only: the erasure revokes the link) | in-app, email | `privacy_deletion_completed` / `privacy_deletion_rejected` (reason shown in the app only) |
 
 Later tickets register their own (030 done: `appointment.*` with `.ics`; 031 payments; 037 done: Meet links). Topic names
