@@ -60,6 +60,9 @@ export async function purgeSyntheticChildren(sql: Sql, childIds: string[]) {
   await sql.begin(async (tx) => {
     await tx`set local session_replication_role = replica`;
     await tx`delete from consent_records where child_id in ${tx(ids)}`;
+    // 021: replica mode skips FK cascades, so remove health rows explicitly.
+    await tx`delete from child_health_profile_history where child_id in ${tx(ids)}`;
+    await tx`delete from child_health_profiles where child_id in ${tx(ids)}`;
     await tx`delete from child_claim_codes where child_id in ${tx(ids)}`;
     await tx`delete from guardian_links where child_id in ${tx(ids)}`;
     await tx`delete from children where id in ${tx(ids)} and not exists (select 1 from cases c where c.child_id = children.id)`;

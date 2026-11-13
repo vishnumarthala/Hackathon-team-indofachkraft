@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 974. Not yet approved: 974.
+Rows: 1045. Not yet approved: 1045.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -945,6 +945,7 @@ Rows: 974. Not yet approved: 974.
 | `caseTabs.referral` | Referral | रेफ़रल | రిఫరల్ |  | pending |
 | `caseTabs.team` | Team | टीम | టీమ్ |  | pending |
 | `caseTabs.shared` | Shared with us | हमसे साझा | మాతో పంచుకున్నవి |  | pending |
+| `caseTabs.health` | Health | स्वास्थ्य | ఆరోగ్యం |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -989,3 +990,73 @@ Rows: 974. Not yet approved: 974.
 | `sharedWithUs.back` | Back to shared records | साझा रिकॉर्ड पर वापस | పంచుకున్న రికార్డులకు వెనుకకు |  | pending |
 | `sharedWithUs.readOnly` | Shared by {org}. Read only. | {org} ने साझा किया। सिर्फ़ पढ़ने के लिए। | {org} పంచుకున్నారు. చదవడానికి మాత్రమే. |  | pending |
 | `sharedWithUs.openFailed` | Could not open this record. Please try again. | यह रिकॉर्ड नहीं खुल सका। कृपया फिर से कोशिश करें। | ఈ రికార్డును తెరవలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `health.title` | Health profile | स्वास्थ्य प्रोफ़ाइल | ఆరోగ్య ప్రొఫైల్ |  | pending |
+| `health.link` | Health profile | स्वास्थ्य प्रोफ़ाइल | ఆరోగ్య ప్రొఫైల్ |  | pending |
+| `health.back` | Back to {name} | {name} पर वापस जाएँ | {name} కి తిరిగి వెళ్ళండి |  | pending |
+| `health.intro` | Allergies, medicines and other health details for {name}, kept in one place. | {name} की एलर्जी, दवाइयाँ और अन्य स्वास्थ्य जानकारी, एक ही जगह। | {name} అలర్జీలు, మందులు మరియు ఇతర ఆరోగ్య వివరాలు, ఒకే చోట. |  | pending |
+| `health.notice` | Providers treating {name} at organisations where {name} has an open case can see this profile. | जिन संस्थाओं में {name} का केस खुला है, वहाँ {name} का इलाज करने वाले विशेषज्ञ यह प्रोफ़ाइल देख सकते हैं। | {name} కేసు తెరిచి ఉన్న సంస్థలలో {name} కి చికిత్స చేస్తున్న నిపుణులు ఈ ప్రొఫైల్‌ను చూడగలరు. |  | pending |
+| `health.sections.allergies` | Allergies | एलर्जी | అలర్జీలు |  | pending |
+| `health.sections.medications` | Medicines | दवाइयाँ | మందులు |  | pending |
+| `health.sections.conditions` | Conditions | स्वास्थ्य समस्याएँ | ఆరోగ్య సమస్యలు |  | pending |
+| `health.sections.birth_history` | Birth history | जन्म का इतिहास | జనన చరిత్ర |  | pending |
+| `health.sections.developmental_history` | Development so far | अब तक का विकास | ఇప్పటివరకు అభివృద్ధి |  | pending |
+| `health.sections.emergency_contact` | Emergency contact | आपातकालीन संपर्क | అత్యవసర సంప్రదింపు |  | pending |
+| `health.sections.blood_group` | Blood group | ब्लड ग्रुप | బ్లడ్ గ్రూప్ |  | pending |
+| `health.fields.substance` | Allergic to | किससे एलर्जी है | దేనికి అలర్జీ |  | pending |
+| `health.fields.reaction` | Reaction | प्रतिक्रिया | ప్రతిచర్య |  | pending |
+| `health.fields.severity` | Severity | गंभीरता | తీవ్రత |  | pending |
+| `health.fields.medicineName` | Medicine | दवा | మందు |  | pending |
+| `health.fields.dose` | Dose | खुराक | మోతాదు |  | pending |
+| `health.fields.frequency` | How often | कितनी बार | ఎంత తరచుగా |  | pending |
+| `health.fields.since` | Since (YYYY-MM) | कब से (YYYY-MM) | ఎప్పటి నుండి (YYYY-MM) |  | pending |
+| `health.fields.conditionName` | Condition | स्वास्थ्य समस्या | ఆరోగ్య సమస్య |  | pending |
+| `health.fields.notes` | Notes | टिप्पणी | గమనికలు |  | pending |
+| `health.fields.contactName` | Name | नाम | పేరు |  | pending |
+| `health.fields.contactPhone` | Phone number (with country code) | फ़ोन नंबर (देश कोड के साथ) | ఫోన్ నంబర్ (దేశ కోడ్‌తో) |  | pending |
+| `health.fields.birthHint` | For example: born at 36 weeks, NICU stay, birth weight. | उदाहरण: 36 हफ़्ते में जन्म, NICU में रहना, जन्म के समय वज़न। | ఉదాహరణకు: 36 వారాలకు జననం, NICU లో ఉండటం, జనన బరువు. |  | pending |
+| `health.fields.developmentHint` | For example: first words, walking, any concerns you noticed. | उदाहरण: पहले शब्द, चलना, कोई चिंता जो आपने देखी। | ఉదాహరణకు: మొదటి మాటలు, నడక, మీరు గమనించిన ఏవైనా ఆందోళనలు. |  | pending |
+| `health.severity.mild` | Mild | हल्की | తేలికపాటి |  | pending |
+| `health.severity.moderate` | Moderate | मध्यम | మధ్యస్థ |  | pending |
+| `health.severity.severe` | Severe | गंभीर | తీవ్రమైన |  | pending |
+| `health.severity.unknown` | Not sure | पता नहीं | తెలియదు |  | pending |
+| `health.bloodGroupUnknown` | Not known | पता नहीं | తెలియదు |  | pending |
+| `health.bloodGroupNotSet` | Not set | नहीं चुना | ఎంచుకోలేదు |  | pending |
+| `health.addAllergy` | Add allergy | एलर्जी जोड़ें | అలర్జీ జోడించండి |  | pending |
+| `health.addMedicine` | Add medicine | दवा जोड़ें | మందు జోడించండి |  | pending |
+| `health.addCondition` | Add condition | स्वास्थ्य समस्या जोड़ें | ఆరోగ్య సమస్య జోడించండి |  | pending |
+| `health.remove` | Remove | हटाएँ | తొలగించండి |  | pending |
+| `health.removeRow` | Remove row {number} | पंक्ति {number} हटाएँ | వరుస {number} తొలగించండి |  | pending |
+| `health.row` | Row {number} | पंक्ति {number} | వరుస {number} |  | pending |
+| `health.nka` | No known allergies | कोई ज्ञात एलर्जी नहीं | తెలిసిన అలర్జీలు లేవు |  | pending |
+| `health.nkaConflict` | Remove the allergies above, or untick No known allergies. | ऊपर दी गई एलर्जी हटाएँ, या "कोई ज्ञात एलर्जी नहीं" से टिक हटाएँ। | పైన ఉన్న అలర్జీలను తొలగించండి, లేదా "తెలిసిన అలర్జీలు లేవు" టిక్ తీసేయండి. |  | pending |
+| `health.save` | Save | सेव करें | సేవ్ చేయండి |  | pending |
+| `health.saving` | Saving… | सेव हो रहा है… | సేవ్ అవుతోంది… |  | pending |
+| `health.saved` | Saved. | सेव हो गया। | సేవ్ అయింది. |  | pending |
+| `health.lastUpdated` | Last updated {date} by {name} | आख़िरी बदलाव {date} को {name} ने किया | చివరి మార్పు {date} న {name} చేశారు |  | pending |
+| `health.lastUpdatedNoName` | Last updated {date} | आख़िरी बदलाव {date} को | చివరి మార్పు {date} న |  | pending |
+| `health.notSavedYet` | Not saved yet. | अभी सेव नहीं हुआ। | ఇంకా సేవ్ కాలేదు. |  | pending |
+| `health.conflict` | This profile was changed by someone else. Reload to see the latest version. | यह प्रोफ़ाइल किसी और ने बदल दी है। नया संस्करण देखने के लिए पेज फिर से लोड करें। | ఈ ప్రొఫైల్‌ను వేరొకరు మార్చారు. తాజా వెర్షన్ చూడటానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `health.reload` | Reload | फिर से लोड करें | మళ్ళీ లోడ్ చేయండి |  | pending |
+| `health.invalid` | Some entries need attention: {sections}. | कुछ जानकारी ठीक करनी है: {sections}। | కొన్ని వివరాలు సరిచేయాలి: {sections}. |  | pending |
+| `health.saveFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `health.none` | None added. | कुछ नहीं जोड़ा गया। | ఏమీ జోడించలేదు. |  | pending |
+| `health.notRecorded` | Not recorded | दर्ज नहीं | నమోదు కాలేదు |  | pending |
+| `health.historyLink` | Version history | संस्करण इतिहास | వెర్షన్ చరిత్ర |  | pending |
+| `health.history.title` | Version history | संस्करण इतिहास | వెర్షన్ చరిత్ర |  | pending |
+| `health.history.intro` | Every saved change to {name}'s health profile. Older versions cannot be edited. | {name} की स्वास्थ्य प्रोफ़ाइल में हर सेव किया गया बदलाव। पुराने संस्करण बदले नहीं जा सकते। | {name} ఆరోగ్య ప్రొఫైల్‌లో సేవ్ చేసిన ప్రతి మార్పు. పాత వెర్షన్‌లను మార్చలేరు. |  | pending |
+| `health.history.empty` | No saved versions yet. | अभी कोई संस्करण सेव नहीं हुआ। | ఇంకా ఏ వెర్షన్ సేవ్ కాలేదు. |  | pending |
+| `health.history.version` | Version {version} | संस्करण {version} | వెర్షన్ {version} |  | pending |
+| `health.history.savedBy` | Saved {date} by {name} | {date} को {name} ने सेव किया | {date} న {name} సేవ్ చేశారు |  | pending |
+| `health.history.savedOn` | Saved {date} | {date} को सेव किया | {date} న సేవ్ చేశారు |  | pending |
+| `health.history.changed` | Changed: {sections} | बदला गया: {sections} | మారినవి: {sections} |  | pending |
+| `health.history.nothingChanged` | Saved without changes | बिना बदलाव के सेव किया | మార్పులు లేకుండా సేవ్ చేశారు |  | pending |
+| `health.history.current` | Current version | मौजूदा संस्करण | ప్రస్తుత వెర్షన్ |  | pending |
+| `health.history.view` | View | देखें | చూడండి |  | pending |
+| `health.history.viewVersion` | View version {version} | संस्करण {version} देखें | వెర్షన్ {version} చూడండి |  | pending |
+| `health.history.readOnly` | This is an older version, shown read only. | यह पुराना संस्करण है, केवल पढ़ने के लिए। | ఇది పాత వెర్షన్, చదవడానికి మాత్రమే. |  | pending |
+| `health.history.back` | Back to health profile | स्वास्थ्य प्रोफ़ाइल पर वापस जाएँ | ఆరోగ్య ప్రొఫైల్‌కి తిరిగి వెళ్ళండి |  | pending |
+| `health.history.backToHistory` | Back to version history | संस्करण इतिहास पर वापस जाएँ | వెర్షన్ చరిత్రకి తిరిగి వెళ్ళండి |  | pending |
+| `health.provider.empty` | The family has not added a health profile yet. | परिवार ने अभी स्वास्थ्य प्रोफ़ाइल नहीं जोड़ी है। | కుటుంబం ఇంకా ఆరోగ్య ప్రొఫైల్ జోడించలేదు. |  | pending |
+| `health.provider.readOnly` | Only the child's parent or guardian can change this profile. Ask them to update it in their DoctorNearMe app. | यह प्रोफ़ाइल केवल बच्चे के माता-पिता या अभिभावक बदल सकते हैं। उनसे DoctorNearMe ऐप में इसे अपडेट करने को कहें। | ఈ ప్రొఫైల్‌ను పిల్లల తల్లిదండ్రులు లేదా సంరక్షకులు మాత్రమే మార్చగలరు. DoctorNearMe యాప్‌లో దీన్ని అప్‌డేట్ చేయమని వారిని అడగండి. |  | pending |
+| `health.provider.updated` | Last updated {date} | आख़िरी बदलाव {date} को | చివరి మార్పు {date} న |  | pending |
+| `health.provider.severeAllergy` | Severe allergy: {substance} | गंभीर एलर्जी: {substance} | తీవ్రమైన అలర్జీ: {substance} |  | pending |
