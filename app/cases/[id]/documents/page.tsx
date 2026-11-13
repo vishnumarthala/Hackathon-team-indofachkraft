@@ -21,11 +21,12 @@ export default async function CaseDocumentsPage({ params }: { params: Promise<{ 
   const caseRow = await getCase(id);
   if (!caseRow?.child_id) notFound();
 
-  const [rows, level, grants, t, format] = await Promise.all([
+  const [rows, level, grants, t, tShared, format] = await Promise.all([
     listCaseDocuments(caseRow.id),
     getCaseAccessLevel(user.id, caseRow.id),
     getActiveGrants(user.id, caseRow.child_id, "documents", caseRow.org_id),
     getT("documents"),
+    getT("sharedWithUs"),
     getFormatter(),
   ]);
   const shared = await documentsLoader.list({ childId: caseRow.child_id, sourceOrgIds: sourceOrgIdsOf(grants) });
@@ -64,9 +65,9 @@ export default async function CaseDocumentsPage({ params }: { params: Promise<{ 
                 <Link
                   href={`/cases/${caseRow.id}/shared/documents/${item.id}`}
                   className="font-medium text-slate-900 underline"
-                  aria-label={t("downloadLabel", { title: item.title })}
+                  aria-label={`${tShared("open")}: ${item.title}`}
                 >
-                  {t("download")}
+                  {tShared("open")}
                 </Link>
               </li>
             ))}

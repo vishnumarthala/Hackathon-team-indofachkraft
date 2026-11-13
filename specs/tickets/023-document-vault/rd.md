@@ -1,6 +1,6 @@
 # 023: Document vault
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 022: uses case access, guardian links and the sharing registry (`documents` scope)
 

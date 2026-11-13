@@ -1,0 +1,10 @@
+PASS browser: guardian uploads a PDF through the dialog (375 px) and it is listed
+PASS browser: .txt -> Upload a PDF, JPG, PNG or HEIC file :: Upload a PDF, JPG, PNG or HEIC file
+PASS browser: PDF-named PNG -> This file does not match its type :: This file does not match its type
+PASS browser: no horizontal scroll at 375 px :: scrollWidth=375
+PASS browser: no console errors (CSP etc.) on the family page
+PASS browser: Telugu /family/documents renders
+PASS browser: provider upload hidden from parent
+PASS browser: Show to parent toggles visibility
+PASS browser: no console errors on the provider page
+PASS browser: provider_b sees org A documents under Shared with us

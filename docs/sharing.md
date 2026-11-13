@@ -120,6 +120,10 @@ and their items (`listSharedForCase`); `app/cases/[id]/shared/[scope]/[itemId]` 
 Until a scope registers a loader, a grant for it shows `Shared, but this type of record is not available in
 DoctorNearMe yet.` The `reports` scope (this ticket) = `reports` rows with `kind = 'assessment'` and
 `status = 'final'` from the source orgs' cases for the child. `health_profile` is registered by ticket 021.
+The `documents` scope (ticket 023, `lib/sharing/loaders/documents.ts`) = `ready` provider uploads of the source
+orgs for the child; its file `url` is `/api/documents/<id>/download` (access re-check + strict
+`document.downloaded` audit, then a 300 s signed URL) rather than a pre-minted signed URL. Guardian uploads
+are shared per document instead (`docs/documents.md`).
 
 ## RLS (browser reads only; the server uses the service role and the gates above)
 

@@ -1,0 +1,130 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/023
+
+ ✓ tests/documents-access.test.ts > every /api/documents handler passes the document gate first (static scan) > finds the routes 1ms
+ ✓ tests/documents-access.test.ts > every /api/documents handler passes the document gate first (static scan) > app/api/documents/[docId]/complete/route.ts 0ms
+ ✓ tests/documents-access.test.ts > every /api/documents handler passes the document gate first (static scan) > app/api/documents/[docId]/download/route.ts 0ms
+ ✓ tests/documents-access.test.ts > every /api/documents handler passes the document gate first (static scan) > app/api/documents/[docId]/route.ts 0ms
+ ✓ tests/documents-access.test.ts > every /api/documents handler passes the document gate first (static scan) > maps action statuses to translated keys 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > finds the routes 1ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/ask/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/assignments/[assignmentId]/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/assignments/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/brief/reviewed/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/claim-code/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/documents/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/intake-link/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/paper-consents/[recordId]/scan/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/paper-consents/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/paper-consents/withdraw/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/refer/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/sessions/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/bulk/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/extract/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/report/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/speakers/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/transcribe/route.ts 0ms
+ ✓ tests/case-access.test.ts > care team error messages > maps API statuses to the translated message keys 0ms
+ ✓ tests/documents-upload.test.ts > file checks (FR-2) > sniffs PDF, JPEG, PNG and HEIC by their first bytes; anything else is null 2ms
+ ✓ tests/documents-upload.test.ts > file checks (FR-2) > type and extension must match (415); more than 20 MB is 413 1ms
+ ✓ tests/documents-upload.test.ts > file checks (FR-2) > declares HEIC from the extension when the browser gives no or another type; cleans file names 1ms
+ ✓ tests/documents-upload.test.ts > file checks (FR-2) > validates upload bodies 2ms
+ ✓ tests/documents-upload.test.ts > upload dialog flow > maps API statuses to translated keys 0ms
+ ✓ tests/documents-upload.test.ts > upload dialog flow > checks the file before any request, then create -> PUT -> complete 3ms
+ ✓ tests/i18n-keys.test.ts > catalogue parity > hi has exactly the en keys 1ms
+ ✓ tests/i18n-keys.test.ts > catalogue parity > te has exactly the en keys 0ms
+ ✓ tests/i18n-keys.test.ts > catalogue parity > hi uses the same {placeholders} as en for every key 6ms
+ ✓ tests/i18n-keys.test.ts > catalogue parity > te uses the same {placeholders} as en for every key 6ms
+ ✓ tests/i18n-keys.test.ts > catalogue parity > every value is a non-empty string 15ms
+ ✓ tests/i18n-keys.test.ts > catalogue parity > plural keys come in complete _one / _other pairs that use {count} 1ms
+ ✓ tests/i18n-keys.test.ts > catalogue parity > product and engine names are never translated 1ms
+ ✓ tests/i18n-keys.test.ts > copy rules (FR-11) > en: no 'diagnos' except 'not a diagnosis', never HIPAA 8ms
+ ✓ tests/i18n-keys.test.ts > copy rules (FR-11) > hi: the diagnosis term only appears as 'not a diagnosis' in those keys 9ms
+ ✓ tests/i18n-keys.test.ts > copy rules (FR-11) > te: the diagnosis term only appears as 'not a diagnosis' in those keys 8ms
+ ✓ tests/i18n-keys.test.ts > review list (messages/REVIEW.md) > lists every key once, with the current hi/te text and a valid status 19ms
+ ✓ tests/i18n-keys.test.ts > English defaults in client modules match en.json > intake call messages 0ms
+ ✓ tests/i18n-keys.test.ts > English defaults in client modules match en.json > voice demo messages 0ms
+ ✓ tests/i18n-keys.test.ts > English defaults in client modules match en.json > pilot sign-up validation messages 0ms
+ ✓ tests/sharing-grants.test.ts > grant request validation and helpers > accepts 90, 365 or no expiry and known scopes only 2ms
+ ✓ tests/sharing-grants.test.ts > grant request validation and helpers > registers the reports loader; other scopes register in their own tickets (023: documents) 0ms
+ ✓ tests/sharing-grants.test.ts > grant request validation and helpers > maps API statuses to translated guardian messages 0ms
+ ✓ tests/guardian-authz.test.ts > requireGuardian (FR-5) > 401 without a session 2ms
+ ✓ tests/guardian-authz.test.ts > requireGuardian (FR-5) > 403 Not allowed for provider 0ms
+ ✓ tests/guardian-authz.test.ts > requireGuardian (FR-5) > 403 Not allowed for platform_admin 0ms
+ ✓ tests/guardian-authz.test.ts > requireGuardian (FR-5) > returns the user and profile for guardians 0ms
+ ✓ tests/guardian-authz.test.ts > requireGuardian (FR-5) > PATCH /api/family/profile never accepts role (400, nothing written) 18ms
+ ✓ tests/guardian-authz.test.ts > every family route and page is gated (static scan) > each handler in app/api/family/** calls requireGuardian() first 2ms
+ ✓ tests/guardian-authz.test.ts > every family route and page is gated (static scan) > each /family portal page and layout calls requireGuardianPage() 1ms
+ ✓ tests/guardian-authz.test.ts > guardian roles in the database (FR-2, FR-8, FR-10) > new accounts are guardians; only server-set app_metadata grants provider/platform_admin 196ms
+ ✓ tests/guardian-authz.test.ts > guardian roles in the database (FR-2, FR-8, FR-10) > phone_verified_at mirrors the confirmed phone (set, changed, cleared) 123ms
+stderr | tests/sharing-grants.test.ts > sharing grants (database) > strict audit: a forced audit failure -> 503 and no grant
+create_sharing_grant failed: forced audit failure (test)
+
+ ✓ tests/documents-upload.test.ts > document uploads (database) > the bucket is private with a 20 MB limit and the four types 1ms
+ ✓ tests/guardian-authz.test.ts > guardian roles in the database (FR-2, FR-8, FR-10) > a guardian cannot change their own role through the profile API or the database API 152ms
+ ✓ tests/guardian-authz.test.ts > guardian roles in the database (FR-2, FR-8, FR-10) > providers get 403 and anonymous callers 401 from the family profile API 63ms
+ ✓ tests/documents-upload.test.ts > document uploads (database) > E-1.1 guardian upload: 201 ticket -> PUT -> complete (ready, sha256, audit document.uploaded, share recorded) 114ms
+ ✓ tests/documents-upload.test.ts > document uploads (database) > E-3 validation: 21 MB -> 413, .txt -> 415, PDF-named PNG bytes -> 422 and no object left 80ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > owner: list yes, read 200, write 200 58ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > admin: list yes, read 200, write 200 36ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > assigned member: list yes, read 200, write 200 32ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > unassigned member: list no, read 404, write 404 78ms
+ ✓ tests/documents-upload.test.ts > document uploads (database) > the bucket itself refuses more than 20 MB even with a valid upload ticket 149ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > E-4: only a linked guardian may share (other guardian 404, provider 403, anonymous 401) 18ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > E-2.3: org without a case for the child -> 422, same org -> 400 33ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > strict audit: a forced audit failure -> 503 and no grant 14ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > grant states x requireSharedAccess: none, active, wrong scope, expired, revoked 294ms
+ ✓ tests/documents-upload.test.ts > document uploads (database) > guardian: share_with_org_ids must treat the child (422, nothing saved); other families 404; providers 403 16ms
+ ✓ tests/documents-upload.test.ts > document uploads (database) > provider upload: case access required (unassigned member / other org 404, guardian 403); org = case org 85ms
+stderr | tests/documents-upload.test.ts > document uploads (database) > strict audit: if document.uploaded cannot be written the upload stays pending (503)
+complete_document failed: forced audit failure (test)
+
+ ✓ tests/documents-access.test.ts > document access (database) > FR-4 matrix without grants 114ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > removed member: list no, read 404, write 404 25ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > revoked member: list no, read 404, write 404 12ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > other-org provider: list no, read 404, write 404 13ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > platform_admin: list no, read 404, write 404 12ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > guardian: list no, read 403, write 403 7ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > access levels: owner/admin manage, assigned member assigned 8ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > an unchanged case was not written by denied callers 2ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > care team API (FR-3) > adds, rejects non-members and duplicates, keeps the last lead, removes and ends access 115ms
+ ✓ tests/documents-upload.test.ts > document uploads (database) > strict audit: if document.uploaded cannot be written the upload stays pending (503) 63ms
+ ✓ tests/documents-upload.test.ts > document uploads (database) > a guardian who lost the link cannot complete a pending upload 40ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > a new grant for the same pair replaces the old one; a removed assignment or departed guardian ends access 72ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > guardian care team lists every treating organisation and its providers, without emails 8ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > RLS: guardians read their children's grants; other guardians and providers read none; no client writes 17ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > care team API (FR-3) > making someone lead hands the lead over; the lead may manage the team 56ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > care team API (FR-3) > concurrent lead hand-overs leave exactly one lead 9ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > care team API (FR-3) > membership revocation ends access on the next request (FR-7) 65ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > initial care team and backfill (FR-1) > new cases get their creator (or the earliest owner) as lead 86ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > initial care team and backfill (FR-1) > backfill assigns a lead to legacy cases once and audits it 7ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > initial care team and backfill (FR-1) > a case without a lead (org had no owner) gets the first owner who joins as lead 7ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > initial care team and backfill (FR-1) > one active lead per case and one active assignment per person are enforced by the schema 7ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > row level security (NFR-2) > cases and assignments follow the care team rule; no client writes 14ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > row level security (NFR-2) > service-only functions are not executable by browser roles 1ms
+ ✓ tests/documents-access.test.ts > document access (database) > E-1 download: 302 to a 300 s signed URL with the file name, no-store, strict audit document.downloaded 39ms
+ ✓ tests/documents-access.test.ts > document access (database) > storage enforces expiry: an expired signed URL is refused 2106ms
+stderr | tests/documents-access.test.ts > document access (database) > strict audit: if document.downloaded cannot be written there is no signed URL (503)
+log_document_download failed: forced audit failure (test)
+
+ ✓ tests/documents-access.test.ts > document access (database) > strict audit: if document.downloaded cannot be written there is no signed URL (503) 22ms
+ ✓ tests/documents-access.test.ts > document access (database) > metadata: readers get the document without storage path; case_id only for the case's providers 26ms
+ ✓ tests/documents-access.test.ts > document access (database) > E-2: hidden provider document -> guardian 404 and not listed; ticking visibility shows it and notifies 107ms
+ ✓ tests/documents-access.test.ts > document access (database) > FR-8 lists: case tab = case uploads + family uploads shared with the org; guardian list excludes hidden 28ms
+ ✓ tests/documents-access.test.ts > document access (database) > E-4: a `documents` grant A -> B shows org A provider uploads to org B read only; revoke -> 404 160ms
+ ✓ tests/documents-access.test.ts > document access (database) > FR-7 guardian shares: share G2 with org B, stop sharing; org without a case 422; others 404/403 114ms
+ ✓ tests/documents-access.test.ts > document access (database) > E-5 delete: guardian deletes own upload (object gone, listed nowhere, audited); provider documents 403 59ms
+ ✓ tests/documents-access.test.ts > document access (database) > FR-6 provider deletes: the uploader or an owner/admin of the org; not a guardian 59ms
+ ✓ tests/documents-access.test.ts > document access (database) > RLS: readers read only documents they may read; no client writes 17ms
+ ✓ tests/documents-access.test.ts > document access (database) > E-6 / NFR-1: the bucket has no public URL and anonymous storage reads are refused 8ms
+
+ Test Files  6 passed (6)
+      Tests  109 passed (109)
+   Start at  01:56:52
+   Duration  4.10s (transform 669ms, setup 0ms, import 1.06s, tests 8.11s, environment 0ms)
+
