@@ -124,6 +124,17 @@ export const env = {
   get RETENTION_AUDIO_DAYS() {
     return read("RETENTION_AUDIO_DAYS");
   },
+  // 031: Razorpay (test mode only; lib/payments/razorpay.ts refuses any key id that does not start with rzp_test_).
+  // Optional with DEMO_MODE=true (the demo gateway simulates payments); required for real test-mode checkout.
+  get RAZORPAY_KEY_ID() {
+    return read("RAZORPAY_KEY_ID");
+  },
+  get RAZORPAY_KEY_SECRET() {
+    return read("RAZORPAY_KEY_SECRET");
+  },
+  get RAZORPAY_WEBHOOK_SECRET() {
+    return read("RAZORPAY_WEBHOOK_SECRET");
+  },
   /** Dev/test hook (lib/audit.ts `auditWouldFail`); ignored in production builds. */
   get AUDIT_FAIL_ACTIONS() {
     return read("AUDIT_FAIL_ACTIONS");

@@ -12,6 +12,7 @@ import document_shared from "./document_shared";
 import home_program_published from "./home_program_published";
 import iep_published from "./iep_published";
 import message_created from "./message_created";
+import payment_refunded from "./payment_refunded";
 import provider_claimed from "./provider_claimed";
 import provider_rejected from "./provider_rejected";
 import provider_suspended from "./provider_suspended";
@@ -46,6 +47,7 @@ export const TEMPLATES = {
   appointment_reminder_2h,
   appointment_cancelled,
   appointment_rescheduled,
+  payment_refunded,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

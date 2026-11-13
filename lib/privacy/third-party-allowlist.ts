@@ -24,7 +24,8 @@ export const THIRD_PARTY_ALLOWLIST: ThirdPartyEntry[] = [
   {
     name: "Razorpay checkout",
     origins: ["https://checkout.razorpay.com"],
-    routes: ["/family/appointments", "/family/appointments/*", "/family/appointments/*/pay"],
+    // 031: the checkout page is `/book/<profileId>/pay/<appointmentId>` (lib/csp.ts FAMILY_CSP_EXCEPTIONS).
+    routes: ["/family/appointments", "/family/appointments/*", "/family/appointments/*/pay", "/book/*/pay/*"],
     ticket: "031",
   },
 ];

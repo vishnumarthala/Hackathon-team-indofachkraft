@@ -1715,7 +1715,8 @@
         "appointments": "Appointments you book: provider, service, time, place, status and changes. The provider sees your child's name and age.",
         "scribe": "AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you.",
         "homeProgram": "Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes).",
-        "messages": "Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them."
+        "messages": "Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them.",
+        "payments": "Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them."
       },
       "purposesTitle": "Why we use it",
       "purposes": "To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising.",
@@ -1748,6 +1749,11 @@
           "name": "Supabase",
           "purpose": "Database and file storage",
           "location": "{region}"
+        },
+        "razorpay": {
+          "name": "Razorpay",
+          "purpose": "Online payments and refunds for appointments",
+          "location": "India"
         }
       },
       "crossBorder": "AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time.",
@@ -1798,6 +1804,10 @@
         "messages": {
           "what": "Messages with the care team",
           "how": "While your child is in care, with the clinical record; a deleted message's text is removed at once"
+        },
+        "payments": {
+          "what": "Payments (amount, status, refunds)",
+          "how": "Kept as a financial record (period pending legal review), also after deletion; no card or UPI details"
         }
       },
       "rightsTitle": "Your rights",
@@ -2122,6 +2132,58 @@
         "notStarted": "You can mark this after the appointment starts."
       },
       "organisation": "Organisation"
+    }
+  },
+  "payments": {
+    "labels": {
+      "paid": "Paid",
+      "paidOnline": "Paid online",
+      "pending": "Payment pending",
+      "refundPending": "Refund in progress",
+      "refunded": "Refunded",
+      "notRefunded": "Paid, not refunded",
+      "atClinic": "Pay at clinic"
+    },
+    "list": {
+      "payNow": "Pay now"
+    },
+    "pay": {
+      "metaTitle": "Pay for your appointment",
+      "title": "Pay for your appointment",
+      "with": "with {name}",
+      "service": "Service",
+      "when": "When",
+      "amount": "Amount",
+      "countdown": "Pay within {time} to keep this time.",
+      "policyTitle": "Cancellation and refunds",
+      "policy": "Cancel 24 hours or more before the appointment and you get a full refund. If you cancel later, the payment is not refunded. If the provider cancels, you always get a full refund. Refunds reach your account in 5-7 working days.",
+      "secure": "Payments are processed by Razorpay. We never see or store your card or UPI details.",
+      "testMode": "Test mode: no real money moves. Use Razorpay test cards only.",
+      "payNow": "Pay now",
+      "opening": "Opening payment…",
+      "confirming": "Confirming your payment…",
+      "paid": "Payment received. Your appointment is booked.",
+      "paidDetail": "We sent you a confirmation. You can see it in My appointments.",
+      "refundStarted": "This time was no longer available, so we are refunding your payment in full.",
+      "failed": "The payment did not go through. You can try again.",
+      "dismissed": "Payment not finished. You can try again while the time is held.",
+      "expired": "The time to pay has run out and this time was released.",
+      "pickAgain": "Pick a time again",
+      "cancelled": "This appointment was cancelled.",
+      "nothingToPay": "There is nothing to pay online for this appointment.",
+      "viewAppointments": "My appointments",
+      "demoTitle": "Demo payment",
+      "demoNote": "Demo mode: nobody is charged. Choose what happens.",
+      "demoSuccess": "Simulate successful payment",
+      "demoFailure": "Simulate failed payment",
+      "errors": {
+        "not_configured": "Online payment is not available right now. Please try again later.",
+        "gateway_error": "The payment could not be started. Please try again.",
+        "invalid_signature": "We could not verify the payment. If money was taken, it will be refunded automatically.",
+        "hold_expired": "The time to pay has run out. Please pick the time again.",
+        "already_paid": "This appointment is already paid.",
+        "generic": "Something went wrong. Please try again."
+      }
     }
   },
   "messaging": {
