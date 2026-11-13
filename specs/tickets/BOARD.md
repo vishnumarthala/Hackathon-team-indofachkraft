@@ -106,7 +106,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 
 | # | Title | Status | Mode | Runs |
 |---|-------|--------|------|------|
-| 043 | Recurring therapy sessions (weekly series) | ready | solo | alongside |
+| 043 | Recurring therapy sessions (weekly series) | done | solo | alongside |
 | 044 | Attendance register | ready | solo | waits for 043 |
 | 045 | Packages and family payments on DoctorNearMe | ready | solo | waits for 043, 044 |
 | 046 | Payouts to centres and the platform fee (Razorpay Route) | ready | solo | waits for 044, 045 |
