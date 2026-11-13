@@ -1,0 +1,61 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/035
+
+ ✓ tests/appointment-intake.test.ts > appointment intake: pure rules > link state: active until the appointment start, revoked once the appointment is not confirmed 1ms
+ ✓ tests/appointment-intake.test.ts > appointment intake: pure rules > completion grace only for a started call (also once the provider marked the visit completed) 0ms
+ ✓ tests/appointment-intake.test.ts > appointment intake: pure rules > D-4 default intake kind by provider type 0ms
+ ✓ tests/appointment-intake.test.ts > appointment intake: pure rules > generic brief schema: fixture valid, JSON schema mirrors the zod keys, invalid output rejected 2ms
+ ✓ tests/appointment-intake.test.ts > appointment intake: pure rules > medicines and allergies are checked against the health profile 0ms
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-1 Child-Dev: case created in the org with the provider assigned, link in the confirmation, call -> brief on the case
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-1 Child-Dev: case created in the org with the provider assigned, link in the confirmation, call -> brief on the case
+[notify] run: fanned_out=1 sent=0 failed=0 skipped=0
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-2 generic: no language choice, one generic_intake_brief checked against the health profile; replay -> duplicate
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-1 Child-Dev: case created in the org with the provider assigned, link in the confirmation, call -> brief on the case 200ms
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 consent: no link without ai_intake_call, the consent hint instead; granting issues the link (notification)
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 consent: no link without ai_intake_call, the consent hint instead; granting issues the link (notification)
+[notify] run: fanned_out=1 sent=0 failed=0 skipped=0
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 consent: no link without ai_intake_call, the consent hint instead; granting issues the link (notification)
+[notify] run: fanned_out=1 sent=1 failed=0 skipped=1
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > consent is re-checked at start and at completion (guardian link revoked -> consent no longer valid)
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-2 generic: no language choice, one generic_intake_brief checked against the health profile; replay -> duplicate 107ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 consent: no link without ai_intake_call, the consent hint instead; granting issues the link (notification) 63ms
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 cancel revokes the link (410), reschedule moves it (same token, new expiry), expiry at the start
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 cancel revokes the link (410), reschedule moves it (same token, new expiry), expiry at the start
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > consent is re-checked at start and at completion (guardian link revoked -> consent no longer valid) 45ms
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 cancel revokes the link (410), reschedule moves it (same token, new expiry), expiry at the start
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-4 case reuse in the org, a separate case in another org, and a token cannot complete another appointment
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-4 case reuse in the org, a separate case in another org, and a token cannot complete another appointment
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-4 case reuse in the org, a separate case in another org, and a token cannot complete another appointment
+[notify] run: fanned_out=1 sent=2 failed=0 skipped=2
+
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 cancel revokes the link (410), reschedule moves it (same token, new expiry), expiry at the start 118ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-4 case reuse in the org, a separate case in another org, and a token cannot complete another appointment 113ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > D-4: a new service without intake_kind gets the provider type's default 10ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > the existing case-level intake link keeps working (009/010) 34ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  04:50:52
+   Duration  1.85s (transform 477ms, setup 0ms, import 146ms, tests 1.63s, environment 0ms)
+

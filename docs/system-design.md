@@ -170,6 +170,16 @@ flowchart LR
   `/api/cron/outbox`, `CRON_SECRET`) plus an immediate `after()` drain (`drainSoon`); locally
   `npm run outbox:run`. Bell + `/notifications`, preferences in settings, `/admin/notifications`.
   See `docs/notifications.md`.
+- **Appointment -> case -> pre-consult intake (ticket 035).** A confirmed appointment (030) gets its org's case for
+  the child (newest existing, else a new one) with the provider on the care team, through the outbox consumer
+  `appointment.link_case` that runs while `appointment.confirmed` is fanned out (`lib/notify/consumers.ts`; consumers
+  do idempotent domain work inside the fan-out transaction and may add ids to the payload). Services with an intake
+  kind get one appointment-bound intake attempt (`intake_attempts`: token = HMAC of the attempt id, only its hash
+  stored, expires at the appointment start, revoked on cancel / consent withdrawal, moved on reschedule); the
+  confirmation carries `<APP_URL>/intake/a/<token>` or the consent hint. Child Development services use the existing
+  en/hi/te agent and 010's brief; other services an English-only generic agent and a `generic_intake_brief` checked
+  against the health profile. Calls are matched by `intake_attempt_id` (never a case id), processed idempotently by
+  conversation id and stored with `appointment_id`. See `docs/booking.md` and `docs/elevenlabs-generic-intake-agent.md`.
 - **Secure messaging (ticket 027).** Case-scoped threads between a child's guardians and the care team of
   one organisation (`message_threads`, `messages`, `thread_reads`). Access is one SQL rule
   (`thread_access_level`: linked guardian, or 022 case access) used by the routes and by RLS

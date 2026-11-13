@@ -707,7 +707,26 @@
       "done": "Call ended. Thank you! You can close this page.",
       "failed": "Could not simulate the call. Please try again."
     },
-    "expired": "This link has expired. Please ask your therapist for a new link."
+    "expired": "This link has expired. Please ask your therapist for a new link.",
+    "appointment": {
+      "title": "Before {child}'s visit with {provider}",
+      "introChildDev": "You will talk to an AI assistant, not a person. It asks about {child}'s development so {provider} is prepared for the visit. The call takes up to 15 minutes and is recorded and summarised for {provider}.",
+      "introGeneric": "You will talk to an AI assistant, not a person. It asks why you booked this visit for {child} so {provider} is prepared. The call is in English, takes up to 10 minutes and is recorded and summarised for {provider}. The assistant does not give medical advice.",
+      "consent": "I agree to talk to an AI assistant and for this call to be recorded and summarised for my child's provider.",
+      "expired": "This link has expired. The intake call is only available before the appointment starts."
+    },
+    "appointments": {
+      "title": "Appointment intake calls",
+      "intro": "Pre-consult calls the family took before an appointment with your organisation. Parent-reported; check everything at the visit.",
+      "heading": "{service}, {date}",
+      "childDev": "Child Development intake",
+      "generic": "General intake (English)",
+      "notStarted": "Intake: not started",
+      "completed": "Intake: completed",
+      "briefFailed": "The call was received but the brief could not be generated.",
+      "draft": "Draft",
+      "reviewed": "Reviewed"
+    }
   },
   "family": {
     "meta": {
@@ -2034,7 +2053,13 @@
       "moveHere": "Move to this time",
       "rescheduled": "Your appointment was moved.",
       "back": "Back to appointments",
-      "cancelledDone": "The appointment was cancelled."
+      "cancelledDone": "The appointment was cancelled.",
+      "intake": {
+        "link": "Before the visit: take the short AI intake call",
+        "consent": "Allow the AI intake call in your DoctorNearMe app to prepare for this visit.",
+        "allow": "Open permissions",
+        "done": "Intake call done. Thank you!"
+      }
     },
     "schedule": {
       "nav": "Schedule",
@@ -2119,7 +2144,12 @@
         "cancel": "Cancel",
         "cancelQuestion": "Cancel this appointment? The family is told.",
         "warning": "Outside your hours now (blocked or changed). Contact the family or cancel.",
-        "notStarted": "You can mark this after the appointment starts."
+        "notStarted": "You can mark this after the appointment starts.",
+        "intake": {
+          "not_started": "Intake: not started",
+          "completed": "Intake: completed",
+          "openBrief": "Open brief"
+        }
       },
       "organisation": "Organisation"
     }

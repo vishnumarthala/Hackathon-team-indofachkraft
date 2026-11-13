@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2000. Not yet approved: 2000.
+Rows: 2022. Not yet approved: 2022.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -627,6 +627,21 @@ Rows: 2000. Not yet approved: 2000.
 | `intake.simulate.done` | Call ended. Thank you! You can close this page. | कॉल ख़त्म हुई। धन्यवाद! आप यह पेज बंद कर सकते हैं। | కాల్ ముగిసింది. ధన్యవాదాలు! మీరు ఈ పేజీని మూసివేయవచ్చు. |  | pending |
 | `intake.simulate.failed` | Could not simulate the call. Please try again. | कॉल का नमूना नहीं चल सका। कृपया फिर से कोशिश करें। | కాల్‌ను అనుకరించలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `intake.expired` | This link has expired. Please ask your therapist for a new link. | यह लिंक समाप्त हो गया है। कृपया अपने थेरेपिस्ट से नया लिंक माँगें। | ఈ లింక్ గడువు ముగిసింది. దయచేసి మీ థెరపిస్ట్‌ను కొత్త లింక్ అడగండి. |  | pending |
+| `intake.appointment.title` | Before {child}'s visit with {provider} | {provider} के साथ {child} की मुलाक़ात से पहले | {provider} తో {child} సందర్శనకు ముందు |  | pending |
+| `intake.appointment.introChildDev` | You will talk to an AI assistant, not a person. It asks about {child}'s development so {provider} is prepared for the visit. The call takes up to 15 minutes and is recorded and summarised for {provider}. | आप एक AI सहायक से बात करेंगे, किसी व्यक्ति से नहीं। यह {child} के विकास के बारे में पूछता है ताकि {provider} मुलाक़ात के लिए तैयार रहें। कॉल 15 मिनट तक की होती है और {provider} के लिए रिकॉर्ड करके सारांश बनाई जाती है। | మీరు ఒక AI సహాయకుడితో మాట్లాడతారు, మనిషితో కాదు. {provider} సందర్శనకు సిద్ధంగా ఉండేందుకు ఇది {child} అభివృద్ధి గురించి అడుగుతుంది. కాల్ 15 నిమిషాల వరకు ఉంటుంది, {provider} కోసం రికార్డ్ చేసి సారాంశం చేయబడుతుంది. |  | pending |
+| `intake.appointment.introGeneric` | You will talk to an AI assistant, not a person. It asks why you booked this visit for {child} so {provider} is prepared. The call is in English, takes up to 10 minutes and is recorded and summarised for {provider}. The assistant does not give medical advice. | आप एक AI सहायक से बात करेंगे, किसी व्यक्ति से नहीं। यह पूछता है कि आपने {child} के लिए यह मुलाक़ात क्यों बुक की, ताकि {provider} तैयार रहें। कॉल अंग्रेज़ी में है, 10 मिनट तक की होती है और {provider} के लिए रिकॉर्ड करके सारांश बनाई जाती है। सहायक चिकित्सा सलाह नहीं देता। | మీరు ఒక AI సహాయకుడితో మాట్లాడతారు, మనిషితో కాదు. {provider} సిద్ధంగా ఉండేందుకు {child} కోసం ఈ సందర్శన ఎందుకు బుక్ చేశారో ఇది అడుగుతుంది. కాల్ ఇంగ్లీష్‌లో ఉంటుంది, 10 నిమిషాల వరకు ఉంటుంది, {provider} కోసం రికార్డ్ చేసి సారాంశం చేయబడుతుంది. సహాయకుడు వైద్య సలహా ఇవ్వదు. |  | pending |
+| `intake.appointment.consent` | I agree to talk to an AI assistant and for this call to be recorded and summarised for my child's provider. | मैं AI सहायक से बात करने और इस कॉल को रिकॉर्ड करके मेरे बच्चे के प्रोवाइडर के लिए सारांश बनाने की अनुमति देता/देती हूँ। | AI సహాయకుడితో మాట్లాడటానికి, ఈ కాల్‌ను రికార్డ్ చేసి నా పిల్లల ప్రొవైడర్ కోసం సారాంశం చేయడానికి నేను అంగీకరిస్తున్నాను. |  | pending |
+| `intake.appointment.expired` | This link has expired. The intake call is only available before the appointment starts. | यह लिंक समाप्त हो गया है। इनटेक कॉल केवल अपॉइंटमेंट शुरू होने से पहले उपलब्ध है। | ఈ లింక్ గడువు ముగిసింది. ఇన్‌టేక్ కాల్ అపాయింట్‌మెంట్ మొదలయ్యే ముందు మాత్రమే అందుబాటులో ఉంటుంది. |  | pending |
+| `intake.appointments.title` | Appointment intake calls | अपॉइंटमेंट इनटेक कॉल | అపాయింట్‌మెంట్ ఇన్‌టేక్ కాల్స్ |  | pending |
+| `intake.appointments.intro` | Pre-consult calls the family took before an appointment with your organisation. Parent-reported; check everything at the visit. | आपकी संस्था के साथ अपॉइंटमेंट से पहले परिवार द्वारा की गई कॉल। माता-पिता द्वारा बताया गया; मुलाक़ात में सब जाँचें। | మీ సంస్థతో అపాయింట్‌మెంట్‌కు ముందు కుటుంబం చేసిన కాల్స్. తల్లిదండ్రులు చెప్పినవి; సందర్శనలో అన్నీ తనిఖీ చేయండి. |  | pending |
+| `intake.appointments.heading` | {service}, {date} | {service}, {date} | {service}, {date} |  | pending |
+| `intake.appointments.childDev` | Child Development intake | बाल विकास इनटेक | పిల్లల అభివృద్ధి ఇన్‌టేక్ |  | pending |
+| `intake.appointments.generic` | General intake (English) | सामान्य इनटेक (अंग्रेज़ी) | సాధారణ ఇన్‌టేక్ (ఇంగ్లీష్) |  | pending |
+| `intake.appointments.notStarted` | Intake: not started | इनटेक: शुरू नहीं हुआ | ఇన్‌టేక్: ప్రారంభం కాలేదు |  | pending |
+| `intake.appointments.completed` | Intake: completed | इनटेक: पूरा हुआ | ఇన్‌టేక్: పూర్తయింది |  | pending |
+| `intake.appointments.briefFailed` | The call was received but the brief could not be generated. | कॉल मिल गई, लेकिन ब्रीफ़ नहीं बन सका। | కాల్ అందింది కానీ బ్రీఫ్ తయారు కాలేదు. |  | pending |
+| `intake.appointments.draft` | Draft | ड्राफ़्ट | డ్రాఫ్ట్ |  | pending |
+| `intake.appointments.reviewed` | Reviewed | समीक्षा हो गई | సమీక్షించబడింది |  | pending |
 | `family.meta.title` | Family account - DoctorNearMe | परिवार खाता - DoctorNearMe | కుటుంబ ఖాతా - DoctorNearMe |  | pending |
 | `family.login.title` | Sign in to your family account | अपने परिवार खाते में साइन इन करें | మీ కుటుంబ ఖాతాలోకి సైన్ ఇన్ చేయండి |  | pending |
 | `family.login.google` | Continue with Google | Google से जारी रखें | Google తో కొనసాగించండి |  | pending |
@@ -1715,6 +1730,10 @@ Rows: 2000. Not yet approved: 2000.
 | `booking.list.rescheduled` | Your appointment was moved. | आपका अपॉइंटमेंट बदल दिया गया। | మీ అపాయింట్‌మెంట్ మార్చబడింది. |  | pending |
 | `booking.list.back` | Back to appointments | अपॉइंटमेंट पर वापस | అపాయింట్‌మెంట్‌లకు తిరిగి |  | pending |
 | `booking.list.cancelledDone` | The appointment was cancelled. | अपॉइंटमेंट रद्द हो गया। | అపాయింట్‌మెంట్ రద్దయింది. |  | pending |
+| `booking.list.intake.link` | Before the visit: take the short AI intake call | मुलाक़ात से पहले: छोटी AI इनटेक कॉल करें | సందర్శనకు ముందు: చిన్న AI ఇన్‌టేక్ కాల్ చేయండి |  | pending |
+| `booking.list.intake.consent` | Allow the AI intake call in your DoctorNearMe app to prepare for this visit. | इस मुलाक़ात की तैयारी के लिए अपने DoctorNearMe ऐप में AI इनटेक कॉल की अनुमति दें। | ఈ సందర్శనకు సిద్ధం కావడానికి మీ DoctorNearMe యాప్‌లో AI ఇన్‌టేక్ కాల్‌ను అనుమతించండి. |  | pending |
+| `booking.list.intake.allow` | Open permissions | अनुमतियाँ खोलें | అనుమతులు తెరవండి |  | pending |
+| `booking.list.intake.done` | Intake call done. Thank you! | इनटेक कॉल हो गई। धन्यवाद! | ఇన్‌టేక్ కాల్ పూర్తయింది. ధన్యవాదాలు! |  | pending |
 | `booking.schedule.nav` | Schedule | शेड्यूल | షెడ్యూల్ |  | pending |
 | `booking.schedule.title` | Schedule | शेड्यूल | షెడ్యూల్ |  | pending |
 | `booking.schedule.intro` | Set your services and weekly hours. Families book free times online; you see every booking here. | अपनी सेवाएँ और साप्ताहिक समय तय करें। परिवार खाली समय ऑनलाइन बुक करते हैं; हर बुकिंग यहाँ दिखती है। | మీ సేవలు, వారపు సమయాలు సెట్ చేయండి. కుటుంబాలు ఖాళీ సమయాలను ఆన్‌లైన్‌లో బుక్ చేస్తాయి; ప్రతి బుకింగ్ ఇక్కడ కనిపిస్తుంది. |  | pending |
@@ -1785,6 +1804,9 @@ Rows: 2000. Not yet approved: 2000.
 | `booking.schedule.agenda.cancelQuestion` | Cancel this appointment? The family is told. | यह अपॉइंटमेंट रद्द करें? परिवार को बताया जाएगा। | ఈ అపాయింట్‌మెంట్‌ను రద్దు చేయాలా? కుటుంబానికి తెలియజేయబడుతుంది. |  | pending |
 | `booking.schedule.agenda.warning` | Outside your hours now (blocked or changed). Contact the family or cancel. | अब आपके समय से बाहर है (ब्लॉक या बदला गया)। परिवार से संपर्क करें या रद्द करें। | ఇప్పుడు మీ సమయాలకు బయట ఉంది (బ్లాక్ లేదా మార్చబడింది). కుటుంబాన్ని సంప్రదించండి లేదా రద్దు చేయండి. |  | pending |
 | `booking.schedule.agenda.notStarted` | You can mark this after the appointment starts. | अपॉइंटमेंट शुरू होने के बाद आप इसे चिह्नित कर सकते हैं। | అపాయింట్‌మెంట్ మొదలైన తర్వాత దీనిని గుర్తించవచ్చు. |  | pending |
+| `booking.schedule.agenda.intake.not_started` | Intake: not started | इनटेक: शुरू नहीं हुआ | ఇన్‌టేక్: ప్రారంభం కాలేదు |  | pending |
+| `booking.schedule.agenda.intake.completed` | Intake: completed | इनटेक: पूरा हुआ | ఇన్‌టేక్: పూర్తయింది |  | pending |
+| `booking.schedule.agenda.intake.openBrief` | Open brief | ब्रीफ़ खोलें | బ్రీఫ్ తెరవండి |  | pending |
 | `booking.schedule.organisation` | Organisation | संगठन | సంస్థ |  | pending |
 | `messaging.title` | Messages | संदेश | సందేశాలు |  | pending |
 | `messaging.navLink` | Messages | संदेश | సందేశాలు |  | pending |

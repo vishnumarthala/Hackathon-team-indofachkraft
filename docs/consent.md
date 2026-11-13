@@ -43,7 +43,7 @@ Current gates (FR-7):
 
 | Feature | Collect | Re-check |
 |---|---|---|
-| `ai_intake_call` | `POST /api/cases/:id/intake-link`, `POST /api/intake/:token/start` | `/complete`, `/api/dev/simulate-intake`, webhook processing and before brief generation (`lib/intake/process.ts`) |
+| `ai_intake_call` | `POST /api/cases/:id/intake-link`, `POST /api/intake/:token/start`; 035: appointment links are only issued with it (`appointment_issue_intake`), `POST /api/intake/a/:token/start` | `/complete`, `/api/dev/simulate-intake`, webhook processing and before brief generation (`lib/intake/process.ts`); 035: `/api/intake/a/:token/complete`, `/api/dev/simulate-intake/a/:token`, webhook processing and before the brief (`lib/intake/appointment-process.ts`) |
 | `session_recording` | `POST /api/cases/:id/sessions` | upload completion: first transcription of a `created` recording |
 | `ai_transcription` | `POST /api/sessions/:id/transcribe` | right before the Scribe request |
 | `ai_extraction` | `POST /api/sessions/:id/extract`, `POST /api/sessions/:id/report`, `POST /api/sessions/:id/scribe` (038; AI scribe uploads also check `ai_transcription` + `ai_extraction` at `POST /api/cases/:id/sessions`) | before each Gemini call (`runExtraction`, report route, `runScribe` before the note and before the Rx draft) |
@@ -52,7 +52,9 @@ Current gates (FR-7):
 | `screen_result_save` | ticket 033 must call `requireConsent` before saving a screen result to a child | - |
 | `ai_follow_up` | ticket 040 must call `requireConsent` before the agent starts | `assertConsentOrAbort` before each question |
 
-Withdrawing `ai_intake_call` revokes the child's open intake links; withdrawing `referral_share` revokes
+Withdrawing `ai_intake_call` revokes the child's open intake links (035: also appointment intake attempts, by a
+trigger on `consent_records`; a later grant issues links for upcoming appointments through the `consent.granted`
+outbox consumer); withdrawing `referral_share` revokes
 the child's referrals (FR-9, inside `record_consent`). Processed records are not deleted (ticket 041).
 
 Client components show the 422 text with the hint `Ask the parent to allow this in their DoctorNearMe

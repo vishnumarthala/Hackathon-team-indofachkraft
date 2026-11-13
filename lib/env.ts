@@ -44,6 +44,16 @@ export const env = {
   get ELEVENLABS_WEBHOOK_SECRET() {
     return required("ELEVENLABS_WEBHOOK_SECRET");
   },
+  // 035: English-only generic pre-consult intake agent (docs/elevenlabs-generic-intake-agent.md). Optional: without it
+  // generic intake links work only in DEMO_MODE.
+  get ELEVENLABS_GENERIC_INTAKE_AGENT_ID() {
+    return read("ELEVENLABS_GENERIC_INTAKE_AGENT_ID");
+  },
+  // 035: HMAC key for appointment intake links (the token is derived from the attempt id, only its hash is stored).
+  // Optional: falls back to the service role key. Changing it invalidates every open appointment intake link.
+  get INTAKE_LINK_SECRET() {
+    return read("INTAKE_LINK_SECRET");
+  },
   get GEMINI_API_KEY() {
     return required("GEMINI_API_KEY");
   },

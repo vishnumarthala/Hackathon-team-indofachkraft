@@ -1,0 +1,64 @@
+signed in e035-guardian-a -> /family
+
+[E-1] Child-Dev: book 'Development consult (synthetic)' for e035 Anaya (consented)
+appointment 440ec14f-5bbd-4e09-b891-aca101043adb 2026-11-14T09:00:00.000Z
+case: {"case_id":"c39206f1-aa81-422e-9e0e-e284a6a970a0","org_id":"60c95174-04d7-49b3-b72a-e61d2eba9e36","child_id":"dba4c9f8-b8d3-4e7e-81dc-7e8a5d52ba26","child_alias":"e035 Anaya (synthetic)","status":"booked"}
+PASS E-1 case created in org A for the child
+care team: [{"user_id":"dc1119b2-b9ef-4e5b-8886-63005b94c8df","care_role":"lead"}]
+PASS E-1 provider assigned to the case
+  email [sent] Appointment confirmed | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 2:30 pm IST is confirmed. In clinic: Dr Meera Rao (synthetic) clinic (synthetic), Road 12 (synthetic), Banjara Hills, Hyderabad 500034. Before your visit, please take a short voice call with our AI assistant: http://localhost:3050/intake/a/DHaicELOZhjxsdzpPAnZ4MlHT39dLPrLbyWpf0flrr4
+  in_app [sent] Appointment confirmed | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 2:30 pm IST is confirmed. In clinic: Dr Meera Rao (synthetic) clinic (synthetic), Road 12 (synthetic), Banjara Hills, Hyderabad 500034. Before your visit, please take a short voice call with our AI assistant: http://localhost:3050/intake/a/DHaicELOZhjxsdzpPAnZ4MlHT39dLPrLbyWpf0flrr4
+  whatsapp [skipped] Appointment confirmed | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 2:30 pm IST is confirmed. In clinic: Dr Meera Rao (synthetic) clinic (synthetic), Road 12 (synthetic), Banjara Hills, Hyderabad 500034. Before your visit, please take a short voice call with our AI assistant: http://localhost:3050/intake/a/DHaicELOZhjxsdzpPAnZ4MlHT39dLPrLbyWpf0flrr4
+PASS E-1 confirmation (in-app + email) includes /intake/a/<token>
+attempt: {"id":"72346aef-1b04-4108-8824-f2057128008f","status":"issued","agent_kind":"child_dev","expires_at":"2026-11-14T09:00:00.000Z","revoked_reason":null,"case_id":"c39206f1-aa81-422e-9e0e-e284a6a970a0"}
+PASS E-1 attempt expires at the appointment start
+PASS E-1 /family/appointments shows the intake call button
+language options: ["English","हिन्दी (Hindi)","తెలుగు (Telugu)"]
+PASS E-1 language select en/hi/te
+recording + report: [{"id":"c06f154b-dd7a-422b-a5f2-a9bfaf49076b","appointment_id":"440ec14f-5bbd-4e09-b891-aca101043adb","case_id":"c39206f1-aa81-422e-9e0e-e284a6a970a0","external_id":"demo-3dc704ee-13a9-482f-bf30-c2a92dcde529","kind":"pre_session_brief","report_appointment":"440ec14f-5bbd-4e09-b891-aca101043adb"}]
+PASS E-1 brief on the case, recording has appointment_id
+
+[E-2] Generic: book 'Knee physio review (synthetic)' for e035 Anaya
+attempt: {"id":"7ca69cd0-dbd5-4e58-a8ba-e655d5f57830","status":"issued","agent_kind":"generic","expires_at":"2026-11-14T12:00:00.000Z","revoked_reason":null,"case_id":"c39206f1-aa81-422e-9e0e-e284a6a970a0"} link: true
+PASS E-2 generic link opens without language select
+generic report: [{"kind":"generic_intake_brief","health_check":{"version":1,"recorded":true,"allergies":[{"match":"in_profile","substance":"Peanut"}],"medications":[{"name":"Paracetamol syrup","match":"not_in_profile"}],"profile_only":{"allergies":[],"medications":["Iron syrup"]}}}]
+PASS E-2 one generic_intake_brief
+webhook replay: 200 {"received":true,"duplicate":true}
+PASS E-2 replay -> duplicate: true, no second report
+
+[E-3] Consent: book 'Development consult (synthetic)' for e035 Ravi (no ai_intake_call consent)
+  email [sent] Appointment confirmed | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 8:30 pm IST is confirmed. In clinic: Dr Meera Rao (synthetic) clinic (synthetic), Road 12 (synthetic), Banjara Hills, Hyderabad 500034. Allow the AI intake call in your DoctorNearMe app to prepare for this visit.
+  in_app [sent] Appointment confirmed | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 8:30 pm IST is confirmed. In clinic: Dr Meera Rao (synthetic) clinic (synthetic), Road 12 (synthetic), Banjara Hills, Hyderabad 500034. Allow the AI intake call in your DoctorNearMe app to prepare for this visit.
+  whatsapp [skipped] Appointment confirmed | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 8:30 pm IST is confirmed. In clinic: Dr Meera Rao (synthetic) clinic (synthetic), Road 12 (synthetic), Banjara Hills, Hyderabad 500034. Allow the AI intake call in your DoctorNearMe app to prepare for this visit.
+PASS E-3 confirmation has the consent text and no link
+PASS E-3 /family/appointments shows the consent hint
+grant consent: 201
+cron run 1: {"fanned_out":1,"sent":0,"failed":0,"skipped":0}
+cron run 2: {"fanned_out":1,"sent":1,"failed":0,"skipped":1}
+  email [sent] Prepare for your visit | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 8:30 pm IST. Before your visit, please take a short voice call with our AI assistant: http://localhost:3050/intake/a/fvYnj5IrLTAdRvRPTPR_3jvCWxxoUf2nIxc8E93tuAE
+  in_app [sent] Prepare for your visit | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 8:30 pm IST. Before your visit, please take a short voice call with our AI assistant: http://localhost:3050/intake/a/fvYnj5IrLTAdRvRPTPR_3jvCWxxoUf2nIxc8E93tuAE
+  whatsapp [skipped] Prepare for your visit | Your appointment with Dr Meera Rao (synthetic) on 14 Nov 2026, 8:30 pm IST. Before your visit, please take a short voice call with our AI assistant: http://localhost:3050/intake/a/fvYnj5IrLTAdRvRPTPR_3jvCWxxoUf2nIxc8E93tuAE
+PASS E-3 grant consent -> link issued (notification)
+cancel: 200 {"id":"9a957082-720f-4aa7-b70c-9c88477c3726","status":"revoked","agent_kind":"child_dev","expires_at":"2026-11-14T15:00:00.000Z","revoked_reason":"appointment_cancelled","case_id":"0d1b9a69-4ec6-4447-86d7-0fd0f1169ac2"}
+start after cancel: 410 {"error":"This link has expired"} | page: This link has expired. The intake call is only available before the appointment starts.
+PASS E-3 cancelled appointment -> link expired (410)
+
+[E-4] Second booking in org A for Anaya, one in org B
+cases: {"first":"c39206f1-aa81-422e-9e0e-e284a6a970a0","second_same_org":"c39206f1-aa81-422e-9e0e-e284a6a970a0","other_org":"3bb2b8ca-ab31-400c-b3d8-0f9129ad81bf"}
+PASS E-4 second booking in the same org -> same case
+PASS E-4 booking in another org -> a separate case
+signed in e035-provider-a -> /dashboard
+PASS E-4 org B's case not visible to org A's provider (404) - status 404
+PASS E-4 org B case API -> 404 for org A
+complete appointment B with appointment A's conversation: 403 {"error":"This call does not belong to this intake link"}
+PASS E-4 token of another appointment cannot complete this one
+
+[FR-6] Provider agenda + case brief
+agenda intake rows: ["Intake: completedOpen brief","Intake: completedOpen brief","Intake: not startedOpen brief"]
+PASS FR-6 agenda shows Intake: completed / not started
+Open brief -> /cases/c39206f1-aa81-422e-9e0e-e284a6a970a0/brief#appointment-440ec14f-5bbd-4e09-b891-aca101043adb
+case brief tab report kinds: ["generic_intake_brief","pre_session_brief"]
+PASS FR-6 brief in the case (both kinds listed)
+signed in e035-provider-a -> /dashboard
+PASS 375 px: case brief tab has no horizontal scroll
+PASS 375 px: /family/appointments no horizontal scroll

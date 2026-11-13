@@ -5,6 +5,7 @@ import { env } from "@/lib/env";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { pg, type Queryable, type Sql } from "@/lib/pg";
 import type { UserRole } from "@/lib/auth";
+import { runConsumers } from "./consumers";
 import { deliverEmail } from "./email";
 import { icsUid } from "./ics";
 import { failureDecision, MAX_ATTEMPTS, sanitizeError } from "./retry";
@@ -100,11 +101,13 @@ function clip(value: string, max: number): string {
   return value.length > max ? `${value.slice(0, max - 1)}…` : value;
 }
 
-async function fanOutEvent(tx: Queryable, event: OutboxEventRow, appUrl: string): Promise<number> {
-  const markDone = () => tx`update public.outbox_events set status = 'fanned_out', fanned_out_at = now() where id = ${event.id}`;
+async function fanOutEvent(tx: Queryable, claimed: OutboxEventRow, appUrl: string): Promise<number> {
+  const markDone = () => tx`update public.outbox_events set status = 'fanned_out', fanned_out_at = now() where id = ${claimed.id}`;
+  // 035: consumers (lib/notify/consumers.ts) do their domain work first and may enrich the payload.
+  const { event, ran } = await runConsumers(tx, claimed);
   const def = getTopic(event.topic);
   if (!def || !topicEnabled(def)) {
-    log(`event ${event.id}: topic ${def ? "disabled" : "unknown"} (${event.topic}), no recipients`);
+    if (!ran) log(`event ${event.id}: topic ${def ? "disabled" : "unknown"} (${event.topic}), no recipients`);
     await markDone();
     return 0;
   }

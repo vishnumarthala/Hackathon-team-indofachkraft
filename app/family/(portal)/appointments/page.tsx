@@ -5,6 +5,7 @@ import { clinicTimeIfDifferent, guardianCanChange, splitAppointments } from "@/l
 import { GUARDIAN_CANCEL_WINDOW_MINUTES } from "@/lib/booking/slots";
 import { listGuardianAppointments, type AppointmentView } from "@/lib/booking/store";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { guardianIntakeNotices, type GuardianIntakeNotice } from "@/lib/intake/attempts";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,27 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
   const { moved } = await searchParams;
   const all = await listGuardianAppointments(user.id);
   const { upcoming, past } = splitAppointments(all);
+  // 035: the pre-consult intake of upcoming appointments (call link, consent hint or done).
+  const intakes = await guardianIntakeNotices(user.id);
+  const intakeNote = (notice: GuardianIntakeNotice | undefined) => {
+    if (!notice) return null;
+    if (notice.kind === "completed") return <p className="text-sm text-teal-900">{t("list.intake.done")}</p>;
+    if (notice.kind === "link") {
+      return (
+        <a href={notice.path} className="inline-flex min-h-11 items-center rounded bg-teal-700 px-4 text-sm font-semibold text-white hover:bg-teal-800" data-testid="intake-link">
+          {t("list.intake.link")}
+        </a>
+      );
+    }
+    return (
+      <p className="text-sm text-slate-800" data-testid="intake-consent">
+        {t("list.intake.consent")}{" "}
+        <Link href={`/family/children/${notice.child_id}`} className="font-semibold text-teal-800 underline">
+          {t("list.intake.allow")}
+        </Link>
+      </p>
+    );
+  };
 
   const card = (a: AppointmentView, actions: boolean) => {
     const snap = a.service_snapshot;
@@ -57,6 +79,7 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
                 : t(`status.${a.status}`)}
           </span>
         </div>
+        {actions ? intakeNote(intakes.get(a.id)) : null}
         {actions && (a.status === "confirmed" || a.status === "pending_payment") ? (
           <div className="flex flex-wrap items-center gap-2">
             {a.status === "confirmed" ? (

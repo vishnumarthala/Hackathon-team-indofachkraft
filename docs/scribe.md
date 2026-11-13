@@ -69,7 +69,7 @@ Prompts: `prompts/session-note-therapy.md`, `prompts/session-note-medical.md`, `
 ## Data
 
 - `recordings`: `kind` adds `consult`; `template` (default `child_dev_isaa`, check + kind/template consistency),
-  `uploaded_by`, `appointment_id` (no FK: 030/035 own appointments and add it).
+  `uploaded_by`, `appointment_id` (FK to `appointments`, `on delete set null`, added by 035).
 - `reports.kind` adds `session_note`, `rx_draft` (`lib/clinical/reports.ts` `inUse: true`). The 024 trigger
   `reports_publish_final` skips both kinds (session notes publish via `finalizeSessionNote`; Rx drafts never publish).
 - `goal_progress_suggestions(id, recording_id, case_id, goal_id, suggested_value, evidence jsonb, rationale, status
@@ -86,7 +86,7 @@ Prompts: `prompts/session-note-therapy.md`, `prompts/session-note-medical.md`, `
 `service_snapshot.mode`, a `mode` column, or a `meet_url`; start from `slot` (tstzrange) or `starts_at`. Without the
 table the `Appointment` select is hidden and any `appointment_id` is 404. Since 030 is merged the table always exists
 (`supabase/migrations/20261113003000_booking.sql`, `service_snapshot.mode` + `slot`; `tests/scribe.test.ts` inserts real
-rows under a synthetic provider profile). 035 should add the FK `recordings.appointment_id -> appointments(id)`.
+rows under a synthetic provider profile). 035 added the FK `recordings.appointment_id -> appointments(id) on delete set null` (appointment intake calls use it too).
 
 ## For 039 (e-prescriptions)
 

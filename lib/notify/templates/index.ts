@@ -2,6 +2,7 @@
 import type { Template } from "../types";
 import appointment_cancelled from "./appointment_cancelled";
 import appointment_confirmed from "./appointment_confirmed";
+import appointment_intake_link from "./appointment_intake_link";
 import appointment_reminder_24h from "./appointment_reminder_24h";
 import appointment_reminder_2h from "./appointment_reminder_2h";
 import appointment_rescheduled from "./appointment_rescheduled";
@@ -46,6 +47,7 @@ export const TEMPLATES = {
   appointment_reminder_2h,
   appointment_cancelled,
   appointment_rescheduled,
+  appointment_intake_link,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;
