@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { FacpForm } from "@/components/case/FacpForm";
 import { ConsentPanel } from "@/components/consent/ConsentPanel";
+import { TimetableCard } from "@/components/series/TimetableCard";
 import { NEXT_STEPS, formatDate, type CaseStatus } from "@/lib/cases/format";
 import { getCase } from "@/lib/queries/cases";
 import { requireCasePage } from "@/lib/authz";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function CaseOverviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await requireCasePage(id);
+  const actor = await requireCasePage(id);
   const caseRow = await getCase(id);
   if (!caseRow) notFound();
 
@@ -38,6 +39,9 @@ export default async function CaseOverviewPage({ params }: { params: Promise<{ i
       </dl>
 
       {caseRow.child_id ? <ConsentPanel caseRow={{ ...caseRow, child_id: caseRow.child_id }} /> : null}
+
+      {/* 043 FR-6: weekly series of the child (staff who may schedule get the forms). */}
+      <TimetableCard caseId={caseRow.id} userId={actor.user.id} />
 
       <FacpForm caseId={caseRow.id} initialScore={caseRow.facp_score ?? null} />
     </div>

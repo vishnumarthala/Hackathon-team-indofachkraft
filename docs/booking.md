@@ -225,6 +225,70 @@ Design rules 6 and 11. Code: `lib/booking/case-link.ts`, `lib/intake/attempts.ts
   permissions) or `Intake call done`. The case-level Child Development Brief skips generic calls; the case-level link
   (009) only counts recordings without an appointment as "complete".
 
+## Weekly series (043)
+
+Centre staff put an enrolled child on a weekly timetable (e.g. Mon/Wed/Fri 10:00 with the speech therapist). A series
+generates **real `confirmed` appointments** on a rolling 8-week horizon, so the exclusion constraint, reminders, the
+family's Visits tab and the agenda keep working unchanged. Migration `20261113004300_appointment_series.sql`, server
+code `lib/booking/series.ts` (data access, schemas, error map) and `lib/booking/series-display.ts` (pure display).
+
+**Data.** `appointment_series(id, org_id, provider_profile_id, service_id, service_snapshot, child_id, case_id,
+guardian_user_id null, weekdays smallint[] (0 = Monday, 1-4 distinct), start_time, time_zone, starts_on, ends_on null,
+status active|paused|ended, billing_mode package|per_session|free, paused_from/paused_until, materialized_until,
+replaces_series_id, created_by, ...)`. `service_snapshot` is frozen at creation (rule 11; `payment_mode` `free` and fee 0
+when billing is free, plus `billing_mode`) and copied into every occurrence. `appointments.series_id` +
+`series_occurrence_date` with `unique (series_id, series_occurrence_date)`: one row per occurrence whatever its status, so
+a cancelled session is never re-created. `series_conflicts(series_id, occurrence_date, reason slot_taken|blocked_date|
+outside_hours, resolved_at, resolution rescheduled|skipped|series_changed|series_paused|series_ended, appointment_id)`.
+Times: `start_time` is wall-clock in the clinic's zone (location, else the provider's), so sessions keep their local time
+across DST (`series_occurrence_start(date, time, tz)`).
+
+**Who (FR-2).** `series_can_manage(org, profile, user)`: an active member of the org who is owner/admin, or the therapist
+bound to the profile. The child needs a case in the org; the service must be an active `in_clinic`/`video` service of
+that therapist in that org; demo (`is_synthetic`) profiles are refused. `guardian_user_id` is optional: the API's
+`notify_family` (default true) picks the child's earliest active guardian link; without one (paper consent) the
+timetable works and nobody is messaged. Guardians never create or edit series (403); other tenants get 404.
+
+**Materialize (FR-3, FR-4, NFR-1).** `series_materialize(series, until default today + 56, actor)`: series advisory lock,
+then 030's provider lock; for each series weekday from `max(starts_on, today, materialized_until + 1)` to `until`
+(capped by `ends_on`, skipping the pause window and past instants) it skips dates that already have an appointment or a
+conflict row, checks `series_slot_problem` (an `unavailable` override -> `blocked_date`; not inside a weekly/extra window
+-> `outside_hours`, **no** duration-grid alignment, unlike `booking_slot_valid`; 030's `booking_conflicts` incl.
+buffers -> `slot_taken`) and inserts a `confirmed` row (exclusion violation -> `slot_taken`). Occurrences never pass
+through `held`/`pending_payment`; payment follows `billing_mode` (045/046). `series_create` materializes at once;
+`/api/cron/booking` calls `materializeDueSeries()` (`series_due()` flips finished pauses to `active` and past ends to
+`ended`, then one transaction per live series, 3 in parallel). 200 series x 8 weeks: ~2.5 s locally.
+
+**Changes (FR-5).** *This session only*: 030's `/api/appointments/:id/{cancel,reschedule}` unchanged (a moved session keeps
+`series_id` through the `appointments_series_follow_reschedule` trigger, with no occurrence date; 030's 14-day / grid rules
+apply). *This and future* (`series_change_from`): the series ends the day before `from`, its future **untouched** sessions
+(still at the series time on their date) are cancelled with reason `series_changed`, and a new series
+(`replaces_series_id`) continues from `from`. *Pause* (`series_pause(from, to)`): sessions in the range are cancelled
+(`series_paused`); one window at a time (`pause_exists`). *End* (`series_end(ends_on)`): sessions after it are cancelled
+(`series_ended`). Past sessions are never changed. Bulk cancellations go through `booking_cancel` (history, payments,
+Meet clean-up as usual) and withdraw its per-session `appointment.cancelled` in the same transaction.
+
+**Conflicts (FR-6).** `series_resolve_conflict(conflict, actor, 'skip' | 'reschedule', start)`: skip is final; pick
+another time creates the occurrence at `start` (same checks; at least 1 hour ahead).
+
+**Notifications (FR-8).** `series.created` (one summary, dedup `series:<id>:created`) and `series.changed` (`change`:
+`time_changed`, `paused`, `ended`, `skipped`, `moved`; one per change), aggregate `appointment_series`, only when the series
+has a guardian; recipient re-checked at fan-out (`seriesGuardian`). Reminders: 030's `appointment.reminder_day_before`
+(`appt:<id>:r24`) for the **next** occurrence only (`series_schedule_next`, run by every materialize); video series get
+037's `meet.create` job for the next occurrence only (`meet_status` starts `pending`). 036's per-visit rating prompt is
+withdrawn for series sessions (`appointments_series_rate_prompt_off`); they stay rateable in the app.
+
+**UI.** Case page `Timetable` card (`components/series/TimetableCard.tsx`: series, next sessions with Move/Cancel, series
+actions, conflicts, new-series form); `/dashboard/schedule` agenda `Repeats` label and a `Conflicts` list; the family's
+`/family/appointments` shows a `Weekly timetable` section ("Every Mon, Wed at 10:00 am IST with <therapist>", sessions
+grouped by week, `Cancel` within 030's 2-hour window, no reschedule).
+
+**For later tickets.** 044 attendance: series sessions are ordinary `appointments` (`series_id` not null); use 030's
+complete/cancel functions. 045 packages: `appointment_series.billing_mode` + `service_snapshot.billing_mode` say how a
+session is paid; the open question "auto-end when a package runs out" defaults to no (show staff a warning). 047 import:
+call `createSeries({ actorUserId, orgId, caseId, childId, profileId, serviceId, weekdays, startTime, startsOn, endsOn,
+billingMode, guardian: "auto" | null })`. 052: `listManageableConflicts(userId)` and `listGuardianSeries(userId)`.
+
 ## Open questions (product / legal)
 
 - Cancellation window (2 h) and no-show policy per org; `GUARDIAN_CANCEL_WINDOW_MINUTES` and the SQL constant.

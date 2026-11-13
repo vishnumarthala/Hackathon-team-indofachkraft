@@ -1,6 +1,6 @@
 # 043: Recurring therapy sessions (weekly series)
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** alongside (builds on 030, which is done)
 

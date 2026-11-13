@@ -2987,5 +2987,108 @@
       "updated": "This document has been updated since the answer. You are seeing the current version ({version}).",
       "back": "Back to questions"
     }
+  },
+  "series": {
+    "timetable": {
+      "title": "Timetable",
+      "intro": "Weekly sessions for this child. Sessions are booked 8 weeks ahead; dates that clash are listed under Conflicts.",
+      "none": "No weekly timetable yet.",
+      "add": "New weekly timetable",
+      "therapist": "Therapist",
+      "service": "Service",
+      "weekdays": "Days (1 to 4)",
+      "time": "Time",
+      "timeZoneNote": "Clinic time ({zone}).",
+      "startsOn": "Start date",
+      "endsOn": "End date (optional)",
+      "billing": "Billing",
+      "billingModes": {
+        "package": "Package",
+        "per_session": "Pay per session",
+        "free": "Free"
+      },
+      "notifyFamily": "Show in the family's app and send them updates",
+      "noGuardian": "This child has no family app account (paper consent). The timetable works without messages.",
+      "noTherapists": "No therapist you can schedule has an active in-clinic or video service in this organisation.",
+      "create": "Create timetable",
+      "createdSummary": "Timetable saved. Sessions booked: {created}. Dates with conflicts: {conflicts}.",
+      "every": "Every {days} at {time}",
+      "with": "with {therapist}",
+      "status": {
+        "active": "Active",
+        "paused": "Paused",
+        "ended": "Ended"
+      },
+      "pausedRange": "Paused {from} to {to}",
+      "fromDate": "From {date}",
+      "endsOnLabel": "Last day {date}",
+      "billingLabel": "Billing: {mode}",
+      "upcoming": "Next sessions",
+      "noUpcoming": "No upcoming sessions.",
+      "showAll": "Show all {count} sessions",
+      "moved": "Moved",
+      "thisSession": "This session only",
+      "move": "Move",
+      "moveDate": "New date",
+      "moveTime": "New time",
+      "moveSave": "Move session",
+      "moveHint": "The new time must be a free bookable slot within 14 days.",
+      "changeFuture": "This and future sessions",
+      "changeFrom": "Change from",
+      "changeSave": "Save change",
+      "pause": "Pause",
+      "pauseFrom": "From",
+      "pauseTo": "To",
+      "pauseSave": "Pause sessions",
+      "end": "End timetable",
+      "endOn": "Last day",
+      "endSave": "End timetable",
+      "close": "Close",
+      "saved": "Saved",
+      "failed": "Could not save. Please try again.",
+      "invalid": "Check the highlighted fields.",
+      "errors": {
+        "slot_taken": "This time is taken. Please pick another time.",
+        "blocked_date": "The therapist is not available on that date.",
+        "outside_hours": "This time is outside the therapist's weekly hours.",
+        "too_soon": "Pick a later time.",
+        "case_required": "The child needs a case in this organisation first.",
+        "service_invalid": "Choose an active service of this therapist.",
+        "starts_in_past": "The start date cannot be in the past.",
+        "pause_exists": "This timetable is already paused.",
+        "already_resolved": "This date was already handled.",
+        "invalid_transition": "This timetable has ended.",
+        "slot_unavailable": "This time is not a bookable slot. Please pick another time.",
+        "too_far": "Single sessions can be moved up to 14 days ahead.",
+        "too_late": "It is too late to change this session."
+      }
+    },
+    "conflicts": {
+      "title": "Conflicts",
+      "intro": "These dates could not be booked. Nothing was double-booked.",
+      "none": "No conflicts.",
+      "reasons": {
+        "slot_taken": "Time already taken",
+        "blocked_date": "Date blocked",
+        "outside_hours": "Outside weekly hours"
+      },
+      "pick": "Pick another time",
+      "skip": "Skip this date",
+      "pickSave": "Book this time",
+      "openCase": "Open case"
+    },
+    "schedule": {
+      "repeats": "Repeats"
+    },
+    "family": {
+      "title": "Weekly timetable",
+      "every": "Every {days} at {time} with {therapist}",
+      "clinicTime": "{time} at the clinic",
+      "forChild": "For {child}",
+      "pausedRange": "Paused from {from} to {to}",
+      "weekOf": "Week of {date}",
+      "noUpcoming": "No upcoming sessions in this timetable.",
+      "cancelOnly": "You can cancel a single session up to 2 hours before it starts. To change the timetable, contact the centre."
+    }
   }
 }

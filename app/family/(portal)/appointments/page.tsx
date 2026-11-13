@@ -3,9 +3,12 @@ import { CancelAppointmentButton } from "@/components/booking/AppointmentActions
 import { MeetPanel } from "@/components/google/MeetPanel";
 import { requireGuardianPage } from "@/lib/authz";
 import { clinicTimeIfDifferent, guardianCanChange, splitAppointments } from "@/lib/booking/display";
+import { listGuardianSeries } from "@/lib/booking/series";
+import { groupByWeek, seriesSummary } from "@/lib/booking/series-display";
 import { GUARDIAN_CANCEL_WINDOW_MINUTES } from "@/lib/booking/slots";
 import { listGuardianAppointments, type AppointmentView } from "@/lib/booking/store";
 import { getMeetInfo } from "@/lib/google/meet";
+import { formatDate } from "@/lib/i18n/format";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { guardianIntakeNotices, type GuardianIntakeNotice } from "@/lib/intake/attempts";
 import { PAYMENT_LABEL_STYLE, paymentHoldOpen, paymentLabel } from "@/lib/payments/display";
@@ -33,7 +36,17 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
   // 031 FR-8: payment status next to the appointment status.
   const tp = await getT("payments");
   const payments = await listPaymentsForAppointments(all.map((a) => a.id));
-  const { upcoming, past } = splitAppointments(all);
+  const split = splitAppointments(all);
+  // 043 FR-7: weekly series get their own section (sessions grouped by week); cancellations made by a series change
+  // (one message to the family already explained them) are not listed one by one.
+  const ts = await getT("series.family");
+  const series = await listGuardianSeries(user.id);
+  const seriesIds = new Set(series.map((s) => s.id));
+  const inSeries = (a: AppointmentView) => Boolean(a.series_id && seriesIds.has(a.series_id));
+  const upcoming = split.upcoming.filter((a) => !inSeries(a));
+  const seriesUpcoming = split.upcoming.filter(inSeries);
+  const SERIES_CANCEL_REASONS = ["series_changed", "series_paused", "series_ended"];
+  const past = split.past.filter((a) => !(a.series_id && a.status === "cancelled" && SERIES_CANCEL_REASONS.includes(a.cancel_reason ?? "")));
   // 036 FR-5: `Rate this visit` on completed visits that can still be rated; the guardian's own rating otherwise.
   const tr = await getT("ratings");
   const completedIds = all.filter((a) => a.status === "completed").map((a) => a.id);
@@ -60,7 +73,8 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
     );
   };
   // 037: Meet link state of the guardian's own video appointments (Join video call inside the join window).
-  const meet = await getMeetInfo(upcoming.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
+  const meet = await getMeetInfo(split.upcoming.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
+  const day = (date: string) => formatDate(`${date}T12:00:00Z`, format.locale, "long", "UTC");
 
   const card = (a: AppointmentView, actions: boolean) => {
     const snap = a.service_snapshot;
@@ -159,24 +173,76 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
           {t("list.rescheduled")}
         </p>
       ) : null}
-      <section aria-labelledby="upcoming" className="space-y-3">
-        <h2 id="upcoming" className="text-lg font-semibold text-slate-900">
-          {t("list.upcoming")}
-        </h2>
-        {upcoming.length ? (
-          <>
-            <ul className="space-y-3">{upcoming.map((a) => card(a, true))}</ul>
-            <p className="text-sm text-slate-600">{t("list.cancelWindow")}</p>
-          </>
-        ) : (
-          <div className="space-y-3 rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-600">
-            <p>{t("list.none")}</p>
-            <Link href="/find" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
-              {t("list.findProvider")}
-            </Link>
-          </div>
-        )}
-      </section>
+      {series.length ? (
+        <section aria-labelledby="timetable" className="space-y-3" data-testid="family-timetable">
+          <h2 id="timetable" className="text-lg font-semibold text-slate-900">
+            {ts("title")}
+          </h2>
+          {series.map((s) => {
+            const summary = seriesSummary(s, format.timeZone, format.locale);
+            const weeks = groupByWeek(seriesUpcoming.filter((a) => a.series_id === s.id), format.timeZone);
+            return (
+              <div key={s.id} className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4" data-testid="family-series">
+                <div>
+                  <p className="font-semibold text-slate-900">{ts("every", { days: summary.days, time: summary.time, therapist: s.provider_name })}</p>
+                  {summary.clinicTime ? <p className="text-sm text-slate-600">{ts("clinicTime", { time: summary.clinicTime })}</p> : null}
+                  <p className="text-sm text-slate-700">
+                    {[s.service_name, s.mode === "video" ? t("modes.video") : [t("modes.in_clinic"), s.location_name].filter(Boolean).join(" · ")].join(" · ")}
+                  </p>
+                  {s.child_name ? <p className="text-sm text-slate-700">{ts("forChild", { child: s.child_name })}</p> : null}
+                  {s.status === "paused" && s.paused_from && s.paused_until ? (
+                    <p className="text-sm text-amber-900">{ts("pausedRange", { from: day(s.paused_from), to: day(s.paused_until) })}</p>
+                  ) : null}
+                </div>
+                {weeks.length === 0 ? <p className="text-sm text-slate-600">{ts("noUpcoming")}</p> : null}
+                {weeks.map((w) => (
+                  <div key={w.weekStart} className="space-y-1">
+                    <h3 className="text-sm font-semibold text-slate-700">{ts("weekOf", { date: day(w.weekStart) })}</h3>
+                    <ul className="divide-y divide-slate-100 text-sm">
+                      {w.items.map((a) => {
+                        const clinic = clinicTimeIfDifferent(a.starts_at, format.locale, format.timeZone, a.service_snapshot.location?.time_zone ?? a.service_snapshot.time_zone);
+                        return (
+                          <li key={a.id} className="space-y-2 py-2">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <span className="text-slate-900">
+                                {format.dateTime(a.starts_at)}
+                                {clinic ? <span className="text-slate-600"> · {t("clinicTime", { time: clinic })}</span> : null}
+                              </span>
+                              {guardianCanChange(a, GUARDIAN_CANCEL_WINDOW_MINUTES) ? <CancelAppointmentButton appointmentId={a.id} /> : null}
+                            </div>
+                            {a.service_snapshot.mode === "video" ? <MeetPanel appointment={a} meet={meet.get(a.id)} side="guardian" /> : null}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
+                <p className="text-sm text-slate-600">{ts("cancelOnly")}</p>
+              </div>
+            );
+          })}
+        </section>
+      ) : null}
+      {upcoming.length || series.length === 0 ? (
+        <section aria-labelledby="upcoming" className="space-y-3">
+          <h2 id="upcoming" className="text-lg font-semibold text-slate-900">
+            {t("list.upcoming")}
+          </h2>
+          {upcoming.length ? (
+            <>
+              <ul className="space-y-3">{upcoming.map((a) => card(a, true))}</ul>
+              <p className="text-sm text-slate-600">{t("list.cancelWindow")}</p>
+            </>
+          ) : (
+            <div className="space-y-3 rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-600">
+              <p>{t("list.none")}</p>
+              <Link href="/find" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
+                {t("list.findProvider")}
+              </Link>
+            </div>
+          )}
+        </section>
+      ) : null}
       {past.length ? (
         <section aria-labelledby="past" className="space-y-3">
           <h2 id="past" className="text-lg font-semibold text-slate-900">
