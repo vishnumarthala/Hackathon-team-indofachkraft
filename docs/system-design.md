@@ -132,6 +132,11 @@ flowchart LR
   `child_health_profile_history` written by a trigger. Providers read it through an accessible case
   (`GET /api/cases/:id/health`, `Health` tab, `Severe allergy` banner). Later tickets use
   `getPrescribingHealthFacts` / `healthSummary`. See `docs/health-profile.md`.
+- **IEP plans, SMART goals and progress (ticket 025).** Case-scoped plans (`iep_plans`, one `active` per case)
+  with SMART goals by domain (`iep_goals`) and progress points (`goal_progress`), plan-level optimistic
+  concurrency (`version`, 409). Publishing renders markdown and stores it with `publishVersion` (`iep_plan`,
+  visible to guardians) plus a goal snapshot (`iep_publications`); guardians (`/family/children/[id]/plan`) and the
+  `iep` share scope see only published text with live progress values. See `docs/iep.md`.
 - **Real patient data** still waits for the privacy/audit baseline (041) and legal review of the consent
   texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
@@ -202,7 +207,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
-          documents.md
+          documents.md  assessments.md  notifications.md  iep.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -502,6 +507,7 @@ captured before 024 (`tests/fixtures/regression-child-dev/baseline.json`).
 
 The assessment portal (questionnaires sent to guardians, review, publishing, `assessments` share scope) is
 described in `docs/assessments.md`.
+IEP plans publish with `entity_type = 'iep_plan'` (ticket 025, `docs/iep.md`).
 
 ## 8. API contracts
 
@@ -536,6 +542,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/family/children/:id/sharing-grants`, `POST .../sharing-grants/:grantId/revoke` | 022 | `{ source_org_id, grantee_org_id, scopes, expires_in_days?: 90 \| 365 \| null }` | 201 `{ grant }`; 422 org not treating the child (`docs/sharing.md`) |
 | `GET\|PUT /api/family/children/:id/health`, `GET /api/cases/:id/health` | 021 | PUT: full profile + `version` | 200 `{ profile }`; 409 stale version; 400 `details` by field path; case route 404 without profile (`docs/health-profile.md`) |
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
+| `GET\|POST /api/cases/:id/iep-plans`, `GET\|PATCH /api/iep-plans/:planId`, `POST /api/iep-plans/:planId/publish`, `GET\|POST /api/iep-plans/:planId/goals`, `PATCH\|DELETE /api/iep-goals/:goalId`, `GET\|POST /api/iep-goals/:goalId/progress`, `GET /api/family/children/:id/plan` | 025 | plan/goal writes carry the plan `version` | 201/200; 409 stale `This plan was changed by someone else. Reload to see the latest version.`; 400 field errors; 422 no goals / > 20 goals (`docs/iep.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |

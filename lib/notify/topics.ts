@@ -75,7 +75,7 @@ export const TOPICS = {
     template: "document_shared",
     recipients: (p, { sql }) => visibleDocumentGuardians(sql, p.document_id, p.child_id),
   }),
-  // 025
+  // 025: enqueued by publishPlan() in the publishing transaction (dedup `iep:<plan id>:v<published version>`).
   "iep.published": topic({
     payload: z.object({ plan_id: uuid, child_id: uuid, case_id: uuid.optional() }).strict(),
     channels: GUARDIAN_CHANNELS,

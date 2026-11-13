@@ -1193,7 +1193,8 @@
     "shared": "Shared with us",
     "health": "Health",
     "documents": "Documents",
-    "assessments": "Assessments"
+    "assessments": "Assessments",
+    "goals": "Goals"
   },
   "sharing": {
     "scopes": {
@@ -1510,6 +1511,181 @@
         "stale": "These answers were changed in another window. Reload to continue.",
         "saveFailed": "Could not save. Please try again."
       }
+    }
+  },
+  "iep": {
+    "statuses": {
+      "draft": "Draft",
+      "active": "Active",
+      "completed": "Completed",
+      "archived": "Archived"
+    },
+    "goalStatuses": {
+      "active": "Active",
+      "achieved": "Achieved",
+      "discontinued": "Discontinued"
+    },
+    "domains": {
+      "communication": "Communication",
+      "social": "Social",
+      "behaviour": "Behaviour",
+      "fineMotor": "Fine motor",
+      "grossMotor": "Gross motor",
+      "selfCare": "Self-care",
+      "cognitive": "Cognitive",
+      "sensory": "Sensory",
+      "academic": "Academic"
+    },
+    "measures": {
+      "percent": "Percentage of opportunities (0 to 100)",
+      "count": "Count (0 or more)",
+      "rating15": "Rating from 1 to 5",
+      "yesNo": "Yes or no (1 = yes, 0 = no)"
+    },
+    "values": {
+      "percent": "{value}%",
+      "rating": "{value} of 5",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "provider": {
+      "title": "Goals",
+      "intro": "Write the child's plan with SMART goals, record progress and share the plan with the parents.",
+      "plansLabel": "Plans for this case",
+      "newPlan": "Create a plan",
+      "planTitle": "Plan title",
+      "startDate": "Start date",
+      "reviewDate": "Review date",
+      "reviewHint": "At most 12 months after the start date.",
+      "create": "Create plan",
+      "creating": "Creating...",
+      "empty": "No plan yet. Create one to start adding goals.",
+      "dates": "{start} to {review} (review date)",
+      "publishToParent": "Publish to parent",
+      "publishChanges": "Publish changes",
+      "publishing": "Publishing...",
+      "unpublishedChanges": "Unpublished changes",
+      "publishedInfo": "Parents see version {version}, shared on {date}.",
+      "notPublished": "Not shared with the parents yet.",
+      "upToDate": "Parents see the latest version.",
+      "published": "The plan is now shared with the parents.",
+      "publishHint": "Publishing a new plan makes it the active plan for this case. The current active plan is then archived.",
+      "publishNeedsGoal": "Add at least one goal before you publish.",
+      "editPlan": "Edit plan",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "markCompleted": "Mark completed",
+      "archive": "Archive",
+      "archiveConfirm": "Archive this plan? It can no longer be changed.",
+      "completeConfirm": "Mark this plan as completed? It can no longer be changed.",
+      "closedNote": "This plan is closed and can no longer be changed.",
+      "goalsLabel": "Goals",
+      "noGoals": "No goals yet.",
+      "addGoal": "Add goal"
+    },
+    "goal": {
+      "domain": "Domain",
+      "statement": "Goal",
+      "statementHint": "One sentence: what the child will do, how well and by when.",
+      "specific": "Specific",
+      "specificHint": "What exactly will the child do?",
+      "measurable": "Measurable",
+      "measurableHint": "How will you count or score it?",
+      "achievable": "Achievable",
+      "achievableHint": "Why is this realistic for the child now?",
+      "relevant": "Relevant",
+      "relevantHint": "Why does it matter for the child and family?",
+      "timeBound": "Time-bound",
+      "timeBoundHint": "By when, and how often you will check.",
+      "measureType": "How we measure",
+      "baseline": "Baseline",
+      "target": "Target",
+      "targetDate": "Target date",
+      "baselineToTarget": "Baseline to target",
+      "baselineToTargetValue": "{baseline} to {target} by {date}",
+      "number": "Goal {n}:",
+      "save": "Save goal",
+      "edit": "Edit goal",
+      "markAchieved": "Mark achieved",
+      "reopen": "Make active again",
+      "delete": "Delete goal",
+      "discontinue": "Discontinue goal",
+      "deleteConfirm": "Delete this goal?",
+      "discontinueConfirm": "Discontinue this goal? It stays in the plan with its progress."
+    },
+    "progress": {
+      "record": "Record progress",
+      "date": "Date",
+      "value": "Value",
+      "note": "Note (optional)",
+      "save": "Save progress",
+      "saving": "Saving...",
+      "saved": "Progress saved."
+    },
+    "chart": {
+      "title": "Progress chart: {goal}",
+      "baseline": "Baseline",
+      "target": "Target",
+      "showData": "Show data",
+      "date": "Date",
+      "value": "Value",
+      "note": "Note",
+      "noData": "No progress recorded yet."
+    },
+    "trend": {
+      "label": "Progress summary",
+      "none": "No progress recorded yet.",
+      "latest": "Latest: {value}",
+      "change": "Change from baseline: {change}",
+      "percent": "{percent}% of the way to the target",
+      "onTrack": "On track",
+      "notOnTrack": "Not on track yet",
+      "needMore": "Record at least 2 values to see a trend."
+    },
+    "errors": {
+      "stale": "This plan was changed by someone else. Reload to see the latest version.",
+      "closed": "This plan is closed and can no longer be changed.",
+      "tooManyGoals": "A plan can have at most 20 goals.",
+      "noGoals": "Add at least one goal before publishing.",
+      "nothingToPublish": "There are no changes to publish.",
+      "goalDiscontinued": "This goal was discontinued.",
+      "measureLocked": "The measure cannot change after progress has been recorded.",
+      "targetDateRange": "The target date must be between the plan's start and review dates.",
+      "planDatesExcludeGoals": "Some goals have target dates outside these plan dates. Change those goals first.",
+      "futureDate": "The date cannot be in the future.",
+      "valueRange": "Enter a value that fits the measure.",
+      "statusChange": "This change is not allowed.",
+      "notFound": "Not found. Reload the page.",
+      "invalid": "Please check the highlighted fields.",
+      "saveFailed": "Could not save. Please try again.",
+      "reload": "Reload"
+    },
+    "fieldErrors": {
+      "title": "Enter a title of up to 120 characters.",
+      "startDate": "Enter a valid start date.",
+      "reviewDate": "The review date must be on or after the start date and within 12 months of it.",
+      "domain": "Choose a domain.",
+      "statement": "Write the goal in 10 to 500 characters.",
+      "smart": "Fill in this field (3 to 300 characters).",
+      "measureType": "Choose how we measure.",
+      "baseline": "Enter a baseline that fits the measure.",
+      "target": "Enter a target that fits the measure and is different from the baseline.",
+      "targetDate": "Choose a target date between the plan's start and review dates.",
+      "observedOn": "Enter a date that is not in the future.",
+      "value": "Enter a value that fits the measure.",
+      "note": "The note can have at most 500 characters."
+    },
+    "family": {
+      "link": "Plan and goals",
+      "title": "{name}'s plan",
+      "back": "Back to {name}",
+      "intro": "The goals your child's therapist set, and how your child is doing. Goals are shown as the therapist wrote them.",
+      "empty": "Your child's therapist has not shared a plan yet.",
+      "from": "From {org}",
+      "sharedOn": "Shared on {date}",
+      "progressTitle": "Progress",
+      "progressIntro": "Values the care team recorded for each goal."
     }
   }
 }

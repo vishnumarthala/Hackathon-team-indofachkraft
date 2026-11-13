@@ -15,6 +15,7 @@
 import { assessmentsLoader } from "@/lib/sharing/loaders/assessments";
 import { documentsLoader } from "@/lib/sharing/loaders/documents";
 import { healthProfileLoader } from "@/lib/sharing/loaders/health_profile";
+import { iepLoader } from "@/lib/sharing/loaders/iep";
 import { reportsLoader } from "@/lib/sharing/loaders/reports";
 import type { ShareScope } from "@/lib/sharing/scopes";
 
@@ -45,6 +46,7 @@ export const SHARE_LOADERS: Partial<Record<ShareScope, ShareLoader>> = {
   assessments: assessmentsLoader,
   documents: documentsLoader,
   health_profile: healthProfileLoader,
+  iep: iepLoader,
 };
 
 export function getShareLoader(scope: ShareScope): ShareLoader | null {

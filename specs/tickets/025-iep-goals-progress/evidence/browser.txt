@@ -1,0 +1,9 @@
+# Ticket 025 browser checks: own headless Chromium (playwright-core driving the cached chrome-headless-shell,
+# script .tmp/pw/shots.mjs, not committed) against the dev server (:3040, DEMO_MODE=true, slot 4), signed in with
+# the seeded synthetic accounts. Run on the plan/child created by the first acceptance run.
+provider Goals tab: badge=1 publishChanges=1 circles=3 pageErrors=0          -> provider-goals-tab.png
+add goal without Measurable: field error shown, aria-invalid=true             -> provider-add-goal-missing-measurable.png
+UI Publish changes: status message shown, badge now=0
+guardian plan en 375px: scrollWidth=375 innerWidth=375 showDataRows=3         -> family-plan-en-375.png
+guardian plan te 375px: scrollWidth=375 innerWidth=375 showDataRows=3         -> family-plan-te-375.png
+provider_b shared iep item: buttons=2 (header only) hasProgress=1             -> provider-b-shared-iep.png
