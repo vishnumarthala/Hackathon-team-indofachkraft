@@ -43,6 +43,14 @@ session folder (`files/e2e039/`), not committed.
   passed, 11 skipped (the same opt-in suites; DB suites run); `npm run build` exit 0; `tests/prescriptions.test.ts`
   17/17 passed.
 
+## Merge of main (034 voice booking agent)
+
+- `git merge main` again: `lib/i18n/translate.ts` resolved to main's version (034's equivalent TS2589 fix; it
+  type-checks), `messages/{en,hi,te}.json` keep both `voiceBooking` and `rx`/`caseTabs.prescriptions` (no conflicting
+  values), `messages/REVIEW.md` regenerated (2329 rows).
+- After `$H 8 <worktree> reset`: `npm run lint` exit 0; `npm run typecheck` exit 0; `npx vitest run` 83 files, 1359
+  passed, 11 skipped (opt-in suites only; DB suites run); `npm run build` exit 0; `tests/prescriptions.test.ts` 17/17.
+
 ## Deviations
 
 - **Signature**: "signed" means an authenticated, server-checked click by a verified prescriber recorded with signer,

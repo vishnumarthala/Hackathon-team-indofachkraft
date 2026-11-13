@@ -27,6 +27,9 @@ const ELEVENLABS_CONNECT = [
  */
 export const FAMILY_CSP_EXCEPTIONS: Record<string, CspAllowance> = {
   "/screen": { connectSrc: ELEVENLABS_CONNECT },
+  // 034: the voice booking widget on /find (approved 2026-11-13). /find is not under the strict family policy today
+  // (029 loads Google Maps there), so this applies once it is.
+  "/find": { connectSrc: ELEVENLABS_CONNECT },
   // 031: Razorpay Checkout on the payment page only (script, its API iframe and telemetry endpoint).
   "/book/*/pay/*": {
     scriptSrc: ["https://checkout.razorpay.com"],

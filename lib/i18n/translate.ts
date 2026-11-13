@@ -60,8 +60,8 @@ export function createTranslator<N extends Namespace | undefined = undefined>(
   messages: MessageTree,
   namespace?: N,
 ): TFunction<N> {
-  // `key: string` (not the contextual KeyIn<N>): resolving the generic key type inside the body made tsc hit TS2589
-  // once the catalogue passed ~2300 keys. Callers still get the typed TFunction<N>.
+  // Typed loosely inside and cast once: inferring `KeyIn<N>` for a generic N over the whole catalogue exceeds the
+  // compiler's instantiation depth (TS2589) once the catalogue grows. Callers still get the typed TFunction<N>.
   const translate = (key: string, values?: TranslationValues): string => {
     const fullKey = namespace ? `${namespace}.${key}` : key;
     let template: string | undefined;
@@ -76,7 +76,7 @@ export function createTranslator<N extends Namespace | undefined = undefined>(
     }
     return interpolate(template, values, locale, fullKey);
   };
-  return translate as TFunction<N>;
+  return translate as unknown as TFunction<N>;
 }
 
 export type { KeyIn, Namespace, TFunction, TranslationValues };
