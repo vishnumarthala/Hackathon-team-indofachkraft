@@ -91,7 +91,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 034 | Voice booking agent (web widget on /find) | done | solo | waits for 030, 033 |
 | 035 | Appointment-scoped pre-consult intake | done | solo | waits for 021, 024, 030, 041 |
 | 036 | Ratings for completed appointments | done | solo | waits for 030 |
-| 042 | Hyderabad directory seed data (synthetic demo + real-provider import) | draft | solo | waits for 029, 030 |
+| 042 | Hyderabad directory seed data (synthetic demo + real-provider import) | done | solo | waits for 029, 030 |
 
 ## M3 - Video, scribe, prescriptions and follow-up
 
