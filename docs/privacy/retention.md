@@ -37,7 +37,8 @@ The privacy notice, the export, the erasure job and this document are driven by 
 
 Registered so far: child profile, case records, session audio, intake conversations, 024 `assessments` (guardian's own
 questionnaires + answers) and `published_versions` (latest guardian-visible versions), 025 `iep_plans` (published plan
-views; drafts and progress notes never exported), 027 `messages` (the conversations this guardian can open, with the text they see and
+views; drafts and progress notes never exported), 026 `home_programs` (the current published programs plus the requesting
+guardian's own practice logs; drafts and other guardians' notes never exported; logs deleted on erasure), 027 `messages` (the conversations this guardian can open, with the text they see and
 their own read markers; attachments as document ids), documents, health profile, consent records, sharing/care team,
 notifications, exports, audit, provider credentials, pilot sign-ups. `published_versions` is append-only (024): rows with a
 case go with the case; case-less rows are removed only by `privacy_delete_published_versions()` (migration

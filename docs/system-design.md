@@ -137,6 +137,13 @@ flowchart LR
   concurrency (`version`, 409). Publishing renders markdown and stores it with `publishVersion` (`iep_plan`,
   visible to guardians) plus a goal snapshot (`iep_publications`); guardians (`/family/children/[id]/plan`) and the
   `iep` share scope see only published text with live progress values. See `docs/iep.md`.
+- **Home program (ticket 026).** Case-scoped programs (`home_programs`, one `published` per case) of up to 15
+  active activities (`home_activities`, optionally linked to a goal of the case's active IEP plan and to a guide
+  document from the vault) and guardian practice logs (`home_activity_logs`, one per activity/day/guardian,
+  upserted). Publishing stores `publishVersion` (`home_program`) plus an activity snapshot
+  (`home_program_publications`); guardians (`/family/children/[id]/home-program`, `Done today`), the
+  `home_program` share scope and 040 (`getGuardianHomePrograms`) see only the published snapshot. Adherence weeks
+  start Monday in the guardian's time zone. See `docs/home-program.md`.
 - **Real patient data** still waits for the privacy/audit baseline (041) and legal review of the consent
   texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
@@ -226,7 +233,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
-          documents.md  assessments.md  notifications.md  iep.md  messaging.md
+          documents.md  assessments.md  notifications.md  iep.md  home-program.md  messaging.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -532,6 +539,7 @@ captured before 024 (`tests/fixtures/regression-child-dev/baseline.json`).
 The assessment portal (questionnaires sent to guardians, review, publishing, `assessments` share scope) is
 described in `docs/assessments.md`.
 IEP plans publish with `entity_type = 'iep_plan'` (ticket 025, `docs/iep.md`).
+Home programs publish with `entity_type = 'home_program'` (ticket 026, `docs/home-program.md`).
 
 ## 8. API contracts
 
@@ -567,6 +575,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|PUT /api/family/children/:id/health`, `GET /api/cases/:id/health` | 021 | PUT: full profile + `version` | 200 `{ profile }`; 409 stale version; 400 `details` by field path; case route 404 without profile (`docs/health-profile.md`) |
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
 | `GET\|POST /api/cases/:id/iep-plans`, `GET\|PATCH /api/iep-plans/:planId`, `POST /api/iep-plans/:planId/publish`, `GET\|POST /api/iep-plans/:planId/goals`, `PATCH\|DELETE /api/iep-goals/:goalId`, `GET\|POST /api/iep-goals/:goalId/progress`, `GET /api/family/children/:id/plan` | 025 | plan/goal writes carry the plan `version` | 201/200; 409 stale `This plan was changed by someone else. Reload to see the latest version.`; 400 field errors; 422 no goals / > 20 goals (`docs/iep.md`) |
+| `GET\|POST /api/cases/:id/home-programs`, `GET\|PATCH /api/home-programs/:pid`, `POST /api/home-programs/:pid/activities`, `POST /api/home-programs/:pid/publish`, `PATCH\|DELETE /api/home-activities/:aid`, `GET /api/family/children/:id/home-program`, `POST /api/family/home-activities/:aid/logs`, `DELETE /api/family/home-activity-logs/:id` | 026 | program PATCH / publish carry the program `version` | 201/200; 409 stale; 422 `Choose a goal from this child's plan` / > 15 active activities; guardian logs 201 new / 200 same day again, 400 future or > 14 days ago (`docs/home-program.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |

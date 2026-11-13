@@ -1,0 +1,53 @@
+# Ticket 026 acceptance: scripted API + browser run against the dev server (http://localhost:3040, DEMO_MODE=true, slot-4 stack after
+# `db reset` with all 18 migrations; `seed:users -- --prefix acct --extra-member`). Script .tmp/pw/acceptance-026.mjs (not
+# committed; own headless Chromium, signs in with the seeded passwords). Synthetic data only. 2026-11-13T02:15:51.244Z
+
+## setup: guardian_a's child with an org A case (provider_a lead, active IEP plan with one goal) and an org B case
+PASS guardian_a claims org A's case for Asha :: 201
+PASS guardian_a links org B's case to the same child :: 201
+PASS org A case has an active published IEP plan with one goal :: [200,200]
+
+## E-1 publish and view
+PASS E-1.1 provider_a creates a draft home program -> 201 :: {"status":201,"plan_linked":true}
+PASS E-1.1 linking a goal from another case -> 422 message :: {"error":"Choose a goal from this child's plan","details":{"goal_id":"Choose a goal from this child's plan"}}
+PASS E-1.1 add `Snack-time requesting` linked to the goal, 5 times/week, 10 minutes -> 201 :: {"title":"Snack-time requesting","goal_id":"goal","frequency_per_week":5,"duration_min":10}
+PASS E-3 before publishing the guardian sees no program :: {"programs":[],"my_logs":[]}
+PASS provider Home program tab renders with the case tabs
+PASS E-1.1 `Publish to parent` clicked in the UI -> published
+PASS E-1.1 published_versions v1, visible to the guardian :: {"version":1,"visible_to_guardian":true}
+PASS FR-3 outbox `home_program.published` (ids only) committed with the publish :: {"payload":{"case_id":"ae6f9221-044e-491b-8ad5-9c4470cf4153","child_id":"5f239443-a968-4077-a99f-44da57b71080","program_id":"507c3880-f402-4f25-b1e3-552c48e75f96"},"deliveries":[{"channel":"in_app","status":"sent","link":"/family/children/5f239443-a968-4077-a99f-44da57b71080/home-program"},{"channel":"whatsapp","status":"skipped","link":"/family/children/5f239443-a968-4077-a99f-44da57b71080/home-program"},{"channel":"email","status":"sent","link":"/family/children/5f239443-a968-4077-a99f-44da57b71080/home-program"}]}
+PASS E-1.2 guardian `This week` shows the activity with `0/5 this week` :: 0/5 this week
+PASS E-1.2 linked goal shown with its published wording
+
+## E-2 logging
+PASS E-2.1 `Done today`, `Okay`, `Save` (375 px) -> `1/5 this week`
+PASS E-2.1 the same request twice (retry) -> 200 / 200, still one row :: {"statuses":[200,200],"rows":1}
+PASS E-2.2 `done_on` tomorrow -> 400 :: {"error":"Invalid request","details":{"done_on":"The date cannot be in the future"}}
+PASS E-2.2 `done_on` 20 days ago -> 400 :: {"error":"Invalid request","details":{"done_on":"You can only log the last 14 days"}}
+PASS E-2.3 provider adherence panel: `done 1 of 5 times in the last 7 days` :: done 1 of 5 times in the last 7 days
+PASS E-2.3 provider adherence panel shows the note and the 4-week sparkline
+
+## E-3 snapshot semantics
+PASS E-3 provider adds a second activity without publishing -> 201, `Unpublished changes`
+PASS E-3 guardian does not see it (page and API)
+PASS E-3 logging against the unpublished activity -> 404 :: {"error":"Activity not found"}
+PASS E-3 `Publish changes` -> visible to the guardian (`0/3 this week`)
+PASS E-3 published_versions now [1, 2]
+PASS E-3 logging against it now -> 201 :: 201
+PASS NFR-1 guardian page at 375 px has no horizontal scroll :: [375,375]
+
+## E-4 authz negatives
+PASS E-4 guardian_b logs against guardian_a's activity -> 404 :: {"error":"Activity not found"}
+PASS E-4 provider_b reads the program -> 404 :: {"error":"Home program not found"}
+PASS E-4 guardian_a grants `home_program` from org A to org B -> 201 :: 201
+PASS E-4 provider_b `Shared with us` lists the home program
+PASS E-4 provider_b opens it read-only: published text + adherence (`1 of 5`), no guardian note :: 200
+PASS E-4 with the grant the provider APIs still -> 404 (read only) :: [404,404]
+PASS E-4 guardian deletes another guardian's log -> 404 :: {"error":"Log not found"}
+PASS guardian on provider APIs -> 403 :: 403
+
+## translated UI (te, 375 px)
+PASS NFR-3 Telugu chrome (`ఈరోజు చేశాం`, `ఈ వారం`), instructions as written, 375 px :: [375,375]
+
+ALL PASS (35 checks passed)
+{"childId":"5f239443-a968-4077-a99f-44da57b71080","caseA":"ae6f9221-044e-491b-8ad5-9c4470cf4153","caseB":"7d463f67-1c17-488d-869d-393662856466","programId":"507c3880-f402-4f25-b1e3-552c48e75f96","activityId":"25210cf7-342a-4c56-a626-7173ba1140b1","secondActivityId":"d115ff59-8e33-4097-9865-07a45d1922a7"}

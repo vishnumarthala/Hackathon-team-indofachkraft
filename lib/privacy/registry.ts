@@ -232,6 +232,38 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    key: "home_programs",
+    label: "Home programs, activities, guardian practice logs and published program snapshots (026)",
+    owner: "case",
+    tables: ["home_programs", "home_activities", "home_activity_logs", "home_program_publications"],
+    retention: "Kept with the clinical record of the case; practice logs are deleted with the child's cases on erasure.",
+    processors: ["supabase"],
+    // 026 getGuardianHomePrograms: the current published programs (snapshot wording, this week's counts) plus the
+    // requesting guardian's OWN practice logs, with activity titles from the published snapshots. Drafts, unpublished
+    // edits and other guardians' notes are never exported.
+    export: async ({ sql, childId, guardianUserId }) => {
+      const { getGuardianHomePrograms } = await import("@/lib/home-program");
+      const logs = await sql`
+        select l.activity_id,
+               (select a ->> 'title' from public.home_program_publications hpp, jsonb_array_elements(hpp.activities) a
+                where a ->> 'id' = l.activity_id::text order by hpp.created_at desc limit 1) as activity_title,
+               l.done_on::text as done_on, l.difficulty, l.duration_min, l.note, l.created_at, l.updated_at
+        from public.home_activity_logs l
+        where l.child_id = ${childId} and l.logged_by = ${guardianUserId}
+        order by l.done_on, l.created_at`;
+      return { data: { programs: await getGuardianHomePrograms(childId), your_logs: rowsJson(logs) } };
+    },
+    // Logs reference children without cascade: delete them before the programs (which cascade from `cases` anyway).
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) => {
+        const logs = await tx`delete from public.home_activity_logs where child_id = ${ctx.childId}`;
+        const programs = await tx`delete from public.home_programs where child_id = ${ctx.childId}`;
+        return logs.count + programs.count;
+      },
+    },
+  },
+  {
     key: "documents",
     label: "Document vault (uploads by the family and the care team)",
     owner: "child",

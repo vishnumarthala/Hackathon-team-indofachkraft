@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: `${t("metaTitle")} | DoctorNearMe` };
 }
 
-const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "assessments", "plans", "messages", "notifications", "website"] as const;
+const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "assessments", "plans", "homeProgram", "messages", "notifications", "website"] as const;
 const PROCESSORS = ["elevenlabs", "gemini", "resend", "whatsapp", "supabase"] as const;
 const RIGHTS = ["access", "correction", "erasure", "withdraw", "grievance", "nominate"] as const;
 

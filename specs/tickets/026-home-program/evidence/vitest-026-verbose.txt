@@ -1,0 +1,28 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/026
+
+ ✓ tests/home-program.test.ts > adherence (FR-6): Monday-start weeks in the guardian's time zone > Sunday 23:30 IST and Monday 00:30 IST fall into different weeks (UTC alone would not split them) 1ms
+ ✓ tests/home-program.test.ts > adherence (FR-6): Monday-start weeks in the guardian's time zone > a Sunday-night log counts in the old week, a Monday 00:30 log in the new one 1ms
+ ✓ tests/home-program.test.ts > adherence (FR-6): Monday-start weeks in the guardian's time zone > caps the percentage, counts two guardians' logs of one day, and builds the 4-week series and last 7 days 0ms
+ ✓ tests/home-program.test.ts > log date window (FR-5) > accepts today and up to 14 days back; rejects the future and older dates 1ms
+ ✓ tests/home-program.test.ts > published markdown (FR-3) > renders active activities with the published goal wording; provider text cannot add headings 0ms
+ ✓ tests/home-program.test.ts > offline-safe Done today (NFR-1) > retries a network failure with the same body and never sends a different date 9ms
+ ✓ tests/home-program.test.ts > offline-safe Done today (NFR-1) > queues the log on the phone when offline (one entry per activity and day) and flushes it later 3ms
+ ✓ tests/home-program.test.ts > offline-safe Done today (NFR-1) > does not retry 4xx answers 0ms
+ ✓ tests/home-program.test.ts > home program (database) > E-1.1: provider adds `Snack-time requesting` linked to the goal (5/week, 10 min); a goal of another case -> 422 178ms
+ ✓ tests/home-program.test.ts > home program (database) > E-1.2 / E-3: guardians see nothing before publishing; publish -> v1, outbox event, guardian `0/5 this week` 48ms
+ ✓ tests/home-program.test.ts > home program (database) > E-2: Done today (Okay) -> 201 and 1/5; the same request again -> 200, still one row; future / 20 days ago -> 400 49ms
+ ✓ tests/home-program.test.ts > home program (database) > E-3 / NFR-2: an unpublished second activity and an unpublished edit never reach the guardian; publish -> visible 66ms
+ ✓ tests/home-program.test.ts > home program (database) > stop vs delete: a published program's activity is stopped (hidden from guardians at once, logs kept); restart re-shows it 169ms
+ ✓ tests/home-program.test.ts > home program (database) > guides: only a ready, parent-visible document of the same case; the guardian gets the 023 download link 55ms
+ ✓ tests/home-program.test.ts > home program (database) > concurrency: a stale PATCH -> 409; archived programs are read only 16ms
+ ✓ tests/home-program.test.ts > home program (database) > E-4: other guardians, other orgs, guardians on provider APIs, anonymous; provider_b reads read-only with a grant 126ms
+ ✓ tests/home-program.test.ts > home program (database) > guardians delete their own logs of this week only; a revoked link ends logging 28ms
+ ✓ tests/home-program.test.ts > home program (database) > one published program per case: publishing another archives the first; the guardian sees only the new one 36ms
+ ✓ tests/home-program.test.ts > home program (database) > RLS: the care team reads programs, activities and logs; guardians and other orgs read nothing; no client writes 18ms
+
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  03:16:17
+   Duration  1.58s (transform 218ms, setup 0ms, import 132ms, tests 1.38s, environment 0ms)
+

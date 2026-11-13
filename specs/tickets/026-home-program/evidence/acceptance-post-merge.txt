@@ -1,0 +1,15 @@
+# Ticket 026 post-merge re-check (main with 041 and 027 merged, slot-4 stack after `db reset`, http://localhost:3040, DEMO_MODE=true, own headless
+# Chromium). E-1 and E-2 only. 2026-11-13T02:28:12.181Z
+
+PASS setup: guardian_a's child with an org A case and an active published plan with one goal
+PASS E-1.1 goal from another case -> 422 message :: {"error":"Choose a goal from this child's plan","details":{"goal_id":"Choose a goal from this child's plan"}}
+PASS E-1.1 add `Snack-time requesting` (goal, 5/week, 10 min) -> 201
+PASS E-1.1 `Publish to parent` (UI) -> published; strict audit row with session actor (041) :: {"actor_role":"provider","actor_user_id":"e1562c18-c14d-4312-a163-4abcadc3a696","child_id":"7053a8b4-00be-416d-9bed-741df4bd0c56","org_id":"4d0fe265-9bc7-44d3-a357-59fcb4bc1ff6"}
+PASS E-1.2 guardian `This week`: `0/5 this week`
+PASS E-2.1 `Done today`, `Okay`, `Save` (375 px) -> `1/5 this week`
+PASS E-2.1 same request twice -> 200/200, one row :: {"statuses":[200,200],"rows":1}
+PASS E-2.2 tomorrow -> 400, 20 days ago -> 400 :: [{"done_on":"The date cannot be in the future"},{"done_on":"You can only log the last 14 days"}]
+PASS E-2.3 provider panel: `done 1 of 5 times in the last 7 days` + note
+PASS 041 guardian export request accepted (home_programs category registered) :: 202
+
+ALL PASS (10 checks passed)

@@ -224,6 +224,21 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "reviewDeletionRequest",
     impl: { kind: "auditStrict", module: "lib/privacy/deletion.ts" },
   },
+  // ---------- 026 home program ----------
+  {
+    action: "home_program.published",
+    description: "Provider publishes a home program to the guardian (024 published version + activity snapshot)",
+    routes: ["app/api/home-programs/[pid]/publish/route.ts"],
+    call: "publishProgram",
+    impl: { kind: "auditStrict", module: "lib/home-program/index.ts" },
+  },
+  {
+    action: "home_program.log_deleted",
+    description: "Guardian removes one of their own practice logs",
+    routes: ["app/api/family/home-activity-logs/[id]/route.ts"],
+    call: "deleteOwnLog",
+    impl: { kind: "auditStrict", module: "lib/home-program/index.ts" },
+  },
   // ---------- 027 messaging (message + outbox event + audit row in one database function) ----------
   {
     action: "thread.created",
