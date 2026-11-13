@@ -136,6 +136,9 @@ drafts: `reports` = the current published version of each final assessment repor
 `iep` (ticket 025, `lib/sharing/loaders/iep.ts`) = the latest published version of each IEP plan of the source
 orgs' cases for the child (item id = plan id), followed by a live `Date | Value` progress table per published goal
 (no provider notes, never draft wording); see `docs/iep.md`.
+`home_program` (ticket 026, `lib/sharing/loaders/home_program.ts`) = the current published home program of each of
+the source orgs' cases for the child (item id = program id), followed by an `## Adherence` table (last 7 days and the
+last 4 weeks per activity; no guardian notes, never draft activities); see `docs/home-program.md`.
 
 ## RLS (browser reads only; the server uses the service role and the gates above)
 
