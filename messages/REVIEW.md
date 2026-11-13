@@ -11,9 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2547. Not yet approved: 2547.
-Rows: 2570. Not yet approved: 2570.
-Rows: 2588. Not yet approved: 2588.
+Rows: 2811. Not yet approved: 2811.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -2162,7 +2160,7 @@ Rows: 2588. Not yet approved: 2588.
 | `screen.metaTitle` | Developmental check-in for parents | माता-पिता के लिए विकास जाँच | తల్లిదండ్రుల కోసం అభివృద్ధి పరిశీలన |  | pending |
 | `screen.metaDescription` | A free 5-minute developmental check-in for parents in Hyderabad, by voice or by tapping. This is a developmental check-in, not a diagnosis. | हैदराबाद के माता-पिता के लिए 5 मिनट की मुफ़्त विकास जाँच, आवाज़ से या टैप करके। यह विकास की एक जाँच है, निदान नहीं। | హైదరాబాద్ తల్లిదండ్రుల కోసం 5 నిమిషాల ఉచిత అభివృద్ధి పరిశీలన, మాట ద్వారా లేదా ట్యాప్ చేసి. ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. |  | pending |
 | `screen.title` | Developmental check-in | विकास जाँच | అభివృద్ధి పరిశీలన |  | pending |
-| `screen.intro` | About 5 minutes. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child. | लगभग 5 मिनट। यह विकास की एक जाँच है, निदान नहीं। केवल एक योग्य विशेषज्ञ ही आपके बच्चे का आकलन कर सकते हैं। | సుమారు 5 నిమిషాలు. ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. అర్హత ఉన్న నిపుణులు మాత్రమే మీ బిడ్డను అంచనా వేయగలరు. |  | pending |
+| `screen.intro` | About 5 minutes, for children up to 8 years. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child. | लगभग 5 मिनट, 8 साल तक के बच्चों के लिए। यह विकास की एक जाँच है, निदान नहीं। केवल एक योग्य विशेषज्ञ ही आपके बच्चे का आकलन कर सकते हैं। | సుమారు 5 నిమిషాలు, 8 సంవత్సరాల వరకు పిల్లల కోసం. ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. అర్హత ఉన్న నిపుణులు మాత్రమే మీ బిడ్డను అంచనా వేయగలరు. |  | pending |
 | `screen.aiDisclosure` | You will talk to an AI assistant. It speaks English. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe. | आप एक AI सहायक से बात करेंगे। वह अंग्रेज़ी बोलता है। आपकी आवाज़ ElevenLabs (USA) द्वारा प्रोसेस की जाती है और DoctorNearMe उसे नहीं रखता। | మీరు ఒక AI సహాయకుడితో మాట్లాడతారు. అది ఇంగ్లీష్‌లో మాట్లాడుతుంది. మీ గొంతును ElevenLabs (USA) ప్రాసెస్ చేస్తుంది, DoctorNearMe దాన్ని నిల్వ చేయదు. |  | pending |
 | `screen.noPersonal` | Please do not say or type your child's name, your name or contact details. We keep only your answers, without any name, and delete them after 30 days unless you save them to your child's profile. | कृपया अपने बच्चे का नाम, अपना नाम या संपर्क जानकारी न बोलें और न लिखें। हम बिना किसी नाम के सिर्फ़ आपके जवाब रखते हैं और 30 दिन बाद हटा देते हैं, जब तक आप उन्हें अपने बच्चे की प्रोफ़ाइल में सेव न करें। | దయచేసి మీ బిడ్డ పేరు, మీ పేరు లేదా సంప్రదింపు వివరాలు చెప్పకండి, టైప్ చేయకండి. మేము ఏ పేరూ లేకుండా మీ సమాధానాలను మాత్రమే ఉంచుతాము, మీరు వాటిని మీ బిడ్డ ప్రొఫైల్‌లో సేవ్ చేయకపోతే 30 రోజుల తర్వాత తొలగిస్తాము. |  | pending |
 | `screen.ageLabel` | Child's age | बच्चे की उम्र | బిడ్డ వయస్సు |  | pending |
@@ -2170,10 +2168,15 @@ Rows: 2588. Not yet approved: 2588.
 | `screen.ageBands.y3to5` | 3-5 years | 3-5 साल | 3-5 సంవత్సరాలు |  | pending |
 | `screen.ageBands.y6to9` | 6-9 years | 6-9 साल | 6-9 సంవత్సరాలు |  | pending |
 | `screen.ageBands.y10plus` | 10+ years | 10+ साल | 10+ సంవత్సరాలు |  | pending |
+| `screen.ageBands.under18m` | Under 18 months | 18 महीने से कम | 18 నెలల లోపు |  | pending |
+| `screen.ageBands.m18to30` | 18-30 months | 18-30 महीने | 18-30 నెలలు |  | pending |
+| `screen.ageBands.m31to71` | 2½-5 years | 2½-5 साल | 2½-5 సంవత్సరాలు |  | pending |
+| `screen.ageBands.y6to8` | 6-8 years | 6-8 साल | 6-8 సంవత్సరాలు |  | pending |
+| `screen.ageBands.y9plus` | 9 years or older | 9 साल या उससे ज़्यादा | 9 సంవత్సరాలు లేదా ఎక్కువ |  | pending |
 | `screen.agree` | I understand this is not a diagnosis and agree to talk to an AI assistant. | मैं समझता/समझती हूँ कि यह निदान नहीं है और AI सहायक से बात करने के लिए सहमत हूँ। | ఇది నిర్ధారణ కాదు అని నేను అర్థం చేసుకున్నాను, AI సహాయకుడితో మాట్లాడటానికి అంగీకరిస్తున్నాను. |  | pending |
 | `screen.startVoice` | Start voice check-in | आवाज़ से जाँच शुरू करें | మాట ద్వారా పరిశీలన ప్రారంభించండి |  | pending |
 | `screen.startForm` | Start free check-in | मुफ़्त जाँच शुरू करें | ఉచిత పరిశీలన ప్రారంభించండి |  | pending |
-| `screen.startHint` | Choose your child's age and tick the box to start. | शुरू करने के लिए बच्चे की उम्र चुनें और बॉक्स पर टिक करें। | ప్రారంభించడానికి బిడ్డ వయస్సు ఎంచుకుని బాక్స్‌ను టిక్ చేయండి. |  | pending |
+| `screen.startHint` | Choose your child's age and tick the box to start. | अपने बच्चे की उम्र चुनें और शुरू करने के लिए बॉक्स पर टिक करें। | మీ బిడ్డ వయస్సు ఎంచుకుని, ప్రారంభించడానికి బాక్స్‌ను టిక్ చేయండి. |  | pending |
 | `screen.starting` | Starting... | शुरू हो रहा है... | ప్రారంభమవుతోంది... |  | pending |
 | `screen.englishOnly` | The questions are in English for now. | अभी सवाल अंग्रेज़ी में हैं। | ప్రస్తుతం ప్రశ్నలు ఇంగ్లీష్‌లో ఉన్నాయి. |  | pending |
 | `screen.demo` | Demo mode: no live voice call. Please answer by tapping. | डेमो मोड: कोई लाइव वॉइस कॉल नहीं। कृपया टैप करके जवाब दें। | డెమో మోడ్: లైవ్ వాయిస్ కాల్ లేదు. దయచేసి ట్యాప్ చేసి సమాధానం ఇవ్వండి. |  | pending |
@@ -2224,22 +2227,38 @@ Rows: 2588. Not yet approved: 2588.
 | `screen.result.levels.someSigns` | Some signs worth mentioning to a professional. | कुछ संकेत, जिनके बारे में किसी विशेषज्ञ को बताना अच्छा रहेगा। | నిపుణులకు చెప్పదగిన కొన్ని సంకేతాలు. |  | pending |
 | `screen.result.levels.moreSigns` | Several signs worth discussing with a professional. | कई संकेत, जिन पर किसी विशेषज्ञ से चर्चा करनी चाहिए। | నిపుణులతో చర్చించాల్సిన అనేక సంకేతాలు. |  | pending |
 | `screen.result.startAgain` | Start a new check-in | नई जाँच शुरू करें | కొత్త పరిశీలన ప్రారంభించండి |  | pending |
-| `screen.find.title` | Find a specialist near you | अपने पास विशेषज्ञ खोजें | మీ దగ్గర నిపుణులను కనుగొనండి |  | pending |
-| `screen.find.intro` | Specialists who can assess your child's development: developmental paediatricians, child psychologists, speech-language therapists and occupational therapists. | ऐसे विशेषज्ञ जो आपके बच्चे के विकास का आकलन कर सकते हैं: विकास बाल रोग विशेषज्ञ, बाल मनोवैज्ञानिक, स्पीच-लैंग्वेज थेरेपिस्ट और ऑक्यूपेशनल थेरेपिस्ट। | మీ బిడ్డ అభివృద్ధిని అంచనా వేయగల నిపుణులు: డెవలప్‌మెంటల్ పీడియాట్రీషియన్లు, చైల్డ్ సైకాలజిస్టులు, స్పీచ్-లాంగ్వేజ్ థెరపిస్టులు, ఆక్యుపేషనల్ థెరపిస్టులు. |  | pending |
-| `screen.find.locality` | Your locality | आपका इलाका | మీ ప్రాంతం |  | pending |
-| `screen.find.chooseLocality` | Choose a locality | इलाका चुनें | ప్రాంతాన్ని ఎంచుకోండి |  | pending |
+| `screen.result.mchat.followUpTitle` | A few follow-up questions (optional) | कुछ और सवाल (वैकल्पिक) | మరికొన్ని ప్రశ్నలు (ఐచ్ఛికం) |  | pending |
+| `screen.result.mchat.followUpIntro` | Some answers are worth a closer look. A few follow-up questions about them can make the result clearer. | कुछ जवाबों पर ध्यान से देखना अच्छा रहेगा। उनके बारे में कुछ और सवाल परिणाम को साफ़ कर सकते हैं। | కొన్ని సమాధానాలను దగ్గరగా చూడటం మంచిది. వాటి గురించి మరికొన్ని ప్రశ్నలు ఫలితాన్ని స్పష్టం చేయగలవు. |  | pending |
+| `screen.result.mchat.followUpStart` | Answer the follow-up questions | आगे के सवालों के जवाब दें | తదుపరి ప్రశ్నలకు సమాధానం ఇవ్వండి |  | pending |
+| `screen.result.mchat.pass` | No, not any more | नहीं, अब नहीं | లేదు, ఇప్పుడు లేదు |  | pending |
+| `screen.result.mchat.fail` | Yes, still | हाँ, अब भी | అవును, ఇంకా ఉంది |  | pending |
+| `screen.result.mchat.submit` | See my updated result | मेरा नया परिणाम देखें | నా కొత్త ఫలితం చూడండి |  | pending |
+| `screen.result.mchat.saving` | Saving... | सहेज रहे हैं... | సేవ్ చేస్తోంది... |  | pending |
+| `screen.result.mchat.missing` | Please answer every follow-up question. | कृपया हर सवाल का जवाब दें। | దయచేసి ప్రతి ప్రశ్నకు సమాధానం ఇవ్వండి. |  | pending |
+| `screen.result.mchat.done` | Thank you. Your result above includes the follow-up answers. | धन्यवाद। ऊपर का परिणाम अब इन जवाबों के साथ है। | ధన్యవాదాలు. పైన ఉన్న ఫలితంలో ఈ సమాధానాలు చేరాయి. |  | pending |
+| `screen.result.mchat.rescreen` | If your child is younger than 2, do this check-in again after their second birthday. | अगर आपका बच्चा 2 साल से छोटा है, तो दूसरे जन्मदिन के बाद यह जाँच फिर से करें। | మీ బిడ్డకు 2 సంవత్సరాల లోపు అయితే, రెండవ పుట్టినరోజు తర్వాత ఈ పరిశీలనను మళ్లీ చేయండి. |  | pending |
+| `screen.find.title` | Book a visit near you | अपने पास मुलाक़ात बुक करें | మీ దగ్గర అపాయింట్‌మెంట్ బుక్ చేయండి |  | pending |
+| `screen.find.locality` | Your area | आपका इलाका | మీ ప్రాంతం |  | pending |
+| `screen.find.chooseLocality` | Choose an area | इलाका चुनें | ప్రాంతాన్ని ఎంచుకోండి |  | pending |
 | `screen.find.useMyLocation` | Use my location | मेरी लोकेशन इस्तेमाल करें | నా లొకేషన్ ఉపయోగించండి |  | pending |
 | `screen.find.locating` | Finding your location... | आपकी लोकेशन खोजी जा रही है... | మీ లొకేషన్ కనుగొంటోంది... |  | pending |
-| `screen.find.locationDenied` | We could not get your location. Choose a locality instead. | हमें आपकी लोकेशन नहीं मिल सकी। इसके बजाय इलाका चुनें। | మీ లొకేషన్ లభించలేదు. బదులుగా ప్రాంతాన్ని ఎంచుకోండి. |  | pending |
-| `screen.find.search` | Show specialists | विशेषज्ञ दिखाएँ | నిపుణులను చూపించండి |  | pending |
+| `screen.find.locationDenied` | We could not get your location. Choose an area instead. | हमें आपकी लोकेशन नहीं मिल सकी। इसके बजाय इलाका चुनें। | మీ లొకేషన్ లభించలేదు. బదులుగా ప్రాంతాన్ని ఎంచుకోండి. |  | pending |
+| `screen.find.search` | Show nearby | पास के दिखाएँ | దగ్గరి వారిని చూపించండి |  | pending |
 | `screen.find.searching` | Searching... | खोज रहे हैं... | వెతుకుతోంది... |  | pending |
-| `screen.find.resultsLabel` | Specialists near you | आपके पास के विशेषज्ञ | మీ దగ్గరి నిపుణులు |  | pending |
-| `screen.find.empty` | No specialists listed near you yet. Try the full directory. | आपके पास अभी कोई विशेषज्ञ सूचीबद्ध नहीं है। पूरी डायरेक्टरी देखें। | మీ దగ్గర ఇంకా నిపుణులు జాబితాలో లేరు. పూర్తి డైరెక్టరీ చూడండి. |  | pending |
-| `screen.find.error` | Could not load specialists. Please try the full directory. | विशेषज्ञ लोड नहीं हो सके। कृपया पूरी डायरेक्टरी देखें। | నిపుణులను లోడ్ చేయలేకపోయాము. దయచేసి పూర్తి డైరెక్టరీ చూడండి. |  | pending |
+| `screen.find.empty` | No matching professionals listed nearby yet. Try the full directory. | अभी पास में कोई मिलता-जुलता विशेषज्ञ सूचीबद्ध नहीं है। पूरी डायरेक्टरी देखें। | దగ్గరలో సరిపోయే నిపుణులు ఇంకా జాబితాలో లేరు. పూర్తి డైరెక్టరీ చూడండి. |  | pending |
+| `screen.find.error` | Could not load professionals. Please try the full directory. | विशेषज्ञ लोड नहीं हो सके। कृपया पूरी डायरेक्टरी देखें। | నిపుణులను లోడ్ చేయలేకపోయాము. దయచేసి పూర్తి డైరెక్టరీ చూడండి. |  | pending |
 | `screen.find.kmAway` | {distance} km away | {distance} किमी दूर | {distance} కి.మీ. దూరం |  | pending |
 | `screen.find.videoAnywhere` | Video consultation | वीडियो परामर्श | వీడియో సంప్రదింపు |  | pending |
-| `screen.find.seeAll` | See all near you: {type} | अपने पास सभी देखें: {type} | మీ దగ్గర అందరినీ చూడండి: {type} |  | pending |
 | `screen.find.openDirectory` | Open the full directory | पूरी डायरेक्टरी खोलें | పూర్తి డైరెక్టరీ తెరవండి |  | pending |
+| `screen.find.introDefault` | Near central Hyderabad. Choose your area to see the closest ones. | हैदराबाद के बीच के इलाके के पास। सबसे नज़दीकी देखने के लिए अपना इलाका चुनें। | హైదరాబాద్ మధ్య ప్రాంతానికి దగ్గరగా. దగ్గరి వారిని చూడటానికి మీ ప్రాంతాన్ని ఎంచుకోండి. |  | pending |
+| `screen.find.introPlace` | Near {place}. | {place} के पास। | {place} దగ్గర. |  | pending |
+| `screen.find.yourLocation` | your location | आपकी लोकेशन | మీ లొకేషన్ |  | pending |
+| `screen.find.loading` | Finding professionals near you... | आपके पास विशेषज्ञ खोजे जा रहे हैं... | మీ దగ్గర నిపుణులను వెతుకుతోంది... |  | pending |
+| `screen.find.slotsLabel` | Next free times with {name} | {name} के अगले खाली समय | {name} తదుపరి ఖాళీ సమయాలు |  | pending |
+| `screen.find.bookHint` | Tap a time to book it. | बुक करने के लिए कोई समय चुनें। | బుక్ చేయడానికి ఒక సమయాన్ని నొక్కండి. |  | pending |
+| `screen.find.noSlots` | No free times online in the next 2 weeks. | अगले 2 हफ़्तों में ऑनलाइन कोई खाली समय नहीं। | రాబోయే 2 వారాల్లో ఆన్‌లైన్‌లో ఖాళీ సమయాలు లేవు. |  | pending |
+| `screen.find.viewProfile` | View profile | प्रोफ़ाइल देखें | ప్రొఫైల్ చూడండి |  | pending |
+| `screen.find.seeMore` | See more | और देखें | మరిన్ని చూడండి |  | pending |
 | `screen.save.title` | Save this result | यह परिणाम सेव करें | ఈ ఫలితాన్ని సేవ్ చేయండి |  | pending |
 | `screen.save.intro` | Keep this result in your child's profile so you can show it to a professional later. We save it only after you allow it for that child. | इस परिणाम को अपने बच्चे की प्रोफ़ाइल में रखें ताकि बाद में किसी विशेषज्ञ को दिखा सकें। हम इसे तभी सेव करते हैं जब आप उस बच्चे के लिए इसकी अनुमति दें। | తర్వాత నిపుణులకు చూపించడానికి ఈ ఫలితాన్ని మీ బిడ్డ ప్రొఫైల్‌లో ఉంచండి. ఆ బిడ్డ కోసం మీరు అనుమతి ఇచ్చిన తర్వాత మాత్రమే మేము దీన్ని సేవ్ చేస్తాము. |  | pending |
 | `screen.save.signIn` | Sign in to save | सेव करने के लिए साइन इन करें | సేవ్ చేయడానికి సైన్ ఇన్ చేయండి |  | pending |
@@ -2275,6 +2294,61 @@ Rows: 2588. Not yet approved: 2588.
 | `screen.voiceSignIn` | Prefer to talk? Sign in to use voice (free) | बात करना पसंद है? आवाज़ इस्तेमाल करने के लिए साइन इन करें (मुफ़्त) | మాట్లాడటం ఇష్టమా? వాయిస్ వాడటానికి సైన్ ఇన్ చేయండి (ఉచితం) |  | pending |
 | `screen.voicePrompt` | Prefer to talk? | बात करना पसंद है? | మాట్లాడటం ఇష్టమా? |  | pending |
 | `screen.voiceSignedIn` | You are signed in. Choose your child's age, tick the box and start the voice check-in. | आप साइन इन हैं। अपने बच्चे की उम्र चुनें, बॉक्स पर टिक करें और आवाज़ से जाँच शुरू करें। | మీరు సైన్ ఇన్ అయ్యారు. మీ బిడ్డ వయస్సు ఎంచుకుని, బాక్స్ టిక్ చేసి, మాట ద్వారా పరిశీలన ప్రారంభించండి. |  | pending |
+| `screen.concerns.title` | What worries you most? | आपको सबसे ज़्यादा किस बात की चिंता है? | మిమ్మల్ని ఎక్కువగా ఏది ఆందోళనకు గురిచేస్తోంది? |  | pending |
+| `screen.concerns.hint` | Choose any that fit, or none. It helps us suggest the right professional. | जो भी ठीक लगे चुनें, या कोई नहीं। इससे हम सही विशेषज्ञ सुझा पाते हैं। | సరిపోయేవి ఏవైనా ఎంచుకోండి, లేదా ఏదీ వద్దు. సరైన నిపుణులను సూచించడానికి ఇది సహాయపడుతుంది. |  | pending |
+| `screen.concerns.options.speech` | Speech and talking | बोलना और बातचीत | మాట్లాడటం, మాటలు |  | pending |
+| `screen.concerns.options.social` | Playing and getting along with others | खेलना और दूसरों के साथ घुलना-मिलना | ఆడుకోవడం, ఇతరులతో కలిసిపోవడం |  | pending |
+| `screen.concerns.options.movement` | Movement, balance, hand use | चलना-फिरना, संतुलन, हाथों का इस्तेमाल | కదలికలు, సమతుల్యత, చేతుల వాడకం |  | pending |
+| `screen.concerns.options.senses` | Senses (noise, touch, food) | इंद्रियाँ (आवाज़, छूना, खाना) | ఇంద్రియాలు (శబ్దం, స్పర్శ, ఆహారం) |  | pending |
+| `screen.concerns.options.behaviour` | Behaviour and meltdowns | व्यवहार और गुस्से के दौरे | ప్రవర్తన, కోపపు ఉద్రేకాలు |  | pending |
+| `screen.concerns.options.learning` | Learning and school | पढ़ाई और स्कूल | చదువు, బడి |  | pending |
+| `screen.under18m.title` | Milestones to watch for | इन पड़ावों पर ध्यान दें | గమనించవలసిన మైలురాళ్లు |  | pending |
+| `screen.under18m.intro` | For babies under 18 months there are no questions. Most babies: | 18 महीने से छोटे बच्चों के लिए कोई सवाल नहीं हैं। ज़्यादातर बच्चे: | 18 నెలల లోపు పిల్లలకు ప్రశ్నలు లేవు. చాలా మంది పిల్లలు: |  | pending |
+| `screen.under18m.byMonths` | by about {months} months | लगभग {months} महीने तक | సుమారు {months} నెలలకు |  | pending |
+| `screen.under18m.milestones.smiles` | Smile back at you | आपको देखकर मुस्कुराते हैं | మిమ్మల్ని చూసి నవ్వుతారు |  | pending |
+| `screen.under18m.milestones.babbles` | Babble and make sounds back to you | बड़बड़ाते हैं और आपकी आवाज़ का जवाब देते हैं | ముద్దుముద్దుగా శబ్దాలు చేస్తూ మీకు బదులిస్తారు |  | pending |
+| `screen.under18m.milestones.name` | Turn when you call their name | नाम पुकारने पर मुड़कर देखते हैं | పేరు పిలిస్తే తిరిగి చూస్తారు |  | pending |
+| `screen.under18m.milestones.points` | Point at things or wave bye-bye | चीज़ों की ओर इशारा करते हैं या बाय-बाय करते हैं | వస్తువుల వైపు వేలు చూపిస్తారు లేదా టాటా చెబుతారు |  | pending |
+| `screen.under18m.milestones.words` | Say a few words, like "mama" or "dada" | कुछ शब्द बोलते हैं, जैसे "मामा" या "दादा" | "అమ్మ" లేదా "నాన్న" వంటి కొన్ని మాటలు అంటారు |  | pending |
+| `screen.under18m.lostSkills` | If your baby stops doing something they could do before, see a doctor soon. | अगर आपका बच्चा पहले की कोई चीज़ करना बंद कर दे, तो जल्द डॉक्टर को दिखाएँ। | మీ బిడ్డ ఇంతకు ముందు చేయగలిగినది చేయడం మానేస్తే, త్వరగా డాక్టర్‌కు చూపించండి. |  | pending |
+| `screen.under18m.advice` | Every baby grows at their own pace. If your baby is not doing these yet, or you are worried, talk to your paediatrician. | हर बच्चा अपनी रफ़्तार से बढ़ता है। अगर आपका बच्चा अभी ये नहीं करता, या आपको चिंता है, तो अपने बाल रोग विशेषज्ञ से बात करें। | ప్రతి బిడ్డ తన వేగంతో ఎదుగుతుంది. మీ బిడ్డ ఇవి ఇంకా చేయకపోతే, లేదా మీకు ఆందోళనగా ఉంటే, మీ పిల్లల వైద్యులతో మాట్లాడండి. |  | pending |
+| `screen.under18m.findPaediatrician` | Find a paediatrician | बाल रोग विशेषज्ञ खोजें | పిల్లల వైద్యులను కనుగొనండి |  | pending |
+| `screen.under18m.findDevPaed` | Find a developmental paediatrician | विकासात्मक बाल रोग विशेषज्ञ खोजें | డెవలప్‌మెంటల్ పీడియాట్రీషియన్‌ను కనుగొనండి |  | pending |
+| `screen.over8.title` | For children 9 years or older | 9 साल या उससे बड़े बच्चों के लिए | 9 సంవత్సరాలు లేదా అంతకంటే పెద్ద పిల్లల కోసం |  | pending |
+| `screen.over8.text` | This check-in is for children up to 8. Please talk to your child's doctor or a child psychologist. | यह जाँच 8 साल तक के बच्चों के लिए है। कृपया अपने बच्चे के डॉक्टर या किसी बाल मनोवैज्ञानिक से बात करें। | ఈ పరిశీలన 8 సంవత్సరాల వరకు పిల్లల కోసం. దయచేసి మీ బిడ్డ డాక్టర్‌తో లేదా పిల్లల మనస్తత్వ నిపుణులతో మాట్లాడండి. |  | pending |
+| `screen.over8.find` | Find a child psychologist or doctor near you | अपने पास बाल मनोवैज्ञानिक या डॉक्टर खोजें | మీ దగ్గర పిల్లల మనస్తత్వ నిపుణులను లేదా డాక్టర్‌ను కనుగొనండి |  | pending |
+| `screen.recommend.title` | Who can help first | सबसे पहले कौन मदद कर सकता है | ముందుగా ఎవరు సహాయం చేయగలరు |  | pending |
+| `screen.recommend.first` | Good first step | अच्छा पहला कदम | మంచి మొదటి అడుగు |  | pending |
+| `screen.recommend.reasons.speech` | Because you mentioned speech, a speech therapist is a good first step. | आपने बोलने के बारे में बताया, इसलिए स्पीच थेरेपिस्ट एक अच्छा पहला कदम है। | మీరు మాటల గురించి చెప్పారు, కాబట్టి స్పీచ్ థెరపిస్ట్ మంచి మొదటి అడుగు. |  | pending |
+| `screen.recommend.reasons.social` | Because you mentioned playing and getting along with others, a developmental paediatrician or child psychologist can do a full evaluation first. | आपने खेलने और दूसरों के साथ घुलने-मिलने के बारे में बताया, इसलिए पहले विकासात्मक बाल रोग विशेषज्ञ या बाल मनोवैज्ञानिक पूरी जाँच कर सकते हैं। | మీరు ఆడుకోవడం, ఇతరులతో కలిసిపోవడం గురించి చెప్పారు, కాబట్టి ముందుగా డెవలప్‌మెంటల్ పీడియాట్రీషియన్ లేదా పిల్లల మనస్తత్వ నిపుణులు పూర్తి పరీక్ష చేయగలరు. |  | pending |
+| `screen.recommend.reasons.movement` | Because you mentioned movement, an occupational therapist is a good first step. | आपने चलने-फिरने के बारे में बताया, इसलिए ऑक्यूपेशनल थेरेपिस्ट एक अच्छा पहला कदम है। | మీరు కదలికల గురించి చెప్పారు, కాబట్టి ఆక్యుపేషనల్ థెరపిస్ట్ మంచి మొదటి అడుగు. |  | pending |
+| `screen.recommend.reasons.senses` | Because you mentioned senses like noise, touch or food, an occupational therapist is a good first step. | आपने आवाज़, छूने या खाने जैसी इंद्रियों के बारे में बताया, इसलिए ऑक्यूपेशनल थेरेपिस्ट एक अच्छा पहला कदम है। | మీరు శబ్దం, స్పర్శ లేదా ఆహారం వంటి ఇంద్రియాల గురించి చెప్పారు, కాబట్టి ఆక్యుపేషనల్ థెరపిస్ట్ మంచి మొదటి అడుగు. |  | pending |
+| `screen.recommend.reasons.behaviour` | Because you mentioned behaviour and meltdowns, a child psychologist is a good first step. | आपने व्यवहार और गुस्से के दौरों के बारे में बताया, इसलिए बाल मनोवैज्ञानिक एक अच्छा पहला कदम है। | మీరు ప్రవర్తన, కోపపు ఉద్రేకాల గురించి చెప్పారు, కాబట్టి పిల్లల మనస్తత్వ నిపుణులు మంచి మొదటి అడుగు. |  | pending |
+| `screen.recommend.reasons.learningSchool` | Because you mentioned learning and school, a special educator is a good first step. | आपने पढ़ाई और स्कूल के बारे में बताया, इसलिए विशेष शिक्षक एक अच्छा पहला कदम है। | మీరు చదువు, బడి గురించి చెప్పారు, కాబట్టి ప్రత్యేక విద్యావేత్త మంచి మొదటి అడుగు. |  | pending |
+| `screen.recommend.reasons.learningYoung` | Because you mentioned learning, a developmental paediatrician can check your child's overall development first. | आपने सीखने के बारे में बताया, इसलिए पहले विकासात्मक बाल रोग विशेषज्ञ आपके बच्चे के पूरे विकास की जाँच कर सकते हैं। | మీరు నేర్చుకోవడం గురించి చెప్పారు, కాబట్టి ముందుగా డెవలప్‌మెంటల్ పీడియాట్రీషియన్ మీ బిడ్డ మొత్తం అభివృద్ధిని పరిశీలించగలరు. |  | pending |
+| `screen.recommend.reasons.closerLook` | Because some of your answers are worth a closer look, a developmental paediatrician can do a full evaluation. | आपके कुछ जवाबों पर ध्यान से देखना अच्छा रहेगा, इसलिए विकासात्मक बाल रोग विशेषज्ञ पूरी जाँच कर सकते हैं। | మీ కొన్ని సమాధానాలను దగ్గరగా చూడటం మంచిది, కాబట్టి డెవలప్‌మెంటల్ పీడియాట్రీషియన్ పూర్తి పరీక్ష చేయగలరు. |  | pending |
+| `screen.recommend.reasons.noSigns` | Your answers show no strong signs. If you are still worried, your child's paediatrician is a good first step. | आपके जवाबों में कोई मज़बूत संकेत नहीं हैं। अगर फिर भी चिंता है, तो आपके बच्चे के बाल रोग विशेषज्ञ एक अच्छा पहला कदम हैं। | మీ సమాధానాల్లో బలమైన సంకేతాలు లేవు. అయినా ఆందోళనగా ఉంటే, మీ బిడ్డ పిల్లల వైద్యులు మంచి మొదటి అడుగు. |  | pending |
+| `screen.recommend.roles.developmental_pediatrician` | A doctor who checks how children grow, move, talk and learn, and plans the next steps. | डॉक्टर जो देखते हैं कि बच्चा कैसे बढ़ता, चलता, बोलता और सीखता है, और आगे के कदम तय करते हैं। | పిల్లలు ఎలా ఎదుగుతున్నారు, కదులుతున్నారు, మాట్లాడుతున్నారు, నేర్చుకుంటున్నారో పరిశీలించి తదుపరి అడుగులు నిర్ణయించే డాక్టర్. |  | pending |
+| `screen.recommend.roles.child_psychiatrist` | A doctor for children's feelings, behaviour and mental health. | बच्चों की भावनाओं, व्यवहार और मानसिक स्वास्थ्य के डॉक्टर। | పిల్లల భావాలు, ప్రవర్తన, మానసిక ఆరోగ్యానికి డాక్టర్. |  | pending |
+| `screen.recommend.roles.child_psychologist` | Understands children's thinking, feelings and behaviour, and helps families with them. | बच्चों की सोच, भावनाओं और व्यवहार को समझते हैं और परिवारों की मदद करते हैं। | పిల్లల ఆలోచనలు, భావాలు, ప్రవర్తనను అర్థం చేసుకుని కుటుంబాలకు సహాయం చేస్తారు. |  | pending |
+| `screen.recommend.roles.speech_language_pathologist` | Helps with talking, understanding, eating and swallowing. | बोलने, समझने, खाने और निगलने में मदद करते हैं। | మాట్లాడటం, అర్థం చేసుకోవడం, తినడం, మింగడంలో సహాయం చేస్తారు. |  | pending |
+| `screen.recommend.roles.occupational_therapist` | Helps with hand use, play, everyday skills and how a child handles noise, touch and food. | हाथों के इस्तेमाल, खेल, रोज़ के कामों और आवाज़, छूने व खाने को संभालने में मदद करते हैं। | చేతుల వాడకం, ఆట, రోజువారీ పనులు, శబ్దం, స్పర్శ, ఆహారాన్ని తట్టుకోవడంలో సహాయం చేస్తారు. |  | pending |
+| `screen.recommend.roles.aba_therapist` | Builds new skills and helps with difficult behaviour, step by step. | कदम-दर-कदम नए कौशल सिखाते हैं और मुश्किल व्यवहार में मदद करते हैं। | అడుగు అడుగుగా కొత్త నైపుణ్యాలు నేర్పిస్తారు, కష్టమైన ప్రవర్తనలో సహాయం చేస్తారు. |  | pending |
+| `screen.recommend.roles.special_educator` | Helps children learn in the way that works for them, at home and at school. | बच्चे को उसके तरीके से सीखने में मदद करते हैं, घर पर और स्कूल में। | బిడ్డకు సరిపోయే విధంగా ఇంట్లో, బడిలో నేర్చుకోవడానికి సహాయం చేస్తారు. |  | pending |
+| `screen.recommend.roles.physiotherapist` | Helps with movement, balance, strength and walking. | चलने-फिरने, संतुलन, ताकत और चलने में मदद करते हैं। | కదలికలు, సమతుల్యత, బలం, నడకలో సహాయం చేస్తారు. |  | pending |
+| `screen.recommend.roles.pediatrician` | Your child's doctor for growth, health and regular check-ups. | विकास, सेहत और नियमित जाँच के लिए आपके बच्चे के डॉक्टर। | ఎదుగుదల, ఆరోగ్యం, క్రమమైన తనిఖీల కోసం మీ బిడ్డ డాక్టర్. |  | pending |
+| `screen.recommend.findType` | Find near you | अपने पास खोजें | మీ దగ్గర కనుగొనండి |  | pending |
+| `screen.free.title` | Free government options | मुफ़्त सरकारी विकल्प | ఉచిత ప్రభుత్వ సేవలు |  | pending |
+| `screen.free.intro` | Free help from the government, for every family. | सरकार की मुफ़्त मदद, हर परिवार के लिए। | ప్రతి కుటుంబానికి ప్రభుత్వం నుండి ఉచిత సహాయం. |  | pending |
+| `screen.free.services.deic.what` | At your district hospital. Free for children up to 6. | आपके ज़िला अस्पताल में। 6 साल तक के बच्चों के लिए मुफ़्त। | మీ జిల్లా ఆసుపత్రిలో. 6 సంవత్సరాల వరకు పిల్లలకు ఉచితం. |  | pending |
+| `screen.free.services.deic.contact` | Ask at the district hospital reception for the DEIC (RBSK). | ज़िला अस्पताल के रिसेप्शन पर DEIC (RBSK) के बारे में पूछें। | జిల్లా ఆసుపత్రి రిసెప్షన్‌లో DEIC (RBSK) గురించి అడగండి. |  | pending |
+| `screen.free.services.niepid.what` | Government institute in Secunderabad for children with developmental needs: assessment, therapy and advice. | सिकंदराबाद में विकास संबंधी ज़रूरतों वाले बच्चों के लिए सरकारी संस्थान: आकलन, थेरेपी और सलाह। | సికింద్రాబాద్‌లో అభివృద్ధి అవసరాలు ఉన్న పిల్లల కోసం ప్రభుత్వ సంస్థ: అంచనా, థెరపీ, సలహా. |  | pending |
+| `screen.free.address` | Address | पता | చిరునామా |  | pending |
+| `screen.free.phone` | Phone | फ़ोन | ఫోన్ |  | pending |
+| `screen.free.tollFree` | Toll-free | टोल-फ़्री | టోల్-ఫ్రీ |  | pending |
+| `screen.free.website` | Website | वेबसाइट | వెబ్‌సైట్ |  | pending |
+| `screen.free.checkTimings` | Check timings before you go. | जाने से पहले समय की पुष्टि कर लें। | వెళ్ళే ముందు సమయాలు తెలుసుకోండి. |  | pending |
+| `screen.free.lastChecked` | Details last checked on {date}. | जानकारी आख़िरी बार {date} को जाँची गई। | వివరాలు చివరిగా {date}న తనిఖీ చేశాము. |  | pending |
 | `payments.labels.paid` | Paid | भुगतान हो गया | చెల్లించారు |  | pending |
 | `payments.labels.paidOnline` | Paid online | ऑनलाइन भुगतान हुआ | ఆన్‌లైన్‌లో చెల్లించారు |  | pending |
 | `payments.labels.pending` | Payment pending | भुगतान बाकी | చెల్లింపు పెండింగ్ |  | pending |

@@ -3,7 +3,8 @@
 import type { RedFlagCode } from "@/lib/clinical/checkin";
 import { reportVoiceEnd, voiceStartHeaders } from "@/lib/voice/client";
 import { voiceRefusal, type VoiceRefusal } from "@/lib/voice/constants";
-import type { ScreenAgeBand, ScreenMode, ScreenQuestion, ScreenResult } from "./questions";
+import type { MatchResponse } from "./matches";
+import type { QuestionAgeBand, ScreenConcern, ScreenMode, ScreenQuestion, ScreenResult } from "./questions";
 
 export const SESSION_STORAGE_KEY = "dnm.screen.session";
 
@@ -37,14 +38,19 @@ export type StartDeps = {
   turnstileToken?: string | null;
 };
 
-/** POST /api/screen/sessions, then (voice only) the microphone prompt. */
-export async function startScreen(ageBand: ScreenAgeBand, mode: ScreenMode, deps: StartDeps): Promise<StartOutcome> {
+/** POST /api/screen/sessions (048: with the parent's worries as codes), then (voice only) the microphone prompt. */
+export async function startScreen(
+  ageBand: QuestionAgeBand,
+  mode: ScreenMode,
+  deps: StartDeps,
+  concerns: readonly ScreenConcern[] = [],
+): Promise<StartOutcome> {
   let res: Response;
   try {
     res = await deps.fetchFn("/api/screen/sessions", {
       method: "POST",
       headers: voiceStartHeaders(mode === "voice" ? deps.turnstileToken : null),
-      body: JSON.stringify({ age_band: ageBand, mode }),
+      body: JSON.stringify({ age_band: ageBand, mode, concerns }),
     });
   } catch {
     return { kind: "error", error: "failed" };
@@ -154,6 +160,45 @@ export async function finishScreen(fetchFn: typeof fetch, sessionId: string, con
   }
 }
 
+export type FollowUpOutcome = { ok: true; result: ScreenResult } | { ok: false; status: number; missing: string[] };
+
+/** 048 FR-3: the optional M-CHAT-R/F Follow-Up answers (pass/fail per followed-up item), all at once. */
+export async function postFollowUp(
+  fetchFn: typeof fetch,
+  sessionId: string,
+  answers: { item_id: string; answer: string }[],
+): Promise<FollowUpOutcome> {
+  try {
+    const res = await fetchFn(`/api/screen/sessions/${encodeURIComponent(sessionId)}/follow-up`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers }),
+    });
+    const json = (await res.json().catch(() => ({}))) as ScreenResult & { details?: { missing?: string[] } };
+    if (!res.ok) return { ok: false, status: res.status, missing: json.details?.missing ?? [] };
+    return { ok: true, result: json };
+  } catch {
+    return { ok: false, status: 0, missing: [] };
+  }
+}
+
+/** 048 FR-10: up to 3 matching providers with their next free slots (default origin: central Hyderabad). */
+export async function fetchMatches(
+  fetchFn: typeof fetch,
+  sessionId: string,
+  origin: { lat: number; lng: number } | null = null,
+): Promise<MatchResponse | null> {
+  const qs = origin ? `?${new URLSearchParams({ lat: origin.lat.toFixed(3), lng: origin.lng.toFixed(3) })}` : "";
+  try {
+    const res = await fetchFn(`/api/screen/sessions/${encodeURIComponent(sessionId)}/providers${qs}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    const body = (await res.json()) as MatchResponse;
+    return Array.isArray(body.providers) ? body : null;
+  } catch {
+    return null;
+  }
+}
+
 // ---------- voice client tools (FR-3) ----------
 
 /** What the agent hears back from a tool call (English: the agent speaks English only). */
@@ -163,7 +208,7 @@ export const TOOL_REPLIES = {
     "All questions are answered. Thank the parent, tell them the result is now on their screen with nearby specialists, and end the call.",
   stop: "Red flag recorded. Say the fixed safety message now and end the call. Do not ask any more questions.",
   invalid:
-    "That answer was not saved. Use an item id from the list and never, sometimes, often or always (yes or no for the safety questions).",
+    "That answer was not saved. Use an item id from the list and one of the answers shown in brackets for that question (never, sometimes, often or always; yes or no for the safety and yes/no questions).",
   closed: "The check-in is closed. End the call politely.",
   failed: "Saving failed. Ask the same question again.",
 } as const;

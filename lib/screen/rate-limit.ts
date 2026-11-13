@@ -16,3 +16,10 @@ export function rateKey(req: Request): string {
 export function allowScreenSession(req: Request, now = Date.now()): boolean {
   return screenSessionLimiter.allow(rateKey(req), now);
 }
+
+/** 048 FR-10: provider matches below a result (a few directory and slot queries each): 30 per minute per IP. */
+export const screenMatchesLimiter = createRateLimiter({ limit: 30, windowMs: 60_000 });
+
+export function allowScreenMatches(req: Request, now = Date.now()): boolean {
+  return screenMatchesLimiter.allow(rateKey(req), now);
+}

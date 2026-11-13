@@ -1,13 +1,28 @@
 // Ticket 033: pure view helpers for the check-in components (message keys for ids, button styles).
 import type { CheckinBand } from "@/lib/clinical/checkin";
-import type { DomainLevel, ScreenAgeBand } from "@/lib/screen/questions";
+import type { DomainLevel, ScreenAgeBand, StoredAgeBand } from "@/lib/screen/questions";
+import type { RecommendationReason } from "@/lib/screen/recommend";
 
+/** Picker bands (048) and every stored band (033's old bands still render on saved check-ins). */
 export const AGE_BAND_KEYS = {
+  "under-18m": "under18m",
+  "18-30m": "m18to30",
+  "31-71m": "m31to71",
+  "6-8y": "y6to8",
+  "9y+": "y9plus",
   "18-36m": "m18to36",
   "3-5y": "y3to5",
   "6-9y": "y6to9",
   "10y+": "y10plus",
-} as const satisfies Record<ScreenAgeBand, string>;
+} as const satisfies Record<ScreenAgeBand | StoredAgeBand, string>;
+
+/** 048 FR-6: message key (`screen.recommend.reasons.*`) for the first card's one-line reason. */
+export function reasonKey(reason: RecommendationReason, firstType: string | undefined) {
+  if (reason.kind === "closer_look") return "closerLook" as const;
+  if (reason.kind === "no_signs") return "noSigns" as const;
+  if (reason.concern === "learning") return firstType === "special_educator" ? ("learningSchool" as const) : ("learningYoung" as const);
+  return reason.concern;
+}
 
 export const HEADLINE_KEYS = {
   no_strong_signs: "noStrongSigns",

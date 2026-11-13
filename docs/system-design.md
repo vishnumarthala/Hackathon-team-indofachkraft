@@ -283,6 +283,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `ELEVENLABS_API_KEY` | Scribe, conversation token, TTS | |
 | `ELEVENLABS_AGENT_ID` | intake page | agent configured per `docs/elevenlabs-agent.md` |
 | `ELEVENLABS_SCREEN_AGENT_ID` | `/screen` voice check-in (033) | optional; English-only public agent per `docs/elevenlabs-screen-agent.md`; unset (and not `DEMO_MODE`) -> the page offers only the tap-through form |
+| `MCHAT_LICENSED` | `/screen` 18-30 months (048) | optional, default `false`; `true` = M-CHAT-R/F instead of the ISAA-derived items. Only after the licence is confirmed and the placeholder wording in `schemas/mchat-rf.json` is replaced (`docs/screen-recommendations.md`) |
 | `ELEVENLABS_BOOKING_AGENT_ID` / `ELEVENLABS_TOOL_SECRET` | `/find` voice booking (034) | optional; English-only booking agent per `docs/elevenlabs-booking-agent.md` and the shared secret its server tools send as `X-Agent-Secret`; without both (and not `DEMO_MODE`) `/find` has no voice widget and every tool call is 401 |
 | `ELEVENLABS_FOLLOWUP_AGENT_ID` | `Ask by voice` in the family portal (040) | optional; English-only follow-up agent per `docs/elevenlabs-followup-agent.md`; its `answer_question` tool uses `ELEVENLABS_TOOL_SECRET`; without both (and not `DEMO_MODE`) the ask page offers the text chat only |
 | `RETENTION_FOLLOWUP_DAYS` | retention job (040) | optional; days follow-up questions/answers are kept [90] |
@@ -706,6 +707,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `POST\|DELETE /api/agents/followup/session` | 040 | guardian of `child_id`; `ai_follow_up` consent (422) | 201 `{ followup_session, expires_at, conversation_token, agent_id?, demo?, dynamic_variables: { followup_session } }`; 503 not configured; DELETE `{ followup_session, conversation_id? }` -> 200 `{ ended: true }` (own sessions only, else 404) |
 | `POST /api/agents/followup/tools/answer_question` | 040 | `X-Agent-Secret` + `{ followup_session, question }` | same body as the text ask; 401 secret / unknown, expired, ended or revoked-guardian session; 422 consent withdrawn; 429 over 20 calls per session (section 13c) |
 | `POST /api/agents/followup/demo/answer_question` | 040 | DEMO_MODE only (else 404); signed-in guardian who owns the session (else 401) | same handler as the tool |
+| `POST /api/screen/sessions/:id/follow-up`, `GET /api/screen/sessions/:id/providers` | 048 | public; follow-up `{ answers: [{ item_id: "mchatfu_N", answer: "pass"\|"fail" }] }`; providers `?lat&lng` (optional, default central Hyderabad) | follow-up 200 updated result / 409 no Follow-Up / 422 missing; providers 200 `{ origin, types, providers: [{ ..., service, slots: [{ start, end, book_href }] }], see_more }` / 409 not finished or red flag / 404 / 429 30 per minute |
 | `POST /api/family/screen-results` | 033 | `{ session_id, child_id }` | 201 (200 again) `{ saved: true }`; 401; 404 not your child; 422 `screen_result_save` consent; 409 unfinished / red flag / other child; 410 expired |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 | `GET /api/org/import/template` | 047 | provider | 200 `text/csv` header row (UTF-8 BOM) |
@@ -926,6 +928,23 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   conversation); retention step `unsaved_screen_sessions` deletes unsaved rows after 30 days. `/screen` gets the
   strict family CSP (nonce, no analytics) plus the ElevenLabs API/LiveKit `connect-src` (`lib/csp.ts`,
   `lib/privacy/third-party-allowlist.ts`).
+
+### 13a.1 Children up to 8 (ticket 048)
+
+Details and the clinical review list: [screen-recommendations.md](screen-recommendations.md).
+
+- Bands: `under-18m` (milestones, no session), `18-30m`, `31-71m`, `6-8y`, `9y+` ("up to 8" page, no session).
+  `POST /api/screen/sessions` accepts only the three middle bands plus optional `concerns` (codes). Old rows keep
+  `18-36m` / `3-5y` / `6-9y` / `10y+` (still valid in the check constraint, still render).
+- Migration `20261113004800_checkin_up_to_8.sql`: `screen_sessions.instrument` (`ISAA_PARENT_CHECKIN` | `MCHAT_RF`, FK
+  to the registry, fixed at the start) and `concerns text[]` (six codes); `screen_answers_valid()` also accepts
+  `mchat_N` (yes/no) and `mchatfu_N` (pass/fail); registry row `MCHAT_RF` + `clinical_instruments.licence_ref`.
+- `MCHAT_LICENSED` (default false): `18-30m` uses M-CHAT-R/F (`lib/clinical/mchat.ts`, placeholder wording until
+  licensed) with the optional Follow-Up `POST /api/screen/sessions/:id/follow-up`.
+- Results carry `instrument`, `mchat` and `recommendation` (`lib/screen/recommend.ts`); the page shows who can help
+  first, up to 3 bookable providers (`GET /api/screen/sessions/:id/providers`, `lib/screen/matches.ts`; time chips
+  link to `/book/<profileId>?service=&start=`, which pre-selects the slot) and the free government options
+  (`lib/screen/free-services.ts`). Red flags still come first and stop everything (providers 409).
 
 ## 13b. Voice booking agent on /find (ticket 034)
 

@@ -1,74 +1,58 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState } from "react";
-import { findHref, roundCoord } from "@/lib/geo/constants";
-import type { DirectoryResult } from "@/lib/geo/search";
-import { useT } from "@/lib/i18n/client";
-import { SUGGESTED_PROVIDER_TYPES } from "@/lib/screen/questions";
+import { useEffect, useId, useState } from "react";
+import { dayLabel, viewerDate } from "@/lib/booking/display";
+import { useFormatter, useLocale, useT, useTimeZone } from "@/lib/i18n/client";
+import { fetchMatches } from "@/lib/screen/client";
+import type { MatchResponse, MatchSlot } from "@/lib/screen/matches";
 import { primaryButton, smallButton } from "./view";
 
 export type LocalityOption = { name: string; lat: number; lng: number };
 
-/** Directory radius for the check-in result (the Hyderabad SEO radius of 029). */
-export const NEARBY_RADIUS_KM = 25;
-const PER_TYPE = 3;
-
-type Group = { type: (typeof SUGGESTED_PROVIDER_TYPES)[number]; results: DirectoryResult[] };
+type Origin = { lat: number; lng: number; label: string | null };
 type State =
-  | { kind: "idle" }
+  | { kind: "loading"; origin: Origin | null }
   | { kind: "locating" }
-  | { kind: "loading" }
   | { kind: "error"; key: "locationDenied" | "error" }
-  | { kind: "done"; origin: { lat: number; lng: number }; groups: Group[] };
+  | { kind: "done"; origin: Origin | null; data: MatchResponse };
 
-/** One GET /api/public/providers per suggested type (029). The location is used for these requests only. */
-export async function searchSuggested(
-  fetchFn: typeof fetch,
-  origin: { lat: number; lng: number },
-): Promise<Group[] | null> {
-  try {
-    const groups = await Promise.all(
-      SUGGESTED_PROVIDER_TYPES.map(async (type) => {
-        const params = new URLSearchParams({
-          lat: String(roundCoord(origin.lat)),
-          lng: String(roundCoord(origin.lng)),
-          type,
-          radius_km: String(NEARBY_RADIUS_KM),
-        });
-        const res = await fetchFn(`/api/public/providers?${params}`);
-        if (!res.ok) throw new Error(String(res.status));
-        const body = (await res.json()) as { results: DirectoryResult[] };
-        return { type, results: body.results.slice(0, PER_TYPE) };
-      }),
-    );
-    return groups;
-  } catch {
-    return null;
-  }
-}
-
-// Ticket 033 FR-6: `Find a specialist near you` - the 029 directory, prefiltered by the suggested provider types,
-// after a location prompt. Links to profiles and the full directory only (booking from here is out of scope).
-export function NearbyProviders({ localities }: { localities: LocalityOption[] }) {
+// Ticket 048 FR-10 (replaces 033's per-type lists): up to 3 matching providers below the recommendation, ordered by
+// recommended type then distance (central Hyderabad until the parent picks an area or shares the location, which
+// is used for that request only). Each shows its next 2 free times; a time goes straight to /book with that slot
+// selected. `See more` opens /find with the same filters.
+export function NearbyProviders({ sessionId, localities }: { sessionId: string; localities: LocalityOption[] }) {
   const t = useT("screen.find");
   const tp = useT("providers");
-  const td = useT("directory");
+  const format = useFormatter();
+  const locale = useLocale();
+  const viewerTz = useTimeZone();
   const id = useId();
   const [locality, setLocality] = useState("");
-  const [state, setState] = useState<State>({ kind: "idle" });
+  const [request, setRequest] = useState<{ origin: Origin | null; n: number }>({ origin: null, n: 0 });
+  const [state, setState] = useState<State>({ kind: "loading", origin: null });
 
-  async function search(origin: { lat: number; lng: number }) {
-    setState({ kind: "loading" });
-    const groups = await searchSuggested((input, init) => fetch(input, init), origin);
-    setState(groups ? { kind: "done", origin, groups } : { kind: "error", key: "error" });
+  useEffect(() => {
+    let cancelled = false;
+    fetchMatches((input, init) => fetch(input, init), sessionId, request.origin).then((data) => {
+      if (cancelled) return;
+      setState(data ? { kind: "done", origin: request.origin, data } : { kind: "error", key: "error" });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId, request]);
+
+  function search(origin: Origin) {
+    setState({ kind: "loading", origin });
+    setRequest((r) => ({ origin, n: r.n + 1 }));
   }
 
   function locateMe() {
     if (!navigator.geolocation) return setState({ kind: "error", key: "locationDenied" });
     setState({ kind: "locating" });
     navigator.geolocation.getCurrentPosition(
-      (pos) => void search({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      (pos) => search({ lat: pos.coords.latitude, lng: pos.coords.longitude, label: null }),
       () => setState({ kind: "error", key: "locationDenied" }),
       { enableHighAccuracy: false, timeout: 15_000, maximumAge: 600_000 },
     );
@@ -76,25 +60,82 @@ export function NearbyProviders({ localities }: { localities: LocalityOption[] }
 
   function searchLocality() {
     const hit = localities.find((l) => l.name === locality);
-    if (hit) void search({ lat: hit.lat, lng: hit.lng });
+    if (hit) search({ lat: hit.lat, lng: hit.lng, label: hit.name });
   }
 
+  const chipLabel = (slot: MatchSlot) => {
+    const day = dayLabel(viewerDate(slot.start, viewerTz), locale);
+    return `${day.weekday} ${day.day}, ${format.time(slot.start)}`;
+  };
   const busy = state.kind === "locating" || state.kind === "loading";
-  const total = state.kind === "done" ? state.groups.reduce((n, g) => n + g.results.length, 0) : 0;
+  const origin = state.kind === "done" || state.kind === "loading" ? state.origin : null;
 
   return (
     <section aria-labelledby={`${id}-title`} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6" data-testid="screen-directory">
       <h2 id={`${id}-title`} className="text-xl font-semibold text-slate-900">
         {t("title")}
       </h2>
-      <p className="text-slate-700">{t("intro")}</p>
-      <ul className="flex flex-wrap gap-2" aria-label={t("resultsLabel")}>
-        {SUGGESTED_PROVIDER_TYPES.map((type) => (
-          <li key={type} data-type={type} className="rounded-full bg-teal-50 px-3 py-1 text-sm font-medium text-teal-900">
-            {tp(`types.${type}`)}
-          </li>
-        ))}
-      </ul>
+      <p className="text-slate-700">{origin ? t("introPlace", { place: origin.label ?? t("yourLocation") }) : t("introDefault")}</p>
+
+      <div aria-live="polite" className="space-y-3">
+        {state.kind === "loading" ? <p role="status" className="text-slate-700">{t("loading")}</p> : null}
+        {state.kind === "error" ? (
+          <p role="alert" className="text-sm font-medium text-red-700">
+            {t(state.key)}
+          </p>
+        ) : null}
+        {state.kind === "done" && state.data.providers.length === 0 ? <p role="status" className="text-slate-700">{t("empty")}</p> : null}
+        {state.kind === "done" && state.data.providers.length > 0 ? (
+          <>
+            <p className="text-sm text-slate-700">{t("bookHint")}</p>
+            <ul className="space-y-3">
+              {state.data.providers.map((p) => (
+                <li key={p.profile_id} className="space-y-2 rounded-xl border border-slate-200 p-3" data-profile={p.profile_id} data-type={p.provider_type}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Link href={`/p/${p.slug}`} className="font-semibold text-slate-900 underline-offset-4 hover:underline">
+                      {p.display_name}
+                    </Link>
+                    {p.is_synthetic ? (
+                      <span className="rounded bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-900">{tp("demoBadge")}</span>
+                    ) : null}
+                  </div>
+                  <p className="text-sm text-slate-700">
+                    {tp(`types.${p.provider_type}`)}
+                    {" · "}
+                    {[p.org_public_name && p.org_public_name !== p.display_name ? p.org_public_name : null, p.locality].filter(Boolean).join(", ")}{" "}
+                    <span className="font-medium text-teal-800">
+                      {p.distance_km !== null ? t("kmAway", { distance: p.distance_km.toFixed(1) }) : t("videoAnywhere")}
+                    </span>
+                  </p>
+                  {p.slots.length > 0 ? (
+                    <ul className="flex flex-wrap gap-2" aria-label={t("slotsLabel", { name: p.display_name })}>
+                      {p.slots.map((s) => (
+                        <li key={s.start}>
+                          <Link
+                            href={s.book_href}
+                            data-testid="screen-slot"
+                            className="inline-flex min-h-11 items-center rounded-full border border-teal-700 bg-white px-4 text-sm font-semibold text-teal-900 hover:bg-teal-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30"
+                          >
+                            {chipLabel(s)}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-slate-600">
+                      {t("noSlots")}{" "}
+                      <Link href={`/p/${p.slug}`} className="font-semibold text-teal-800 underline">
+                        {t("viewProfile")}
+                      </Link>
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
         <div>
           <label htmlFor={`${id}-locality`} className="mb-1 block text-sm font-semibold text-slate-800">
@@ -115,63 +156,23 @@ export function NearbyProviders({ localities }: { localities: LocalityOption[] }
           </select>
         </div>
         <button type="button" className={primaryButton} disabled={!locality || busy} onClick={searchLocality}>
-          {state.kind === "loading" ? t("searching") : t("search")}
+          {state.kind === "loading" && origin ? t("searching") : t("search")}
         </button>
       </div>
       <button type="button" className={smallButton} disabled={busy} onClick={locateMe}>
         {state.kind === "locating" ? t("locating") : t("useMyLocation")}
       </button>
 
-      {state.kind === "error" ? (
-        <p role="alert" className="text-sm font-medium text-red-700">
-          {t(state.key)}
-        </p>
-      ) : null}
-
-      {state.kind === "done" ? (
-        <div className="space-y-5" aria-live="polite">
-          {total === 0 ? <p role="status" className="text-slate-700">{t("empty")}</p> : null}
-          {state.groups
-            .filter((g) => g.results.length > 0)
-            .map((g) => (
-              <div key={g.type} className="space-y-2">
-                <h3 className="font-semibold text-slate-900">{td(`typesPlural.${g.type}`)}</h3>
-                <ul className="space-y-2">
-                  {g.results.map((r) => (
-                    <li key={r.profile_id} className="rounded-xl border border-slate-200 p-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Link href={`/p/${r.slug}`} className="font-semibold text-slate-900 underline-offset-4 hover:underline">
-                          {r.display_name}
-                        </Link>
-                        {r.is_synthetic ? (
-                          <span className="rounded bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-900">{tp("demoBadge")}</span>
-                        ) : null}
-                      </div>
-                      <p className="text-sm text-slate-700">
-                        {[r.org_public_name && r.org_public_name !== r.display_name ? r.org_public_name : null, r.locality]
-                          .filter(Boolean)
-                          .join(", ")}{" "}
-                        <span className="font-medium text-teal-800">
-                          {r.distance_km !== null ? t("kmAway", { distance: r.distance_km.toFixed(1) }) : t("videoAnywhere")}
-                        </span>
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={findHref({ ...state.origin, type: g.type, radius_km: NEARBY_RADIUS_KM })}
-                  className="inline-flex min-h-11 items-center text-sm font-semibold text-teal-800 underline"
-                >
-                  {t("seeAll", { type: td(`typesPlural.${g.type}`) })}
-                </Link>
-              </div>
-            ))}
-        </div>
-      ) : null}
-
-      <Link href="/find" className="inline-flex min-h-11 items-center text-sm font-semibold text-teal-800 underline">
-        {t("openDirectory")}
-      </Link>
+      <div className="flex flex-wrap gap-x-6">
+        {state.kind === "done" ? (
+          <Link href={state.data.see_more} className="inline-flex min-h-11 items-center text-sm font-semibold text-teal-800 underline">
+            {t("seeMore")}
+          </Link>
+        ) : null}
+        <Link href="/find" className="inline-flex min-h-11 items-center text-sm font-semibold text-teal-800 underline">
+          {t("openDirectory")}
+        </Link>
+      </div>
     </section>
   );
 }

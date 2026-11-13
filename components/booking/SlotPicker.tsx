@@ -59,7 +59,9 @@ export function SlotPicker({ profileId, serviceId, clinicTimeZone, selected, onS
   }, [slots, viewerTz]);
 
   const days = [...byDay.keys()];
-  const activeDay = day && byDay.has(day) ? day : (days[0] ?? null);
+  // 048 FR-10: a slot pre-selected from the check-in result opens on its own day.
+  const selectedDay = selected ? viewerDate(selected.start, viewerTz) : null;
+  const activeDay = day && byDay.has(day) ? day : selectedDay && byDay.has(selectedDay) ? selectedDay : (days[0] ?? null);
 
   if (failed) return <p role="alert" className="text-sm text-red-700">{t("errors.generic")}</p>;
   if (!slots) return <p role="status" className="text-sm text-slate-600">{t("flow.loading")}</p>;

@@ -20,12 +20,15 @@ export function screenFetch(): typeof fetch {
     const url = new URL(String(input), "http://localhost");
     const req = new Request(url, init);
     if (url.pathname === "/api/screen/sessions") return (await import("@/app/api/screen/sessions/route")).POST(req);
-    const m = url.pathname.match(/^\/api\/screen\/sessions\/([^/]+)(?:\/(answers|red-flag|finish))?$/);
+    const m = url.pathname.match(/^\/api\/screen\/sessions\/([^/]+)(?:\/(answers|red-flag|finish|follow-up|providers))?$/);
     if (!m) return new Response("not found", { status: 404 });
     const [, id, action] = m;
     if (!action) return (await import("@/app/api/screen/sessions/[id]/route")).GET(req, params(id));
     if (action === "answers") return (await import("@/app/api/screen/sessions/[id]/answers/route")).POST(req, params(id));
     if (action === "red-flag") return (await import("@/app/api/screen/sessions/[id]/red-flag/route")).POST(req, params(id));
+    // 048: the M-CHAT-R/F Follow-Up and the bookable providers below a result.
+    if (action === "follow-up") return (await import("@/app/api/screen/sessions/[id]/follow-up/route")).POST(req, params(id));
+    if (action === "providers") return (await import("@/app/api/screen/sessions/[id]/providers/route")).GET(req, params(id));
     return (await import("@/app/api/screen/sessions/[id]/finish/route")).POST(req, params(id));
   }) as typeof fetch;
 }

@@ -7,9 +7,11 @@
 import caseSheetJson from "@/schemas/case-sheet.json";
 import isaaJson from "@/schemas/isaa.json";
 import { CHECKIN, scoreCheckin, type CheckinAnswers, type CheckinScore } from "@/lib/clinical/checkin";
+import { MCHAT, scoreMchat, type MchatScore } from "@/lib/clinical/mchat";
 import { scoreIsaa, type IsaaScore, type ScoringFact } from "@/lib/scoring";
 
-export const INSTRUMENT_KEYS = ["ISAA", "CASE_SHEET", "ISAA_PARENT_CHECKIN"] as const;
+// 048: MCHAT_RF is registered (with placeholder item text) but only used by /screen when MCHAT_LICENSED=true.
+export const INSTRUMENT_KEYS = ["ISAA", "CASE_SHEET", "ISAA_PARENT_CHECKIN", "MCHAT_RF"] as const;
 export type InstrumentKey = (typeof INSTRUMENT_KEYS)[number];
 export type InstrumentKind = "provider_rated" | "guardian_questionnaire" | "case_sheet";
 
@@ -99,10 +101,22 @@ function checkinDefinition(): InstrumentDefinition {
   };
 }
 
+function mchatDefinition(): InstrumentDefinition {
+  return {
+    key: "MCHAT_RF",
+    version: MCHAT.version,
+    kind: "guardian_questionnaire",
+    title: MCHAT.title,
+    // The 20 screening items; the optional Follow-Up items are in the raw definition (`follow_up.items`).
+    items: MCHAT.items.map((item) => ({ id: item.id, domain: null, text: item.text_en, scale: yesNo, reverse: item.risk_answer === "yes" })),
+  };
+}
+
 const INSTRUMENTS: Record<InstrumentKey, InstrumentDefinition> = {
   ISAA: isaaDefinition(),
   CASE_SHEET: caseSheetDefinition(),
   ISAA_PARENT_CHECKIN: checkinDefinition(),
+  MCHAT_RF: mchatDefinition(),
 };
 
 /** Raw JSON definition as stored in `clinical_instruments.definition`. */
@@ -110,6 +124,7 @@ export const INSTRUMENT_SOURCES: Record<InstrumentKey, unknown> = {
   ISAA: isaaJson,
   CASE_SHEET: caseSheetJson,
   ISAA_PARENT_CHECKIN: CHECKIN,
+  MCHAT_RF: MCHAT,
 };
 
 export function isInstrumentKey(value: unknown): value is InstrumentKey {
@@ -124,7 +139,8 @@ export function getInstrument(key: string): InstrumentDefinition | null {
 
 export type InstrumentScore =
   | { key: "ISAA"; result: IsaaScore }
-  | { key: "ISAA_PARENT_CHECKIN"; result: CheckinScore };
+  | { key: "ISAA_PARENT_CHECKIN"; result: CheckinScore }
+  | { key: "MCHAT_RF"; result: MchatScore };
 
 /**
  * Scores an answer set. ISAA delegates to the unchanged `scoreIsaa` (lib/scoring.ts) with the facts as stored
@@ -132,6 +148,7 @@ export type InstrumentScore =
  */
 export function score(key: "ISAA", answers: ScoringFact[]): Extract<InstrumentScore, { key: "ISAA" }>;
 export function score(key: "ISAA_PARENT_CHECKIN", answers: CheckinAnswers): Extract<InstrumentScore, { key: "ISAA_PARENT_CHECKIN" }>;
+export function score(key: "MCHAT_RF", answers: CheckinAnswers): Extract<InstrumentScore, { key: "MCHAT_RF" }>;
 export function score(key: InstrumentKey, answers: ScoringFact[] | CheckinAnswers): InstrumentScore;
 export function score(key: InstrumentKey, answers: ScoringFact[] | CheckinAnswers): InstrumentScore {
   if (key === "ISAA") {
@@ -141,6 +158,10 @@ export function score(key: InstrumentKey, answers: ScoringFact[] | CheckinAnswer
   if (key === "ISAA_PARENT_CHECKIN") {
     if (Array.isArray(answers)) throw new Error("ISAA_PARENT_CHECKIN is scored from { item_id: answer }");
     return { key, result: scoreCheckin(answers) };
+  }
+  if (key === "MCHAT_RF") {
+    if (Array.isArray(answers)) throw new Error("MCHAT_RF is scored from { item_id: answer }");
+    return { key, result: scoreMchat(answers) };
   }
   throw new Error(`${key} is not a scored instrument`);
 }

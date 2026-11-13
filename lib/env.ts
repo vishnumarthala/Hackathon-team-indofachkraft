@@ -92,6 +92,11 @@ export const env = {
   get DEMO_EMAIL_TO() {
     return read("DEMO_EMAIL_TO");
   },
+  // 048 FR-3: the public check-in uses M-CHAT-R/F for 18-30 months only when this is "true" (default false: the
+  // commercial digital-use licence is unverified and schemas/mchat-rf.json still holds placeholder item text).
+  get MCHAT_LICENSED() {
+    return process.env.MCHAT_LICENSED === "true";
+  },
   // 028 NFR-1: demo (is_synthetic) provider profiles stay visible with a badge unless this is "false".
   get SHOW_SYNTHETIC_LISTINGS() {
     return process.env.SHOW_SYNTHETIC_LISTINGS !== "false";

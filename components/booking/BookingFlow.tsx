@@ -29,6 +29,8 @@ type Props = {
   services: FlowService[];
   viewer: { signedIn: boolean; isGuardian: boolean; hasGoogle: boolean; children: FlowChild[] };
   initialHold: FlowHold | null;
+  /** 048 FR-10: a slot chip on the check-in result (`?service=&start=`) opens the flow with that time selected. */
+  initialSlot?: { serviceId: string; start: string; end: string } | null;
 };
 
 type ErrorCode =
@@ -69,14 +71,16 @@ function useCountdown(expiresAt: string | null): number {
 
 // FR-7 booking flow: service -> date strip -> time -> Continue (10-minute hold with countdown) -> sign in if needed
 // (the hold id stays in the URL and the anonymous hold is attached at confirm) -> child -> disclosure -> confirm.
-export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
+export function BookingFlow({ profile, services, viewer, initialHold, initialSlot = null }: Props) {
   const t = useT("booking");
   const locale = useLocale();
   const viewerTz = useTimeZone();
   const format = useFormatter();
   const router = useRouter();
-  const [serviceId, setServiceId] = useState(initialHold?.serviceId ?? services[0]?.id ?? "");
-  const [picked, setPicked] = useState<PickedSlot | null>(null);
+  const [serviceId, setServiceId] = useState(initialHold?.serviceId ?? initialSlot?.serviceId ?? services[0]?.id ?? "");
+  const [picked, setPicked] = useState<PickedSlot | null>(
+    !initialHold && initialSlot ? { start: initialSlot.start, end: initialSlot.end } : null,
+  );
   const [hold, setHold] = useState<FlowHold | null>(initialHold);
   const [childId, setChildId] = useState(viewer.children.length === 1 ? viewer.children[0].id : "");
   const [error, setError] = useState<ErrorCode | null>(null);

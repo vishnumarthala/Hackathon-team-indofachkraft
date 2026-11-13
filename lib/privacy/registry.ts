@@ -242,10 +242,10 @@ export const REGISTRY: PrivacyCategory[] = [
     tables: ["screen_sessions"],
     retention: "Check-ins that were not saved to a child are deleted after 30 days; saved check-ins stay with the child until erasure.",
     processors: ["supabase", "elevenlabs"],
-    // Exactly the portal's `Check-ins` list (date, age band, result band).
+    // The portal's `Check-ins` list (date, age band, result band), plus (048) the instrument and the worries chosen.
     export: async ({ sql, childId }) => {
       const rows = await sql`
-        select id, created_at, age_band, mode, result_band from public.screen_sessions
+        select id, created_at, age_band, mode, result_band, instrument, concerns from public.screen_sessions
         where saved_child_id = ${childId} order by created_at`;
       return { data: rowsJson(rows) };
     },

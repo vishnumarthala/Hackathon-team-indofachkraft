@@ -19,8 +19,9 @@ import { screenClientTools, startScreen, TOOL_REPLIES } from "@/lib/screen/clien
 import {
   agentQuestionList,
   domainLevel,
+  LEGACY_AGE_BANDS,
   missingScreenItems,
-  SCREEN_AGE_BANDS,
+  QUESTION_AGE_BANDS,
   screenQuestions,
   URGENT_MESSAGE,
 } from "@/lib/screen/questions";
@@ -53,7 +54,8 @@ const ROOT = process.cwd();
 // ---------- pure ----------
 
 describe("question set per age band (FR-1, FR-3)", () => {
-  it.each(SCREEN_AGE_BANDS)("%s: red-flag questions first, then the 024 questions for the band", (band) => {
+  // 048: the question bands, plus 033's old bands (stored check-ins keep them and still render).
+  it.each([...QUESTION_AGE_BANDS, ...LEGACY_AGE_BANDS])("%s: red-flag questions first, then the 024 questions for the band", (band) => {
     const qs = screenQuestions(band);
     expect(qs.slice(0, CHECKIN.red_flags.length).every((q) => q.kind === "red_flag")).toBe(true);
     expect(qs.slice(CHECKIN.red_flags.length).map((q) => q.id)).toEqual(CHECKIN.questions.map((q) => q.id));
@@ -62,7 +64,7 @@ describe("question set per age band (FR-1, FR-3)", () => {
   });
 
   it("the agent's {{questions}} list is numbered, carries the item ids and puts the red flags first", () => {
-    const list = agentQuestionList(screenQuestions("3-5y")).split("\n");
+    const list = agentQuestionList(screenQuestions("31-71m")).split("\n");
     expect(list).toHaveLength(21);
     expect(list[0]).toBe(`1. [rf_skill_regression] (red flag, yes/no) ${CHECKIN.red_flags[0].text_en}`);
     expect(list[6]).toMatch(/^7\. \[q1\] \(never\/sometimes\/often\/always\) /);
@@ -100,12 +102,15 @@ describe("/screen page chrome (FR-2, NFR-1)", () => {
     );
     expect(html).toContain("<h1");
     expect(html).toContain("Developmental check-in");
-    expect(html).toContain("About 5 minutes. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child.");
+    expect(html).toContain(
+      "About 5 minutes, for children up to 8 years. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child.",
+    );
     expect(html).toContain(
       "You will talk to an AI assistant. It speaks English. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
     );
     expect(html).toContain("I understand this is not a diagnosis and agree to talk to an AI assistant.");
-    for (const label of ["18-36 months", "3-5 years", "6-9 years", "10+ years", "Child&#x27;s age"]) expect(html).toContain(label);
+    for (const label of ["Under 18 months", "18-30 months", "2½-5 years", "6-8 years", "9 years or older", "Child&#x27;s age"]) expect(html).toContain(label);
+    for (const old of ["18-36 months", "10+ years"]) expect(html).not.toContain(old);
     const buttons = [...html.matchAll(/<button[^>]*>([^<]*)<\/button>/g)];
     const form = buttons.find((b) => b[1] === "Start free check-in");
     expect(form?.[0]).toContain("disabled");
@@ -206,7 +211,7 @@ describe("voice start without a database (FR-4)", () => {
     vi.stubEnv("DEMO_MODE", "false");
     vi.stubEnv("ELEVENLABS_SCREEN_AGENT_ID", "");
     const { POST } = await import("@/app/api/screen/sessions/route");
-    const res = await POST(screenReq("/api/screen/sessions", { age_band: "3-5y", mode: "voice" }));
+    const res = await POST(screenReq("/api/screen/sessions", { age_band: "31-71m", mode: "voice" }));
     expect(res.status).toBe(503);
     expect(agent.startAgentSession).not.toHaveBeenCalled();
   });
@@ -216,7 +221,7 @@ describe("voice start without a database (FR-4)", () => {
     vi.stubEnv("ELEVENLABS_SCREEN_AGENT_ID", "agent_screen_test");
     session.user = null;
     const { POST } = await import("@/app/api/screen/sessions/route");
-    const res = await POST(screenReq("/api/screen/sessions", { age_band: "3-5y", mode: "voice" }));
+    const res = await POST(screenReq("/api/screen/sessions", { age_band: "31-71m", mode: "voice" }));
     expect(res.status).toBe(401);
     expect(await res.json()).toEqual({ error: "sign_in_required" });
     expect(agent.startAgentSession).not.toHaveBeenCalled();
@@ -225,29 +230,34 @@ describe("voice start without a database (FR-4)", () => {
   it("validates the body", async () => {
     const { POST } = await import("@/app/api/screen/sessions/route");
     expect((await POST(screenReq("/api/screen/sessions", { age_band: "2y", mode: "form" }))).status).toBe(400);
-    expect((await POST(screenReq("/api/screen/sessions", { age_band: "3-5y", mode: "phone" }))).status).toBe(400);
+    expect((await POST(screenReq("/api/screen/sessions", { age_band: "31-71m", mode: "phone" }))).status).toBe(400);
+    // 048 FR-1: bands without questions and 033's old bands start no session.
+    for (const age_band of ["under-18m", "9y+", "10y+", "3-5y"]) {
+      expect((await POST(screenReq("/api/screen/sessions", { age_band, mode: "form" }))).status, age_band).toBe(400);
+    }
+    expect((await POST(screenReq("/api/screen/sessions", { age_band: "31-71m", mode: "form", concerns: ["my son Ravi"] }))).status).toBe(400);
   });
 
   it("startScreen maps answers: demo -> no microphone, no SDK; mic refused -> continue by tapping", async () => {
     const getMicrophone = vi.fn(async () => ({}));
     const json = (body: unknown, status = 201) => async () => new Response(JSON.stringify(body), { status });
     const session = { session_id: "s", expires_at: "x", questions: [] };
-    expect(await startScreen("3-5y", "voice", { fetchFn: json({ ...session, demo: true }) as unknown as typeof fetch, getMicrophone })).toMatchObject({ kind: "demo" });
+    expect(await startScreen("31-71m", "voice", { fetchFn: json({ ...session, demo: true }) as unknown as typeof fetch, getMicrophone })).toMatchObject({ kind: "demo" });
     expect(getMicrophone).not.toHaveBeenCalled();
-    const denied = await startScreen("3-5y", "voice", {
+    const denied = await startScreen("31-71m", "voice", {
       fetchFn: json({ ...session, conversation_token: "tok" }) as unknown as typeof fetch,
       getMicrophone: async () => {
         throw new Error("NotAllowedError");
       },
     });
     expect(denied.kind).toBe("micDenied");
-    const voice = await startScreen("3-5y", "voice", {
-      fetchFn: json({ ...session, conversation_token: "tok", dynamic_variables: { age_band: "3-5y" } }) as unknown as typeof fetch,
+    const voice = await startScreen("31-71m", "voice", {
+      fetchFn: json({ ...session, conversation_token: "tok", dynamic_variables: { age_band: "31-71m" } }) as unknown as typeof fetch,
       getMicrophone,
     });
-    expect(voice).toMatchObject({ kind: "voice", target: { conversationToken: "tok" }, dynamicVariables: { age_band: "3-5y" } });
-    expect(await startScreen("3-5y", "form", { fetchFn: json({ error: "x" }, 429) as unknown as typeof fetch })).toEqual({ kind: "error", error: "busy" });
-    expect(await startScreen("3-5y", "voice", { fetchFn: json({ error: "x" }, 503) as unknown as typeof fetch })).toEqual({ kind: "error", error: "voiceUnavailable" });
+    expect(voice).toMatchObject({ kind: "voice", target: { conversationToken: "tok" }, dynamicVariables: { age_band: "31-71m" } });
+    expect(await startScreen("31-71m", "form", { fetchFn: json({ error: "x" }, 429) as unknown as typeof fetch })).toEqual({ kind: "error", error: "busy" });
+    expect(await startScreen("31-71m", "voice", { fetchFn: json({ error: "x" }, 503) as unknown as typeof fetch })).toEqual({ kind: "error", error: "voiceUnavailable" });
   });
 });
 
@@ -288,7 +298,7 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
   const answer = (id: string, answers: Record<string, string>) => post(`/api/screen/sessions/${id}/answers`, { answers: toList(answers) });
   const finish = (id: string) => post(`/api/screen/sessions/${id}/finish`);
 
-  async function finishedSession(pattern: Parameters<typeof answerSet>[0] = "some_concerns", band = "3-5y") {
+  async function finishedSession(pattern: Parameters<typeof answerSet>[0] = "some_concerns", band = "31-71m") {
     const { body } = await start(band);
     expect((await answer(body.session_id, answerSet(pattern))).status).toBe(200);
     expect((await finish(body.session_id)).status).toBe(200);
@@ -355,16 +365,19 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
       "conversation_id",
       "saved_child_id",
       "saved_by",
+      // 048: the instrument used and the parent's worries (codes only).
+      "instrument",
+      "concerns",
     ]);
     // Free text cannot get in: answers only hold item ids -> scale values; the other text columns are enums/ids.
-    const insert = (answers: unknown) => sql`insert into screen_sessions (age_band, mode, answers) values ('3-5y', 'form', ${sql.json(answers as never)}) returning id`;
+    const insert = (answers: unknown) => sql`insert into screen_sessions (age_band, mode, answers) values ('31-71m', 'form', ${sql.json(answers as never)}) returning id`;
     await expect(insert({ q1: "My son Ravi, 12 Main Road" })).rejects.toThrow(/screen_answers_valid|check constraint/);
     await expect(insert({ name: "never" })).rejects.toThrow(/check constraint/);
     await expect(insert({ q1: 3 })).rejects.toThrow(/check constraint/);
-    await expect(sql`insert into screen_sessions (age_band, mode, conversation_id) values ('3-5y', 'voice', 'Ravi Kumar 98765')`).rejects.toThrow(/check constraint/);
+    await expect(sql`insert into screen_sessions (age_band, mode, conversation_id) values ('31-71m', 'voice', 'Ravi Kumar 98765')`).rejects.toThrow(/check constraint/);
     await expect(sql`insert into screen_sessions (age_band, mode) values ('3 years old', 'form')`).rejects.toThrow(/check constraint/);
     await expect(
-      sql`insert into screen_sessions (age_band, mode, result_band, red_flag_codes) values ('3-5y', 'form', 'no_strong_signs', '{seizure}')`,
+      sql`insert into screen_sessions (age_band, mode, result_band, red_flag_codes) values ('31-71m', 'form', 'no_strong_signs', '{seizure}')`,
     ).rejects.toThrow(/screen_sessions_red_flag_no_band/);
     // RLS: browsers (anon/authenticated) have no access at all.
     const [grants] = await sql<{ n: number }[]>`
@@ -374,21 +387,32 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
   });
 
   it("FR-4: a form session stores only the age band and mode; 2-hour expiry", async () => {
-    const { status, body } = await start("18-36m");
+    const { status, body } = await start("18-30m");
     expect(status).toBe(201);
     expect(body.questions).toHaveLength(21);
     expect(body).not.toHaveProperty("conversation_token");
     expect(body).not.toHaveProperty("demo");
     const [row] = await sql`select *, extract(epoch from expires_at - created_at)::int as ttl from screen_sessions where id = ${body.session_id}`;
-    expect(row).toMatchObject({ age_band: "18-36m", mode: "form", answers: {}, result_band: null, red_flag_codes: [], saved_child_id: null, ttl: 7200 });
+    expect(row).toMatchObject({
+      age_band: "18-30m",
+      mode: "form",
+      answers: {},
+      result_band: null,
+      red_flag_codes: [],
+      saved_child_id: null,
+      ttl: 7200,
+      // 048: MCHAT_LICENSED is off by default -> the ISAA-derived items; no worries chosen.
+      instrument: "ISAA_PARENT_CHECKIN",
+      concerns: [],
+    });
   });
 
   it.each([
-    ["18-36m", "no_concerns", "no_strong_signs"],
-    ["3-5y", "some_concerns", "discuss_with_professional"],
-    ["6-9y", "many_concerns", "see_professional_soon"],
-    ["10y+", "some_concerns", "discuss_with_professional"],
-    ["10y+", "no_concerns", "no_strong_signs"],
+    ["18-30m", "no_concerns", "no_strong_signs"],
+    ["31-71m", "some_concerns", "discuss_with_professional"],
+    ["6-8y", "many_concerns", "see_professional_soon"],
+    ["6-8y", "some_concerns", "discuss_with_professional"],
+    ["31-71m", "no_concerns", "no_strong_signs"],
   ] as const)("band per age band: %s with %s -> %s (server-side 024 scorer)", async (band, pattern, expected) => {
     const { body } = await start(band);
     const res = await answer(body.session_id, answerSet(pattern));
@@ -409,7 +433,7 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
   });
 
   it("finish before every question is answered -> 422 with the missing ids; unknown items -> 400", async () => {
-    const { body } = await start("3-5y");
+    const { body } = await start("31-71m");
     await answer(body.session_id, { q1: "never", rf_seizure: "no" });
     const res = await finish(body.session_id);
     expect(res.status).toBe(422);
@@ -425,7 +449,7 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
   });
 
   it("FR-4: sessions expire after 2 h (answers, red flag, finish, resume -> 410)", async () => {
-    const { body } = await start("3-5y");
+    const { body } = await start("31-71m");
     await sql`update screen_sessions set expires_at = now() - interval '1 second' where id = ${body.session_id}`;
     expect((await answer(body.session_id, { q1: "never" })).status).toBe(410);
     expect((await post(`/api/screen/sessions/${body.session_id}/red-flag`, { code: "seizure" })).status).toBe(410);
@@ -435,10 +459,10 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
 
   it("FR-4: 5 new sessions per IP per hour (hashed key, nothing stored)", async () => {
     const ip = nextIp();
-    for (let i = 0; i < 5; i++) expect((await start("3-5y", "form", ip)).status).toBe(201);
-    const blocked = await start("3-5y", "form", ip);
+    for (let i = 0; i < 5; i++) expect((await start("31-71m", "form", ip)).status).toBe(201);
+    const blocked = await start("31-71m", "form", ip);
     expect(blocked.status).toBe(429);
-    expect((await start("3-5y", "form", nextIp())).status).toBe(201);
+    expect((await start("31-71m", "form", nextIp())).status).toBe(201);
     const { screenSessionLimiter, rateKey } = await import("@/lib/screen/rate-limit");
     const key = rateKey(screenReq("/x", undefined, ip));
     expect(key).toMatch(/^[0-9a-f]{64}$/);
@@ -448,7 +472,7 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
 
   it("E-3: DEMO_MODE voice -> { demo: true }, no ElevenLabs call", async () => {
     vi.stubEnv("DEMO_MODE", "true");
-    const { status, body } = await start("3-5y", "voice");
+    const { status, body } = await start("31-71m", "voice");
     expect(status).toBe(201);
     expect(body.demo).toBe(true);
     expect(body).not.toHaveProperty("conversation_token");
@@ -459,13 +483,14 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     vi.stubEnv("DEMO_MODE", "false");
     vi.stubEnv("ELEVENLABS_SCREEN_AGENT_ID", "agent_screen_test");
     agent.startAgentSession.mockResolvedValue({ agent_id: "agent_screen_test", conversation_token: "tok_test" });
-    const { status, body } = await start("6-9y", "voice");
+    const { status, body } = await start("6-8y", "voice");
     expect(status).toBe(201);
     expect(agent.startAgentSession).toHaveBeenCalledWith("agent_screen_test");
     expect(body.conversation_token).toBe("tok_test");
     expect(Object.keys(body.dynamic_variables).sort()).toEqual(["age_band", "questions", "screen_session_id"]);
-    expect(body.dynamic_variables).toMatchObject({ screen_session_id: body.session_id, age_band: "6-9y" });
-    expect(body.dynamic_variables.questions).toBe(agentQuestionList(screenQuestions("6-9y")));
+    // 048 FR-9: the new bands, as the agent says them.
+    expect(body.dynamic_variables).toMatchObject({ screen_session_id: body.session_id, age_band: "6 to 8 years" });
+    expect(body.dynamic_variables.questions).toBe(agentQuestionList(screenQuestions("6-8y")));
   });
 
   it("provider failure -> 502, and the voice reservation is released", async () => {
@@ -473,7 +498,7 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     vi.stubEnv("ELEVENLABS_SCREEN_AGENT_ID", "agent_screen_test");
     agent.startAgentSession.mockRejectedValue(new Error("boom"));
     const before = await sql`select count(*)::int as n from voice_usage where user_id = ${provider.id}`;
-    expect((await start("3-5y", "voice")).status).toBe(502);
+    expect((await start("31-71m", "voice")).status).toBe(502);
     const after = await sql`select count(*)::int as n from voice_usage where user_id = ${provider.id}`;
     expect(after[0].n).toBe(before[0].n);
   });
@@ -482,13 +507,13 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     vi.stubEnv("DEMO_MODE", "true");
     const answers = answerSet("some_concerns");
     // Form path.
-    const formId = await finishedSession("some_concerns", "3-5y");
+    const formId = await finishedSession("some_concerns", "31-71m");
     const formResult = await (await finish(formId)).json();
     // Voice path: the agent calls the client tools one answer at a time (red flags first).
-    const { body } = await start("3-5y", "voice");
+    const { body } = await start("31-71m", "voice");
     const events = { onAnswer: vi.fn(), onStop: vi.fn(), onComplete: vi.fn() };
     const tools = screenClientTools(body.session_id, { fetchFn, conversationId: () => "conv_test123" }, events);
-    const order = screenQuestions("3-5y").map((q) => q.id);
+    const order = screenQuestions("31-71m").map((q) => q.id);
     const replies: string[] = [];
     for (const id of order) replies.push(await tools.record_answer({ item_id: id, answer: ` ${answers[id].toUpperCase()} ` }));
     expect(replies.at(-1)).toBe(TOOL_REPLIES.complete);
@@ -506,10 +531,10 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
   });
 
   it("resume (GET): open sessions return their answers; finished ones their result", async () => {
-    const { body } = await start("3-5y");
+    const { body } = await start("31-71m");
     await answer(body.session_id, { rf_seizure: "no" });
     const open = await (await fetchFn(`/api/screen/sessions/${body.session_id}`)).json();
-    expect(open).toMatchObject({ status: "open", answers: { rf_seizure: "no" }, result: null, age_band: "3-5y" });
+    expect(open).toMatchObject({ status: "open", answers: { rf_seizure: "no" }, result: null, age_band: "31-71m" });
     const id = await finishedSession("no_concerns");
     const done = await (await fetchFn(`/api/screen/sessions/${id}`)).json();
     expect(done).toMatchObject({ status: "finished", result: { result_band: "no_strong_signs", red_flag: false } });
@@ -544,7 +569,7 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
       select actor_user_id, actor_role, child_id, entity_id, details from audit_events
       where action = 'screen.result_saved' and entity_id = ${id}`;
     expect(audit).toMatchObject({ actor_user_id: guardianA.id, actor_role: "guardian", child_id: childA });
-    expect(audit.details).toEqual({ age_band: "3-5y", result_band: "discuss_with_professional", mode: "form" });
+    expect(audit.details).toEqual({ age_band: "31-71m", result_band: "discuss_with_professional", mode: "form" });
 
     // Saved check-ins belong to the child: the anonymous session endpoints no longer reach them.
     expect((await fetchFn(`/api/screen/sessions/${id}`)).status).toBe(404);
@@ -557,15 +582,15 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     const { listChildCheckins } = await import("@/lib/screen/store");
     const list = await listChildCheckins(childA);
     expect(list.map((c) => c.id)).toContain(id);
-    expect(list.find((c) => c.id === id)).toMatchObject({ age_band: "3-5y", result_band: "discuss_with_professional" });
+    expect(list.find((c) => c.id === id)).toMatchObject({ age_band: "31-71m", result_band: "discuss_with_professional" });
     expect(await listChildCheckins(childB)).toEqual([]);
   });
 
   it("FR-8: unfinished, red-flag and expired check-ins cannot be saved", async () => {
     await world.grant(childB, guardianB, (await sql`select id from guardian_links where child_id = ${childB}`)[0].id, ["screen_result_save"]);
-    const open = (await start("3-5y")).body.session_id;
+    const open = (await start("31-71m")).body.session_id;
     expect((await saveAs(guardianB, { session_id: open, child_id: childB })).status).toBe(409);
-    const stopped = (await start("3-5y")).body.session_id;
+    const stopped = (await start("31-71m")).body.session_id;
     await post(`/api/screen/sessions/${stopped}/red-flag`, { code: "breathing" });
     expect((await saveAs(guardianB, { session_id: stopped, child_id: childB })).status).toBe(409);
     const old = await finishedSession("no_concerns");
@@ -575,10 +600,10 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
   });
 
   it("FR-5: unsaved check-ins are deleted after 30 days by the retention job; saved ones stay", async () => {
-    const unsaved = (await start("3-5y")).body.session_id;
+    const unsaved = (await start("31-71m")).body.session_id;
     const [savedRow] = await sql<{ id: string }[]>`
       select id from screen_sessions where saved_child_id = ${childA} limit 1`;
-    const recent = (await start("3-5y")).body.session_id;
+    const recent = (await start("31-71m")).body.session_id;
     const { purgeUnsavedScreenSessions } = await import("@/lib/privacy/retention");
     // Aged and purged in one transaction, so 041's concurrent retention suite never sees these rows as due.
     await sql.begin(async (tx) => {
@@ -599,7 +624,7 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     const exported = await category.export!({ sql, childId: childA, guardianUserId: guardianA.id });
     const rows = exported!.data as { age_band: string; result_band: string }[];
     expect(rows.length).toBeGreaterThanOrEqual(1);
-    expect(Object.keys(rows[0]).sort()).toEqual(["age_band", "created_at", "id", "mode", "result_band"]);
+    expect(Object.keys(rows[0]).sort()).toEqual(["age_band", "concerns", "created_at", "id", "instrument", "mode", "result_band"]);
     await sql`update screen_sessions set conversation_id = 'conv_erase_test' where saved_child_id = ${childA}`;
     const ctx = { childId: childA, requestId: "r", scope: "everything" as const, requestedBy: guardianA.id, caseIds: [] };
     expect(await category.erase!.externalRefs!(sql, ctx)).toContainEqual({ processor: "elevenlabs", ref: "conv_erase_test" });

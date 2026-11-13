@@ -5,8 +5,18 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useTurnstile } from "@/components/security/Turnstile";
 import { useT } from "@/lib/i18n/client";
 import { SESSION_STORAGE_KEY, startScreen, type StartError, type StartedSession } from "@/lib/screen/client";
-import { SCREEN_AGE_BANDS, type ScreenAgeBand, type ScreenMode, type ScreenQuestion, type ScreenResult } from "@/lib/screen/questions";
+import {
+  concernsFor,
+  isQuestionAgeBand,
+  SCREEN_AGE_BANDS,
+  type ScreenAgeBand,
+  type ScreenConcern,
+  type ScreenMode,
+  type ScreenQuestion,
+  type ScreenResult,
+} from "@/lib/screen/questions";
 import { voiceSignInHref } from "@/lib/voice/constants";
+import { Over8Notice, Under18Guidance } from "./AgeGuidance";
 import type { LocalityOption } from "./NearbyProviders";
 import { QuestionForm } from "./QuestionForm";
 import { ResultView } from "./ResultView";
@@ -68,6 +78,8 @@ const GUARD_ERRORS = new Set(["quotaDay", "quotaMonth", "paused", "concurrent", 
 
 // Ticket 033 FR-2: the public check-in. Only the age band and the answers are sent before sign-in (rule 6); the
 // browser keeps just the session id (sessionStorage) so the result survives a reload or signing in to save it.
+// 048: children up to 8. `under-18m` shows milestone guidance and `9y+` a short "talk to a professional" note
+// instead of the check-in; the other bands ask "What worries you most?" (codes only) before the questions.
 // 051 FR-1: tapping is the primary, anonymous path ("Start free check-in"); voice needs a free sign-in and returns
 // here with `?voice=1`. Quota, budget and bot-check refusals keep the tap option on screen.
 export function ScreenFlow({
@@ -89,6 +101,7 @@ export function ScreenFlow({
   const id = useId();
   const [step, setStep] = useState<Step>({ kind: "intro" });
   const [ageBand, setAgeBand] = useState<ScreenAgeBand | null>(null);
+  const [concerns, setConcerns] = useState<ScreenConcern[]>([]);
   const [agreed, setAgreed] = useState(false);
   const [starting, setStarting] = useState<ScreenMode | null>(null);
   const [error, setError] = useState<StartError | "expired" | null>(null);
@@ -123,15 +136,23 @@ export function ScreenFlow({
     };
   }, [voiceIntent]);
 
+  const questionBand = isQuestionAgeBand(ageBand) ? ageBand : null;
+  const offeredConcerns = questionBand ? concernsFor(questionBand) : [];
+
   async function start(mode: ScreenMode) {
-    if (!ageBand || !agreed) return;
+    if (!questionBand || !agreed) return;
     setError(null);
     setStarting(mode);
-    const outcome = await startScreen(ageBand, mode, {
-      fetchFn: (input, init) => fetch(input, init),
-      getMicrophone: () => navigator.mediaDevices.getUserMedia({ audio: true }),
-      turnstileToken: turnstile.token,
-    });
+    const outcome = await startScreen(
+      questionBand,
+      mode,
+      {
+        fetchFn: (input, init) => fetch(input, init),
+        getMicrophone: () => navigator.mediaDevices.getUserMedia({ audio: true }),
+        turnstileToken: turnstile.token,
+      },
+      concerns.filter((c) => offeredConcerns.includes(c)),
+    );
     if (mode === "voice") turnstile.reset();
     setStarting(null);
     if (outcome.kind === "error") return setError(outcome.error);
@@ -184,7 +205,7 @@ export function ScreenFlow({
           <p className="text-sm text-slate-700">{t("noPersonal")}</p>
           <fieldset className="space-y-2">
             <legend className="mb-1 text-base font-semibold text-slate-900">{t("ageLabel")}</legend>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {SCREEN_AGE_BANDS.map((band) => (
                 <label
                   key={band}
@@ -205,48 +226,85 @@ export function ScreenFlow({
               ))}
             </div>
           </fieldset>
-          <div className="flex items-start gap-3">
-            <input
-              id={`${id}-agree`}
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-0.5 h-5 w-5 shrink-0 accent-teal-700"
-            />
-            <label htmlFor={`${id}-agree`} className="text-slate-800">
-              {t("agree")}
-            </label>
-          </div>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <button type="submit" className={primaryButton} disabled={!ageBand || !agreed || starting !== null}>
-              {starting === "form" ? t("starting") : t("startForm")}
-            </button>
-          </div>
-          {!ageBand || !agreed ? <p className="text-sm text-slate-600">{t("startHint")}</p> : null}
-          {voiceAvailable ? (
-            <div className="space-y-3 rounded-2xl border border-slate-200 p-4" data-testid="screen-voice-option">
-              {signedIn ? (
-                <>
-                  <p className="font-medium text-slate-900">{voiceIntent ? t("voiceSignedIn") : t("voicePrompt")}</p>
-                  <button
-                    ref={voiceButton}
-                    type="button"
-                    className={secondaryButton}
-                    disabled={!ageBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
-                    onClick={() => void start("voice")}
-                  >
-                    {starting === "voice" ? t("starting") : t("startVoice")}
-                  </button>
-                  {turnstile.widget}
-                </>
+          {ageBand === "under-18m" ? <Under18Guidance /> : null}
+          {ageBand === "9y+" ? <Over8Notice /> : null}
+          {ageBand === "under-18m" || ageBand === "9y+" ? null : (
+            <>
+              {questionBand ? (
+                <fieldset className="space-y-2" data-testid="screen-concerns">
+                  <legend className="mb-1 text-base font-semibold text-slate-900">{t("concerns.title")}</legend>
+                  <p className="text-sm text-slate-700">{t("concerns.hint")}</p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {offeredConcerns.map((concern) => {
+                      const checked = concerns.includes(concern);
+                      return (
+                        <label
+                          key={concern}
+                          className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border px-3 py-2 ${
+                            checked ? "border-teal-700 bg-teal-50 font-semibold text-teal-900" : "border-slate-300 text-slate-800"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            name={`${id}-concern`}
+                            value={concern}
+                            checked={checked}
+                            onChange={(e) =>
+                              setConcerns((list) => (e.target.checked ? [...list, concern] : list.filter((c) => c !== concern)))
+                            }
+                            className="h-5 w-5 shrink-0 accent-teal-700"
+                          />
+                          {t(`concerns.options.${concern}`)}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              ) : null}
+              <div className="flex items-start gap-3">
+                <input
+                  id={`${id}-agree`}
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                  className="mt-0.5 h-5 w-5 shrink-0 accent-teal-700"
+                />
+                <label htmlFor={`${id}-agree`} className="text-slate-800">
+                  {t("agree")}
+                </label>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <button type="submit" className={primaryButton} disabled={!questionBand || !agreed || starting !== null}>
+                  {starting === "form" ? t("starting") : t("startForm")}
+                </button>
+              </div>
+              {!questionBand || !agreed ? <p className="text-sm text-slate-600">{t("startHint")}</p> : null}
+              {voiceAvailable ? (
+                <div className="space-y-3 rounded-2xl border border-slate-200 p-4" data-testid="screen-voice-option">
+                  {signedIn ? (
+                    <>
+                      <p className="font-medium text-slate-900">{voiceIntent ? t("voiceSignedIn") : t("voicePrompt")}</p>
+                      <button
+                        ref={voiceButton}
+                        type="button"
+                        className={secondaryButton}
+                        disabled={!questionBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
+                        onClick={() => void start("voice")}
+                      >
+                        {starting === "voice" ? t("starting") : t("startVoice")}
+                      </button>
+                      {turnstile.widget}
+                    </>
+                  ) : (
+                    <Link href={voiceSignInHref("/screen?voice=1")} className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline underline-offset-4">
+                      {t("voiceSignIn")}
+                    </Link>
+                  )}
+                </div>
               ) : (
-                <Link href={voiceSignInHref("/screen?voice=1")} className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline underline-offset-4">
-                  {t("voiceSignIn")}
-                </Link>
+                <p className="text-sm text-slate-600">{t("errors.voiceUnavailable")}</p>
               )}
-            </div>
-          ) : (
-            <p className="text-sm text-slate-600">{t("errors.voiceUnavailable")}</p>
+            </>
           )}
           {error ? (
             <p
@@ -309,6 +367,8 @@ export function ScreenFlow({
           viewer={viewer}
           onSaved={storage.clear}
           onRestart={restart}
+          onUpdated={showResult(step.sessionId)}
+          onExpired={expired}
         />
       ) : null}
     </div>

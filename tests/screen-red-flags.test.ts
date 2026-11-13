@@ -64,13 +64,24 @@ describe("red-flag view (FR-7, E-2)", () => {
     }
   });
 
-  it("a normal result shows the band headline, the not-a-diagnosis line and the suggested provider types, but no Book button", async () => {
+  it("a normal result shows the band headline, the not-a-diagnosis line and the recommended provider types, but no Book button", async () => {
     const { ResultView } = await import("@/components/screen/ResultView");
     const html = renderToStaticMarkup(
       withI18n(
         createElement(ResultView, {
           sessionId: "s",
-          result: { result_band: "discuss_with_professional", domains: [{ domain: "speech", level: "some_signs" }], red_flag: false, message: "x" },
+          result: {
+            result_band: "discuss_with_professional",
+            domains: [{ domain: "speech", level: "some_signs" }],
+            red_flag: false,
+            message: "x",
+            instrument: "ISAA_PARENT_CHECKIN",
+            mchat: null,
+            recommendation: {
+              types: ["speech_language_pathologist", "developmental_pediatrician", "child_psychologist", "occupational_therapist"],
+              reason: { kind: "concern", concern: "speech" },
+            },
+          },
           localities: [{ name: "Banjara Hills", lat: 17.41, lng: 78.44 }],
           viewer: { kind: "anonymous" },
           onSaved: () => {},
@@ -80,7 +91,8 @@ describe("red-flag view (FR-7, E-2)", () => {
     );
     expect(html).toContain("Some areas are worth discussing with a professional");
     expect(html).toContain("This is a developmental check-in, not a diagnosis.");
-    expect(html).toContain("Find a specialist near you");
+    // 048 FR-10: the bookable providers below the recommendation (slots load in the browser).
+    expect(html).toContain("Book a visit near you");
     for (const type of ["developmental_pediatrician", "child_psychologist", "speech_language_pathologist", "occupational_therapist"]) {
       expect(html).toContain(`data-type="${type}"`);
     }
@@ -106,7 +118,7 @@ describe.skipIf(!enabled)("red flags stop the check-in (database)", { timeout: 1
     const res = await fetchFn("/api/screen/sessions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-forwarded-for": nextIp() },
-      body: JSON.stringify({ age_band: "3-5y", mode }),
+      body: JSON.stringify({ age_band: "31-71m", mode }),
     });
     session.user = null;
     const body = await res.json();
@@ -118,7 +130,17 @@ describe.skipIf(!enabled)("red flags stop the check-in (database)", { timeout: 1
     const finish = await post(`/api/screen/sessions/${id}/finish`);
     expect(finish.status).toBe(200);
     const result = await finish.json();
-    expect(result).toEqual({ result_band: null, domains: [], red_flag: true, message: URGENT_MESSAGE });
+    // 048 FR-8: a red flag still overrides everything: no band, no recommendation, no providers.
+    expect(result).toEqual({
+      result_band: null,
+      domains: [],
+      red_flag: true,
+      message: URGENT_MESSAGE,
+      instrument: "ISAA_PARENT_CHECKIN",
+      mchat: null,
+      recommendation: null,
+    });
+    expect((await fetchFn(`/api/screen/sessions/${id}/providers`)).status).toBe(409);
     const [row] = await sql<{ result_band: string | null; red_flag_codes: string[] }[]>`
       select result_band, red_flag_codes from screen_sessions where id = ${id}`;
     expect(row.result_band).toBeNull();
