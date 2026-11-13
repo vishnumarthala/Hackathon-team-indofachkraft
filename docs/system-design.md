@@ -499,6 +499,18 @@ and the view `provider_rating_summary` (published only), which fills 029's `sear
 ratings) / `rating_count`. A trigger on `appointments` enqueues `appointment.rate_prompt` 2 h after completion. Migration
 `20261113003600_ratings.sql`; details in `docs/ratings.md`.
 
+### Child import from CSV (ticket 047)
+
+`child_imports` (one per uploaded file and organisation: sha256 `file_hash`, row counts, `undo_until` = +24 h,
+`undone_at`; unique live hash per org = idempotent) and `child_import_rows` (spreadsheet row number, the created
+`child_id` / `case_id`, therapist, optional provider `notes` and `timetable` with `timetable_status` `pending` |
+`scheduled`, 043 `series_id`). The file itself is never stored. `import_children_rows()` creates per row an unclaimed
+`provider` child, an org case, the therapist's `lead` assignment and a 020 claim code (72 h, hash only) - never a
+consent record and never an outbox message. `undo_child_import()` deletes them within 24 h only if no row in any
+table with a foreign key to `cases`/`children` (other than the import's own assignments, unused codes and rows)
+references them and no intake link was issued. Migration `20261113004700_child_import.sql`; details in
+`docs/import-children.md`.
+
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
 ```ts
@@ -692,6 +704,12 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `POST /api/agents/followup/demo/answer_question` | 040 | DEMO_MODE only (else 404); signed-in guardian who owns the session (else 401) | same handler as the tool |
 | `POST /api/family/screen-results` | 033 | `{ session_id, child_id }` | 201 (200 again) `{ saved: true }`; 401; 404 not your child; 422 `screen_result_save` consent; 409 unfinished / red flag / other child; 410 expired |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
+| `GET /api/org/import/template` | 047 | provider | 200 `text/csv` header row (UTF-8 BOM) |
+| `POST /api/org/import/preview` | 047 | multipart `org_id`, `file` (CSV <= 1 MB, <= 500 rows); owner/admin of the org (member 403, others 404) | 200 `{ file_hash, file_errors, file_warnings, summary, has_timetable, series_available, already_imported, rows: [{ row, status: valid\|error\|duplicate, errors, warnings, duplicate_of, ... }] }` (issues: `{ code, params, message: "Row N: ..." }`); 413 over 1 MB |
+| `POST /api/org/import` | 047 | as preview + `import_duplicates` (JSON row numbers to `Import anyway`) | 201 `{ result: "imported", import, items: [{ row, case_id, child_id, child_name, guardian_name, guardian_phone, code, expires_at, message, whatsapp_url, paper_consent_path }], failed, skipped }`; 200 `{ result: "existing", import }` (same file again); 422 file errors / nothing to import; 503 nothing saved |
+| `GET /api/org/import/:id` | 047 | owner/admin of the import's org | 200 `{ import, children }` |
+| `POST /api/org/import/:id/undo` | 047 | owner/admin | 200 `{ result: "undone", cases, children }`; 409 `blocked` (`details.blocked_rows`), expired (> 24 h) or already undone |
+| `POST /api/org/import/:id/codes` | 047 | owner/admin | 201 `{ items }` new codes for children no family has linked yet (older codes stop working); 409 undone |
 
 `ResolvedCitation = { kind: "fact" | "segment", id, recording_id, session_number | null, start_sec, label }`
 where `label` is e.g. `Session 1 · 01:23` or `Intake call · 02:10`.

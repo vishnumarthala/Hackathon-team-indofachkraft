@@ -768,6 +768,18 @@ export const REGISTRY: PrivacyCategory[] = [
     // Erasure: the `appointments` category cancels the child's future appointments; their `appointment.cancelled`
     // events enqueue `meet.delete`, which removes the calendar events. Links and event ids carry no child data.
   },
+  {
+    // 047: CSV imports. The uploaded file is never stored; an import keeps its hash and counts, and one row per created
+    // child (ids, spreadsheet row number, the optional provider notes and timetable). Rows cascade with the child's case.
+    key: "child_imports",
+    label: "Spreadsheet imports of existing children (row links, provider notes, timetable)",
+    owner: "case",
+    tables: ["child_imports", "child_import_rows"],
+    retention:
+      "The uploaded file is not stored (only its hash and counts). Import rows stay with the child's case and are deleted with it, or when the import is undone within 24 hours.",
+    processors: ["supabase"],
+    erase: { scopes: EVERYTHING },
+  },
 ];
 
 /** For modules that prefer to register themselves (call once at module load; keys must be unique). */

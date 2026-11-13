@@ -1,0 +1,5 @@
+child_first_name,child_last_name,date_of_birth,guardian_name,guardian_phone,preferred_language,therapist_email,notes
+Aarav,Reddy (synthetic),14/03/2021,Kavya Reddy,+91 9000000101,te,therapist.a@clinic.example,
+Diya,S (synthetic),2020-07-05,Rohit Sharma,9000000102,hi,,
+Jai,New (synthetic),2021-09-09,Asha New,9000000401,en,,
+Jai,New (synthetic),09/09/2021,Asha New,9000000401,en,,

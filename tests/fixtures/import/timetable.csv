@@ -1,0 +1,6 @@
+child_first_name,date_of_birth,guardian_name,guardian_phone,therapist_email,weekdays,time,service_name
+Timetable,2021-05-05,Parent Tt,9000000501,therapist.a@clinic.example,Mon;Wed;Fri,10:00,Speech therapy (synthetic)
+Badday,2021-05-06,Parent Tt,9000000502,therapist.a@clinic.example,Mon;Funday,10:00,Speech therapy (synthetic)
+Noservice,2021-05-07,Parent Tt,9000000503,therapist.a@clinic.example,Tue,4:30 pm,Swimming
+Notherapist,2021-05-08,Parent Tt,9000000504,,Thu,16:30,Speech therapy (synthetic)
+Plain,2021-05-09,Parent Tt,9000000505,therapist.b@clinic.example,,,

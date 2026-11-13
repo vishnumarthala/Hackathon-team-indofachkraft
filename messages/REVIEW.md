@@ -12,6 +12,7 @@ Copy rules in every language: no word for "diagnose" or "diagnosis" except "not 
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
 Rows: 2570. Not yet approved: 2570.
+Rows: 2588. Not yet approved: 2588.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -2585,3 +2586,106 @@ Rows: 2570. Not yet approved: 2570.
 | `series.family.weekOf` | Week of {date} | {date} वाला हफ़्ता | {date} వారం |  | pending |
 | `series.family.noUpcoming` | No upcoming sessions in this timetable. | इस समय-सारणी में कोई आने वाला सेशन नहीं। | ఈ టైమ్‌టేబుల్‌లో రాబోయే సెషన్లు లేవు. |  | pending |
 | `series.family.cancelOnly` | You can cancel a single session up to 2 hours before it starts. To change the timetable, contact the centre. | आप किसी एक सेशन को उसके शुरू होने से 2 घंटे पहले तक रद्द कर सकते हैं। समय-सारणी बदलने के लिए सेंटर से संपर्क करें। | ఒక సెషన్‌ను అది ప్రారంభమయ్యే 2 గంటల ముందు వరకు రద్దు చేయవచ్చు. టైమ్‌టేబుల్ మార్చడానికి సెంటర్‌ను సంప్రదించండి. |  | pending |
+| `childImport.nav` | Import children | बच्चों को इम्पोर्ट करें | పిల్లలను ఇంపోర్ట్ చేయండి |  | pending |
+| `childImport.title` | Import children from a spreadsheet | स्प्रेडशीट से बच्चों को इम्पोर्ट करें | స్ప్రెడ్‌షీట్ నుండి పిల్లలను ఇంపోర్ట్ చేయండి |  | pending |
+| `childImport.intro` | Bring the children you already see into DoctorNearMe in one go. Upload a CSV file (up to 500 rows and 1 MB, UTF-8). Nothing is sent to families: you get a list of codes to share when you choose. | जिन बच्चों को आप पहले से देखते हैं, उन्हें एक बार में DoctorNearMe में लाएँ। एक CSV फ़ाइल अपलोड करें (अधिकतम 500 पंक्तियाँ और 1 MB, UTF-8)। परिवारों को कुछ नहीं भेजा जाता: आपको कोड की एक सूची मिलती है, जिसे आप जब चाहें साझा करें। | మీరు ఇప్పటికే చూస్తున్న పిల్లలను ఒకేసారి DoctorNearMe లోకి తీసుకురండి. ఒక CSV ఫైల్ అప్‌లోడ్ చేయండి (గరిష్ఠంగా 500 వరుసలు, 1 MB, UTF-8). కుటుంబాలకు ఏమీ పంపబడదు: మీకు కోడ్‌ల జాబితా వస్తుంది, మీకు కావలసినప్పుడు పంచుకోండి. |  | pending |
+| `childImport.onlyManagers` | Only organisation owners and admins can import children. | केवल संगठन के मालिक और एडमिन बच्चों को इम्पोर्ट कर सकते हैं। | సంస్థ యజమానులు మరియు అడ్మిన్‌లు మాత్రమే పిల్లలను ఇంపోర్ట్ చేయగలరు. |  | pending |
+| `childImport.templateTitle` | 1. Download the template | 1. टेम्पलेट डाउनलोड करें | 1. టెంప్లేట్ డౌన్‌లోడ్ చేయండి |  | pending |
+| `childImport.templateLink` | Download the template (CSV) | टेम्पलेट डाउनलोड करें (CSV) | టెంప్లేట్ డౌన్‌లోడ్ చేయండి (CSV) |  | pending |
+| `childImport.templateHelp` | Required columns: child_first_name, date_of_birth (YYYY-MM-DD or DD/MM/YYYY) and guardian_name. Optional: child_last_name, guardian_phone (10-digit Indian mobile), preferred_language (en, hi or te), therapist_email, notes, and a timetable: weekdays (for example Mon;Wed;Fri), time and service_name. In Excel use Save As > CSV UTF-8. Telugu and Hindi names are fine. | ज़रूरी कॉलम: child_first_name, date_of_birth (YYYY-MM-DD या DD/MM/YYYY) और guardian_name। वैकल्पिक: child_last_name, guardian_phone (10 अंकों का भारतीय मोबाइल), preferred_language (en, hi या te), therapist_email, notes, और समय-सारणी: weekdays (जैसे Mon;Wed;Fri), time और service_name। Excel में Save As > CSV UTF-8 चुनें। तेलुगु और हिंदी नाम चलेंगे। | తప్పనిసరి కాలమ్‌లు: child_first_name, date_of_birth (YYYY-MM-DD లేదా DD/MM/YYYY) మరియు guardian_name. ఐచ్ఛికం: child_last_name, guardian_phone (10 అంకెల భారతీయ మొబైల్), preferred_language (en, hi లేదా te), therapist_email, notes, మరియు టైమ్‌టేబుల్: weekdays (ఉదా. Mon;Wed;Fri), time మరియు service_name. Excel లో Save As > CSV UTF-8 ఎంచుకోండి. తెలుగు, హిందీ పేర్లు సరే. |  | pending |
+| `childImport.uploadTitle` | 2. Upload your CSV | 2. अपनी CSV अपलोड करें | 2. మీ CSV అప్‌లోడ్ చేయండి |  | pending |
+| `childImport.orgLabel` | Organisation | संगठन | సంస్థ |  | pending |
+| `childImport.fileLabel` | CSV file | CSV फ़ाइल | CSV ఫైల్ |  | pending |
+| `childImport.check` | Check the file | फ़ाइल जाँचें | ఫైల్ తనిఖీ చేయండి |  | pending |
+| `childImport.checking` | Checking… | जाँच हो रही है… | తనిఖీ చేస్తోంది… |  | pending |
+| `childImport.previewTitle` | 3. Check and import | 3. जाँचें और इम्पोर्ट करें | 3. తనిఖీ చేసి ఇంపోర్ట్ చేయండి |  | pending |
+| `childImport.summary` | {total} rows: {valid} ready, {duplicates} possible duplicates, {errors} with errors | {total} पंक्तियाँ: {valid} तैयार, {duplicates} संभावित डुप्लिकेट, {errors} में गलतियाँ | {total} వరుసలు: {valid} సిద్ధం, {duplicates} డూప్లికేట్ కావచ్చు, {errors} లో తప్పులు |  | pending |
+| `childImport.rowNumbers` | Row numbers match your spreadsheet (the header is row 1). | पंक्ति संख्याएँ आपकी स्प्रेडशीट जैसी हैं (हेडर पंक्ति 1 है)। | వరుస సంఖ్యలు మీ స్ప్రెడ్‌షీట్‌లోనివే (హెడర్ వరుస 1). |  | pending |
+| `childImport.alreadyImported` | This file was already imported on {date}. Importing it again changes nothing. | यह फ़ाइल {date} को पहले ही इम्पोर्ट हो चुकी है। दोबारा इम्पोर्ट करने से कुछ नहीं बदलता। | ఈ ఫైల్ {date} న ఇప్పటికే ఇంపోర్ట్ అయింది. మళ్ళీ ఇంపోర్ట్ చేస్తే ఏమీ మారదు. |  | pending |
+| `childImport.openThatImport` | Open that import | वह इम्पोर्ट खोलें | ఆ ఇంపోర్ట్ తెరవండి |  | pending |
+| `childImport.timetablePending` | Timetable columns found. Weekly sessions are not switched on yet, so each timetable is checked and saved with the child and scheduled later. | समय-सारणी के कॉलम मिले। साप्ताहिक सत्र अभी चालू नहीं हैं, इसलिए हर समय-सारणी जाँचकर बच्चे के साथ सहेजी जाती है और बाद में तय की जाएगी। | టైమ్‌టేబుల్ కాలమ్‌లు ఉన్నాయి. వారపు సెషన్‌లు ఇంకా ప్రారంభం కాలేదు, కాబట్టి ప్రతి టైమ్‌టేబుల్ తనిఖీ చేసి పిల్లలతో భద్రపరచబడుతుంది, తర్వాత షెడ్యూల్ అవుతుంది. |  | pending |
+| `childImport.timetableAvailable` | Timetable columns found: a weekly series is created for each child with a timetable. | समय-सारणी के कॉलम मिले: समय-सारणी वाले हर बच्चे के लिए एक साप्ताहिक सीरीज़ बनती है। | టైమ్‌టేబుల్ కాలమ్‌లు ఉన్నాయి: టైమ్‌టేబుల్ ఉన్న ప్రతి పిల్లకు వారపు సిరీస్ సృష్టించబడుతుంది. |  | pending |
+| `childImport.col.row` | Row | पंक्ति | వరుస |  | pending |
+| `childImport.col.child` | Child | बच्चा | పిల్ల |  | pending |
+| `childImport.col.guardian` | Guardian | अभिभावक | సంరక్షకులు |  | pending |
+| `childImport.col.timetable` | Timetable | समय-सारणी | టైమ్‌టేబుల్ |  | pending |
+| `childImport.col.consent` | Consent | सहमति | సమ్మతి |  | pending |
+| `childImport.col.code` | Code | कोड | కోడ్ |  | pending |
+| `childImport.col.notes` | Notes | नोट्स | నోట్స్ |  | pending |
+| `childImport.status.valid` | Ready | तैयार | సిద్ధం |  | pending |
+| `childImport.status.error` | Error | गलती | తప్పు |  | pending |
+| `childImport.status.duplicate` | Possible duplicate | संभावित डुप्लिकेट | డూప్లికేట్ కావచ్చు |  | pending |
+| `childImport.duplicateChoice` | What to do with row {row} | पंक्ति {row} का क्या करें | వరుస {row} ను ఏమి చేయాలి |  | pending |
+| `childImport.skip` | Skip | छोड़ें | వదిలేయండి |  | pending |
+| `childImport.importAnyway` | Import anyway | फिर भी इम्पोर्ट करें | అయినా ఇంపోర్ట్ చేయండి |  | pending |
+| `childImport.importButton_one` | Import {count} child | {count} बच्चे को इम्पोर्ट करें | {count} పిల్లను ఇంపోర్ట్ చేయండి |  | pending |
+| `childImport.importButton_other` | Import {count} children | {count} बच्चों को इम्पोर्ट करें | {count} మంది పిల్లలను ఇంపోర్ట్ చేయండి |  | pending |
+| `childImport.importing` | Importing… | इम्पोर्ट हो रहा है… | ఇంపోర్ట్ అవుతోంది… |  | pending |
+| `childImport.nothingToImport` | There are no rows to import. Fix the rows with errors in your spreadsheet and upload it again. | इम्पोर्ट करने के लिए कोई पंक्ति नहीं है। अपनी स्प्रेडशीट में गलती वाली पंक्तियाँ ठीक करें और फिर से अपलोड करें। | ఇంపోర్ట్ చేయడానికి వరుసలు లేవు. మీ స్ప్రెడ్‌షీట్‌లో తప్పులున్న వరుసలను సరిచేసి మళ్ళీ అప్‌లోడ్ చేయండి. |  | pending |
+| `childImport.requestFailed` | Something went wrong. Please try again. | कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `childImport.resultTitle` | Import finished | इम्पोर्ट पूरा हुआ | ఇంపోర్ట్ పూర్తయింది |  | pending |
+| `childImport.resultCounts` | Imported: {imported}. Skipped: {skipped}. Failed: {failed}. | इम्पोर्ट हुए: {imported}। छोड़े गए: {skipped}। असफल: {failed}। | ఇంపోర్ట్ అయినవి: {imported}. వదిలేసినవి: {skipped}. విఫలమైనవి: {failed}. |  | pending |
+| `childImport.codesIntro` | Share each code with the family when you are ready, on WhatsApp or in person. A code works once and expires in 72 hours; you can make new codes on the import page. | जब आप तैयार हों, हर कोड परिवार के साथ WhatsApp पर या आमने-सामने साझा करें। कोड एक बार चलता है और 72 घंटे में समाप्त हो जाता है; इम्पोर्ट पेज पर नए कोड बनाए जा सकते हैं। | మీరు సిద్ధంగా ఉన్నప్పుడు ప్రతి కోడ్‌ను కుటుంబంతో WhatsApp లో లేదా నేరుగా పంచుకోండి. కోడ్ ఒక్కసారే పనిచేస్తుంది, 72 గంటల్లో ముగుస్తుంది; ఇంపోర్ట్ పేజీలో కొత్త కోడ్‌లు సృష్టించవచ్చు. |  | pending |
+| `childImport.consentIntro` | Consent is never imported. Every imported child starts with consent not given; record the signed paper form or ask the family to give consent in the app. | सहमति कभी इम्पोर्ट नहीं होती। हर इम्पोर्ट किया गया बच्चा 'सहमति नहीं दी गई' से शुरू होता है; हस्ताक्षरित कागज़ी फ़ॉर्म दर्ज करें या परिवार से ऐप में सहमति देने को कहें। | సమ్మతి ఎప్పుడూ ఇంపోర్ట్ కాదు. ఇంపోర్ట్ అయిన ప్రతి పిల్ల 'సమ్మతి ఇవ్వలేదు' తో మొదలవుతుంది; సంతకం చేసిన కాగితపు ఫారం నమోదు చేయండి లేదా యాప్‌లో సమ్మతి ఇవ్వమని కుటుంబాన్ని అడగండి. |  | pending |
+| `childImport.download` | Download the list (CSV) | सूची डाउनलोड करें (CSV) | జాబితా డౌన్‌లోడ్ చేయండి (CSV) |  | pending |
+| `childImport.whatsapp` | Open WhatsApp | WhatsApp खोलें | WhatsApp తెరవండి |  | pending |
+| `childImport.paperConsent` | Record paper consent | कागज़ी सहमति दर्ज करें | కాగితపు సమ్మతి నమోదు చేయండి |  | pending |
+| `childImport.notGiven` | Not given | नहीं दी गई | ఇవ్వలేదు |  | pending |
+| `childImport.given` | Given | दी गई | ఇచ్చారు |  | pending |
+| `childImport.expires` | Expires {date} | {date} को समाप्त | {date} న ముగుస్తుంది |  | pending |
+| `childImport.openImport` | Open the import page | इम्पोर्ट पेज खोलें | ఇంపోర్ట్ పేజీ తెరవండి |  | pending |
+| `childImport.timetableSaved_one` | {count} timetable saved, waiting for weekly sessions. | {count} समय-सारणी सहेजी गई, साप्ताहिक सत्रों का इंतज़ार है। | {count} టైమ్‌టేబుల్ భద్రపరచబడింది, వారపు సెషన్‌ల కోసం వేచి ఉంది. |  | pending |
+| `childImport.timetableSaved_other` | {count} timetables saved, waiting for weekly sessions. | {count} समय-सारणियाँ सहेजी गईं, साप्ताहिक सत्रों का इंतज़ार है। | {count} టైమ్‌టేబుల్‌లు భద్రపరచబడ్డాయి, వారపు సెషన్‌ల కోసం వేచి ఉన్నాయి. |  | pending |
+| `childImport.historyTitle` | Recent imports | हाल के इम्पोर्ट | ఇటీవలి ఇంపోర్ట్‌లు |  | pending |
+| `childImport.historyNone` | No imports yet. | अभी कोई इम्पोर्ट नहीं। | ఇంకా ఇంపోర్ట్‌లు లేవు. |  | pending |
+| `childImport.historyRow` | {date}: {imported} imported, {skipped} skipped, {failed} failed | {date}: {imported} इम्पोर्ट, {skipped} छोड़े गए, {failed} असफल | {date}: {imported} ఇంపోర్ట్, {skipped} వదిలేసినవి, {failed} విఫలం |  | pending |
+| `childImport.undoneLabel` | Undone | वापस लिया गया | రద్దు చేయబడింది |  | pending |
+| `childImport.detailTitle` | Import of {date} | {date} का इम्पोर्ट | {date} నాటి ఇంపోర్ట్ |  | pending |
+| `childImport.back` | Back to imports | इम्पोर्ट पर वापस | ఇంపోర్ట్‌లకు తిరిగి |  | pending |
+| `childImport.undo` | Undo import | इम्पोर्ट वापस लें | ఇంపోర్ట్ రద్దు చేయండి |  | pending |
+| `childImport.undoConfirm` | Delete the children and cases created by this import? This cannot be reversed. | इस इम्पोर्ट से बने बच्चे और केस मिटा दें? इसे पलटा नहीं जा सकता। | ఈ ఇంపోర్ట్ సృష్టించిన పిల్లలను మరియు కేసులను తొలగించాలా? దీన్ని వెనక్కి తీసుకోలేరు. |  | pending |
+| `childImport.undoUntil` | You can undo this import until {date}, as long as nothing was added to these children. | आप इस इम्पोर्ट को {date} तक वापस ले सकते हैं, जब तक इन बच्चों में कुछ नया नहीं जुड़ा हो। | ఈ పిల్లలకు ఏమీ జోడించనంత వరకు, మీరు ఈ ఇంపోర్ట్‌ను {date} వరకు రద్దు చేయవచ్చు. |  | pending |
+| `childImport.undoExpired` | The 24-hour undo window has passed. | वापस लेने की 24 घंटे की अवधि बीत चुकी है। | రద్దు చేయడానికి ఉన్న 24 గంటల సమయం ముగిసింది. |  | pending |
+| `childImport.undoneOn` | This import was undone on {date}. | यह इम्पोर्ट {date} को वापस लिया गया। | ఈ ఇంపోర్ట్ {date} న రద్దు చేయబడింది. |  | pending |
+| `childImport.undoDone` | Import undone. | इम्पोर्ट वापस लिया गया। | ఇంపోర్ట్ రద్దు చేయబడింది. |  | pending |
+| `childImport.undoBlocked` | Cannot undo: something was added to the children in rows {rows} (for example a session note, a claimed code or consent). | वापस नहीं लिया जा सकता: पंक्तियों {rows} के बच्चों में कुछ जोड़ा गया है (जैसे सत्र नोट, इस्तेमाल किया गया कोड या सहमति)। | రద్దు చేయలేము: వరుసలు {rows} లోని పిల్లలకు ఏదో జోడించబడింది (ఉదా. సెషన్ నోట్, వాడిన కోడ్ లేదా సమ్మతి). |  | pending |
+| `childImport.regenerate` | Make new codes | नए कोड बनाएँ | కొత్త కోడ్‌లు సృష్టించండి |  | pending |
+| `childImport.regenerateHelp` | Makes a new code for every child whose family has not linked yet. Older codes stop working. | हर उस बच्चे के लिए नया कोड बनाता है जिसका परिवार अभी जुड़ा नहीं है। पुराने कोड काम करना बंद कर देते हैं। | కుటుంబం ఇంకా లింక్ కాని ప్రతి పిల్లకు కొత్త కోడ్ సృష్టిస్తుంది. పాత కోడ్‌లు పనిచేయవు. |  | pending |
+| `childImport.regenerateNone` | Every family has already linked. No new codes are needed. | सभी परिवार पहले ही जुड़ चुके हैं। नए कोड की ज़रूरत नहीं है। | అన్ని కుటుంబాలు ఇప్పటికే లింక్ అయ్యాయి. కొత్త కోడ్‌లు అవసరం లేదు. |  | pending |
+| `childImport.linked` | Family linked | परिवार जुड़ा है | కుటుంబం లింక్ అయింది |  | pending |
+| `childImport.codeValid` | Code valid until {date} | कोड {date} तक मान्य | కోడ్ {date} వరకు చెల్లుతుంది |  | pending |
+| `childImport.noCode` | No valid code | कोई मान्य कोड नहीं | చెల్లుబాటు అయ్యే కోడ్ లేదు |  | pending |
+| `childImport.timetablePendingShort` | Saved, not scheduled yet | सहेजी गई, अभी तय नहीं | భద్రపరచబడింది, ఇంకా షెడ్యూల్ కాలేదు |  | pending |
+| `childImport.timetableScheduled` | Weekly series created | साप्ताहिक सीरीज़ बनी | వారపు సిరీస్ సృష్టించబడింది |  | pending |
+| `childImport.issues.not_utf8` | The file is not UTF-8 text. In Excel choose Save As > CSV UTF-8; in Google Sheets choose File > Download > CSV. | फ़ाइल UTF-8 टेक्स्ट नहीं है। Excel में Save As > CSV UTF-8 चुनें; Google Sheets में File > Download > CSV चुनें। | ఫైల్ UTF-8 టెక్స్ట్ కాదు. Excel లో Save As > CSV UTF-8 ఎంచుకోండి; Google Sheets లో File > Download > CSV ఎంచుకోండి. |  | pending |
+| `childImport.issues.too_large` | The file is larger than 1 MB. | फ़ाइल 1 MB से बड़ी है। | ఫైల్ 1 MB కంటే పెద్దది. |  | pending |
+| `childImport.issues.empty` | The file has no rows below the header. | फ़ाइल में हेडर के नीचे कोई पंक्ति नहीं है। | ఫైల్‌లో హెడర్ కింద వరుసలు లేవు. |  | pending |
+| `childImport.issues.too_many_rows` | The file has {count} rows; the limit is {max}. Split it into smaller files. | फ़ाइल में {count} पंक्तियाँ हैं; सीमा {max} है। इसे छोटी फ़ाइलों में बाँटें। | ఫైల్‌లో {count} వరుసలు ఉన్నాయి; పరిమితి {max}. దీన్ని చిన్న ఫైళ్లుగా విభజించండి. |  | pending |
+| `childImport.issues.missing_columns` | Missing required columns: {columns}. Download the template to see the column names. | ज़रूरी कॉलम नहीं मिले: {columns}। कॉलम के नाम देखने के लिए टेम्पलेट डाउनलोड करें। | తప్పనిసరి కాలమ్‌లు లేవు: {columns}. కాలమ్ పేర్ల కోసం టెంప్లేట్ డౌన్‌లోడ్ చేయండి. |  | pending |
+| `childImport.issues.duplicate_columns` | The column {column} appears more than once. | कॉलम {column} एक से ज़्यादा बार है। | కాలమ్ {column} ఒకటి కంటే ఎక్కువ సార్లు ఉంది. |  | pending |
+| `childImport.issues.csv_syntax` | Row {row} has a quote mark that is never closed. | पंक्ति {row} में एक उद्धरण चिह्न है जो कभी बंद नहीं होता। | వరుస {row} లో మూయని కోట్ గుర్తు ఉంది. |  | pending |
+| `childImport.issues.unknown_columns` | These columns are ignored: {columns} | इन कॉलम को छोड़ दिया गया: {columns} | ఈ కాలమ్‌లు పట్టించుకోబడవు: {columns} |  | pending |
+| `childImport.issues.name_required` | Row {row}: enter the child's first name | पंक्ति {row}: बच्चे का पहला नाम लिखें | వరుస {row}: పిల్ల మొదటి పేరు రాయండి |  | pending |
+| `childImport.issues.name_too_long` | Row {row}: the child's name is longer than {max} characters | पंक्ति {row}: बच्चे का नाम {max} अक्षरों से लंबा है | వరుస {row}: పిల్ల పేరు {max} అక్షరాల కంటే పొడవుగా ఉంది |  | pending |
+| `childImport.issues.dob_required` | Row {row}: enter the date of birth | पंक्ति {row}: जन्म तिथि लिखें | వరుస {row}: పుట్టిన తేదీ రాయండి |  | pending |
+| `childImport.issues.dob_invalid` | Row {row}: "{value}" is not a date (use YYYY-MM-DD or DD/MM/YYYY) | पंक्ति {row}: "{value}" तारीख नहीं है (YYYY-MM-DD या DD/MM/YYYY लिखें) | వరుస {row}: "{value}" తేదీ కాదు (YYYY-MM-DD లేదా DD/MM/YYYY వాడండి) |  | pending |
+| `childImport.issues.dob_future` | Row {row}: date of birth is in the future | पंक्ति {row}: जन्म तिथि भविष्य में है | వరుస {row}: పుట్టిన తేదీ భవిష్యత్తులో ఉంది |  | pending |
+| `childImport.issues.dob_too_old` | Row {row}: the child is 18 or older | पंक्ति {row}: बच्चा 18 साल या उससे बड़ा है | వరుస {row}: పిల్ల వయస్సు 18 లేదా అంతకంటే ఎక్కువ |  | pending |
+| `childImport.issues.guardian_required` | Row {row}: enter the guardian's name | पंक्ति {row}: अभिभावक का नाम लिखें | వరుస {row}: సంరక్షకుల పేరు రాయండి |  | pending |
+| `childImport.issues.guardian_too_long` | Row {row}: the guardian's name is longer than {max} characters | पंक्ति {row}: अभिभावक का नाम {max} अक्षरों से लंबा है | వరుస {row}: సంరక్షకుల పేరు {max} అక్షరాల కంటే పొడవుగా ఉంది |  | pending |
+| `childImport.issues.phone_invalid` | Row {row}: "{value}" is not a 10-digit Indian mobile number | पंक्ति {row}: "{value}" 10 अंकों का भारतीय मोबाइल नंबर नहीं है | వరుస {row}: "{value}" 10 అంకెల భారతీయ మొబైల్ నంబర్ కాదు |  | pending |
+| `childImport.issues.language_invalid` | Row {row}: preferred language "{value}" must be en, hi or te | पंक्ति {row}: पसंदीदा भाषा "{value}" en, hi या te होनी चाहिए | వరుస {row}: ఇష్టమైన భాష "{value}" en, hi లేదా te అయి ఉండాలి |  | pending |
+| `childImport.issues.therapist_invalid_email` | Row {row}: "{value}" is not a valid email | पंक्ति {row}: "{value}" मान्य ईमेल नहीं है | వరుస {row}: "{value}" సరైన ఈమెయిల్ కాదు |  | pending |
+| `childImport.issues.therapist_unknown` | Row {row}: no therapist with this email in your organisation | पंक्ति {row}: आपके संगठन में इस ईमेल वाला कोई थेरेपिस्ट नहीं है | వరుస {row}: మీ సంస్థలో ఈ ఈమెయిల్‌తో థెరపిస్ట్ ఎవరూ లేరు |  | pending |
+| `childImport.issues.notes_too_long` | Row {row}: notes are longer than {max} characters | पंक्ति {row}: नोट्स {max} अक्षरों से लंबे हैं | వరుస {row}: నోట్స్ {max} అక్షరాల కంటే పొడవుగా ఉన్నాయి |  | pending |
+| `childImport.issues.extra_cells` | Row {row}: this row has more cells than the header | पंक्ति {row}: इस पंक्ति में हेडर से ज़्यादा सेल हैं | వరుస {row}: ఈ వరుసలో హెడర్ కంటే ఎక్కువ సెల్స్ ఉన్నాయి |  | pending |
+| `childImport.issues.timetable_incomplete` | Row {row}: fill in weekdays, time and service_name together | पंक्ति {row}: weekdays, time और service_name तीनों भरें | వరుస {row}: weekdays, time మరియు service_name మూడూ నింపండి |  | pending |
+| `childImport.issues.timetable_needs_therapist` | Row {row}: a timetable needs a therapist_email | पंक्ति {row}: समय-सारणी के लिए therapist_email ज़रूरी है | వరుస {row}: టైమ్‌టేబుల్‌కు therapist_email అవసరం |  | pending |
+| `childImport.issues.weekdays_invalid` | Row {row}: weekdays "{value}" not understood (for example Mon;Wed;Fri, at most 4 days) | पंक्ति {row}: weekdays "{value}" समझ नहीं आया (जैसे Mon;Wed;Fri, अधिकतम 4 दिन) | వరుస {row}: weekdays "{value}" అర్థం కాలేదు (ఉదా. Mon;Wed;Fri, గరిష్ఠంగా 4 రోజులు) |  | pending |
+| `childImport.issues.time_invalid` | Row {row}: time "{value}" not understood (for example 10:00 or 16:30) | पंक्ति {row}: time "{value}" समझ नहीं आया (जैसे 10:00 या 16:30) | వరుస {row}: time "{value}" అర్థం కాలేదు (ఉదా. 10:00 లేదా 16:30) |  | pending |
+| `childImport.issues.service_unknown` | Row {row}: no service called "{value}" in your organisation | पंक्ति {row}: आपके संगठन में "{value}" नाम की कोई सेवा नहीं है | వరుస {row}: మీ సంస్థలో "{value}" అనే సేవ లేదు |  | pending |
+| `childImport.issues.age_over_8` | Row {row}: the child is {years} years old (above 8) | पंक्ति {row}: बच्चा {years} साल का है (8 से ऊपर) | వరుస {row}: పిల్ల వయస్సు {years} సంవత్సరాలు (8 కంటే ఎక్కువ) |  | pending |
+| `childImport.issues.phone_missing` | Row {row}: no guardian phone, so share the code in person | पंक्ति {row}: अभिभावक का फ़ोन नहीं है, इसलिए कोड आमने-सामने दें | వరుస {row}: సంరక్షకుల ఫోన్ లేదు, కాబట్టి కోడ్‌ను నేరుగా ఇవ్వండి |  | pending |
+| `childImport.issues.duplicate_existing` | Row {row}: looks like a child already in your organisation (same first name, date of birth and phone) | पंक्ति {row}: यह बच्चा शायद आपके संगठन में पहले से है (वही पहला नाम, जन्म तिथि और फ़ोन) | వరుస {row}: ఈ పిల్ల మీ సంస్థలో ఇప్పటికే ఉన్నట్లుంది (అదే మొదటి పేరు, పుట్టిన తేదీ, ఫోన్) |  | pending |
+| `childImport.issues.duplicate_in_file` | Row {row}: same child as row {other} of this file | पंक्ति {row}: इस फ़ाइल की पंक्ति {other} वाला ही बच्चा | వరుస {row}: ఈ ఫైల్‌లోని వరుస {other} లోని పిల్లే |  | pending |
+| `childImport.issues.timetable_pending` | Row {row}: timetable saved; it is scheduled once weekly sessions are switched on | पंक्ति {row}: समय-सारणी सहेजी गई; साप्ताहिक सत्र चालू होने पर तय होगी | వరుస {row}: టైమ్‌టేబుల్ భద్రపరచబడింది; వారపు సెషన్‌లు ప్రారంభమైనప్పుడు షెడ్యూల్ అవుతుంది |  | pending |

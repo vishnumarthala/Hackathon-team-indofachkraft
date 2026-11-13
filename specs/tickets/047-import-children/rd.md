@@ -1,6 +1,6 @@
 # 047: Import existing children from a spreadsheet
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** alongside (043 can use the imported children, but neither blocks the other)
 

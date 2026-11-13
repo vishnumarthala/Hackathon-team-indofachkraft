@@ -17,7 +17,7 @@ Related: [system design](system-design.md) · [team workflow](team-workflow.md) 
 
 Figma pages: **Cover** · **Foundations** (swatches, type ramp, spacing, elevation, principles) ·
 **Components** · **Screens · Public & parents** · **Screens · Family portal** ·
-**Screens · Provider workspace** · **Screens · Admin**. Frames are named `route — title`, so you can
+**Screens · Provider workspace** · **Screens · Admin** · **Screens · Pilot readiness (043–053)**. Frames are named `route — title`, so you can
 find a route by searching the layers panel.
 
 ## 2. Design direction: "Care DS"
@@ -94,7 +94,7 @@ Telugu text.
 
 ## 5. Screens → routes
 
-There are 66 screens, and every route below exists in `app/`.
+There are 74 screens. Every route in the first four tables exists in `app/`; the pilot-readiness routes arrive with tickets 043–053.
 
 ### Public & parents (mobile 390 unless marked)
 
@@ -182,12 +182,26 @@ There are 66 screens, and every route below exists in `app/`.
 | `/admin/ops` | Operations health | [22:580](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=22-580) |
 | `/admin/audit` | Audit log | [22:651](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=22-651) |
 
+### Pilot readiness (tickets 043–053; routes land as the tickets merge)
+
+| Route | Screen | Figma | Ticket |
+|---|---|---|---|
+| `/dashboard/register` | Attendance register (front desk, mobile) | [29:11](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=29-11) | 044 |
+| `/family/children/[id]/payments` | Payments (mobile) | [30:84](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=30-84) | 045 |
+| `/screen` | Result: right professional + book in one tap (mobile) | [30:262](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=30-262) | 048 |
+| `/screen` | Voice needs sign-in, quota and budget messages (mobile) | [30:375](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=30-375) | 051 |
+| `/dashboard/payouts` | Payouts (desktop) | [31:340](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=31-340) | 046 |
+| `/dashboard/import` | Import children (desktop) | [31:495](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=31-495) | 047 |
+| `/cases/[id]` | Timetable & fees tabs (desktop) | [31:616](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=31-616) | 043, 045 |
+| `/admin/payouts + /admin/ops` | Payouts & voice usage (desktop) | [31:777](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=31-777) | 046, 051 |
+
 ## 6. How the product fits together
 
-The [FigJam board](https://www.figma.com/board/RfeKYhTAT8MDj5kMbG7hfy) has three diagrams: the family journey,
-the clinician workflow, and the **centre-invited family and money flow** (tickets 043–047; the family pays
-on DoctorNearMe, and DoctorNearMe pays the centre after each consultation, keeping a platform fee; see
-[decision record](../specs/grill/doctornearme-mvp.md) decision 8).
+The [FigJam board](https://www.figma.com/board/RfeKYhTAT8MDj5kMbG7hfy) has five diagrams, titled on the board. The current ones are
+**Family journey v2** (free tap check-in, voice after sign-in, one-tap booking, Next step card), the **Clinician
+workflow**, and **Money flow v2** (the family pays on DoctorNearMe; after each delivered consultation Razorpay Route
+pays the centre, minus the platform fee and GST; [decision record](../specs/grill/doctornearme-mvp.md) decision 8).
+The two v1 diagrams are marked superseded.
 
 **Family journey: Discover → Book → Prepare → Ongoing care.**
 
