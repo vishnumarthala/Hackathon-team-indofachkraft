@@ -384,12 +384,26 @@ export async function updateService(ctx: ProviderContext, serviceId: string, pat
   if (!existing || existing.provider_profile_id !== ctx.profile.id) return null;
   const next = { ...existing, ...patch };
   if (next.payment_mode === "free" && next.fee_inr !== 0) throw new ProviderInputError("fee_inr", "A free service has no fee");
+  // 045 FR-2: an old `at_clinic` service cannot be saved as such any more (the migration moved them all).
+  if (next.payment_mode === "at_clinic") throw new ProviderInputError("payment_mode", "Choose online or free (pay at clinic is retired)");
+  if (next.payment_mode === "online" && !(next.fee_inr > 0)) throw new ProviderInputError("fee_inr", "Enter the fee");
   await sql`
     update public.services set name = ${next.name}, duration_min = ${next.duration_min}, fee_inr = ${next.fee_inr},
       payment_mode = ${next.payment_mode}, buffer_min = ${next.buffer_min}, intake_kind = ${next.intake_kind}, active = ${next.active},
       updated_at = now()
     where id = ${serviceId} and provider_profile_id = ${ctx.profile.id}`;
   return getService(serviceId);
+}
+
+/** 045 FR-2: show the one-time "Pay at clinic is retired" notice (some of the profile's services were moved to online
+ * payment by the migration and the provider has not dismissed it yet). */
+export async function atClinicNoticeDue(profileId: string): Promise<boolean> {
+  const sql = await pg();
+  const [row] = await sql<{ due: boolean }[]>`
+    select (p.at_clinic_notice_dismissed_at is null
+            and exists (select 1 from public.services s where s.provider_profile_id = p.id and s.migrated_from_at_clinic_at is not null)) as due
+    from public.provider_profiles p where p.id = ${profileId}`;
+  return Boolean(row?.due);
 }
 
 export type RuleRow = {

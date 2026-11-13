@@ -1,6 +1,7 @@
 // Ticket 031: Razorpay client (test mode only, D-1), the demo gateway (DEMO_MODE) and signature checks.
-// No SDK: Orders + Refunds over HTTPS with basic auth. Server-only (node:crypto, secrets).
+// No SDK: Orders + Refunds (+ 045 Payment Links) over HTTPS with basic auth. Server-only (node:crypto, secrets).
 //   * Checkout signature (FR-4): HMAC_SHA256(order_id + "|" + payment_id, key_secret), hex.
+//   * Payment link redirect signature (045): HMAC_SHA256(link_id|reference_id|status|payment_id, key_secret), hex.
 //   * Webhook signature (FR-5): HMAC_SHA256(raw request body, webhook_secret), hex, header X-Razorpay-Signature.
 // Both are compared in constant time (timingSafeEqual).
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
@@ -64,6 +65,22 @@ export function verifyCheckoutSignature(
   return safeEqual(checkoutSignature(input.orderId, input.paymentId, keySecret), input.signature.trim().toLowerCase());
 }
 
+/** 045: the signature Razorpay adds to a payment link's callback redirect. */
+export function paymentLinkSignature(
+  input: { linkId: string; referenceId: string; status: string; paymentId: string },
+  keySecret: string,
+): string {
+  return hmacSha256Hex(keySecret, `${input.linkId}|${input.referenceId}|${input.status}|${input.paymentId}`);
+}
+
+export function verifyPaymentLinkSignature(
+  input: { linkId: string; referenceId: string; status: string; paymentId: string; signature: string },
+  keySecret: string,
+): boolean {
+  if (!keySecret || !input.signature) return false;
+  return safeEqual(paymentLinkSignature(input, keySecret), input.signature.trim().toLowerCase());
+}
+
 export function verifyWebhookSignature(rawBody: string, signature: string | null, secret: string | null | undefined): boolean {
   if (!secret || !signature) return false;
   return safeEqual(hmacSha256Hex(secret, rawBody), signature.trim().toLowerCase());
@@ -106,7 +123,19 @@ export function razorpaySettings(): RazorpaySettings {
 // ---------- gateway ----------
 
 export type GatewayOrder = { id: string; amount: number; currency: "INR"; receipt: string; status: string };
-export type GatewayRefund = { id: string; payment_id: string; amount: number; status: "pending" | "processed" | "failed" };
+export type GatewayRefund = { id: string; payment_id: string; amount: number; status: "pending" | "processed" | "failed"; receipt?: string | null };
+/** 045: a Razorpay payment link (`short_url` is the only thing shown to people: no child data, NFR-3). */
+export type GatewayPaymentLink = { id: string; short_url: string; amount: number; status: string; reference_id: string };
+export type PaymentLinkInput = {
+  amountPaise: number;
+  /** Unique per link (<= 40 characters). */
+  referenceId: string;
+  /** Shown on Razorpay's page: what is being paid for, never the child's name. */
+  description: string;
+  expireBy: Date;
+  callbackUrl: string;
+  notes: Record<string, string>;
+};
 
 export interface PaymentGateway {
   readonly kind: "razorpay" | "demo";
@@ -116,13 +145,34 @@ export interface PaymentGateway {
   createRefund(paymentId: string, input: { amountPaise: number; receipt: string }): Promise<GatewayRefund>;
   listRefunds(paymentId: string): Promise<GatewayRefund[]>;
   fetchRefund(paymentId: string, refundId: string): Promise<GatewayRefund>;
+  /** 045: partial refunds (package unused sessions, session charges). */
+  createPartialRefund?(paymentId: string, input: { amountPaise: number; receipt: string; notes: Record<string, string> }): Promise<GatewayRefund>;
+  createPaymentLink?(input: PaymentLinkInput): Promise<GatewayPaymentLink>;
+  /** Resolves "cancelled"; "paid" when the link was paid meanwhile (Razorpay refuses to cancel it). */
+  cancelPaymentLink?(linkId: string): Promise<"cancelled" | "paid">;
 }
 
 type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
 
 function refundOf(json: Record<string, unknown>): GatewayRefund {
   const status = json.status === "processed" || json.status === "failed" ? json.status : "pending";
-  return { id: String(json.id), payment_id: String(json.payment_id), amount: Number(json.amount), status };
+  return {
+    id: String(json.id),
+    payment_id: String(json.payment_id),
+    amount: Number(json.amount),
+    status,
+    receipt: typeof json.receipt === "string" ? json.receipt : null,
+  };
+}
+
+function linkOf(json: Record<string, unknown>): GatewayPaymentLink {
+  return {
+    id: String(json.id),
+    short_url: String(json.short_url),
+    amount: Number(json.amount),
+    status: String(json.status),
+    reference_id: String(json.reference_id ?? ""),
+  };
 }
 
 /** Real Razorpay (test mode). Refuses to be created with a non-test key id (D-1). */
@@ -170,12 +220,50 @@ export function createRazorpayClient(opts: { keyId: string; keySecret: string; f
     async fetchRefund(paymentId, refundId) {
       return refundOf(await call("GET", `/payments/${encodeURIComponent(paymentId)}/refunds/${encodeURIComponent(refundId)}`));
     },
+    async createPartialRefund(paymentId, { amountPaise, receipt, notes }) {
+      return refundOf(await call("POST", `/payments/${encodeURIComponent(paymentId)}/refund`, { amount: amountPaise, speed: "normal", receipt, notes }));
+    },
+    async createPaymentLink(input) {
+      const json = await call("POST", "/payment_links", {
+        amount: input.amountPaise,
+        currency: "INR",
+        accept_partial: false,
+        reference_id: input.referenceId,
+        description: input.description,
+        expire_by: Math.floor(input.expireBy.getTime() / 1000),
+        // DoctorNearMe sends the link itself (in-app, WhatsApp template, QR at the desk); no customer details.
+        notify: { sms: false, email: false },
+        reminder_enable: false,
+        notes: input.notes,
+        callback_url: input.callbackUrl,
+        callback_method: "get",
+      });
+      return linkOf(json);
+    },
+    async cancelPaymentLink(linkId) {
+      try {
+        await call("POST", `/payment_links/${encodeURIComponent(linkId)}/cancel`);
+        return "cancelled";
+      } catch (err) {
+        if (err instanceof RazorpayApiError && err.status === 400) {
+          const link = linkOf(await call("GET", `/payment_links/${encodeURIComponent(linkId)}`));
+          if (link.status === "paid") return "paid";
+          if (link.status === "cancelled" || link.status === "expired") return "cancelled";
+        }
+        throw err;
+      }
+    },
   };
 }
 
-/** Deterministic Razorpay-shaped id (`order_DEMO…`, `pay_DEMO…`, `rfnd_DEMO…`) from a seed. */
-export function demoId(prefix: "order" | "pay" | "rfnd", seed: string): string {
+/** Deterministic Razorpay-shaped id (`order_DEMO…`, `pay_DEMO…`, `rfnd_DEMO…`, `plink_DEMO…`) from a seed. */
+export function demoId(prefix: "order" | "pay" | "rfnd" | "plink", seed: string): string {
   return `${prefix}_DEMO${createHash("sha256").update(`${prefix}:${seed}`).digest("hex").slice(0, 14)}`;
+}
+
+/** DEMO_MODE payment link page (our own: /pay/demo/<link id>, simulates Razorpay's hosted page). */
+export function demoLinkUrl(linkId: string): string {
+  return `${env.NEXT_PUBLIC_APP_URL.replace(/\/+$/, "")}/pay/demo/${linkId}`;
 }
 
 /** DEMO_MODE gateway: no network, deterministic ids, refunds processed at once. */
@@ -194,6 +282,16 @@ export function createDemoGateway(): PaymentGateway {
     },
     async fetchRefund(paymentId, refundId) {
       return { id: refundId, payment_id: paymentId, amount: 0, status: "processed" };
+    },
+    async createPartialRefund(paymentId, { amountPaise, receipt }) {
+      return { id: demoId("rfnd", `${paymentId}:${receipt}`), payment_id: paymentId, amount: amountPaise, status: "processed", receipt };
+    },
+    async createPaymentLink(input) {
+      const id = demoId("plink", input.referenceId);
+      return { id, short_url: demoLinkUrl(id), amount: input.amountPaise, status: "created", reference_id: input.referenceId };
+    },
+    async cancelPaymentLink() {
+      return "cancelled";
     },
   };
 }

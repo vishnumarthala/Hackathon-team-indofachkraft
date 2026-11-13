@@ -25,6 +25,8 @@ async function main() {
   const { runOutbox } = await import("../lib/notify/worker");
   // 031: the payment refund job runs in the same local loop (Vercel: /api/cron/payments).
   const { runPaymentJobs } = await import("../lib/payments/jobs");
+  // 045: fee jobs (balance links, fee refunds, offer / package expiry, reminders).
+  const { runFeeJobs } = await import("../lib/fees/jobs");
   type Senders = NonNullable<Parameters<typeof runOutbox>[0]>["senders"];
 
   const senders: Senders = mockLog
@@ -51,7 +53,8 @@ async function main() {
     for (;;) {
       const result = await runOutbox({ sql, senders, timeBudgetMs: 5_000 });
       const payments = await runPaymentJobs({ sql });
-      console.log(JSON.stringify({ at: new Date().toISOString(), pid: process.pid, ...result, payments }));
+      const fees = await runFeeJobs({ sql });
+      console.log(JSON.stringify({ at: new Date().toISOString(), pid: process.pid, ...result, payments, fees }));
       if (once || stop || Date.now() - started + intervalMs > durationMs) break;
       await sleep(intervalMs);
       if (stop) break;

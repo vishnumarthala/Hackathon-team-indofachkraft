@@ -2,6 +2,7 @@ import { AuditWriteError } from "@/lib/audit";
 import { fail, ok } from "@/lib/http";
 import { errorMessage, logger } from "@/lib/log";
 import { drainSoon } from "@/lib/notify/outbox";
+import { runFeeJobsSoon } from "@/lib/fees/jobs";
 import { runPaymentJobsSoon } from "@/lib/payments/jobs";
 import { razorpaySettings, RazorpayConfigError, verifyWebhookSignature } from "@/lib/payments/razorpay";
 import { handleWebhookEvent } from "@/lib/payments/store";
@@ -17,8 +18,8 @@ const MAX_BODY_BYTES = 256 * 1024;
 // 031 FR-5 (public, no session): Razorpay webhooks. X-Razorpay-Signature = HMAC_SHA256(raw body, webhook secret),
 // checked in constant time before anything is parsed or stored (401). Deduplicated by X-Razorpay-Event-Id
 // (replay -> 200 { received: true, duplicate: true }). Handles payment.authorized / .captured / .failed and
-// refund.processed; anything else -> 200 ignored. Quick (NFR-2): one transaction; refunds and notifications run after
-// the response (refund job, outbox).
+// refund.processed, and (045) payment_link.paid / .cancelled / .expired; anything else -> 200 ignored. Quick (NFR-2):
+// one transaction; refunds, balance links and notifications run after the response (refund jobs, outbox).
 export async function POST(req: Request) {
   const raw = await req.text();
   if (Buffer.byteLength(raw, "utf8") > MAX_BODY_BYTES) return fail(413, "Payload too large");
@@ -50,6 +51,11 @@ export async function POST(req: Request) {
     if (result.duplicate) return ok({ received: true, duplicate: true });
     if (result.eventIds.length) drainSoon(result.eventIds);
     runPaymentJobsSoon(result.refundPaymentIds);
+    if (result.feeJobs) {
+      runFeeJobsSoon();
+      // The receipt (fees.receipt) was enqueued by the capture.
+      drainSoon();
+    }
     log.info("webhook processed", { event: parsed.event, outcome: result.outcome });
     return ok({ received: true, outcome: result.outcome, ...(result.outcome === "ignored" ? { ignored: parsed.event } : {}) });
   } catch (err) {

@@ -73,7 +73,8 @@ export function ServicesEditor({
   const id = useId();
   const { busy, run, feedback, invalid } = useAction();
   const [mode, setMode] = useState<"in_clinic" | "video">(locations.length ? "in_clinic" : "video");
-  const [payment, setPayment] = useState<"free" | "at_clinic" | "online">("at_clinic");
+  // 045 FR-2: paid services are paid on DoctorNearMe (online); "pay at clinic" is retired.
+  const [payment, setPayment] = useState<"free" | "online">("online");
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -148,8 +149,7 @@ export function ServicesEditor({
         </div>
         <div>
           <label htmlFor={`${id}-pay`} className={labelClass}>{t("schedule.services.payment")}</label>
-          <select id={`${id}-pay`} value={payment} onChange={(e) => setPayment(e.target.value as "free" | "at_clinic" | "online")} className={selectClass}>
-            <option value="at_clinic">{t("payment.at_clinic")}</option>
+          <select id={`${id}-pay`} value={payment} onChange={(e) => setPayment(e.target.value as "free" | "online")} className={selectClass}>
             <option value="online">{t("payment.online")}</option>
             <option value="free">{t("payment.free")}</option>
           </select>
@@ -157,7 +157,7 @@ export function ServicesEditor({
         {payment !== "free" ? (
           <div>
             <label htmlFor={`${id}-fee`} className={labelClass}>{t("schedule.services.fee")}</label>
-            <input id={`${id}-fee`} name="fee_inr" type="number" inputMode="numeric" min={0} max={100000} defaultValue={500} className={inputClass} aria-invalid={bad("fee_inr")} />
+            <input id={`${id}-fee`} name="fee_inr" type="number" inputMode="numeric" min={1} max={100000} defaultValue={500} className={inputClass} aria-invalid={bad("fee_inr")} />
           </div>
         ) : null}
         <div>

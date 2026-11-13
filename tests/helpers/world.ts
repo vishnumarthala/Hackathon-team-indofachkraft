@@ -117,6 +117,8 @@ export function createWorld(sql: Sql, db: Db, prefix: string) {
     if (orgs.length) {
       await sql`delete from cases where org_id in ${sql(orgs)}`;
       await sql`delete from organizations where id in ${sql(orgs)}`;
+      // 045: the family ledger is append-only (no foreign keys); test clean-up uses the maintenance flag.
+      await purgeLedger(sql, orgs);
     }
     // 032: grant notifications are outbox events keyed by the grant (notifications cascade).
     if (childIds.length) await sql`delete from outbox_events where payload ->> 'child_id' in ${sql([...new Set(childIds)])}`;
@@ -126,6 +128,15 @@ export function createWorld(sql: Sql, db: Db, prefix: string) {
   }
 
   return { tag, user, org, member, kase, link, grant, withdraw, trackChild, cleanup };
+}
+
+/** 045: removes test ledger rows of these organisations (the append-only trigger honours `dnm.ledger_maintenance`). */
+export async function purgeLedger(sql: Sql, orgIds: string[]): Promise<void> {
+  if (!orgIds.length) return;
+  await sql.begin(async (tx) => {
+    await tx`select set_config('dnm.ledger_maintenance', 'on', true)`;
+    await tx`delete from family_ledger where org_id in ${tx(orgIds)}`;
+  });
 }
 
 export const post = (url: string, body?: unknown, method = "POST") =>

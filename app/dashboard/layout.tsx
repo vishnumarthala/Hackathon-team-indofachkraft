@@ -18,6 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const tm = await getT("messaging");
   const tr = await getT("ratings");
   const ta = await getT("attendance");
+  const tf = await getT("fees.dashboard");
 
   return (
     <>
@@ -41,6 +42,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </Link>
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/register">
               {ta("nav")}
+            </Link>
+            <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/fees">
+              {tf("nav")}
             </Link>
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/ratings">
               {tr("provider.nav")}

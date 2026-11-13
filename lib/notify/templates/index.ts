@@ -9,16 +9,21 @@ import appointment_reminder_24h from "./appointment_reminder_24h";
 import appointment_reminder_2h from "./appointment_reminder_2h";
 import appointment_rescheduled from "./appointment_rescheduled";
 import assessment_assigned from "./assessment_assigned";
+import balance_reminder from "./balance_reminder";
 import assessment_red_flag from "./assessment_red_flag";
 import assessment_submitted from "./assessment_submitted";
 import document_shared from "./document_shared";
+import fees_refunded from "./fees_refunded";
 import google_calendar_reconnect from "./google_calendar_reconnect";
 import home_program_published from "./home_program_published";
 import iep_published from "./iep_published";
 import message_created from "./message_created";
 import prescription_signed from "./prescription_signed";
 import prescription_voided from "./prescription_voided";
+import package_reminder from "./package_reminder";
+import payment_receipt from "./payment_receipt";
 import payment_refunded from "./payment_refunded";
+import payment_request from "./payment_request";
 import provider_claimed from "./provider_claimed";
 import provider_rejected from "./provider_rejected";
 import provider_suspended from "./provider_suspended";
@@ -68,6 +73,12 @@ export const TEMPLATES = {
   voice_budget_alert,
   series_created,
   series_changed,
+  // 045 packages and family payments
+  payment_request,
+  payment_receipt,
+  balance_reminder,
+  package_reminder,
+  fees_refunded,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

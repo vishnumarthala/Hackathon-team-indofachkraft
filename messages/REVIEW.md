@@ -11,9 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2811. Not yet approved: 2811.
-Rows: 2763. Not yet approved: 2763.
-Rows: 2760. Not yet approved: 2760.
+Rows: 3078. Not yet approved: 3078.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1083,6 +1081,7 @@ Rows: 2760. Not yet approved: 2760.
 | `caseTabs.homeProgram` | Home program | घर का कार्यक्रम | ఇంటి కార్యక్రమం |  | pending |
 | `caseTabs.prescriptions` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
 | `caseTabs.attendance` | Attendance | उपस्थिति | హాజరు |  | pending |
+| `caseTabs.fees` | Fees | फीस | ఫీజులు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -1528,7 +1527,7 @@ Rows: 2760. Not yet approved: 2760.
 | `privacy.notice.collect.messages` | Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them. | देखभाल टीम के साथ संदेश: DoctorNearMe बातचीत में आप और देखभाल टीम जो लिखते हैं, जोड़े गए दस्तावेज़ों के लिंक, और आपने उन्हें आखिरी बार कब पढ़ा। | సంరక్షణ బృందంతో సందేశాలు: DoctorNearMe సంభాషణల్లో మీరు మరియు సంరక్షణ బృందం రాసేవి, జోడించిన పత్రాల లింకులు, మరియు మీరు వాటిని చివరిసారి ఎప్పుడు చదివారు. |  | pending |
 | `privacy.notice.collect.videoCalls` | Video appointments: the Google Meet link. You join signed in to your own Google account; your email is never added to the provider's calendar. | वीडियो अपॉइंटमेंट: Google Meet लिंक। आप अपने Google खाते में साइन इन करके जुड़ते हैं; आपका ईमेल कभी प्रदाता के कैलेंडर में नहीं जोड़ा जाता। | వీడియో అపాయింట్‌మెంట్‌లు: Google Meet లింక్. మీరు మీ స్వంత Google ఖాతాలో సైన్ ఇన్ చేసి చేరతారు; మీ ఇమెయిల్ ఎప్పుడూ ప్రొవైడర్ క్యాలెండర్‌కు జోడించబడదు. |  | pending |
 | `privacy.notice.collect.screen` | Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs. | हमारे सार्वजनिक जाँच पेज से विकास जाँच: आपके बच्चे की उम्र का दायरा और आपके जवाब, बिना किसी नाम के। अगर आप आवाज़ इस्तेमाल करते हैं, तो कॉल ElevenLabs द्वारा प्रोसेस की जाती है। | మా పబ్లిక్ పరిశీలన పేజీ నుండి అభివృద్ధి పరిశీలన: మీ బిడ్డ వయస్సు శ్రేణి, మీ సమాధానాలు, ఏ పేరూ లేకుండా. మీరు వాయిస్ ఉపయోగిస్తే, కాల్‌ను ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
-| `privacy.notice.collect.payments` | Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them. | जिन अपॉइंटमेंट का आप ऑनलाइन भुगतान करते हैं उनके भुगतान: राशि, स्थिति, रिफ़ंड और Razorpay संदर्भ संख्या। आपके कार्ड या UPI विवरण Razorpay संभालता है; हम उन्हें कभी नहीं देखते या रखते। | మీరు ఆన్‌లైన్‌లో చెల్లించే అపాయింట్‌మెంట్ల చెల్లింపులు: మొత్తం, స్థితి, రీఫండ్‌లు, Razorpay రిఫరెన్స్ నంబర్లు. మీ కార్డ్ లేదా UPI వివరాలను Razorpay నిర్వహిస్తుంది; మేము వాటిని ఎప్పుడూ చూడము, నిల్వ చేయము. |  | pending |
+| `privacy.notice.collect.payments` | Payments you make on DoctorNearMe: appointments, session packages and session charges (amount, status, refunds, receipt numbers and Razorpay reference numbers), and your child's account with each centre. Razorpay handles your card or UPI details; we never see or store them. | DoctorNearMe पर आपके भुगतान: अपॉइंटमेंट, सेशन पैकेज और सेशन शुल्क (राशि, स्थिति, रिफ़ंड, रसीद संख्या और Razorpay संदर्भ संख्या), और हर सेंटर के साथ आपके बच्चे का खाता। आपके कार्ड या UPI विवरण Razorpay संभालता है; हम उन्हें कभी नहीं देखते या रखते। | DoctorNearMe లో మీరు చేసే చెల్లింపులు: అపాయింట్‌మెంట్లు, సెషన్ ప్యాకేజీలు, సెషన్ ఛార్జీలు (మొత్తం, స్థితి, రీఫండ్‌లు, రసీదు నంబర్లు, Razorpay రిఫరెన్స్ నంబర్లు), ప్రతి సెంటర్‌తో మీ పిల్లల ఖాతా. మీ కార్డ్ లేదా UPI వివరాలను Razorpay నిర్వహిస్తుంది; మేము వాటిని ఎప్పుడూ చూడము, నిల్వ చేయము. |  | pending |
 | `privacy.notice.collect.ratings` | Ratings you give after a completed visit: stars and an optional comment. They are shown without your name; only DoctorNearMe admins can see who wrote them. | पूरी हुई विज़िट के बाद आपकी दी गई रेटिंग: स्टार और एक वैकल्पिक टिप्पणी। ये आपके नाम के बिना दिखाई जाती हैं; केवल DoctorNearMe एडमिन देख सकते हैं कि इन्हें किसने लिखा। | పూర్తయిన సందర్శన తర్వాత మీరు ఇచ్చే రేటింగ్‌లు: స్టార్‌లు మరియు ఐచ్ఛిక వ్యాఖ్య. ఇవి మీ పేరు లేకుండా చూపబడతాయి; వాటిని ఎవరు రాశారో DoctorNearMe అడ్మిన్‌లు మాత్రమే చూడగలరు. |  | pending |
 | `privacy.notice.collect.followUp` | Questions to the AI follow-up assistant (only with your permission): your questions about your child's shared plans and the answers, kept for 90 days. If you ask by voice, the call is processed by ElevenLabs. | AI फ़ॉलो-अप सहायक से प्रश्न (केवल आपकी अनुमति से): आपके बच्चे की साझा योजनाओं के बारे में आपके प्रश्न और उत्तर, 90 दिनों तक रखे जाते हैं। यदि आप आवाज़ से पूछते हैं, तो कॉल ElevenLabs द्वारा संसाधित की जाती है। | AI ఫాలో-అప్ సహాయకుడికి ప్రశ్నలు (మీ అనుమతితో మాత్రమే): మీ పిల్లల పంచుకున్న ప్లాన్‌ల గురించి మీ ప్రశ్నలు మరియు సమాధానాలు, 90 రోజులు ఉంచబడతాయి. మీరు గొంతుతో అడిగితే, కాల్‌ను ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
 | `privacy.notice.collect.voiceUsage` | Voice usage: when you use voice (check-in, booking, follow-up questions), we record that your account had a voice call, with which assistant and for how long. Nothing about your child, no recording and no transcript. We use it to keep voice free and fair. | आवाज़ का इस्तेमाल: जब आप आवाज़ इस्तेमाल करते हैं (जाँच, बुकिंग, फ़ॉलो-अप सवाल), हम दर्ज करते हैं कि आपके खाते से एक आवाज़ कॉल हुई, किस असिस्टेंट के साथ और कितनी देर। आपके बच्चे के बारे में कुछ नहीं, कोई रिकॉर्डिंग नहीं और कोई ट्रांसक्रिप्ट नहीं। हम इसका इस्तेमाल आवाज़ को मुफ़्त और सबके लिए उचित रखने के लिए करते हैं। | వాయిస్ వినియోగం: మీరు వాయిస్ వాడినప్పుడు (పరిశీలన, బుకింగ్, ఫాలో-అప్ ప్రశ్నలు), మీ ఖాతా నుండి ఒక వాయిస్ కాల్ జరిగిందని, ఏ అసిస్టెంట్‌తో, ఎంతసేపు అని నమోదు చేస్తాం. మీ బిడ్డ గురించి ఏమీ లేదు, రికార్డింగ్ లేదు, ట్రాన్స్‌క్రిప్ట్ లేదు. వాయిస్‌ను ఉచితంగా, అందరికీ న్యాయంగా ఉంచడానికి దీన్ని వాడతాం. |  | pending |
@@ -1590,7 +1589,7 @@ Rows: 2760. Not yet approved: 2760.
 | `privacy.notice.retention.messages.how` | While your child is in care, with the clinical record; a deleted message's text is removed at once | जब तक आपका बच्चा देखभाल में है, क्लिनिकल रिकॉर्ड के साथ; हटाए गए संदेश का पाठ तुरंत मिटा दिया जाता है | మీ పిల్లలు సంరక్షణలో ఉన్నంతకాలం, క్లినికల్ రికార్డుతో పాటు; తొలగించిన సందేశం యొక్క పాఠం వెంటనే తీసివేయబడుతుంది |  | pending |
 | `privacy.notice.retention.screen.what` | Check-ins from the public check-in page that you did not save | सार्वजनिक जाँच पेज की वे जाँचें जिन्हें आपने सेव नहीं किया | మీరు సేవ్ చేయని పబ్లిక్ పరిశీలన పేజీ పరిశీలనలు |  | pending |
 | `privacy.notice.retention.screen.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
-| `privacy.notice.retention.payments.what` | Payments (amount, status, refunds) | भुगतान (राशि, स्थिति, रिफ़ंड) | చెల్లింపులు (మొత్తం, స్థితి, రీఫండ్‌లు) |  | pending |
+| `privacy.notice.retention.payments.what` | Payments, packages and the family account (amounts, status, refunds, receipts) | भुगतान, पैकेज और परिवार खाता (राशि, स्थिति, रिफ़ंड, रसीदें) | చెల్లింపులు, ప్యాకేజీలు మరియు కుటుంబ ఖాతా (మొత్తం, స్థితి, రీఫండ్‌లు, రసీదులు) |  | pending |
 | `privacy.notice.retention.payments.how` | Kept as a financial record (period pending legal review), also after deletion; no card or UPI details | वित्तीय रिकॉर्ड के रूप में रखा जाता है (अवधि कानूनी समीक्षा के अधीन), हटाने के बाद भी; कोई कार्ड या UPI विवरण नहीं | ఆర్థిక రికార్డుగా ఉంచబడుతుంది (కాలం న్యాయ సమీక్షలో ఉంది), తొలగించిన తర్వాత కూడా; కార్డ్ లేదా UPI వివరాలు ఉండవు |  | pending |
 | `privacy.notice.retention.ratings.what` | Ratings and comments | रेटिंग और टिप्पणियाँ | రేటింగ్‌లు మరియు వ్యాఖ్యలు |  | pending |
 | `privacy.notice.retention.ratings.how` | While your account is active; deleted with your account, or with your child's data when you ask us to delete everything | जब तक आपका खाता सक्रिय है; आपके खाते के साथ, या सब कुछ हटाने के अनुरोध पर आपके बच्चे के डेटा के साथ हटा दी जाती हैं | మీ ఖాతా సక్రియంగా ఉన్నంత వరకు; మీ ఖాతాతో పాటు, లేదా అన్నీ తొలగించమని మీరు అడిగినప్పుడు మీ పిల్లల డేటాతో పాటు తొలగించబడతాయి |  | pending |
@@ -2383,7 +2382,7 @@ Rows: 2760. Not yet approved: 2760.
 | `payments.labels.refundPending` | Refund in progress | रिफ़ंड जारी है | రీఫండ్ జరుగుతోంది |  | pending |
 | `payments.labels.refunded` | Refunded | रिफ़ंड हो गया | రీఫండ్ అయింది |  | pending |
 | `payments.labels.notRefunded` | Paid, not refunded | भुगतान हुआ, रिफ़ंड नहीं | చెల్లించారు, రీఫండ్ లేదు |  | pending |
-| `payments.labels.atClinic` | Pay at clinic | क्लिनिक पर भुगतान | క్లినిక్‌లో చెల్లించండి |  | pending |
+| `payments.labels.atClinic` | Payment link after the visit | विज़िट के बाद भुगतान लिंक | సందర్శన తర్వాత చెల్లింపు లింక్ |  | pending |
 | `payments.list.payNow` | Pay now | अभी भुगतान करें | ఇప్పుడే చెల్లించండి |  | pending |
 | `payments.pay.metaTitle` | Pay for your appointment | अपने अपॉइंटमेंट का भुगतान करें | మీ అపాయింట్‌మెంట్‌కు చెల్లించండి |  | pending |
 | `payments.pay.title` | Pay for your appointment | अपने अपॉइंटमेंट का भुगतान करें | మీ అపాయింట్‌మెంట్‌కు చెల్లించండి |  | pending |
@@ -2943,3 +2942,154 @@ Rows: 2760. Not yet approved: 2760.
 | `attendance.family.monthly_other` | {attended} of {count} sessions attended in {month} | {month} में {count} में से {attended} सत्रों में आए | {month}లో {count} సెషన్‌లలో {attended}కి హాజరయ్యారు |  | pending |
 | `attendance.family.monthlyChild_one` | {child}: {attended} of {count} session attended in {month} | {child}: {month} में {count} में से {attended} सत्र में आए | {child}: {month}లో {count} సెషన్‌లో {attended}కి హాజరయ్యారు |  | pending |
 | `attendance.family.monthlyChild_other` | {child}: {attended} of {count} sessions attended in {month} | {child}: {month} में {count} में से {attended} सत्रों में आए | {child}: {month}లో {count} సెషన్‌లలో {attended}కి హాజరయ్యారు |  | pending |
+| `fees.caseTab.title` | Fees | फीस | ఫీజులు |  | pending |
+| `fees.caseTab.intro` | What the family owes, their package and every charge and payment. Families pay on DoctorNearMe; DoctorNearMe pays the centre after each session. | परिवार पर कितना बाकी है, उनका पैकेज और हर शुल्क और भुगतान। परिवार DoctorNearMe पर भुगतान करते हैं; DoctorNearMe हर सेशन के बाद सेंटर को भुगतान करता है। | కుటుంబం చెల్లించాల్సింది, వారి ప్యాకేజీ, ప్రతి ఛార్జ్ మరియు చెల్లింపు. కుటుంబాలు DoctorNearMe లో చెల్లిస్తాయి; ప్రతి సెషన్ తర్వాత DoctorNearMe సెంటర్‌కు చెల్లిస్తుంది. |  | pending |
+| `fees.caseTab.noChild` | This case has no linked child, so there is no family account. | इस केस से कोई बच्चा जुड़ा नहीं है, इसलिए कोई परिवार खाता नहीं है। | ఈ కేసుకు పిల్లలు ఎవరూ జోడించబడలేదు, కాబట్టి కుటుంబ ఖాతా లేదు. |  | pending |
+| `fees.caseTab.balanceDue` | Balance due | बकाया राशि | బాకీ మొత్తం |  | pending |
+| `fees.caseTab.credit` | Credit | क्रेडिट | క్రెడిట్ |  | pending |
+| `fees.caseTab.nothingDue` | Nothing due | कुछ बाकी नहीं | ఏమీ బాకీ లేదు |  | pending |
+| `fees.caseTab.overdue` | Overdue | समय पर नहीं चुकाया | గడువు దాటింది |  | pending |
+| `fees.caseTab.packageEnding` | Package ending | पैकेज खत्म होने वाला | ప్యాకేజీ ముగుస్తోంది |  | pending |
+| `fees.caseTab.activePackage` | Package | पैकेज | ప్యాకేజీ |  | pending |
+| `fees.caseTab.noPackage` | No active package. Sessions are charged one by one. | कोई सक्रिय पैकेज नहीं। सेशन एक-एक करके चार्ज होते हैं। | యాక్టివ్ ప్యాకేజీ లేదు. సెషన్లు ఒక్కొక్కటిగా ఛార్జ్ అవుతాయి. |  | pending |
+| `fees.caseTab.sessionsLeft_one` | {count} session left | {count} सेशन बाकी | {count} సెషన్ మిగిలి ఉంది |  | pending |
+| `fees.caseTab.sessionsLeft_other` | {count} sessions left | {count} सेशन बाकी | {count} సెషన్లు మిగిలి ఉన్నాయి |  | pending |
+| `fees.caseTab.progress` | {used} of {total} sessions used | {total} में से {used} सेशन इस्तेमाल हुए | {total} లో {used} సెషన్లు వాడారు |  | pending |
+| `fees.caseTab.validUntil` | Valid until {date} | {date} तक मान्य | {date} వరకు చెల్లుతుంది |  | pending |
+| `fees.caseTab.pendingOffer` | Offered, waiting for payment: {name} ({amount}) | ऑफ़र भेजा, भुगतान का इंतज़ार: {name} ({amount}) | ఆఫర్ పంపారు, చెల్లింపు కోసం వేచి ఉంది: {name} ({amount}) |  | pending |
+| `fees.caseTab.offerOpenUntil` | The offer is open until {date}. | ऑफ़र {date} तक खुला है। | ఆఫర్ {date} వరకు తెరిచి ఉంటుంది. |  | pending |
+| `fees.caseTab.seriesWarning` | Weekly sessions continue after the package runs out. Offer a new package, or the next sessions are charged one by one. | पैकेज खत्म होने के बाद भी साप्ताहिक सेशन चलते रहते हैं। नया पैकेज ऑफ़र करें, वरना अगले सेशन एक-एक करके चार्ज होंगे। | ప్యాకేజీ అయిపోయిన తర్వాత కూడా వారపు సెషన్లు కొనసాగుతాయి. కొత్త ప్యాకేజీ ఆఫర్ చేయండి, లేకపోతే తదుపరి సెషన్లు ఒక్కొక్కటిగా ఛార్జ్ అవుతాయి. |  | pending |
+| `fees.caseTab.refundPending` | Refund in progress: {amount} | रिफंड प्रक्रिया में: {amount} | రీఫండ్ ప్రాసెస్‌లో ఉంది: {amount} |  | pending |
+| `fees.caseTab.ledger` | Account history | खाते का इतिहास | ఖాతా చరిత్ర |  | pending |
+| `fees.caseTab.ledgerEmpty` | No charges or payments yet. | अभी तक कोई शुल्क या भुगतान नहीं। | ఇంకా ఛార్జీలు లేదా చెల్లింపులు లేవు. |  | pending |
+| `fees.caseTab.colDate` | Date | तारीख | తేదీ |  | pending |
+| `fees.caseTab.colItem` | Item | विवरण | వివరం |  | pending |
+| `fees.caseTab.colAmount` | Amount | राशि | మొత్తం |  | pending |
+| `fees.caseTab.receipt` | Receipt {number} | रसीद {number} | రసీదు {number} |  | pending |
+| `fees.caseTab.actions` | Actions | कार्य | చర్యలు |  | pending |
+| `fees.caseTab.managersOnly` | Only organisation owners and admins can offer packages, request payments, refund or add adjustments. | केवल संगठन के मालिक और एडमिन पैकेज ऑफ़र, भुगतान का अनुरोध, रिफंड या समायोजन कर सकते हैं। | సంస్థ యజమానులు మరియు అడ్మిన్‌లు మాత్రమే ప్యాకేజీలు ఆఫర్ చేయగలరు, చెల్లింపులు అడగగలరు, రీఫండ్ లేదా సర్దుబాట్లు చేయగలరు. |  | pending |
+| `fees.caseTab.offerPackage` | Offer package | पैकेज ऑफ़र करें | ప్యాకేజీ ఆఫర్ చేయండి |  | pending |
+| `fees.caseTab.choosePackage` | Package | पैकेज | ప్యాకేజీ |  | pending |
+| `fees.caseTab.noPackages` | No packages yet. Add them in Settings, Packages. | अभी कोई पैकेज नहीं। उन्हें सेटिंग्स, पैकेज में जोड़ें। | ఇంకా ప్యాకేజీలు లేవు. వాటిని సెట్టింగ్స్, ప్యాకేజీలలో జోడించండి. |  | pending |
+| `fees.caseTab.sendOffer` | Send offer | ऑफ़र भेजें | ఆఫర్ పంపండి |  | pending |
+| `fees.caseTab.offerSent` | Offer sent. The family can pay with the link or the QR code. | ऑफ़र भेज दिया। परिवार लिंक या QR कोड से भुगतान कर सकता है। | ఆఫర్ పంపబడింది. కుటుంబం లింక్ లేదా QR కోడ్‌తో చెల్లించవచ్చు. |  | pending |
+| `fees.caseTab.requestPayment` | Request payment | भुगतान का अनुरोध करें | చెల్లింపు అడగండి |  | pending |
+| `fees.caseTab.requestSent` | Payment request sent to the family: {amount}. | परिवार को भुगतान अनुरोध भेजा: {amount}। | కుటుంబానికి చెల్లింపు అభ్యర్థన పంపబడింది: {amount}. |  | pending |
+| `fees.caseTab.showQr` | Show payment QR | भुगतान QR दिखाएँ | చెల్లింపు QR చూపించండి |  | pending |
+| `fees.caseTab.hideQr` | Hide QR | QR छिपाएँ | QR దాచండి |  | pending |
+| `fees.caseTab.qrCaption` | Scan to pay {amount} with UPI or card. Payments are made to DoctorNearMe on behalf of {centre}. | UPI या कार्ड से {amount} भुगतान करने के लिए स्कैन करें। भुगतान {centre} की ओर से DoctorNearMe को किया जाता है। | UPI లేదా కార్డుతో {amount} చెల్లించడానికి స్కాన్ చేయండి. చెల్లింపులు {centre} తరఫున DoctorNearMe కు చేయబడతాయి. |  | pending |
+| `fees.caseTab.qrAlt` | QR code for a payment link of {amount} | {amount} के भुगतान लिंक का QR कोड | {amount} చెల్లింపు లింక్ యొక్క QR కోడ్ |  | pending |
+| `fees.caseTab.qrPackage` | Package | पैकेज | ప్యాకేజీ |  | pending |
+| `fees.caseTab.qrBalance` | Balance | बकाया | బాకీ |  | pending |
+| `fees.caseTab.noOpenLink` | No open payment link. Use Request payment or Offer package first. | कोई खुला भुगतान लिंक नहीं। पहले भुगतान का अनुरोध करें या पैकेज ऑफ़र करें। | తెరిచి ఉన్న చెల్లింపు లింక్ లేదు. ముందుగా చెల్లింపు అడగండి లేదా ప్యాకేజీ ఆఫర్ చేయండి. |  | pending |
+| `fees.caseTab.adjustment` | Adjustment | समायोजन | సర్దుబాటు |  | pending |
+| `fees.caseTab.adjustmentAmount` | Amount in rupees (a minus sign gives a credit) | रुपये में राशि (माइनस चिह्न से क्रेडिट मिलता है) | రూపాయలలో మొత్తం (మైనస్ గుర్తుతో క్రెడిట్ వస్తుంది) |  | pending |
+| `fees.caseTab.adjustmentReason` | Reason | कारण | కారణం |  | pending |
+| `fees.caseTab.addAdjustment` | Add adjustment | समायोजन जोड़ें | సర్దుబాటు జోడించండి |  | pending |
+| `fees.caseTab.adjustmentSaved` | Adjustment added. | समायोजन जोड़ा गया। | సర్దుబాటు జోడించబడింది. |  | pending |
+| `fees.caseTab.refund` | Refund | रिफंड | రీఫండ్ |  | pending |
+| `fees.caseTab.refundPackage` | Refund unused sessions | बचे सेशन का रिफंड करें | మిగిలిన సెషన్ల రీఫండ్ |  | pending |
+| `fees.caseTab.refundSession` | Refund this session | इस सेशन का रिफंड करें | ఈ సెషన్ రీఫండ్ చేయండి |  | pending |
+| `fees.caseTab.refundReason` | Reason for the refund | रिफंड का कारण | రీఫండ్ కారణం |  | pending |
+| `fees.caseTab.refundRequested` | Refund requested: {amount}. It reaches the family in 5-7 working days. | रिफंड का अनुरोध किया: {amount}। परिवार तक 5-7 कामकाजी दिनों में पहुँचता है। | రీఫండ్ అభ్యర్థించబడింది: {amount}. 5-7 పని దినాల్లో కుటుంబానికి చేరుతుంది. |  | pending |
+| `fees.caseTab.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `fees.caseTab.working` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `fees.caseTab.errors.nothing_due` | There is nothing to pay right now. | अभी भुगतान के लिए कुछ नहीं है। | ఇప్పుడు చెల్లించాల్సింది ఏమీ లేదు. |  | pending |
+| `fees.caseTab.errors.nothing_to_refund` | There is nothing left to refund. | रिफंड के लिए कुछ नहीं बचा है। | రీఫండ్ చేయడానికి ఏమీ మిగలలేదు. |  | pending |
+| `fees.caseTab.errors.not_refundable` | This cannot be refunded here. | इसका रिफंड यहाँ नहीं हो सकता। | దీన్ని ఇక్కడ రీఫండ్ చేయలేరు. |  | pending |
+| `fees.caseTab.errors.not_paid` | This session has not been paid yet. Use an adjustment instead. | इस सेशन का अभी भुगतान नहीं हुआ है। इसकी जगह समायोजन करें। | ఈ సెషన్‌కు ఇంకా చెల్లింపు జరగలేదు. బదులుగా సర్దుబాటు చేయండి. |  | pending |
+| `fees.caseTab.errors.offer_pending` | This child already has an unpaid offer for this package. | इस बच्चे के लिए इस पैकेज का एक ऑफ़र पहले से भुगतान का इंतज़ार कर रहा है। | ఈ పిల్లలకు ఈ ప్యాకేజీ ఆఫర్ ఇప్పటికే చెల్లింపు కోసం వేచి ఉంది. |  | pending |
+| `fees.caseTab.errors.package_inactive` | This package is no longer offered. | यह पैकेज अब ऑफ़र नहीं किया जाता। | ఈ ప్యాకేజీ ఇక ఆఫర్ చేయబడదు. |  | pending |
+| `fees.caseTab.errors.package_not_found` | Package not found. | पैकेज नहीं मिला। | ప్యాకేజీ కనుగొనబడలేదు. |  | pending |
+| `fees.caseTab.errors.not_configured` | Online payment is not available right now. Please try again later. | ऑनलाइन भुगतान अभी उपलब्ध नहीं है। कृपया बाद में फिर कोशिश करें। | ఆన్‌లైన్ చెల్లింపు ఇప్పుడు అందుబాటులో లేదు. దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి. |  | pending |
+| `fees.caseTab.errors.gateway_error` | The payment link could not be created. Please try again. | भुगतान लिंक नहीं बन सका। कृपया फिर कोशिश करें। | చెల్లింపు లింక్ సృష్టించలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `fees.caseTab.errors.forbidden` | Only organisation owners and admins can do this. | यह केवल संगठन के मालिक और एडमिन कर सकते हैं। | దీన్ని సంస్థ యజమానులు మరియు అడ్మిన్‌లు మాత్రమే చేయగలరు. |  | pending |
+| `fees.caseTab.errors.invalid` | Check the highlighted fields. | चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను చూడండి. |  | pending |
+| `fees.caseTab.errors.generic` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `fees.kinds.charge` | Charge | शुल्क | ఛార్జ్ |  | pending |
+| `fees.kinds.payment` | Payment | भुगतान | చెల్లింపు |  | pending |
+| `fees.kinds.refund` | Refund | रिफंड | రీఫండ్ |  | pending |
+| `fees.kinds.adjustment` | Adjustment | समायोजन | సర్దుబాటు |  | pending |
+| `fees.items.session` | Session on {date} | {date} का सेशन | {date} సెషన్ |  | pending |
+| `fees.items.sessionNoDate` | Session | सेशन | సెషన్ |  | pending |
+| `fees.items.appointment` | Appointment on {date} | {date} का अपॉइंटमेंट | {date} అపాయింట్‌మెంట్ |  | pending |
+| `fees.items.package` | Package: {name} | पैकेज: {name} | ప్యాకేజీ: {name} |  | pending |
+| `fees.items.packageNoName` | Package | पैकेज | ప్యాకేజీ |  | pending |
+| `fees.items.balance` | Payment received | भुगतान मिला | చెల్లింపు అందింది |  | pending |
+| `fees.items.notBillable` | Session no longer charged | सेशन अब चार्ज नहीं होगा | సెషన్ ఇక ఛార్జ్ కాదు |  | pending |
+| `fees.items.paidAfterCancel` | Paid after it was cancelled (refunded) | रद्द होने के बाद भुगतान हुआ (रिफंड किया गया) | రద్దు అయిన తర్వాత చెల్లించారు (రీఫండ్ చేయబడింది) |  | pending |
+| `fees.items.unallocated` | Payment that could not be used (refunded) | भुगतान जो इस्तेमाल नहीं हो सका (रिफंड किया गया) | వాడలేని చెల్లింపు (రీఫండ్ చేయబడింది) |  | pending |
+| `fees.items.refund` | Refund | रिफंड | రీఫండ్ |  | pending |
+| `fees.packageStatus.pending_payment` | Waiting for payment | भुगतान का इंतज़ार | చెల్లింపు కోసం వేచి ఉంది |  | pending |
+| `fees.packageStatus.active` | Active | सक्रिय | యాక్టివ్ |  | pending |
+| `fees.packageStatus.used_up` | Used up | पूरा इस्तेमाल | పూర్తిగా వాడారు |  | pending |
+| `fees.packageStatus.expired` | Expired | समाप्त | గడువు ముగిసింది |  | pending |
+| `fees.packageStatus.cancelled` | Cancelled | रद्द | రద్దు చేయబడింది |  | pending |
+| `fees.family.link` | Payments | भुगतान | చెల్లింపులు |  | pending |
+| `fees.family.title` | Payments | भुगतान | చెల్లింపులు |  | pending |
+| `fees.family.intro` | What you pay for {name}'s sessions. | {name} के सेशन के लिए आपके भुगतान। | {name} సెషన్ల కోసం మీ చెల్లింపులు. |  | pending |
+| `fees.family.caption` | Payments are made to DoctorNearMe on behalf of {centre}. | भुगतान {centre} की ओर से DoctorNearMe को किए जाते हैं। | చెల్లింపులు {centre} తరఫున DoctorNearMe కు చేయబడతాయి. |  | pending |
+| `fees.family.balanceDue` | Balance due | बकाया राशि | బాకీ మొత్తం |  | pending |
+| `fees.family.pay` | Pay {amount} with UPI or card | UPI या कार्ड से {amount} भुगतान करें | UPI లేదా కార్డుతో {amount} చెల్లించండి |  | pending |
+| `fees.family.nothingDue` | Nothing to pay right now. | अभी भुगतान के लिए कुछ नहीं है। | ఇప్పుడు చెల్లించాల్సింది ఏమీ లేదు. |  | pending |
+| `fees.family.credit` | You have a credit of {amount}. | आपके पास {amount} का क्रेडिट है। | మీకు {amount} క్రెడిట్ ఉంది. |  | pending |
+| `fees.family.offer` | {name}: {sessions} sessions | {name}: {sessions} सेशन | {name}: {sessions} సెషన్లు |  | pending |
+| `fees.family.payPackage` | Pay {amount} for this package | इस पैकेज के लिए {amount} भुगतान करें | ఈ ప్యాకేజీకి {amount} చెల్లించండి |  | pending |
+| `fees.family.package` | Package | पैकेज | ప్యాకేజీ |  | pending |
+| `fees.family.history` | History | इतिहास | చరిత్ర |  | pending |
+| `fees.family.empty` | No payments yet. | अभी तक कोई भुगतान नहीं। | ఇంకా చెల్లింపులు లేవు. |  | pending |
+| `fees.family.receipt` | Receipt | रसीद | రసీదు |  | pending |
+| `fees.family.receiptNumber` | Receipt {number} | रसीद {number} | రసీదు {number} |  | pending |
+| `fees.family.paidNotice` | Thank you. Your payment was received. Your receipt is in the history below. | धन्यवाद। आपका भुगतान मिल गया। आपकी रसीद नीचे इतिहास में है। | ధన్యవాదాలు. మీ చెల్లింపు అందింది. మీ రసీదు క్రింద చరిత్రలో ఉంది. |  | pending |
+| `fees.family.refundPending` | Refund of {amount} in progress. | {amount} का रिफंड प्रक्रिया में है। | {amount} రీఫండ్ ప్రాసెస్‌లో ఉంది. |  | pending |
+| `fees.family.noAccounts` | No payments yet. When a centre sends you a payment request, it shows here. | अभी तक कोई भुगतान नहीं। जब कोई सेंटर भुगतान का अनुरोध भेजेगा, तो वह यहाँ दिखेगा। | ఇంకా చెల్లింపులు లేవు. సెంటర్ చెల్లింపు అభ్యర్థన పంపినప్పుడు అది ఇక్కడ కనిపిస్తుంది. |  | pending |
+| `fees.dashboard.nav` | Fees | फीस | ఫీజులు |  | pending |
+| `fees.dashboard.title` | Fees | फीस | ఫీజులు |  | pending |
+| `fees.dashboard.intro` | Balances due and packages that are ending, in the organisations you manage. | आपके संभाले संगठनों में बकाया राशि और खत्म होने वाले पैकेज। | మీరు నిర్వహించే సంస్థలలో బాకీ మొత్తాలు మరియు ముగుస్తున్న ప్యాకేజీలు. |  | pending |
+| `fees.dashboard.noOrg` | Fees are shown to organisation owners and admins. | फीस संगठन के मालिकों और एडमिन को दिखती है। | ఫీజులు సంస్థ యజమానులు మరియు అడ్మిన్‌లకు కనిపిస్తాయి. |  | pending |
+| `fees.dashboard.empty` | No balances due and no packages ending. | कोई बकाया नहीं और कोई पैकेज खत्म नहीं हो रहा। | బాకీలు లేవు, ముగుస్తున్న ప్యాకేజీలు లేవు. |  | pending |
+| `fees.dashboard.child` | Child | बच्चा | పిల్లలు |  | pending |
+| `fees.dashboard.centre` | Centre | सेंटर | సెంటర్ |  | pending |
+| `fees.dashboard.balance` | Balance due | बकाया राशि | బాకీ మొత్తం |  | pending |
+| `fees.dashboard.open` | Open fees | फीस खोलें | ఫీజులు తెరవండి |  | pending |
+| `fees.dashboard.packageLeft_one` | {count} session left | {count} सेशन बाकी | {count} సెషన్ మిగిలి ఉంది |  | pending |
+| `fees.dashboard.packageLeft_other` | {count} sessions left | {count} सेशन बाकी | {count} సెషన్లు మిగిలి ఉన్నాయి |  | pending |
+| `fees.dashboard.packagesLink` | Packages | पैकेज | ప్యాకేజీలు |  | pending |
+| `fees.settings.link` | Packages | पैकेज | ప్యాకేజీలు |  | pending |
+| `fees.settings.linkIntro` | Monthly session packages that families can buy on DoctorNearMe. | मासिक सेशन पैकेज जिन्हें परिवार DoctorNearMe पर खरीद सकते हैं। | కుటుంబాలు DoctorNearMe లో కొనగలిగే నెలవారీ సెషన్ ప్యాకేజీలు. |  | pending |
+| `fees.settings.title` | Packages | पैकेज | ప్యాకేజీలు |  | pending |
+| `fees.settings.intro` | Packages families can buy, for example 12 sessions for ₹9,000, valid for 30 days. Each session used is worth the price divided by the sessions. | पैकेज जिन्हें परिवार खरीद सकते हैं, जैसे 30 दिनों के लिए ₹9,000 में 12 सेशन। हर इस्तेमाल हुए सेशन का मूल्य कीमत को सेशन की संख्या से भाग देकर तय होता है। | కుటుంబాలు కొనగలిగే ప్యాకేజీలు, ఉదాహరణకు 30 రోజులకు ₹9,000 కు 12 సెషన్లు. వాడిన ప్రతి సెషన్ విలువ ధరను సెషన్ల సంఖ్యతో భాగించినంత. |  | pending |
+| `fees.settings.org` | Organisation | संगठन | సంస్థ |  | pending |
+| `fees.settings.show` | Show | दिखाएँ | చూపించండి |  | pending |
+| `fees.settings.noOrg` | Only organisation owners and admins can edit packages. | केवल संगठन के मालिक और एडमिन पैकेज बदल सकते हैं। | సంస్థ యజమానులు మరియు అడ్మిన్‌లు మాత్రమే ప్యాకేజీలను మార్చగలరు. |  | pending |
+| `fees.settings.none` | No packages yet. | अभी कोई पैकेज नहीं। | ఇంకా ప్యాకేజీలు లేవు. |  | pending |
+| `fees.settings.name` | Name | नाम | పేరు |  | pending |
+| `fees.settings.sessions` | Sessions (1-60) | सेशन (1-60) | సెషన్లు (1-60) |  | pending |
+| `fees.settings.price` | Price in rupees | रुपये में कीमत | రూపాయలలో ధర |  | pending |
+| `fees.settings.validity` | Valid for days (7-180) | कितने दिन मान्य (7-180) | ఎన్ని రోజులు చెల్లుతుంది (7-180) |  | pending |
+| `fees.settings.services` | Services it covers | कौन-सी सेवाएँ शामिल हैं | ఇందులో ఉన్న సేవలు |  | pending |
+| `fees.settings.noServices` | This organisation has no services yet. Add services on the schedule page first. | इस संगठन की अभी कोई सेवा नहीं है। पहले शेड्यूल पेज पर सेवाएँ जोड़ें। | ఈ సంస్థకు ఇంకా సేవలు లేవు. ముందుగా షెడ్యూల్ పేజీలో సేవలు జోడించండి. |  | pending |
+| `fees.settings.add` | Add package | पैकेज जोड़ें | ప్యాకేజీ జోడించండి |  | pending |
+| `fees.settings.saved` | Saved. | सहेजा गया। | సేవ్ చేయబడింది. |  | pending |
+| `fees.settings.retire` | Stop offering | ऑफ़र करना बंद करें | ఆఫర్ ఆపండి |  | pending |
+| `fees.settings.reactivate` | Offer again | फिर से ऑफ़र करें | మళ్లీ ఆఫర్ చేయండి |  | pending |
+| `fees.settings.inactive` | Not offered | ऑफ़र नहीं किया जा रहा | ఆఫర్ చేయబడటం లేదు |  | pending |
+| `fees.settings.summary` | {sessions} sessions · {price} · {days} days | {sessions} सेशन · {price} · {days} दिन | {sessions} సెషన్లు · {price} · {days} రోజులు |  | pending |
+| `fees.pay.demoTitle` | DoctorNearMe payment (demo) | DoctorNearMe भुगतान (डेमो) | DoctorNearMe చెల్లింపు (డెమో) |  | pending |
+| `fees.pay.demoNote` | Demo payment: no money moves. | डेमो भुगतान: कोई पैसा नहीं कटता। | డెమో చెల్లింపు: డబ్బు కదలదు. |  | pending |
+| `fees.pay.amount` | Amount | राशि | మొత్తం |  | pending |
+| `fees.pay.onBehalf` | Paid to DoctorNearMe on behalf of {centre} | {centre} की ओर से DoctorNearMe को भुगतान | {centre} తరఫున DoctorNearMe కు చెల్లింపు |  | pending |
+| `fees.pay.success` | Simulate successful payment | सफल भुगतान का अनुकरण करें | విజయవంతమైన చెల్లింపును అనుకరించండి |  | pending |
+| `fees.pay.failure` | Simulate failed payment | असफल भुगतान का अनुकरण करें | విఫలమైన చెల్లింపును అనుకరించండి |  | pending |
+| `fees.pay.failed` | The payment failed. Nothing was charged. You can try again. | भुगतान असफल रहा। कुछ भी चार्ज नहीं हुआ। आप फिर कोशिश कर सकते हैं। | చెల్లింపు విఫలమైంది. ఏమీ ఛార్జ్ కాలేదు. మీరు మళ్లీ ప్రయత్నించవచ్చు. |  | pending |
+| `fees.pay.closed` | This payment link is closed. | यह भुगतान लिंक बंद है। | ఈ చెల్లింపు లింక్ మూసివేయబడింది. |  | pending |
+| `fees.pay.working` | Processing... | प्रक्रिया चल रही है... | ప్రాసెస్ చేస్తోంది... |  | pending |
+| `fees.pay.doneTitle` | Payment | भुगतान | చెల్లింపు |  | pending |
+| `fees.pay.paid` | Thank you. Your payment was received. | धन्यवाद। आपका भुगतान मिल गया। | ధన్యవాదాలు. మీ చెల్లింపు అందింది. |  | pending |
+| `fees.pay.receiptNumber` | Receipt {number} | रसीद {number} | రసీదు {number} |  | pending |
+| `fees.pay.doneFailed` | The payment did not go through. Nothing was charged. | भुगतान नहीं हो पाया। कुछ भी चार्ज नहीं हुआ। | చెల్లింపు జరగలేదు. ఏమీ ఛార్జ్ కాలేదు. |  | pending |
+| `fees.pay.doneInvalid` | This payment could not be verified. | इस भुगतान की पुष्टि नहीं हो सकी। | ఈ చెల్లింపును ధృవీకరించలేకపోయాం. |  | pending |
+| `fees.pay.doneError` | Something went wrong. If money was taken, it is recorded when Razorpay confirms it. | कुछ गलत हो गया। अगर पैसा कटा है, तो Razorpay की पुष्टि पर वह दर्ज हो जाएगा। | ఏదో తప్పు జరిగింది. డబ్బు కట్ అయితే, Razorpay నిర్ధారించినప్పుడు అది నమోదు అవుతుంది. |  | pending |
+| `fees.pay.openApp` | Open DoctorNearMe | DoctorNearMe खोलें | DoctorNearMe తెరవండి |  | pending |
+| `fees.notice.atClinicRetired` | Pay at the clinic is no longer available. Your paid services now take payment on DoctorNearMe: online when families book, or with a payment link or QR code at the desk. | क्लिनिक में भुगतान अब उपलब्ध नहीं है। आपकी सशुल्क सेवाओं का भुगतान अब DoctorNearMe पर होता है: बुकिंग के समय ऑनलाइन, या डेस्क पर भुगतान लिंक या QR कोड से। | క్లినిక్‌లో చెల్లింపు ఇక అందుబాటులో లేదు. మీ చెల్లింపు సేవలకు ఇప్పుడు DoctorNearMe లో చెల్లింపు జరుగుతుంది: కుటుంబాలు బుక్ చేసేటప్పుడు ఆన్‌లైన్‌లో, లేదా డెస్క్ వద్ద చెల్లింపు లింక్ లేదా QR కోడ్‌తో. |  | pending |
+| `fees.notice.dismiss` | OK | ठीक है | సరే |  | pending |

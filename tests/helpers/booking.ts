@@ -41,7 +41,7 @@ export function bookingWorld(sql: Sql, db: Db, prefix: string) {
 
   async function service(
     p: TestProvider,
-    opts: { mode?: "in_clinic" | "video"; duration?: number; payment?: "free" | "at_clinic" | "online"; fee?: number; buffer?: number; name?: string } = {},
+    opts: { mode?: "in_clinic" | "video"; duration?: number; payment?: "free" | "online"; fee?: number; buffer?: number; name?: string } = {},
   ): Promise<string> {
     const mode = opts.mode ?? "in_clinic";
     const payment = opts.payment ?? "free";

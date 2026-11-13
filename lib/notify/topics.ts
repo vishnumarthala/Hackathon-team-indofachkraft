@@ -25,6 +25,13 @@ import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
 import { intakeLinkRecipients } from "@/lib/intake/attempts";
 import { meetFailedRecipients, meetReadyRecipients, reconnectRecipients } from "@/lib/google/recipients";
 import { refundedPaymentGuardian } from "@/lib/payments/recipients";
+import {
+  balanceReminderGuardians,
+  feeRefundGuardians,
+  packageReminderGuardians,
+  paymentRequestGuardians,
+  receiptGuardians,
+} from "@/lib/fees/recipients";
 import { ratingPromptGuardian } from "@/lib/ratings/recipients";
 
 const uuid = z.uuid();
@@ -318,7 +325,18 @@ export const TOPICS = {
       .object({
         payment_id: uuid,
         appointment_id: uuid,
-        reason: z.enum(["slot_unavailable", "appointment_cancelled", "provider_cancelled", "guardian_cancelled", "system_cancelled", "amount_mismatch", "external"]),
+        reason: z.enum([
+          "slot_unavailable",
+          "appointment_cancelled",
+          "provider_cancelled",
+          "guardian_cancelled",
+          "system_cancelled",
+          "amount_mismatch",
+          "external",
+          // 045: a prepaid session that was not billable, an owner/admin refund.
+          "not_billable",
+          "session_refund",
+        ]),
       })
       .strict(),
     channels: GUARDIAN_IN_APP_EMAIL,
@@ -349,6 +367,42 @@ export const TOPICS = {
     channels: GUARDIAN_CHANNELS,
     template: "series_changed",
     recipients: (p, { sql }) => seriesGuardian(sql, p.series_id),
+  }),
+  // 045 FR-3 / FR-7: a package offer or `Request payment` (aggregate = the payment link). In-app + WhatsApp
+  // `payment_request` + email. At fan-out: the child's active guardians while the link is still open.
+  "fees.payment_request": topic({
+    payload: z.object({ payment_id: uuid, child_id: uuid, kind: z.enum(["package", "balance"]) }).strict(),
+    channels: GUARDIAN_CHANNELS,
+    template: "payment_request",
+    recipients: (p, { sql }) => paymentRequestGuardians(sql, p.payment_id, p.child_id),
+  }),
+  // 045 FR-6: enqueued by the payments_fees_ledger trigger when any payment is captured (dedup `payment:<id>:receipt`).
+  "fees.receipt": topic({
+    payload: z.object({ payment_id: uuid, child_id: uuid }).strict(),
+    channels: GUARDIAN_CHANNELS,
+    template: "payment_receipt",
+    recipients: (p, { sql }) => receiptGuardians(sql, p.payment_id, p.child_id),
+  }),
+  // 045 FR-8: lib/fees/jobs.ts, one per unpaid session charge (`fees:balance:<org>:<child>:<charge>`), while still due.
+  "fees.balance_reminder": topic({
+    payload: z.object({ org_id: uuid, child_id: uuid }).strict(),
+    channels: GUARDIAN_CHANNELS,
+    template: "balance_reminder",
+    recipients: (p, { sql }) => balanceReminderGuardians(sql, p.org_id, p.child_id),
+  }),
+  // 045 FR-8: one per package (`fees:package:<id>:ending`) when <= 2 sessions are left or it expires within 7 days.
+  "fees.package_reminder": topic({
+    payload: z.object({ child_package_id: uuid, child_id: uuid }).strict(),
+    channels: GUARDIAN_CHANNELS,
+    template: "package_reminder",
+    recipients: (p, { sql }) => packageReminderGuardians(sql, p.child_package_id, p.child_id),
+  }),
+  // 045 FR-9: fees_mark_refund_processed (dedup `fee_refund:<id>:processed`). In-app + email.
+  "fees.refunded": topic({
+    payload: z.object({ fee_refund_id: uuid, child_id: uuid }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "fees_refunded",
+    recipients: (p, { sql }) => feeRefundGuardians(sql, p.fee_refund_id, p.child_id),
   }),
 } as const;
 
@@ -421,6 +475,15 @@ export const SERIES_TOPICS = {
 // 031: payments (enqueued by the payment SQL functions).
 export const PAYMENT_TOPICS = {
   refunded: "payment.refunded",
+} as const satisfies Record<string, Topic>;
+
+// 045: packages and family payments (lib/fees, migration 20261113004500).
+export const FEES_TOPICS = {
+  paymentRequest: "fees.payment_request",
+  receipt: "fees.receipt",
+  balanceReminder: "fees.balance_reminder",
+  packageReminder: "fees.package_reminder",
+  refunded: "fees.refunded",
 } as const satisfies Record<string, Topic>;
 
 // 051: voice cost guard.

@@ -4,6 +4,7 @@ import { withBookingErrors } from "@/lib/booking/errors";
 import { CompleteSchema } from "@/lib/booking/schemas";
 import { completeAppointment, getAppointment } from "@/lib/booking/store";
 import { isUuid } from "@/lib/cases/validation";
+import { runFeeJobsSoon } from "@/lib/fees/jobs";
 import { fail, ok, parseJson } from "@/lib/http";
 
 export const runtime = "nodejs";
@@ -21,6 +22,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const result = await withBookingErrors(() => completeAppointment(id, gate.actor.user.id, parsed.data.status));
   if ("response" in result) return result.response;
 
+  // 045: the attendance sync made it billable or not; a charge's payment link follows right after the response.
+  runFeeJobsSoon();
   const appointment = await getAppointment(id);
   await audit({
     actorUserId: gate.actor.user.id,

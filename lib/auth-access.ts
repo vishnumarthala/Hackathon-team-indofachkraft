@@ -20,6 +20,10 @@ export function isPublicApiPath(pathname: string): boolean {
     pathname === "/api/webhooks/elevenlabs" ||
     // 031: Razorpay webhooks authenticate with X-Razorpay-Signature inside the handler.
     pathname === "/api/webhooks/razorpay" ||
+    // 045: the payment link redirect (signed by Razorpay, checked in the handler) and the DEMO_MODE link page's API
+    // (404 outside DEMO_MODE). The payer at the desk may not be signed in.
+    pathname === "/api/payments/links/callback" ||
+    pathname === "/api/payments/links/demo" ||
     // 041 FR-12: public health check (no data).
     pathname === "/api/health" ||
     // 033: the public developmental check-in (anonymous sessions; the save route is under /api/family).

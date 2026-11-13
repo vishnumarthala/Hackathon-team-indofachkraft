@@ -1,6 +1,7 @@
 import { auditActorOf, AuditWriteError, auditFailure } from "@/lib/audit";
 import { requireProviderApi } from "@/lib/authz";
 import { MarkAllSchema, markAttendance, toAttendanceErrorCode } from "@/lib/booking/attendance";
+import { runFeeJobsSoon } from "@/lib/fees/jobs";
 import { ok, parseJson } from "@/lib/http";
 
 export const runtime = "nodejs";
@@ -30,5 +31,7 @@ export async function POST(req: Request) {
       skipped.push({ appointment_id: id, code: code === "reason_required" ? "already_marked" : code });
     }
   }
+  // 045: charges from billable sessions -> balance payment links right after the response.
+  if (marked.length) runFeeJobsSoon();
   return ok({ marked, skipped });
 }

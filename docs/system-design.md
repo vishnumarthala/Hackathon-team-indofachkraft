@@ -511,6 +511,18 @@ webhook): confirms through 030's helpers, re-books a late payment's slot if stil
 `appointments` apply the cancellation refund policy and move a payment with a reschedule. Migration
 `20261113003100_payments.sql`; details in `docs/payments.md`.
 
+### Packages and the family account (ticket 045, decision 8)
+
+The family pays everything on DoctorNearMe ("pay at clinic" is retired; services are `online` or `free`). `packages`
+(org catalogue), `child_packages` (offer -> `active` -> `used_up` / `expired`), `payments` extended with Razorpay
+**payment links** (`purpose` `package` / `balance`), the append-only `family_ledger` (charge / payment / refund /
+adjustment per organisation x child; balance = charges - payments + adjustments), `fee_link_items`, `fee_refunds`,
+`platform_receipt_counters` (receipt `DNM/<FY>/<000001>`, gap-free, assigned in the capturing transaction) and
+`appointments.consultation_amount_paise`. A trigger on 044's `billable` uses a package session, or adds a charge (balance
+link), or undoes it on a correction. `fees_consultations()` is 046's seam (consultation amount + funding payment per
+billable appointment). Migration `20261113004500_packages_family_payments.sql`; details in `docs/payments.md`
+"Packages and the family account".
+
 ### Ratings (ticket 036)
 
 `ratings` (one per completed appointment, written by its booking guardian within 30 days, editable for 7 days; 1-5

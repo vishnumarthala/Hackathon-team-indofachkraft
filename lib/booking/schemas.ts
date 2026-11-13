@@ -12,7 +12,10 @@ const isoInstant = z.iso.datetime({ offset: true });
 export const SERVICE_MODES = ["in_clinic", "video"] as const;
 export const RULE_MODES = ["in_clinic", "video", "both"] as const;
 export const DURATIONS = [15, 20, 30, 45, 60, 90] as const;
-export const PAYMENT_MODES = ["online", "at_clinic", "free"] as const;
+// 045 FR-2: "pay at clinic" is retired (decision 8): every paid service is paid on DoctorNearMe. Old appointments keep
+// `at_clinic` in their frozen snapshot (SNAPSHOT_PAYMENT_MODES) and are charged when attendance makes them billable.
+export const PAYMENT_MODES = ["online", "free"] as const;
+export const SNAPSHOT_PAYMENT_MODES = ["online", "at_clinic", "free"] as const;
 export const INTAKE_KINDS = ["child_dev", "generic", "none"] as const;
 export const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6] as const;
 
@@ -42,7 +45,7 @@ const serviceFields = {
     .int()
     .refine((d) => (DURATIONS as readonly number[]).includes(d), "Choose 15, 20, 30, 45, 60 or 90 minutes"),
   fee_inr: z.number().int().min(0).max(100000),
-  payment_mode: z.enum(PAYMENT_MODES),
+  payment_mode: z.enum(PAYMENT_MODES, { error: "Choose online or free (pay at clinic is retired)" }),
   buffer_min: z.number().int().min(0).max(30),
   intake_kind: z.enum(INTAKE_KINDS),
 };
@@ -58,7 +61,8 @@ export const ServiceCreateSchema = z
     intake_kind: serviceFields.intake_kind.optional(),
   })
   .refine((s) => s.mode !== "in_clinic" || s.location_id, { path: ["location_id"], message: "Choose a location" })
-  .refine((s) => s.payment_mode !== "free" || s.fee_inr === 0, { path: ["fee_inr"], message: "A free service has no fee" });
+  .refine((s) => s.payment_mode !== "free" || s.fee_inr === 0, { path: ["fee_inr"], message: "A free service has no fee" })
+  .refine((s) => s.payment_mode !== "online" || s.fee_inr > 0, { path: ["fee_inr"], message: "Enter the fee" });
 
 export const ServiceUpdateSchema = z
   .object({ ...serviceFields, active: z.boolean() })
