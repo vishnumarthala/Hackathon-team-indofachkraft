@@ -89,7 +89,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 031 | Razorpay payments (test mode) | done | solo | waits for 030 |
 | 033 | Voice developmental check-in (public screen) | done | solo | waits for 020, 024, 029, 041 |
 | 034 | Voice booking agent (web widget on /find) | done | solo | waits for 030, 033 |
-| 035 | Appointment-scoped pre-consult intake | draft | solo | waits for 021, 024, 030, 041 |
+| 035 | Appointment-scoped pre-consult intake | done | solo | waits for 021, 024, 030, 041 |
 | 036 | Ratings for completed appointments | draft | solo | waits for 030 |
 | 042 | Hyderabad directory seed data (synthetic demo + real-provider import) | draft | solo | waits for 029, 030 |
 
