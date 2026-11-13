@@ -2,7 +2,7 @@ import { isDemoMode } from "@/lib/demo";
 import { env } from "@/lib/env";
 import { startAgentSession, type AgentStart } from "@/lib/elevenlabs/agent";
 import { fail, ok, parseJson } from "@/lib/http";
-import { agentQuestionList, CreateSessionSchema, screenQuestions } from "@/lib/screen/questions";
+import { agentQuestionList, CreateSessionSchema, instrumentFor, screenQuestions, SPOKEN_AGE_BAND } from "@/lib/screen/questions";
 import { allowScreenSession } from "@/lib/screen/rate-limit";
 import { createScreenSession } from "@/lib/screen/store";
 import { voiceGate, type VoiceGrant } from "@/lib/voice/gate";
@@ -13,7 +13,8 @@ export const dynamic = "force-dynamic";
 export const VOICE_UNAVAILABLE = "Voice check-in is not available right now. Please answer by tapping instead.";
 export const RATE_LIMITED = "Too many check-ins started from this connection. Please try again later.";
 
-// Ticket 033 FR-4: public (lib/auth-access.ts). Starts an anonymous check-in: age band + mode only (rule 6).
+// Ticket 033 FR-4: public (lib/auth-access.ts). Starts an anonymous check-in: age band + mode only (rule 6); 048 adds
+// the parent's worries as codes (FR-5) and rejects the bands without questions (`under-18m`, `9y+`: 400).
 // Voice: a conversation token for the private screen agent, minted before the session row exists so a provider
 // failure leaves nothing behind. DEMO_MODE never contacts ElevenLabs (`demo: true`).
 // 051: tapping stays anonymous; voice needs a signed-in user, the Turnstile check (when configured) and room in the
@@ -25,8 +26,10 @@ export async function POST(req: Request) {
   }
   const parsed = await parseJson(req, CreateSessionSchema);
   if ("response" in parsed) return parsed.response;
-  const { age_band, mode } = parsed.data;
-  const questions = screenQuestions(age_band);
+  const { age_band, mode, concerns } = parsed.data;
+  // 048 FR-3: the instrument is fixed for the session (M-CHAT-R/F for 18-30 months only when licensed).
+  const instrument = instrumentFor(age_band, env.MCHAT_LICENSED);
+  const questions = screenQuestions(age_band, instrument);
 
   let voice: AgentStart | null = null;
   let grant: VoiceGrant | null = null;
@@ -48,7 +51,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const session = await createScreenSession(age_band, mode);
+  const session = await createScreenSession(age_band, mode, { instrument, concerns });
   const base = { session_id: session.id, expires_at: session.expires_at.toISOString(), questions };
   if (demo) {
     // No live call in DEMO_MODE: the start counts against the quota with 0 seconds and the page continues by tapping.
@@ -66,7 +69,8 @@ export async function POST(req: Request) {
       // FR-3: the only values the agent receives. No names, no contact details.
       dynamic_variables: {
         screen_session_id: session.id,
-        age_band,
+        // 048 FR-9: the new bands, as the agent should say them ("2 and a half to 5 years").
+        age_band: SPOKEN_AGE_BAND[age_band],
         questions: agentQuestionList(questions),
       },
     },

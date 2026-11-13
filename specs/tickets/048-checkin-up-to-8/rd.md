@@ -1,6 +1,6 @@
 # 048: Parent check-in for children up to 8 (age-aware questions, concern-based advice, free options)
 
-**Status:** ready (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
+**Status:** done (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
 **Mode:** solo
 **Runs:** waits for 051: same screen components (voice needs sign-in)
 

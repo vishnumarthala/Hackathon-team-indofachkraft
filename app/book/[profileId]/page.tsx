@@ -13,7 +13,10 @@ import { getT } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ profileId: string }>; searchParams: Promise<{ hold?: string; appointment?: string }> };
+type Props = {
+  params: Promise<{ profileId: string }>;
+  searchParams: Promise<{ hold?: string; appointment?: string; service?: string; start?: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { profileId } = await params;
@@ -28,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BookPage({ params, searchParams }: Props) {
   const { profileId } = await params;
   // 034: the voice booking widget links here with `?appointment=<id>` (same meaning as `?hold=`).
-  const { hold, appointment } = await searchParams;
+  const { hold, appointment, service: serviceParam, start: startParam } = await searchParams;
   const holdParam = hold ?? appointment;
   if (!isUuid(profileId)) notFound();
   const profile = await getBookableProfile(profileId);
@@ -51,6 +54,19 @@ export default async function BookPage({ params, searchParams }: Props) {
     if (held && held.status === "held" && held.provider_profile_id === profile.id && held.hold_expires_at) {
       initialHold = { id: held.id, serviceId: held.service_id, start: held.starts_at, end: held.ends_at, expiresAt: held.hold_expires_at };
     }
+  }
+
+  // 048 FR-10: a slot chip from the check-in result (`?service=<id>&start=<ISO>`) pre-selects that time. Only a
+  // preselection: the hold re-checks that the slot is free and in the future (409 -> pick another time).
+  let initialSlot: { serviceId: string; start: string; end: string } | null = null;
+  const chosen = typeof serviceParam === "string" ? services.find((s) => s.id === serviceParam) : undefined;
+  const startMs = typeof startParam === "string" ? Date.parse(startParam) : NaN;
+  if (!initialHold && chosen && Number.isFinite(startMs)) {
+    initialSlot = {
+      serviceId: chosen.id,
+      start: new Date(startMs).toISOString(),
+      end: new Date(startMs + chosen.duration_min * 60_000).toISOString(),
+    };
   }
 
   return (
@@ -87,6 +103,7 @@ export default async function BookPage({ params, searchParams }: Props) {
           children: children.map(({ child }) => ({ id: child.id, name: child.display_name, age: ageLabel(tc, child.date_of_birth) })),
         }}
         initialHold={initialHold}
+        initialSlot={initialSlot}
       />
     </div>
   );

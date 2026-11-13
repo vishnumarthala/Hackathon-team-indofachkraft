@@ -77,7 +77,7 @@ describe.skipIf(!enabled)("voice cost guard routes (database)", { timeout: 120_0
   const close = (userId: string) =>
     sql`update voice_usage set status = 'ended', ended_at = now(), actual_seconds = 0 where user_id = ${userId} and status = 'started'`;
   const startScreenVoice = async (headers: Record<string, string> = {}) => {
-    const res = await json(await r.screen.POST(voiceReq("/api/screen/sessions", { age_band: "3-5y", mode: "voice" }, headers)));
+    const res = await json(await r.screen.POST(voiceReq("/api/screen/sessions", { age_band: "31-71m", mode: "voice" }, headers)));
     if (res.status === 201) screenSessions.push(res.body.session_id as string);
     return res;
   };
@@ -154,7 +154,7 @@ describe.skipIf(!enabled)("voice cost guard routes (database)", { timeout: 120_0
     }
     expect(agent.startAgentSession).not.toHaveBeenCalled();
     // Tapping stays anonymous.
-    const form = await json(await r.screen.POST(voiceReq("/api/screen/sessions", { age_band: "3-5y", mode: "form" })));
+    const form = await json(await r.screen.POST(voiceReq("/api/screen/sessions", { age_band: "31-71m", mode: "form" })));
     expect(form.status).toBe(201);
     screenSessions.push(form.body.session_id as string);
     expect(await sql`select 1 from voice_usage where started_at > now() - interval '1 minute' and user_id is null`).toHaveLength(0);
@@ -176,8 +176,8 @@ describe.skipIf(!enabled)("voice cost guard routes (database)", { timeout: 120_0
     // The browser shows the friendly quota message (screen.errors.quotaDay) next to the tap button.
     const fetchFn = (async (input: RequestInfo | URL, init?: RequestInit) =>
       r.screen.POST(new Request(new URL(String(input), "http://localhost"), { ...init, headers: { ...(init?.headers as Record<string, string>), "x-forwarded-for": nextIp() } }))) as typeof fetch;
-    expect(await startScreen("3-5y", "voice", { fetchFn })).toEqual({ kind: "error", error: "quotaDay" });
-    const tap = await startScreen("3-5y", "form", { fetchFn });
+    expect(await startScreen("31-71m", "voice", { fetchFn })).toEqual({ kind: "error", error: "quotaDay" });
+    const tap = await startScreen("31-71m", "form", { fetchFn });
     expect(tap.kind).toBe("form");
     if (tap.kind === "form") screenSessions.push(tap.session.session_id);
   });

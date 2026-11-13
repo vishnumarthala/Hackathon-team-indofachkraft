@@ -2595,7 +2595,7 @@
     "metaTitle": "Developmental check-in for parents",
     "metaDescription": "A free 5-minute developmental check-in for parents in Hyderabad, by voice or by tapping. This is a developmental check-in, not a diagnosis.",
     "title": "Developmental check-in",
-    "intro": "About 5 minutes. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child.",
+    "intro": "About 5 minutes, for children up to 8 years. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child.",
     "aiDisclosure": "You will talk to an AI assistant. It speaks English. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
     "noPersonal": "Please do not say or type your child's name, your name or contact details. We keep only your answers, without any name, and delete them after 30 days unless you save them to your child's profile.",
     "ageLabel": "Child's age",
@@ -2603,7 +2603,12 @@
       "m18to36": "18-36 months",
       "y3to5": "3-5 years",
       "y6to9": "6-9 years",
-      "y10plus": "10+ years"
+      "y10plus": "10+ years",
+      "under18m": "Under 18 months",
+      "m18to30": "18-30 months",
+      "m31to71": "2½-5 years",
+      "y6to8": "6-8 years",
+      "y9plus": "9 years or older"
     },
     "agree": "I understand this is not a diagnosis and agree to talk to an AI assistant.",
     "startVoice": "Start voice check-in",
@@ -2671,25 +2676,43 @@
         "someSigns": "Some signs worth mentioning to a professional.",
         "moreSigns": "Several signs worth discussing with a professional."
       },
-      "startAgain": "Start a new check-in"
+      "startAgain": "Start a new check-in",
+      "mchat": {
+        "followUpTitle": "A few follow-up questions (optional)",
+        "followUpIntro": "Some answers are worth a closer look. A few follow-up questions about them can make the result clearer.",
+        "followUpStart": "Answer the follow-up questions",
+        "pass": "No, not any more",
+        "fail": "Yes, still",
+        "submit": "See my updated result",
+        "saving": "Saving...",
+        "missing": "Please answer every follow-up question.",
+        "done": "Thank you. Your result above includes the follow-up answers.",
+        "rescreen": "If your child is younger than 2, do this check-in again after their second birthday."
+      }
     },
     "find": {
-      "title": "Find a specialist near you",
-      "intro": "Specialists who can assess your child's development: developmental paediatricians, child psychologists, speech-language therapists and occupational therapists.",
-      "locality": "Your locality",
-      "chooseLocality": "Choose a locality",
+      "title": "Book a visit near you",
+      "locality": "Your area",
+      "chooseLocality": "Choose an area",
       "useMyLocation": "Use my location",
       "locating": "Finding your location...",
-      "locationDenied": "We could not get your location. Choose a locality instead.",
-      "search": "Show specialists",
+      "locationDenied": "We could not get your location. Choose an area instead.",
+      "search": "Show nearby",
       "searching": "Searching...",
-      "resultsLabel": "Specialists near you",
-      "empty": "No specialists listed near you yet. Try the full directory.",
-      "error": "Could not load specialists. Please try the full directory.",
+      "empty": "No matching professionals listed nearby yet. Try the full directory.",
+      "error": "Could not load professionals. Please try the full directory.",
       "kmAway": "{distance} km away",
       "videoAnywhere": "Video consultation",
-      "seeAll": "See all near you: {type}",
-      "openDirectory": "Open the full directory"
+      "openDirectory": "Open the full directory",
+      "introDefault": "Near central Hyderabad. Choose your area to see the closest ones.",
+      "introPlace": "Near {place}.",
+      "yourLocation": "your location",
+      "loading": "Finding professionals near you...",
+      "slotsLabel": "Next free times with {name}",
+      "bookHint": "Tap a time to book it.",
+      "noSlots": "No free times online in the next 2 weeks.",
+      "viewProfile": "View profile",
+      "seeMore": "See more"
     },
     "save": {
       "title": "Save this result",
@@ -2731,7 +2754,86 @@
     },
     "voiceSignIn": "Prefer to talk? Sign in to use voice (free)",
     "voicePrompt": "Prefer to talk?",
-    "voiceSignedIn": "You are signed in. Choose your child's age, tick the box and start the voice check-in."
+    "voiceSignedIn": "You are signed in. Choose your child's age, tick the box and start the voice check-in.",
+    "concerns": {
+      "title": "What worries you most?",
+      "hint": "Choose any that fit, or none. It helps us suggest the right professional.",
+      "options": {
+        "speech": "Speech and talking",
+        "social": "Playing and getting along with others",
+        "movement": "Movement, balance, hand use",
+        "senses": "Senses (noise, touch, food)",
+        "behaviour": "Behaviour and meltdowns",
+        "learning": "Learning and school"
+      }
+    },
+    "under18m": {
+      "title": "Milestones to watch for",
+      "intro": "For babies under 18 months there are no questions. Most babies:",
+      "byMonths": "by about {months} months",
+      "milestones": {
+        "smiles": "Smile back at you",
+        "babbles": "Babble and make sounds back to you",
+        "name": "Turn when you call their name",
+        "points": "Point at things or wave bye-bye",
+        "words": "Say a few words, like \"mama\" or \"dada\""
+      },
+      "lostSkills": "If your baby stops doing something they could do before, see a doctor soon.",
+      "advice": "Every baby grows at their own pace. If your baby is not doing these yet, or you are worried, talk to your paediatrician.",
+      "findPaediatrician": "Find a paediatrician",
+      "findDevPaed": "Find a developmental paediatrician"
+    },
+    "over8": {
+      "title": "For children 9 years or older",
+      "text": "This check-in is for children up to 8. Please talk to your child's doctor or a child psychologist.",
+      "find": "Find a child psychologist or doctor near you"
+    },
+    "recommend": {
+      "title": "Who can help first",
+      "first": "Good first step",
+      "reasons": {
+        "speech": "Because you mentioned speech, a speech therapist is a good first step.",
+        "social": "Because you mentioned playing and getting along with others, a developmental paediatrician or child psychologist can do a full evaluation first.",
+        "movement": "Because you mentioned movement, an occupational therapist is a good first step.",
+        "senses": "Because you mentioned senses like noise, touch or food, an occupational therapist is a good first step.",
+        "behaviour": "Because you mentioned behaviour and meltdowns, a child psychologist is a good first step.",
+        "learningSchool": "Because you mentioned learning and school, a special educator is a good first step.",
+        "learningYoung": "Because you mentioned learning, a developmental paediatrician can check your child's overall development first.",
+        "closerLook": "Because some of your answers are worth a closer look, a developmental paediatrician can do a full evaluation.",
+        "noSigns": "Your answers show no strong signs. If you are still worried, your child's paediatrician is a good first step."
+      },
+      "roles": {
+        "developmental_pediatrician": "A doctor who checks how children grow, move, talk and learn, and plans the next steps.",
+        "child_psychiatrist": "A doctor for children's feelings, behaviour and mental health.",
+        "child_psychologist": "Understands children's thinking, feelings and behaviour, and helps families with them.",
+        "speech_language_pathologist": "Helps with talking, understanding, eating and swallowing.",
+        "occupational_therapist": "Helps with hand use, play, everyday skills and how a child handles noise, touch and food.",
+        "aba_therapist": "Builds new skills and helps with difficult behaviour, step by step.",
+        "special_educator": "Helps children learn in the way that works for them, at home and at school.",
+        "physiotherapist": "Helps with movement, balance, strength and walking.",
+        "pediatrician": "Your child's doctor for growth, health and regular check-ups."
+      },
+      "findType": "Find near you"
+    },
+    "free": {
+      "title": "Free government options",
+      "intro": "Free help from the government, for every family.",
+      "services": {
+        "deic": {
+          "what": "At your district hospital. Free for children up to 6.",
+          "contact": "Ask at the district hospital reception for the DEIC (RBSK)."
+        },
+        "niepid": {
+          "what": "Government institute in Secunderabad for children with developmental needs: assessment, therapy and advice."
+        }
+      },
+      "address": "Address",
+      "phone": "Phone",
+      "tollFree": "Toll-free",
+      "website": "Website",
+      "checkTimings": "Check timings before you go.",
+      "lastChecked": "Details last checked on {date}."
+    }
   },
   "payments": {
     "labels": {

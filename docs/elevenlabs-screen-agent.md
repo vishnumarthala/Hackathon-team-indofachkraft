@@ -9,6 +9,14 @@ agent (`docs/elevenlabs-agent.md`, which stays en/hi/te and must not be changed 
 Without `ELEVENLABS_SCREEN_AGENT_ID` (or with `DEMO_MODE=true`) the page still works: the tap-through form asks the
 same questions, and `DEMO_MODE` answers `{ demo: true }` without contacting ElevenLabs.
 
+**Ticket 048 (children up to 8).** The page offers `under-18m` (milestone guidance, no call), `18-30m`, `31-71m`
+(2½-5 years), `6-8y` and `9y+` ("this check-in is for children up to 8", no call). Only the three middle bands start
+a check-in, so the agent only ever hears those (as words, see `{{age_band}}` below). With `MCHAT_LICENSED=true`
+the 18-30 month list is the M-CHAT-R/F (items `mchat_1` ... `mchat_20`, answered **yes or no**) instead of the
+ISAA-derived items; the prompt below already covers both, so no dashboard change is needed when the flag flips. The
+parent's "What worries you most?" choices are **not** sent to the agent (the page uses them for the recommendation).
+049 (Telugu/Hindi agents) changes this agent next: keep the item ids, the tools and the safety rules identical.
+
 ## Rules this agent must follow (summary)
 
 - **No personal data.** Never ask for the child's or parent's name, date of birth, phone number, address or school.
@@ -73,8 +81,8 @@ written, with double curly braces. If the dashboard asks for test values, use ob
 | Variable | Example | Meaning |
 |----------|---------|---------|
 | `{{screen_session_id}}` | `3f1c...` (uuid) | Anonymous check-in session (not linked to any person) |
-| `{{age_band}}` | `18-36m`, `3-5y`, `6-9y`, `10y+` | Age band the parent picked |
-| `{{questions}}` | numbered list (below) | The questions to ask, red flags first, each with its item id |
+| `{{age_band}}` | `18 to 30 months`, `2 and a half to 5 years`, `6 to 8 years` | Age band the parent picked, in words (048; `SPOKEN_AGE_BAND` in `lib/screen/questions.ts`) |
+| `{{questions}}` | numbered list (below) | The questions to ask, red flags first, each with its item id and answer scale |
 
 `{{questions}}` looks like this (`lib/screen/questions.ts` `agentQuestionList`):
 
@@ -86,6 +94,9 @@ written, with double curly braces. If the dashboard asks for test values, use ob
 ...
 21. [q15] (never/sometimes/often/always) Does your child turn to look at you when you call their name?
 ```
+
+With `MCHAT_LICENSED=true` and `18 to 30 months`, items 7-26 look like `7. [mchat_1] (yes/no) ...` (20 M-CHAT-R/F
+items, licensed wording only).
 
 ## 5. First message
 
@@ -112,7 +123,7 @@ Questions: ask exactly these, in this order, reading each question as written. T
 {{questions}}
 
 After each answer:
-- For a development question, map the parent's words to one of: never, sometimes, often, always. If unclear, ask one short follow-up ("Would you say never, sometimes, often or always?"). Then call record_answer with the item id in square brackets and the answer.
+- For a development question, map the parent's words to one of the answers in round brackets after its item id: never, sometimes, often or always, or yes or no for the yes/no questions. If unclear, ask one short follow-up ("Would you say never, sometimes, often or always?" or "Would you say yes or no?"). Then call record_answer with the item id in square brackets and the answer.
 - For a red-flag question, map the answer to yes or no. If no, call record_answer with the item id and "no". If yes, or if the parent describes an emergency, self-harm, a seizure, breathing trouble, not eating or drinking, or a child in danger at ANY point, call record_red_flag with the matching code (skill_regression, self_injury, seizure, breathing, not_eating_drinking or safety_concern), then say exactly: "Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today." and end the call. Do not ask any more questions after a red flag.
 - Follow the instruction in each tool result (for example "Ask the next one" or "end the call").
 
@@ -137,7 +148,7 @@ what to do next). The page implements them in `lib/screen/client.ts` (`screenCli
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `item_id` | string | yes | The item id in square brackets in the question list, e.g. `q3` or `rf_seizure`. |
-| `answer` | string | yes | `never`, `sometimes`, `often` or `always` for development questions; `yes` or `no` for red-flag questions. |
+| `answer` | string | yes | `never`, `sometimes`, `often` or `always` for development questions; `yes` or `no` for red-flag questions and the M-CHAT-R/F (`mchat_*`) questions. |
 
 **`record_red_flag`**
 
@@ -171,12 +182,13 @@ No server (webhook) tools: the check-in sends nothing from ElevenLabs to our ser
 
 ## 9. Manual smoke test (human, once the agent exists)
 
-1. `/screen` on a phone (375 px), pick `3-5 years`, tick the box, `Start voice check-in`, allow the microphone.
+1. `/screen` on a phone (375 px), pick `2½-5 years`, optionally a worry, tick the box, `Start voice check-in`, allow
+   the microphone. The agent says "aged 2 and a half to 5 years".
 2. The agent greets you, asks the 6 safety questions first, then the development questions. Answer in your own
    words; the page shows "N of 21 questions answered".
 3. Say your (synthetic) child's name: the agent does not repeat it.
 4. Answer everything with no red flags: the call ends, the page shows the band, the domains, the "not a diagnosis"
-   line and nearby specialists.
+   line, who can help first (048), up to 3 bookable providers with free times and the free government options.
 5. Start again and answer `yes` to "Has your child stopped using words or skills...": the page shows only the
    108/112 message at once; the agent says the same message and ends the call.
 6. In the ElevenLabs conversation list, check the retention setting and that no audio is stored.

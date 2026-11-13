@@ -54,7 +54,8 @@ const spread = (total: number) => CHECKIN.questions.map((_, i) => Math.max(0, Ma
 
 describe("instrument registry (FR-1)", () => {
   it("loads ISAA, CASE_SHEET and ISAA_PARENT_CHECKIN with typed items", () => {
-    expect([...INSTRUMENT_KEYS]).toEqual(["ISAA", "CASE_SHEET", "ISAA_PARENT_CHECKIN"]);
+    // 048: MCHAT_RF is registered (used by /screen only with MCHAT_LICENSED=true).
+    expect([...INSTRUMENT_KEYS]).toEqual(["ISAA", "CASE_SHEET", "ISAA_PARENT_CHECKIN", "MCHAT_RF"]);
     const isaa = getInstrument("ISAA");
     expect(isaa).toMatchObject({ key: "ISAA", kind: "provider_rated", version: "1" });
     expect(isaa.items).toHaveLength(40);
