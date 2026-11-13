@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 974. Not yet approved: 974.
+Rows: 1046. Not yet approved: 1046.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -943,6 +943,7 @@ Rows: 974. Not yet approved: 974.
 | `caseTabs.sessions` | Sessions | सत्र | సెషన్లు |  | pending |
 | `caseTabs.report` | Report | रिपोर्ट | రిపోర్ట్ |  | pending |
 | `caseTabs.referral` | Referral | रेफ़रल | రిఫరల్ |  | pending |
+| `caseTabs.documents` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
 | `caseTabs.team` | Team | टीम | టీమ్ |  | pending |
 | `caseTabs.shared` | Shared with us | हमसे साझा | మాతో పంచుకున్నవి |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
@@ -989,3 +990,74 @@ Rows: 974. Not yet approved: 974.
 | `sharedWithUs.back` | Back to shared records | साझा रिकॉर्ड पर वापस | పంచుకున్న రికార్డులకు వెనుకకు |  | pending |
 | `sharedWithUs.readOnly` | Shared by {org}. Read only. | {org} ने साझा किया। सिर्फ़ पढ़ने के लिए। | {org} పంచుకున్నారు. చదవడానికి మాత్రమే. |  | pending |
 | `sharedWithUs.openFailed` | Could not open this record. Please try again. | यह रिकॉर्ड नहीं खुल सका। कृपया फिर से कोशिश करें। | ఈ రికార్డును తెరవలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `documents.title` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
+| `documents.intro` | Reports, school letters and prescriptions for your children. Only your family and the organisations you choose can see your uploads. | आपके बच्चों की रिपोर्ट, स्कूल के पत्र और पर्चे। आपके अपलोड सिर्फ़ आपका परिवार और आपके चुने हुए संगठन देख सकते हैं। | మీ పిల్లల రిపోర్ట్‌లు, స్కూల్ లేఖలు మరియు ప్రిస్క్రిప్షన్‌లు. మీరు అప్‌లోడ్ చేసినవి మీ కుటుంబం మరియు మీరు ఎంచుకున్న సంస్థలు మాత్రమే చూడగలరు. |  | pending |
+| `documents.childTitle` | {name}'s documents | {name} के दस्तावेज़ | {name} పత్రాలు |  | pending |
+| `documents.childIntro` | Upload reports, letters and prescriptions for {name}. Your child's providers can also add documents here for you. | {name} की रिपोर्ट, पत्र और पर्चे अपलोड करें। आपके बच्चे के विशेषज्ञ भी यहाँ आपके लिए दस्तावेज़ जोड़ सकते हैं। | {name} రిపోర్ట్‌లు, లేఖలు మరియు ప్రిస్క్రిప్షన్‌లు అప్‌లోడ్ చేయండి. మీ పిల్లల నిపుణులు కూడా ఇక్కడ మీ కోసం పత్రాలు జోడించవచ్చు. |  | pending |
+| `documents.back` | Back to {name} | {name} पर वापस जाएँ | {name} కు తిరిగి వెళ్ళండి |  | pending |
+| `documents.link` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
+| `documents.openChild` | Open {name}'s documents | {name} के दस्तावेज़ खोलें | {name} పత్రాలు తెరవండి |  | pending |
+| `documents.empty` | No documents yet. | अभी कोई दस्तावेज़ नहीं है। | ఇంకా పత్రాలు లేవు. |  | pending |
+| `documents.noChildren` | Add a child first to keep their documents here. | दस्तावेज़ रखने के लिए पहले एक बच्चा जोड़ें। | పత్రాలు ఉంచడానికి ముందుగా ఒక బిడ్డను జోడించండి. |  | pending |
+| `documents.upload` | Upload document | दस्तावेज़ अपलोड करें | పత్రం అప్‌లోడ్ చేయండి |  | pending |
+| `documents.uploadTitle` | Upload a document | एक दस्तावेज़ अपलोड करें | ఒక పత్రం అప్‌లోడ్ చేయండి |  | pending |
+| `documents.providerUpload` | Upload | अपलोड करें | అప్‌లోడ్ |  | pending |
+| `documents.fieldTitle` | Title | शीर्षक | శీర్షిక |  | pending |
+| `documents.fieldCategory` | Category | श्रेणी | వర్గం |  | pending |
+| `documents.chooseCategory` | Choose a category | एक श्रेणी चुनें | ఒక వర్గం ఎంచుకోండి |  | pending |
+| `documents.fieldFile` | File | फ़ाइल | ఫైల్ |  | pending |
+| `documents.fileHint` | PDF, JPG, PNG or HEIC, up to 20 MB. On a phone you can take a photo. | PDF, JPG, PNG या HEIC, 20 MB तक। फ़ोन पर आप फ़ोटो ले सकते हैं। | PDF, JPG, PNG లేదా HEIC, 20 MB వరకు. ఫోన్‌లో మీరు ఫోటో తీయవచ్చు. |  | pending |
+| `documents.shareWith` | Share with | इनके साथ साझा करें | వీరితో పంచుకోండి |  | pending |
+| `documents.shareWithHint` | Only the organisations you tick can see this document. You can change this later. | सिर्फ़ वही संगठन यह दस्तावेज़ देख सकते हैं जिन पर आप टिक करें। आप इसे बाद में बदल सकते हैं। | మీరు టిక్ చేసిన సంస్థలు మాత్రమే ఈ పత్రాన్ని చూడగలవు. మీరు దీన్ని తర్వాత మార్చవచ్చు. |  | pending |
+| `documents.noOrgs` | No organisation is treating {name} yet. You can share later. | अभी कोई संगठन {name} का इलाज नहीं कर रहा है। आप बाद में साझा कर सकते हैं। | ఇంకా ఏ సంస్థా {name} కు చికిత్స చేయడం లేదు. మీరు తర్వాత పంచుకోవచ్చు. |  | pending |
+| `documents.parentCanSee` | Parent can see this document | माता-पिता यह दस्तावेज़ देख सकते हैं | తల్లిదండ్రులు ఈ పత్రాన్ని చూడగలరు |  | pending |
+| `documents.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `documents.save` | Upload | अपलोड करें | అప్‌లోడ్ చేయండి |  | pending |
+| `documents.uploading` | Uploading... | अपलोड हो रहा है... | అప్‌లోడ్ అవుతోంది... |  | pending |
+| `documents.uploaded` | Document uploaded. | दस्तावेज़ अपलोड हो गया। | పత్రం అప్‌లోడ్ అయింది. |  | pending |
+| `documents.download` | Download | डाउनलोड करें | డౌన్‌లోడ్ |  | pending |
+| `documents.downloadLabel` | Download {title} | {title} डाउनलोड करें | {title} డౌన్‌లోడ్ చేయండి |  | pending |
+| `documents.delete` | Delete | हटाएँ | తొలగించండి |  | pending |
+| `documents.deleteLabel` | Delete {title} | {title} हटाएँ | {title} తొలగించండి |  | pending |
+| `documents.deleting` | Deleting... | हटाया जा रहा है... | తొలగిస్తోంది... |  | pending |
+| `documents.deleteConfirm` | Delete "{title}"? This cannot be undone. | "{title}" हटाएँ? इसे वापस नहीं लाया जा सकता। | "{title}" తొలగించాలా? దీన్ని తిరిగి పొందలేరు. |  | pending |
+| `documents.deleted` | Document deleted. | दस्तावेज़ हटा दिया गया। | పత్రం తొలగించబడింది. |  | pending |
+| `documents.sharing` | Sharing | साझा करना | పంచుకోవడం |  | pending |
+| `documents.sharingLabel` | Sharing for {title} | {title} का साझा करना | {title} పంచుకోవడం |  | pending |
+| `documents.sharingTitle` | Who can see this document | यह दस्तावेज़ कौन देख सकता है | ఈ పత్రాన్ని ఎవరు చూడగలరు |  | pending |
+| `documents.share` | Share | साझा करें | పంచుకోండి |  | pending |
+| `documents.stopSharing` | Stop sharing | साझा करना बंद करें | పంచుకోవడం ఆపండి |  | pending |
+| `documents.sharedWith` | Shared with: {orgs} | इनके साथ साझा: {orgs} | వీరితో పంచుకున్నారు: {orgs} |  | pending |
+| `documents.notShared` | Not shared with any organisation | किसी संगठन के साथ साझा नहीं | ఏ సంస్థతోనూ పంచుకోలేదు |  | pending |
+| `documents.close` | Close | बंद करें | మూసివేయండి |  | pending |
+| `documents.uploadedBy` | Uploaded by {who} | {who} ने अपलोड किया | {who} అప్‌లోడ్ చేశారు |  | pending |
+| `documents.byYou` | You | आप | మీరు |  | pending |
+| `documents.byFamily` | Your family | आपका परिवार | మీ కుటుంబం |  | pending |
+| `documents.byParent` | Parent | माता-पिता | తల్లిదండ్రులు |  | pending |
+| `documents.addedOn` | Added {date} | {date} को जोड़ा गया | {date} న జోడించారు |  | pending |
+| `documents.visibleToParent` | Parent can see this | माता-पिता इसे देख सकते हैं | తల్లిదండ్రులు దీన్ని చూడగలరు |  | pending |
+| `documents.hiddenFromParent` | Parent cannot see this | माता-पिता इसे नहीं देख सकते | తల్లిదండ్రులు దీన్ని చూడలేరు |  | pending |
+| `documents.showToParent` | Show to parent | माता-पिता को दिखाएँ | తల్లిదండ్రులకు చూపించండి |  | pending |
+| `documents.hideFromParent` | Hide from parent | माता-पिता से छिपाएँ | తల్లిదండ్రుల నుండి దాచండి |  | pending |
+| `documents.caseIntro` | Documents of this case and documents the parent shared with your organisation. | इस केस के दस्तावेज़ और वे दस्तावेज़ जो माता-पिता ने आपके संगठन के साथ साझा किए हैं। | ఈ కేసు పత్రాలు మరియు తల్లిదండ్రులు మీ సంస్థతో పంచుకున్న పత్రాలు. |  | pending |
+| `documents.sharedWithUs` | Shared with us | हमारे साथ साझा | మాతో పంచుకున్నవి |  | pending |
+| `documents.sharedWithUsIntro` | Documents from the child's other organisations, shared by the parent. Read only. | बच्चे के दूसरे संगठनों के दस्तावेज़, जिन्हें माता-पिता ने साझा किया है। सिर्फ़ पढ़ने के लिए। | పిల్లల ఇతర సంస్థల పత్రాలు, తల్లిదండ్రులు పంచుకున్నవి. చదవడానికి మాత్రమే. |  | pending |
+| `documents.sharedFrom` | From {org} | {org} से | {org} నుండి |  | pending |
+| `documents.noShared` | Nothing has been shared with your organisation. | आपके संगठन के साथ अभी कुछ साझा नहीं किया गया है। | మీ సంస్థతో ఇంకా ఏమీ పంచుకోలేదు. |  | pending |
+| `documents.categories.prior_report` | Prior report | पिछली रिपोर्ट | మునుపటి రిపోర్ట్ |  | pending |
+| `documents.categories.prescription` | Prescription | पर्चा | ప్రిస్క్రిప్షన్ |  | pending |
+| `documents.categories.school` | School | स्कूल | స్కూల్ |  | pending |
+| `documents.categories.medical` | Medical | चिकित्सा | వైద్య |  | pending |
+| `documents.categories.assessment` | Assessment | आकलन | అంచనా |  | pending |
+| `documents.categories.consent_form` | Consent form | सहमति फ़ॉर्म | సమ్మతి ఫారం |  | pending |
+| `documents.categories.other` | Other | अन्य | ఇతర |  | pending |
+| `documents.errors.tooLarge` | Files can be up to 20 MB | फ़ाइलें 20 MB तक हो सकती हैं | ఫైళ్ళు 20 MB వరకు ఉండవచ్చు |  | pending |
+| `documents.errors.unsupported` | Upload a PDF, JPG, PNG or HEIC file | PDF, JPG, PNG या HEIC फ़ाइल अपलोड करें | PDF, JPG, PNG లేదా HEIC ఫైల్ అప్‌లోడ్ చేయండి |  | pending |
+| `documents.errors.mismatch` | This file does not match its type | यह फ़ाइल अपने प्रकार से मेल नहीं खाती | ఈ ఫైల్ దాని రకానికి సరిపోలడం లేదు |  | pending |
+| `documents.errors.notTreating` | This organisation is not treating your child | यह संगठन आपके बच्चे का इलाज नहीं कर रहा है | ఈ సంస్థ మీ బిడ్డకు చికిత్స చేయడం లేదు |  | pending |
+| `documents.errors.titleRequired` | Enter a title | शीर्षक लिखें | శీర్షిక రాయండి |  | pending |
+| `documents.errors.categoryRequired` | Choose a category | एक श्रेणी चुनें | ఒక వర్గం ఎంచుకోండి |  | pending |
+| `documents.errors.fileRequired` | Choose a file | एक फ़ाइल चुनें | ఒక ఫైల్ ఎంచుకోండి |  | pending |
+| `documents.errors.uploadFailed` | The upload did not finish. Please try again. | अपलोड पूरा नहीं हुआ। कृपया फिर से कोशिश करें। | అప్‌లోడ్ పూర్తి కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `documents.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `documents.errors.forbidden` | You cannot change this document. | आप इस दस्तावेज़ को नहीं बदल सकते। | మీరు ఈ పత్రాన్ని మార్చలేరు. |  | pending |

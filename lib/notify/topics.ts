@@ -14,9 +14,16 @@ export const SHARING_TOPICS = {
   granted: "sharing.granted",
 } as const;
 
+// Ticket 023 FR-9: a provider made a document visible to the child's guardians (recipients: the child's active
+// guardians). Payload ids only: the document title never goes into a WhatsApp/email body.
+export const DOCUMENT_TOPICS = {
+  sharedWithGuardian: "document.shared_with_guardian",
+} as const;
+
 export type NotifyTopic =
   | (typeof PROVIDER_TOPICS)[keyof typeof PROVIDER_TOPICS]
-  | (typeof SHARING_TOPICS)[keyof typeof SHARING_TOPICS];
+  | (typeof SHARING_TOPICS)[keyof typeof SHARING_TOPICS]
+  | (typeof DOCUMENT_TOPICS)[keyof typeof DOCUMENT_TOPICS];
 
 export type NotifyPayload = Record<string, string | number | boolean | null>;
 

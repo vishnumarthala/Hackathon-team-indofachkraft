@@ -12,6 +12,7 @@
 //
 // To add a scope: create `lib/sharing/loaders/<scope>.ts` exporting a `ShareLoader`, add one line to
 // `SHARE_LOADERS` below, and add tests (see tests/sharing-grants.test.ts for the reports loader).
+import { documentsLoader } from "@/lib/sharing/loaders/documents";
 import { reportsLoader } from "@/lib/sharing/loaders/reports";
 import type { ShareScope } from "@/lib/sharing/scopes";
 
@@ -39,6 +40,7 @@ export type ShareLoader = {
 
 export const SHARE_LOADERS: Partial<Record<ShareScope, ShareLoader>> = {
   reports: reportsLoader,
+  documents: documentsLoader,
 };
 
 export function getShareLoader(scope: ShareScope): ShareLoader | null {
