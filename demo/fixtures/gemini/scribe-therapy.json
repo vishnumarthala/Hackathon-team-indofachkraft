@@ -1,0 +1,139 @@
+{
+  "sections": [
+    {
+      "key": "goals_worked_on",
+      "statements": [
+        {
+          "text": "Practised two-word requests and waiting for a turn.",
+          "citations": [
+            {
+              "segment_id": "s1",
+              "quote": "Today Asha and I will work on asking for things with two words and on taking turns."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "activities",
+      "statements": [
+        {
+          "text": "Snack game to practise requests.",
+          "citations": [
+            {
+              "segment_id": "s3",
+              "quote": "Let us start with the snack game."
+            }
+          ]
+        },
+        {
+          "text": "Ball rolling game to practise turn taking.",
+          "citations": [
+            {
+              "segment_id": "s6",
+              "quote": "Next is the ball rolling game for turn taking."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "child_response",
+      "statements": [
+        {
+          "text": "Made four two-word requests without a prompt in the snack game.",
+          "citations": [
+            {
+              "segment_id": "s4",
+              "quote": "In this game she made four two-word requests without any prompt."
+            }
+          ]
+        },
+        {
+          "text": "Waited for her turn in six of ten rolls (60%).",
+          "citations": [
+            {
+              "segment_id": "s6",
+              "quote": "She waited for her turn in six out of ten rolls today, that is sixty percent."
+            }
+          ]
+        },
+        {
+          "text": "Parent reports she uses more words at home this week but still pulls a hand to ask for water.",
+          "citations": [
+            {
+              "segment_id": "s2",
+              "quote": "At home she is saying more words this week."
+            },
+            {
+              "segment_id": "s5",
+              "quote": "At home she still pulls my hand when she wants water."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "caregiver_coaching",
+      "statements": [
+        {
+          "text": "Showed the parent how to pause and model \"want water\" before giving water.",
+          "citations": [
+            {
+              "segment_id": "s8",
+              "quote": "wait and model the words want water, then give it when she tries."
+            },
+            {
+              "segment_id": "s9",
+              "quote": "Okay madam, I will wait and say want water first."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "home_program",
+      "statements": [
+        {
+          "text": "Snack game at tea time and five minutes of ball rolling each evening.",
+          "citations": [
+            {
+              "segment_id": "s10",
+              "quote": "play the snack game at tea time and roll a ball with her for five minutes each evening."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "plan_next_session",
+      "statements": [
+        {
+          "text": "Add colour words to requests (for example \"red ball\", \"blue cup\").",
+          "citations": [
+            {
+              "segment_id": "s11",
+              "quote": "Next week we will add colour words to her requests, like red ball and blue cup."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "goal_suggestions": [
+    {
+      "goal_ref": "G1",
+      "suggested_value": 4,
+      "segment_id": "s4",
+      "quote": "In this game she made four two-word requests without any prompt.",
+      "rationale": "The therapist counted four unprompted two-word requests in the snack game."
+    },
+    {
+      "goal_ref": "G2",
+      "suggested_value": 60,
+      "segment_id": "s6",
+      "quote": "She waited for her turn in six out of ten rolls today, that is sixty percent.",
+      "rationale": "She waited for her turn in 6 of 10 rolls (60%)."
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+[
+  {
+    "id": "s1",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 0.5,
+    "end_sec": 6.2,
+    "text": "Hello Meena garu, I am the developmental paediatrician. Tell me what worries you about Asha."
+  },
+  {
+    "id": "s2",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 8.2,
+    "end_sec": 15.8,
+    "text": "She is four years old and her sleep is very poor. She wakes up three or four times every night."
+  },
+  {
+    "id": "s3",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 17.8,
+    "end_sec": 21.22,
+    "text": "How long has the night waking been going on?"
+  },
+  {
+    "id": "s4",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 23.22,
+    "end_sec": 28.92,
+    "text": "For about six months, since we moved house. During the day she is very restless."
+  },
+  {
+    "id": "s5",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 30.92,
+    "end_sec": 35.48,
+    "text": "Is she taking any medicines now, and does she have any allergies?"
+  },
+  {
+    "id": "s6",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 37.48,
+    "end_sec": 42.04,
+    "text": "No medicines now. She is allergic to amoxicillin, she got a rash."
+  },
+  {
+    "id": "s7",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 44.04,
+    "end_sec": 50.5,
+    "text": "On examination she is active, makes brief eye contact and her growth is normal for her age."
+  },
+  {
+    "id": "s8",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 52.5,
+    "end_sec": 57.44,
+    "text": "During play she asked me for the bubbles with two words three times."
+  },
+  {
+    "id": "s9",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 59.44,
+    "end_sec": 66.28,
+    "text": "My impression is a sleep onset and night waking problem, and I want to check for low iron."
+  },
+  {
+    "id": "s10",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 68.28,
+    "end_sec": 77.78,
+    "text": "Plan: we will check a blood count and ferritin. Start melatonin two milligram tablet, one tablet by mouth thirty minutes before bed, for thirty days."
+  },
+  {
+    "id": "s11",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 79.78,
+    "end_sec": 84.72,
+    "text": "Keep a fixed bedtime routine with no screens for one hour before bed."
+  },
+  {
+    "id": "s12",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 86.72,
+    "end_sec": 91.66,
+    "text": "Please come back for follow up in four weeks with a sleep diary."
+  },
+  {
+    "id": "s13",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 93.66,
+    "end_sec": 95.66,
+    "text": "Okay doctor, thank you."
+  }
+]

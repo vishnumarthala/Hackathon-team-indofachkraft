@@ -232,6 +232,32 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    key: "ai_scribe",
+    label: "AI scribe drafts: session notes, goal-progress suggestions and prescription drafts (038)",
+    owner: "case",
+    tables: ["reports.session_note", "reports.rx_draft", "goal_progress_suggestions"],
+    retention:
+      "Drafts and suggestions are kept with the clinical record of the case until the clinician decides; finalized notes are clinical records (published versions). Deleted with the child's cases on erasure.",
+    processors: ["supabase", "gemini"],
+    // No export section of its own: the guardian sees only finalized notes the clinician shared, which the
+    // `published_versions` export already contains. Drafts and suggestions are never shown to guardians (NFR-1).
+    erase: {
+      scopes: AI_SCOPES,
+      rows: async (tx, ctx) => {
+        if (ctx.caseIds.length === 0 || ctx.scope === "everything") return 0; // cascades with the cases
+        // all_ai_processing: undecided/rejected AI suggestions go; accepted ones keep the decision but lose the
+        // transcript quotes and AI rationale (draft reports are removed by `case_records`).
+        const a = await tx`
+          delete from public.goal_progress_suggestions
+          where case_id in ${tx(ctx.caseIds)} and status in ('suggested', 'rejected')`;
+        const b = await tx`
+          update public.goal_progress_suggestions set evidence = '[]'::jsonb, rationale = ''
+          where case_id in ${tx(ctx.caseIds)} and status = 'accepted' and (evidence <> '[]'::jsonb or rationale <> '')`;
+        return a.count + b.count;
+      },
+    },
+  },
+  {
     key: "documents",
     label: "Document vault (uploads by the family and the care team)",
     owner: "child",

@@ -12,6 +12,7 @@ import {
   markFailed,
   saveTranscript,
 } from "@/lib/queries/recordings";
+import { demoTranscriptFor } from "@/lib/scribe/templates";
 import { buildSegments, mapSpeakers } from "@/lib/transcript";
 
 export const runtime = "nodejs";
@@ -25,7 +26,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const denied = await requireRecordingAccess(id);
   if (denied) return denied;
   const recording = await getRecording(id);
-  if (!recording || recording.kind !== "session") return fail(404, "Session not found");
+  // 038: in-clinic consults (`consult`) are transcribed the same way as sessions.
+  if (!recording || (recording.kind !== "session" && recording.kind !== "consult")) return fail(404, "Session not found");
   const childId = await childIdForCase(recording.case_id);
   const blocked = await requireConsent(childId, "ai_transcription");
   if (blocked) return blocked;
@@ -67,6 +69,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       audio,
       fileName: path.posix.basename(recording.storage_path),
       mimeType: recording.mime_type ?? "application/octet-stream",
+      demoFixture: demoTranscriptFor(recording.template),
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

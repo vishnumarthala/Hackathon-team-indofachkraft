@@ -133,6 +133,18 @@ export async function requireReportActor(
   return result;
 }
 
+/** 038: requireRecordingAccess() that also returns the provider and the recording's case (AI scribe writes). */
+export async function requireRecordingActor(
+  recordingId: string,
+  notFoundMessage = "Session not found",
+): Promise<{ actor: Actor; caseId: string } | { response: Response }> {
+  const result = await requireProviderApi();
+  if ("response" in result) return result;
+  const caseId = await lookupCaseId("recordings", recordingId);
+  if (!caseId || !(await canAccessCase(result.actor.user.id, caseId))) return { response: fail(404, notFoundMessage) };
+  return { actor: result.actor, caseId };
+}
+
 // ---------- 024: assessments ----------
 
 /**

@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1610. Not yet approved: 1610.
+Rows: 1670. Not yet approved: 1670.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1463,6 +1463,7 @@ Rows: 1610. Not yet approved: 1610.
 | `privacy.notice.collect.documents` | Documents you or the care team upload (reports, prescriptions, school letters). | आप या देखभाल टीम द्वारा अपलोड किए गए दस्तावेज़ (रिपोर्ट, पर्चे, स्कूल के पत्र)। | మీరు లేదా సంరక్షణ బృందం అప్‌లోడ్ చేసే పత్రాలు (రిపోర్టులు, ప్రిస్క్రిప్షన్లు, పాఠశాల లేఖలు). |  | pending |
 | `privacy.notice.collect.intake` | AI intake voice call (only with your permission): the call audio and its transcript, and the summary prepared for the therapist. | AI इनटेक वॉयस कॉल (केवल आपकी अनुमति से): कॉल की ऑडियो और उसका लिखित रूप, और थेरेपिस्ट के लिए तैयार सारांश। | AI ఇన్‌టేక్ వాయిస్ కాల్ (మీ అనుమతితో మాత్రమే): కాల్ ఆడియో మరియు దాని లిఖిత రూపం, థెరపిస్ట్ కోసం సిద్ధం చేసిన సారాంశం. |  | pending |
 | `privacy.notice.collect.sessions` | Session recordings (only with your permission): audio recorded at the centre, transcripts, observations suggested by AI and confirmed by the therapist, reports and referrals. | सत्र की रिकॉर्डिंग (केवल आपकी अनुमति से): केंद्र में रिकॉर्ड की गई ऑडियो, लिखित रूप, AI द्वारा सुझाए और थेरेपिस्ट द्वारा पुष्टि किए गए अवलोकन, रिपोर्ट और रेफ़रल। | సెషన్ రికార్డింగ్‌లు (మీ అనుమతితో మాత్రమే): కేంద్రంలో రికార్డ్ చేసిన ఆడియో, లిఖిత రూపాలు, AI సూచించి థెరపిస్ట్ ధృవీకరించిన పరిశీలనలు, రిపోర్టులు మరియు రిఫరల్స్. |  | pending |
+| `privacy.notice.collect.scribe` | AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you. | AI सत्र नोट (केवल आपकी अनुमति से): क्लिनिक में की गई रिकॉर्डिंग से AI द्वारा तैयार नोट, लक्ष्य की प्रगति और प्रिस्क्रिप्शन के मसौदे। क्लिनिशियन हर सुझाव की जाँच करते हैं; आप कोई नोट तभी देखते हैं जब क्लिनिशियन उसे आपके साथ साझा करें। | AI సెషన్ నోట్‌లు (మీ అనుమతితో మాత్రమే): క్లినిక్‌లో చేసిన రికార్డింగ్‌ల నుండి AI తయారు చేసిన నోట్‌లు, లక్ష్యాల పురోగతి మరియు ప్రిస్క్రిప్షన్ ముసాయిదాలు. క్లినిషియన్ ప్రతి సూచనను పరిశీలిస్తారు; క్లినిషియన్ మీతో పంచుకున్నప్పుడే మీరు నోట్‌ను చూస్తారు. |  | pending |
 | `privacy.notice.collect.assessments` | Questionnaires your care team sends you (for example the developmental check-in): your answers and the summary the team publishes. | आपकी देखभाल टीम द्वारा भेजी गई प्रश्नावली (जैसे विकास की जाँच): आपके जवाब और टीम द्वारा प्रकाशित सारांश। | మీ సంరక్షణ బృందం పంపే ప్రశ్నావళులు (ఉదాహరణకు అభివృద్ధి చెక్-ఇన్): మీ సమాధానాలు మరియు బృందం ప్రచురించే సారాంశం. |  | pending |
 | `privacy.notice.collect.plans` | Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you. | थेरेपी योजनाएँ (IEP): लक्ष्य, देखभाल टीम द्वारा दर्ज की गई प्रगति, और आपके लिए प्रकाशित योजना के संस्करण। | థెరపీ ప్రణాళికలు (IEP): లక్ష్యాలు, సంరక్షణ బృందం నమోదు చేసే పురోగతి, మరియు మీకు ప్రచురించిన ప్రణాళిక వెర్షన్లు. |  | pending |
 | `privacy.notice.collect.notifications` | Notifications we send you in the app, by email or WhatsApp. | ऐप में, ईमेल या WhatsApp पर हमारी भेजी सूचनाएँ। | యాప్‌లో, ఇమెయిల్ లేదా WhatsApp ద్వారా మేము పంపే నోటిఫికేషన్లు. |  | pending |
@@ -1625,3 +1626,62 @@ Rows: 1610. Not yet approved: 1610.
 | `privacy.admin.ops.stuck` | Recordings stuck for more than 30 minutes | 30 मिनट से ज़्यादा अटकी रिकॉर्डिंग | 30 నిమిషాలకు పైగా నిలిచిపోయిన రికార్డింగ్‌లు |  | pending |
 | `privacy.admin.ops.none` | None. | कोई नहीं। | ఏవీ లేవు. |  | pending |
 | `privacy.admin.ops.minutes` | {count} min | {count} मिनट | {count} ని. |  | pending |
+| `scribe.label` | Suggested by DoctorNearMe - the clinician decides | DoctorNearMe का सुझाव - फ़ैसला क्लिनिशियन का है | DoctorNearMe సూచన - నిర్ణయం క్లినిషియన్‌దే |  | pending |
+| `scribe.templates.child_dev_isaa` | Child Development (ISAA form) | बाल विकास (ISAA फ़ॉर्म) | పిల్లల అభివృద్ధి (ISAA ఫారం) |  | pending |
+| `scribe.templates.therapy_session_note` | Therapy session note | थेरेपी सत्र नोट | థెరపీ సెషన్ నోట్ |  | pending |
+| `scribe.templates.medical_consult_note` | Medical consult note | मेडिकल परामर्श नोट | వైద్య సంప్రదింపు నోట్ |  | pending |
+| `scribe.upload.sessionType` | Session type | सत्र का प्रकार | సెషన్ రకం |  | pending |
+| `scribe.upload.inClinicOnly` | In-clinic recordings only. The AI scribe is not available for video calls. | केवल क्लिनिक में की गई रिकॉर्डिंग। AI स्क्राइब वीडियो कॉल के लिए उपलब्ध नहीं है। | క్లినిక్‌లో చేసిన రికార్డింగ్‌లు మాత్రమే. వీడియో కాల్‌లకు AI స్క్రైబ్ అందుబాటులో లేదు. |  | pending |
+| `scribe.upload.appointment` | Appointment (optional) | अपॉइंटमेंट (वैकल्पिक) | అపాయింట్‌మెంట్ (ఐచ్ఛికం) |  | pending |
+| `scribe.upload.noAppointment` | No appointment | कोई अपॉइंटमेंट नहीं | అపాయింట్‌మెంట్ లేదు |  | pending |
+| `scribe.upload.clinicAppointment` | {date} - in clinic | {date} - क्लिनिक में | {date} - క్లినిక్‌లో |  | pending |
+| `scribe.upload.videoAppointment` | {date} - video call (not available) | {date} - वीडियो कॉल (उपलब्ध नहीं) | {date} - వీడియో కాల్ (అందుబాటులో లేదు) |  | pending |
+| `scribe.upload.stepScribe` | Draft session note (Gemini) | सत्र नोट का मसौदा (Gemini) | సెషన్ నోట్ ముసాయిదా (Gemini) |  | pending |
+| `scribe.review.title` | Session {number} · {type} | सत्र {number} · {type} | సెషన్ {number} · {type} |  | pending |
+| `scribe.review.status` | This session is {status}. | यह सत्र {status} है। | ఈ సెషన్ స్థితి: {status}. |  | pending |
+| `scribe.review.failed` | Last attempt failed: {error} | पिछली कोशिश विफल रही: {error} | చివరి ప్రయత్నం విఫలమైంది: {error} |  | pending |
+| `scribe.review.run` | Run AI scribe | AI स्क्राइब चलाएँ | AI స్క్రైబ్ నడపండి |  | pending |
+| `scribe.review.rerun` | Run AI scribe again | AI स्क्राइब फिर से चलाएँ | AI స్క్రైబ్ మళ్లీ నడపండి |  | pending |
+| `scribe.review.rerunHint` | Replaces the draft note and open suggestions. Final notes and your decisions are kept. | मसौदा नोट और खुले सुझाव बदल जाएँगे। अंतिम नोट और आपके फ़ैसले बने रहेंगे। | ముసాయిదా నోట్ మరియు తెరిచి ఉన్న సూచనలు మారుతాయి. తుది నోట్‌లు మరియు మీ నిర్ణయాలు అలాగే ఉంటాయి. |  | pending |
+| `scribe.review.running` | Running… | चल रहा है… | నడుస్తోంది… |  | pending |
+| `scribe.review.error` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर से कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `scribe.review.noteTitle` | Session note | सत्र नोट | సెషన్ నోట్ |  | pending |
+| `scribe.review.noNote` | No session note yet. | अभी कोई सत्र नोट नहीं है। | ఇంకా సెషన్ నోట్ లేదు. |  | pending |
+| `scribe.review.draft` | Draft | मसौदा | ముసాయిదా |  | pending |
+| `scribe.review.final` | Final | अंतिम | తుది |  | pending |
+| `scribe.review.sharedYes` | shared with the family | परिवार के साथ साझा | కుటుంబంతో పంచుకున్నారు |  | pending |
+| `scribe.review.sharedNo` | not shared with the family | परिवार के साथ साझा नहीं | కుటుంబంతో పంచుకోలేదు |  | pending |
+| `scribe.review.editLabel` | Note text (Markdown) | नोट का पाठ (Markdown) | నోట్ పాఠ్యం (Markdown) |  | pending |
+| `scribe.review.preview` | Note preview | नोट का पूर्वावलोकन | నోట్ ముందుచూపు |  | pending |
+| `scribe.review.save` | Save draft | मसौदा सहेजें | ముసాయిదా సేవ్ చేయండి |  | pending |
+| `scribe.review.saved` | Saved | सहेजा गया | సేవ్ అయింది |  | pending |
+| `scribe.review.playFrom` | Play the recording from {time} | रिकॉर्डिंग {time} से चलाएँ | రికార్డింగ్‌ను {time} నుండి ప్లే చేయండి |  | pending |
+| `scribe.review.noAudio` | Audio not available | ऑडियो उपलब्ध नहीं है | ఆడియో అందుబాటులో లేదు |  | pending |
+| `scribe.review.shareCheckbox` | Share with the family (they see it in their DoctorNearMe app) | परिवार के साथ साझा करें (वे इसे अपने DoctorNearMe ऐप में देखेंगे) | కుటుంబంతో పంచుకోండి (వారు దీన్ని తమ DoctorNearMe యాప్‌లో చూస్తారు) |  | pending |
+| `scribe.review.finalize` | Finalize note | नोट को अंतिम करें | నోట్‌ను తుది చేయండి |  | pending |
+| `scribe.review.share` | Share with family | परिवार के साथ साझा करें | కుటుంబంతో పంచుకోండి |  | pending |
+| `scribe.review.unshare` | Stop sharing | साझा करना बंद करें | పంచుకోవడం ఆపండి |  | pending |
+| `scribe.review.goalsTitle` | Goal progress | लक्ष्य की प्रगति | లక్ష్యాల పురోగతి |  | pending |
+| `scribe.review.noGoals` | No progress suggestions. They need an active plan with goals and a measurement said in the session. | प्रगति के कोई सुझाव नहीं। इसके लिए लक्ष्यों वाली सक्रिय योजना और सत्र में बताया गया माप चाहिए। | పురోగతి సూచనలు లేవు. దీనికి లక్ష్యాలతో కూడిన క్రియాశీల ప్రణాళిక మరియు సెషన్‌లో చెప్పిన కొలత అవసరం. |  | pending |
+| `scribe.review.openGoals` | Open the Goals tab | लक्ष्य टैब खोलें | లక్ష్యాల ట్యాబ్ తెరవండి |  | pending |
+| `scribe.review.suggested` | Suggested value: {value} | सुझाया गया मान: {value} | సూచించిన విలువ: {value} |  | pending |
+| `scribe.review.valueLabel` | Value | मान | విలువ |  | pending |
+| `scribe.review.accept` | Accept | स्वीकार करें | అంగీకరించండి |  | pending |
+| `scribe.review.editValue` | Edit value | मान बदलें | విలువ మార్చండి |  | pending |
+| `scribe.review.acceptEdited` | Save and accept | सहेजें और स्वीकार करें | సేవ్ చేసి అంగీకరించండి |  | pending |
+| `scribe.review.reject` | Reject | अस्वीकार करें | తిరస్కరించండి |  | pending |
+| `scribe.review.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `scribe.review.accepted` | Accepted: {value} recorded | स्वीकार किया गया: {value} दर्ज किया गया | అంగీకరించారు: {value} నమోదైంది |  | pending |
+| `scribe.review.rejected` | Rejected | अस्वीकार किया गया | తిరస్కరించారు |  | pending |
+| `scribe.review.rxTitle` | Prescription draft | प्रिस्क्रिप्शन का मसौदा | ప్రిస్క్రిప్షన్ ముసాయిదా |  | pending |
+| `scribe.review.rxIntro` | For the prescriber to review, edit and sign. Nothing is sent to the family. | प्रिस्क्राइबर की जाँच, बदलाव और हस्ताक्षर के लिए। परिवार को कुछ नहीं भेजा जाता। | ప్రిస్క్రైబర్ పరిశీలించి, మార్చి, సంతకం చేయడానికి. కుటుంబానికి ఏమీ పంపబడదు. |  | pending |
+| `scribe.review.rxNone` | No medicines suggested. | कोई दवा सुझाई नहीं गई। | మందులు ఏవీ సూచించలేదు. |  | pending |
+| `scribe.review.rxItem` | {drug} {strength} {form}: {dose}, {frequency}, {days} days ({route}) | {drug} {strength} {form}: {dose}, {frequency}, {days} दिन ({route}) | {drug} {strength} {form}: {dose}, {frequency}, {days} రోజులు ({route}) |  | pending |
+| `scribe.review.rxReview` | Review in prescriptions | प्रिस्क्रिप्शन में जाँचें | ప్రిస్క్రిప్షన్‌లలో పరిశీలించండి |  | pending |
+| `scribe.family.link` | Session notes | सत्र नोट | సెషన్ నోట్‌లు |  | pending |
+| `scribe.family.back` | Back to {name} | {name} पर वापस जाएँ | {name} వద్దకు తిరిగి వెళ్లండి |  | pending |
+| `scribe.family.title` | {name}'s session notes | {name} के सत्र नोट | {name} సెషన్ నోట్‌లు |  | pending |
+| `scribe.family.intro` | Notes your child's clinicians chose to share with you after a session. | वे नोट जो आपके बच्चे के क्लिनिशियन ने सत्र के बाद आपके साथ साझा करने के लिए चुने। | సెషన్ తర్వాత మీ పిల్లల క్లినిషియన్‌లు మీతో పంచుకోవాలని ఎంచుకున్న నోట్‌లు. |  | pending |
+| `scribe.family.empty` | No session notes have been shared with you yet. | अभी तक आपके साथ कोई सत्र नोट साझा नहीं किया गया है। | ఇంకా మీతో ఏ సెషన్ నోట్‌లు పంచుకోలేదు. |  | pending |
+| `scribe.family.from` | From {org} | {org} से | {org} నుండి |  | pending |
+| `scribe.family.sharedOn` | Shared on {date} | {date} को साझा किया गया | {date}న పంచుకున్నారు |  | pending |

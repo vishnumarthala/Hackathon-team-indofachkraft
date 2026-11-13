@@ -46,7 +46,7 @@ Current gates (FR-7):
 | `ai_intake_call` | `POST /api/cases/:id/intake-link`, `POST /api/intake/:token/start` | `/complete`, `/api/dev/simulate-intake`, webhook processing and before brief generation (`lib/intake/process.ts`) |
 | `session_recording` | `POST /api/cases/:id/sessions` | upload completion: first transcription of a `created` recording |
 | `ai_transcription` | `POST /api/sessions/:id/transcribe` | right before the Scribe request |
-| `ai_extraction` | `POST /api/sessions/:id/extract`, `POST /api/sessions/:id/report` | before each Gemini call (`runExtraction`, report route) |
+| `ai_extraction` | `POST /api/sessions/:id/extract`, `POST /api/sessions/:id/report`, `POST /api/sessions/:id/scribe` (038; AI scribe uploads also check `ai_transcription` + `ai_extraction` at `POST /api/cases/:id/sessions`) | before each Gemini call (`runExtraction`, report route, `runScribe` before the note and before the Rx draft) |
 | `ai_voice_note` | `POST /api/reports/:id/parent-voice-note` | before TTS |
 | `referral_share` | `POST /api/cases/:id/refer` | every `/specialist/<token>` load and `POST /api/cases/:id/ask` (410 when unavailable) |
 | `screen_result_save` | ticket 033 must call `requireConsent` before saving a screen result to a child | - |

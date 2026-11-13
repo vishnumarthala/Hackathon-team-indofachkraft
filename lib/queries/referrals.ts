@@ -10,7 +10,7 @@ const BUCKET = "recordings";
 const SIGNED_URL_SECONDS = 60 * 60;
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,128}$/;
 
-export type ReferralSession = Pick<RecordingRow, "id" | "session_number" | "status" | "kind" | "created_at">;
+export type ReferralSession = Pick<RecordingRow, "id" | "session_number" | "status" | "kind" | "created_at" | "template">;
 
 export type ReferralContext = {
   caseRow: CaseRow;
@@ -74,7 +74,7 @@ export async function getReferralContext(caseId: string): Promise<ReferralContex
 
   const { data: recordings, error } = await db
     .from("recordings")
-    .select("id, session_number, status, kind, created_at")
+    .select("id, session_number, status, kind, created_at, template")
     .eq("case_id", caseId)
     .eq("kind", "session");
   if (error) throw new Error(`Could not load sessions: ${error.message}`);

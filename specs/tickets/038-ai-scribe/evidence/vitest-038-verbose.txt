@@ -1,0 +1,34 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/038
+
+ ✓ tests/scribe.test.ts > FR-2 template routing by provider type > maps every provider type; prescribers and psychologists get the medical template, therapists the therapy one 1ms
+ ✓ tests/scribe.test.ts > FR-2 template routing by provider type > 024 report kinds: session_note and rx_draft are in use and provider-audience 0ms
+ ✓ tests/scribe.test.ts > NFR-2 / FR-4 fixtures: Zod validation and citations > every scribe fixture parses with its schema; wrong shapes are rejected 2ms
+ ✓ tests/scribe.test.ts > NFR-2 / FR-4 fixtures: Zod validation and citations > every citation of every fixture points to an existing segment of its DEMO transcript and its quote is verified 2ms
+ ✓ tests/scribe.test.ts > NFR-2 / FR-4 fixtures: Zod validation and citations > unknown segment ids are dropped; quotes not in the segment are kept but unverified 0ms
+ ✓ tests/scribe.test.ts > NFR-2 / FR-4 fixtures: Zod validation and citations > goal suggestions: only listed goals, values inside the measure, one per goal, evidence required 0ms
+ ✓ tests/scribe.test.ts > NFR-2 / FR-4 fixtures: Zod validation and citations > the note prompt carries the template sections, goal refs with measures, health summary, speaker roles and the transcript 0ms
+ ✓ tests/scribe.test.ts > NFR-2 / FR-4 fixtures: Zod validation and citations > NFR-3 copy rules: AI text is rewritten and no scribe fixture or prompt uses the banned stem 1ms
+ ✓ tests/scribe.test.ts > FR-3 appointments (pure) > reads the mode from the 030 service snapshot, a mode column or a Meet link 0ms
+ ✓ tests/scribe.test.ts > upload flow with a Session type (FR-3) > AI scribe templates send the template and appointment and run the scribe instead of the ISAA extraction 0ms
+ ✓ tests/scribe.test.ts > upload flow with a Session type (FR-3) > the Child Development template keeps the ISAA extraction 0ms
+ ✓ tests/regression-child-dev.test.ts > Child Development pipeline regression (DEMO fixtures, database) > runs the whole pipeline and matches the pre-024 baseline 549ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > the DB report-kind check matches the in-use kinds of lib/clinical/reports.ts 1ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > E-1: therapy session -> draft note with citations and 2 goal suggestions with quotes (no Rx draft) 196ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > E-1: Accept one suggestion -> goal_progress `ai_suggested_confirmed` with the recording; the guardian chart shows it 39ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > E-1: Reject the other -> no progress row; Edit value is validated against the goal's measure 23ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > idempotent re-run keeps decisions; a final note is never replaced; the guardian sees it only once finalized and shared 90ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > NFR-3: a note with a condition label cannot be shared with the family 81ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > E-2: medical consult by a verified prescriber -> rx_draft (039 item shape); the non-prescriber's same audio -> none 189ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > E-3: a video appointment is refused with 422 (upload and scribe); another org's appointment is 404 88ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > E-3: without ai_extraction consent -> 422 before Gemini; withdrawn between transcription and scribe -> consent_withdrawn 74ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > route by template: ISAA sessions keep the extraction (scribe 409); scribe sessions cannot run the ISAA extraction 9ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > E-4: other org, unassigned member and guardians get 404/403; suggestions of another org's case are 404 34ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > a suggestion must target a goal of the recording's case (database trigger) 6ms
+ ✓ tests/scribe.test.ts > AI scribe (database, DEMO fixtures) > 041 registry: all_ai_processing removes open/rejected suggestions and strips evidence from accepted ones 8ms
+
+ Test Files  2 passed (2)
+      Tests  25 passed (25)
+   Start at  03:50:59
+   Duration  1.64s (transform 302ms, setup 0ms, import 216ms, tests 2.25s, environment 0ms)
+
