@@ -6,7 +6,7 @@ fix this file in the same branch.
 
 Related: [team plan](../CareThread%20Hackathon%20Team%20Plan.md) · [team workflow](team-workflow.md)
 · [grill record](../specs/grill/carethread-mvp.md) · [DoctorNearMe decisions](../specs/grill/doctornearme-mvp.md)
-· [ticket board](../specs/tickets/BOARD.md)
+· [ticket board](../specs/tickets/BOARD.md) · [design system & screens](design-system.md)
 
 > DoctorNearMe was built as CareThread. This file describes the Child Development module (the
 > "CareThread engine"); platform-wide decisions for DoctorNearMe live in the decision record above.
