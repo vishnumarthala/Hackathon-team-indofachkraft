@@ -84,8 +84,9 @@ Prompts: `prompts/session-note-therapy.md`, `prompts/session-note-medical.md`, `
 
 `lib/scribe/appointments.ts` reads `public.appointments` defensively (`to_regclass`, rows as JSON): mode from
 `service_snapshot.mode`, a `mode` column, or a `meet_url`; start from `slot` (tstzrange) or `starts_at`. Without the
-table the `Appointment` select is hidden and any `appointment_id` is 404. 035 should add the FK
-`recordings.appointment_id -> appointments(id)`.
+table the `Appointment` select is hidden and any `appointment_id` is 404. Since 030 is merged the table always exists
+(`supabase/migrations/20261113003000_booking.sql`, `service_snapshot.mode` + `slot`; `tests/scribe.test.ts` inserts real
+rows under a synthetic provider profile). 035 should add the FK `recordings.appointment_id -> appointments(id)`.
 
 ## For 039 (e-prescriptions)
 

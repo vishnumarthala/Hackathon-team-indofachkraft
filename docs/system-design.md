@@ -416,6 +416,15 @@ Migrations are applied by the Supabase CLI against the local Docker stack: `npm 
 `supabase_migrations.schema_migrations`) or `npx supabase db reset` (rebuild from scratch). New files are
 named `<YYYYMMDDHHMMSS>_<name>.sql`, additive only, never edited after they reach `main`.
 
+### Booking (ticket 030, design rules 10-12)
+
+`services`, `availability_rules`, `availability_overrides`, `appointments` (half-open `tstzrange` slot,
+`exclude using gist (provider_profile_id with =, slot with &&)` over `held`/`pending_payment`/`confirmed`,
+`btree_gist`) and the append-only `appointment_events`; every transition is one security-definer SQL function
+(`booking_hold`, `booking_attach`, `booking_confirm`, `booking_cancel`, `booking_reschedule`, `booking_complete`,
+`booking_expire_stale`). Migration `20261113003000_booking.sql`; details, API and extension points for 031/034/035/037/042
+in `docs/booking.md`.
+
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
 ```ts
@@ -585,6 +594,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/cases/:id/home-programs`, `GET\|PATCH /api/home-programs/:pid`, `POST /api/home-programs/:pid/activities`, `POST /api/home-programs/:pid/publish`, `PATCH\|DELETE /api/home-activities/:aid`, `GET /api/family/children/:id/home-program`, `POST /api/family/home-activities/:aid/logs`, `DELETE /api/family/home-activity-logs/:id` | 026 | program PATCH / publish carry the program `version` | 201/200; 409 stale; 422 `Choose a goal from this child's plan` / > 15 active activities; guardian logs 201 new / 200 same day again, 400 future or > 14 days ago (`docs/home-program.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
+| `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
 | `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |

@@ -19,6 +19,7 @@ effect.
 | Website pilot sign-ups (`pilot_signups`) | Deleted after 24 months | `pilot_signups` | `RETENTION_PILOT_SIGNUP_MONTHS` (24) |
 | Audit events | Kept **7 years**, then deleted by `audit_purge_expired()` (refuses anything younger than 1 year) | `audit_events` | `RETENTION_AUDIT_YEARS` (7) |
 | Consent records (020) and signed paper forms | Kept (legal proof of consent), also after erasure, with free text stripped | - | - |
+| Appointments (030: `appointments`, `appointment_events`) | Kept as the provider's appointment record (period pending legal review). Erasure (`everything`): future appointments cancelled (provider notified), the child removed from every appointment (`booking_erase_child`) | - | - |
 | Messages with the care team (027: `message_threads`, `messages`, `thread_reads`) | Kept with the clinical record of the case; a deleted message's text is overwritten at once; removed with the child's threads (every organisation) and their outbox events on erasure | - | - |
 | Clinical records (cases, transcripts, confirmed facts, final reports) | Kept while the child is in care and as long as the law requires the clinic to keep them; erasure is reviewed (D-5) | - | - |
 
@@ -41,7 +42,8 @@ views; drafts and progress notes never exported), 026 `home_programs` (the curre
 guardian's own practice logs; drafts and other guardians' notes never exported; logs deleted on erasure), 027 `messages` (the conversations this guardian can open, with the text they see and
 their own read markers; attachments as document ids), 038 `ai_scribe` (session-note/Rx drafts and goal-progress
 suggestions; shared notes are exported through `published_versions`), documents, health profile, consent records, sharing/care team,
-notifications, exports, audit, provider credentials, pilot sign-ups. `published_versions` is append-only (024): rows with a
+notifications, exports, audit, provider credentials, pilot sign-ups, 030 `appointments` (export: the requesting
+guardian's own bookings of the child; erase: `booking_erase_child`). `published_versions` is append-only (024): rows with a
 case go with the case; case-less rows are removed only by `privacy_delete_published_versions()` (migration
 `20261113004102`).
 

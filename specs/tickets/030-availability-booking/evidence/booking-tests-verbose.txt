@@ -1,0 +1,56 @@
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/030
+ ✓ tests/booking-slots.test.ts > time helpers > weekday 0 = Monday, wall <-> UTC round trip in IST
+ ✓ tests/booking-slots.test.ts > time helpers > returns null for a wall time inside a DST gap
+ ✓ tests/booking-slots.test.ts > generateSlots > expands weekly rules in steps of the duration (UTC ISO strings)
+ ✓ tests/booking-slots.test.ts > generateSlots > 45-minute services fit whole slots into the window only
+ ✓ tests/booking-slots.test.ts > generateSlots > matches mode and location: another clinic's or a video-only rule gives nothing
+ ✓ tests/booking-slots.test.ts > generateSlots > honours valid_from / valid_to
+ ✓ tests/booking-slots.test.ts > generateSlots > a whole-day `unavailable` override removes the day
+ ✓ tests/booking-slots.test.ts > generateSlots > a partial `unavailable` override removes only overlapping slots
+ ✓ tests/booking-slots.test.ts > generateSlots > `extra` hours add slots on a day without rules
+ ✓ tests/booking-slots.test.ts > generateSlots > blocking appointments plus buffers remove colliding slots (both sides' buffers)
+ ✓ tests/booking-slots.test.ts > generateSlots > keeps a 2-hour lead time
+ ✓ tests/booking-slots.test.ts > generateSlots > stops at the 14-day horizon
+ ✓ tests/booking-slots.test.ts > generateSlots > renders IST across midnight UTC: an early-morning IST slot is the previous day in UTC
+ ✓ tests/booking-slots.test.ts > generateSlots > expands rules in the rule's own time zone, DST-safe (never the server's)
+stdout | tests/booking-concurrency.test.ts > booking concurrency (database, parallel connections) > 50 simultaneous holds on one slot -> exactly 1 held, 49 slot_taken
+[NFR-1] 50 parallel holds: 1 succeeded, 49 slot_taken
+stdout | tests/booking-concurrency.test.ts > booking concurrency (database, parallel connections) > 30- and 45-minute services overlapping the same time -> exactly 1 success
+[NFR-1] 10x30-min + 10x45-min overlapping holds: 1 succeeded, 19 slot_taken
+ ✓ tests/booking-concurrency.test.ts > booking concurrency (database, parallel connections) > 50 simultaneous holds on one slot -> exactly 1 held, 49 slot_taken
+ ✓ tests/booking-concurrency.test.ts > booking concurrency (database, parallel connections) > 30- and 45-minute services overlapping the same time -> exactly 1 success
+ ✓ tests/booking-concurrency.test.ts > booking concurrency (database, parallel connections) > back-to-back [10:00,10:30) and [10:30,11:00) both succeed (half-open ranges)
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > slots (FR-2) > lists free slots as UTC ISO strings; unknown profile/service 404; bad query 400
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > slots (FR-2) > every generated slot is accepted by the SQL rule check; off-grid and out-of-hours times are not
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > guardian holds (201), replays the key (200, same appointment), mismatched replay 422
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > a taken slot -> 409 with the FR-4 message; the slot disappears from the list
+ ✓ tests/booking-concurrency.test.ts > booking concurrency (database, parallel connections) > two reschedules into the same slot -> 1 success, the loser keeps its original appointment
+ ✓ tests/booking-concurrency.test.ts > booking concurrency (database, parallel connections) > the exclusion constraint alone rejects overlaps: parallel raw inserts -> 1 row, the rest 23P01/40P01
+ ✓ tests/booking-concurrency.test.ts > booking concurrency (database, parallel connections) > concurrent hold + cron cleanup on a stale hold stays consistent (expired, then one new hold)
+stdout | tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > fan-out: guardian + provider get the confirmation (in-app, email with .ics); WhatsApp skipped without config
+[notify] run: fanned_out=0 sent=2 failed=0 skipped=2
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > rejects times outside the rules: too soon (2 h), too far (14 days), off-grid
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > confirm: anonymous 401, another guardian 404, unlinked child 422, then confirmed with snapshot, history and outbox
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > fan-out: guardian + provider get the confirmation (in-app, email with .ics); WhatsApp skipped without config
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > anonymous hold (session cookie) is attached after sign-in; another browser cannot confirm it
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > holds are rate limited per IP (30 per 10 minutes)
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > signed-in providers cannot hold (403)
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > online payment -> pending_payment for 15 minutes, no confirmation yet (031 completes it)
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > hold -> confirm (FR-3, FR-4) > video at_clinic service confirms directly; .ics download for the guardian and the provider only
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > expiry (FR-4, FR-5) > expired hold: cron (secret required) -> expired; confirm -> 410; slot offered again
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > expiry (FR-4, FR-5) > a stale hold no longer blocks: the next hold expires it in the same transaction
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > cancel / reschedule / complete (FR-3) > guardian reschedules: new confirmed appointment, old cancelled with link, reminders moved
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > cancel / reschedule / complete (FR-3) > reschedule into a taken slot -> 409 and the original stays confirmed
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > cancel / reschedule / complete (FR-3) > guardian cancels (> 2 h): cancelled, reminders cancelled, appointment.cancelled enqueued; again -> 409
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > cancel / reschedule / complete (FR-3) > guardian cancel within 2 h of the start -> 409; the provider can still cancel and the guardian is notified
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > cancel / reschedule / complete (FR-3) > authz: other guardian / other provider / anonymous cannot act (404/401)
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > cancel / reschedule / complete (FR-3) > complete: before start 409; after start completed; again 409; no_show; cancelled cannot complete
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > cancel / reschedule / complete (FR-3) > a held appointment can be cancelled by its owner but not completed or rescheduled
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > provider schedule (FR-8) > services: create in-clinic + video; modes on the profile follow active services; validation
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > provider schedule (FR-8) > authz: provider B cannot change provider A's services, hours or overrides (404); guardians 403; anonymous 401
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > provider schedule (FR-8) > block a date: no slots that day; the existing confirmed appointment stays and is flagged in the agenda
+ ✓ tests/booking-state-machine.test.ts > booking state machine (database, route handlers) > privacy (NFR-4) > registry export lists the guardian's own bookings; erasure cancels future ones and detaches the child
+ Test Files  3 passed (3)
+      Tests  45 passed (45)
+   Start at  03:59:59
+   Duration  1.51s (transform 299ms, setup 0ms, import 180ms, tests 2.06s, environment 0ms)

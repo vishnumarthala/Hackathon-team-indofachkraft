@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DemoBadge, jsonLdScript, ProviderAvatar, VerifiedBadge } from "@/components/providers/PublicProfile";
+import { listServices } from "@/lib/booking/store";
 import { env } from "@/lib/env";
 import { directionsUrl, staticMapUrl } from "@/lib/geo/constants";
 import { getFormatter, getT } from "@/lib/i18n/server";
@@ -42,6 +43,7 @@ export default async function PublicProfilePage({ params }: Props) {
   const mapped = locations.filter((loc) => loc.lat !== null && loc.lng !== null).map((loc) => ({ lat: Number(loc.lat), lng: Number(loc.lng) }));
   const modes = [provider.offers_in_clinic ? td("modes.in_clinic") : null, provider.offers_video ? td("modes.video") : null].filter(Boolean);
   const appUrl = env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
+  const bookable = (await listServices(provider.id, { activeOnly: true })).length > 0;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -176,14 +178,21 @@ export default async function PublicProfilePage({ params }: Props) {
         <p className="text-slate-700">{modes.length ? modes.join(", ") : t("public.consultModesSoon")}</p>
       </section>
 
-      <div className="space-y-1">
-        <button type="button" disabled aria-describedby="book-soon" className="min-h-11 rounded bg-slate-900 px-6 py-2 font-medium text-white opacity-50">
+      {/* 030 FR-7: booking opens when the provider has an active service. */}
+      {bookable ? (
+        <Link href={`/book/${provider.id}`} className="inline-flex min-h-11 items-center rounded bg-slate-900 px-6 py-2 font-medium text-white hover:bg-slate-700">
           {t("public.book")}
-        </button>
-        <p id="book-soon" className="text-sm text-slate-600">
-          {t("public.bookSoon")}
-        </p>
-      </div>
+        </Link>
+      ) : (
+        <div className="space-y-1">
+          <button type="button" disabled aria-describedby="book-soon" className="min-h-11 rounded bg-slate-900 px-6 py-2 font-medium text-white opacity-50">
+            {t("public.book")}
+          </button>
+          <p id="book-soon" className="text-sm text-slate-600">
+            {t("public.bookSoon")}
+          </p>
+        </div>
+      )}
     </article>
   );
 }

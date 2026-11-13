@@ -20,8 +20,9 @@ export function validateChild(input: { name: string; dob: string; relationship: 
   return errors;
 }
 
-// 020 FR-11: name, optional DOB and sex, relationship and the guardian declaration.
-export function AddChildForm() {
+// 020 FR-11: name, optional DOB and sex, relationship and the guardian declaration. `next` (030): return to the
+// booking flow after adding a child (the page passes only a safe /book/ path).
+export function AddChildForm({ next }: { next?: string } = {}) {
   const t = useT("family.children.form");
   const router = useRouter();
   const id = useId();
@@ -60,7 +61,7 @@ export function AddChildForm() {
       }
       const body = (await res.json().catch(() => ({}))) as { child?: { id: string } };
       if (res.status !== 201 || !body.child) throw new Error(String(res.status));
-      router.push(`/family/children/${body.child.id}`);
+      router.push(next ?? `/family/children/${body.child.id}`);
       router.refresh();
     } catch {
       setStatus("failed");

@@ -164,6 +164,7 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
     const userId = created.user.id;
     let childId: string | null = null;
     let caseId: string | null = null;
+    let profileId: string | null = null;
     try {
       await sql`update user_profiles set role = 'guardian', phone_verified_at = now() where id = ${userId}`;
       const [child] = await sql<{ id: string }[]>`
@@ -180,6 +181,18 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
         values (${caseId}, ${childId}, '00000000-0000-4000-8000-00000000a001', '00000000-0000-4000-8024-000000000001', ${userId})
         returning id`;
 
+      // 030: a confirmed appointment of this guardian, so /family/appointments lists it and its reschedule page renders.
+      const [profile] = await sql<{ id: string }[]>`
+        insert into provider_profiles (slug, display_name, provider_type, is_synthetic)
+        values (${`t041-crawl-${userId.slice(0, 8)}`}, 't041 Crawl provider (synthetic)', 'speech_language_pathologist', true) returning id`;
+      profileId = profile.id;
+      const [appointment] = await sql<{ id: string }[]>`
+        insert into appointments (provider_profile_id, org_id, service_snapshot, guardian_user_id, child_id, slot, status)
+        values (${profileId}, '00000000-0000-4000-8000-00000000a001',
+                '{"name":"Crawl visit","duration_min":30,"mode":"video","fee_inr":0,"payment_mode":"free","location":null}'::jsonb,
+                ${userId}, ${childId}, tstzrange(now() + interval '3 days', now() + interval '3 days 30 minutes', '[)'), 'confirmed')
+        returning id`;
+
       const jar: { name: string; value: string }[] = [];
       const ssr = createServerClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string, {
         cookies: { getAll: () => jar, setAll: (cookies) => cookies.forEach((c) => jar.push({ name: c.name, value: c.value })) },
@@ -189,7 +202,9 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
       const cookie = jar.map((c) => `${c.name}=${c.value}`).join("; ");
 
       const routes = FAMILY_PAGES.map(routeOf).map((r) =>
-        r.replace("[id]", r.startsWith("/family/assessments/") ? assessment.id : (childId as string)).replace("[version]", "1"),
+        r
+          .replace("[id]", r.startsWith("/family/assessments/") ? assessment.id : r.startsWith("/family/appointments/") ? appointment.id : (childId as string))
+          .replace("[version]", "1"),
       );
       const failures: string[] = [];
       const checked: string[] = [];
@@ -210,6 +225,7 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
       expect(checked.length).toBe(routes.length);
       console.info(`[no-tracking] crawled ${checked.length} pages:\n${checked.join("\n")}`);
     } finally {
+      if (profileId) await sql`delete from provider_profiles where id = ${profileId}`; // appointments cascade
       if (caseId) await sql`delete from cases where id = ${caseId}`;
       if (childId) {
         await sql.begin(async (tx) => {

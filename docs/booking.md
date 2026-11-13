@@ -1,0 +1,149 @@
+# Availability and atomic booking (ticket 030)
+
+Providers publish **services** and simple **weekly hours** with **date overrides**; guardians book one-off video or
+in-clinic appointments for a child. Double booking is impossible by construction (design rule 10) and every state
+change is one SQL function (one transaction). Payment state lives in 031, not here (rule 12).
+
+Code: `lib/booking/**`, `app/api/appointments/**`, `app/api/public/providers/[profileId]/slots`,
+`app/api/provider/{services,availability}/**`, `app/api/cron/booking`, `app/book/[profileId]`,
+`app/family/(portal)/appointments/**`, `app/dashboard/schedule`, `components/booking/**`.
+Migration: `supabase/migrations/20261113003000_booking.sql`.
+
+## Data model
+
+| Table | What |
+|---|---|
+| `services` | `provider_profile_id`, `org_id`, `location_id` (required for `in_clinic`; FK `(location_id, org_id)` keeps the org equal to the location's org), `name` (1-80), `mode` `in_clinic`/`video`, `duration_min` 15/20/30/45/60/90, `fee_inr` 0-100000 (`free` -> 0), `payment_mode` `online`/`at_clinic`/`free`, `buffer_min` 0-30 (break **after** the appointment), `intake_kind` `child_dev`/`generic`/`none` (035), `active`. |
+| `availability_rules` | Weekly hours: `weekday` 0 = **Monday** ... 6 = Sunday, `start_time`/`end_time` (`24:00` allowed), `mode` `in_clinic`/`video`/`both` (`in_clinic`/`both` need a location), `valid_from`, `valid_to`. Wall-clock in the location's `time_zone` (028), video-only rules in the profile's `time_zone`. |
+| `availability_overrides` | Per date: `unavailable` (no times = whole day; optional `location_id`/`mode` narrow it, null = everything) or `extra` hours (times + mode, location unless video). Same time-zone rule. `note` is provider-only. |
+| `appointments` | `slot tstzrange` **half-open** `[start, end)` (check), `status` `held` / `pending_payment` / `confirmed` / `cancelled` / `expired` / `completed` / `no_show`, `service_snapshot` (rule 11: name, duration, mode, fee, payment mode, buffer, intake kind, provider name, time zone, location `{ id, name, address, lat, lng, time_zone }` or null), `child_id`, `guardian_user_id`, `case_id` (035), hold owner (`hold_owner_user_id` or `hold_owner_session` = SHA-256 hex of an anonymous booking-session id), `hold_expires_at`, `cancelled_by`, `cancel_reason`, `rescheduled_from`, `origin_appointment_id` (first appointment of a reschedule chain: the calendar UID), `idempotency_key` (unique, namespaced by owner). |
+| `appointment_events` | Append-only state history (`from_status`, `to_status`, `actor_user_id`, `actor_kind` guardian/provider/system/anonymous, `reason`). Updates and direct deletes raise; rows go only with their appointment (cascade). |
+
+**Exclusion constraint:** `exclude using gist (provider_profile_id with =, slot with &&) where (status in ('held',
+'pending_payment', 'confirmed'))` (`btree_gist` in schema `extensions`). One provider identity (028's
+`provider_profiles.id`) has one calendar across organisations.
+
+Consultation modes: once a profile has any service, `offers_video` / `offers_in_clinic` (029) are derived from its
+active services by triggers (`services_refresh_modes`, `provider_profiles_derive_modes`); profiles without services
+(seeded listings) keep the manual flags.
+
+RLS is on for all five tables (providers read their own services/hours/appointments, guardians their own
+appointments); the server uses the service role and gates every route itself.
+
+## State machine (SQL, `security definer`, service role only)
+
+```
+             booking_hold            booking_confirm (free / at_clinic)
+   (none) ───────────────► held ─────────────────────────────────────► confirmed ──► completed / no_show
+                            │  \        booking_confirm (online)          │  ▲          (booking_complete,
+                            │   └──────────────────► pending_payment ─────┘  │           after the start)
+                            │                         │   (031 pays: booking_enqueue_confirmed)
+          hold_expires_at < now() (next hold / cron)  │
+                            ▼                         ▼
+                         expired  ◄──────────────── expired
+   held / pending_payment / confirmed ── booking_cancel ──► cancelled
+   confirmed ── booking_reschedule ──► cancelled (old, reason `rescheduled`) + new confirmed (rescheduled_from)
+```
+
+| Function | Rules |
+|---|---|
+| `booking_hold(service, start, owner_user \| owner_session, idempotency_key)` | Same owner + key -> the same appointment (`replay`, HTTP 200); a different service/start with the same key -> `idempotency_mismatch`. Service active, profile verified + listed. Takes a per-provider advisory lock, expires that provider's stale holds, checks lead time (>= 2 h), horizon (< 14 days), the rules/overrides (`booking_slot_valid`) and buffers (`booking_conflicts`), releases the owner's older hold (one active hold per owner), inserts `held` for 10 minutes. Exclusion violation or buffer collision -> `slot_taken`. |
+| `booking_attach(id, owner_user, owner_session, guardian, child)` | The hold's owner (user id, or the session hash for an anonymous hold) -> the signed-in guardian; the child must be actively linked to them (`child_not_linked`). |
+| `booking_confirm(id, guardian)` | Owned, unexpired hold. `free`/`at_clinic` -> `confirmed` + outbox events; `online` -> `pending_payment` with `hold_expires_at = now() + 15 min` (031 completes it and calls `booking_enqueue_confirmed`). |
+| `booking_cancel(id, actor, kind, reason)` | Guardian: their own, confirmed ones up to 2 h before the start. Provider side (profile owner or an active owner/admin of the appointment's org): any time before the start. Cancels unsent notifications of the appointment (`outbox_cancel('appt:<id>:')`) and enqueues `appointment.cancelled` for confirmed ones. |
+| `booking_reschedule(id, new_start, actor, kind)` | Confirmed only; same checks as a hold for the new time (with the snapshot's duration/mode/location). Cancels the old and inserts the new one in one sub-transaction; `slot_taken` leaves the old appointment untouched. Old reminders cancelled, new ones scheduled, `appointment.rescheduled` enqueued. |
+| `booking_complete(id, provider, completed \| no_show)` | Provider side, confirmed, only after the start (`not_started`). |
+| `booking_expire_stale(profile?, limit)` | `held`/`pending_payment` past `hold_expires_at` -> `expired` (+ history), `for update skip locked`. Used by holds (in-transaction) and the cron. |
+| `booking_erase_child(child)` | Privacy erasure (041): future blocking appointments -> cancelled (system, provider notified), then the child is detached from every appointment. |
+
+Errors are raised with the code as the message; `lib/booking/errors.ts` maps them: `slot_taken` 409 `This slot was
+just taken. Please pick another time.`, `hold_expired` 410 `Your hold expired. Please pick the time again.`,
+`invalid_transition` / `too_late` / `not_started` 409, `not_found` 404 (also for someone else's appointment),
+`child_not_linked` / `slot_unavailable` / `too_soon` / `too_far` / `idempotency_mismatch` 422. Bodies are
+`{ error, code }`.
+
+**Concurrency (NFR-1).** The exclusion constraint is the hard guarantee. The functions additionally serialise writes
+per provider with `pg_advisory_xact_lock(hashtextextended('booking:<profile>', 0))` so buffer checks see each other and
+concurrent exclusion checks cannot deadlock (Postgres may abort concurrent raw inserts with `40P01` instead of
+`23P01`; through the functions callers only ever see `slot_taken`). `tests/booking-concurrency.test.ts` runs 50
+parallel holds on 50 connections (1 held, 49 `slot_taken`), overlapping 30/45-minute services, two reschedules into
+one slot (loser keeps its appointment), back-to-back half-open slots, raw inserts against the constraint, and a hold
+racing the cron.
+
+## Slots (FR-2)
+
+`lib/booking/slots.ts` (pure) mirrors `booking_slot_valid` + `booking_conflicts`: per local date, windows from weekly
+rules (weekday, validity, mode/location) and `extra` overrides; candidates step by the service duration from the
+window start and must end inside it; a candidate touching an `unavailable` override, starting less than 2 h from
+now or 14 days or more ahead, or colliding with a blocking appointment (each side's buffer added after its end) is
+dropped. Rules are expanded in their own time zone with `Intl` (`lib/booking/time.ts`, DST-safe, never the
+server's zone). Held / pending appointments block only while their hold is unexpired. A DB test checks that every
+generated slot is accepted by the SQL check.
+
+## APIs
+
+| Method + path | Who | Body / query | Success / errors |
+|---|---|---|---|
+| `GET /api/public/providers/:profileId/slots?service_id=&from=YYYY-MM-DD&days=7` | public (120/min per IP) | `from` = local date in the service's zone (default today), `days` 1-14 | 200 `{ slots: [{ start, end }], from, days, time_zone, duration_min }` (UTC ISO); 404 unknown/unlisted profile or inactive service; 400 |
+| `POST /api/appointments/hold` | guardian or anonymous (30 per 10 min per IP) | `{ service_id, start, idempotency_key }` | 201 `{ appointment_id, hold_expires_at, status }`; 200 replay; 409 taken; 403 signed-in non-guardian; 422 |
+| `POST /api/appointments/:id/confirm` | guardian | `{ child_id }` | 200 `{ appointment }` (`confirmed` or `pending_payment`); 401; 404; 410; 422 |
+| `POST /api/appointments/:id/cancel` | booking guardian or provider side | `{ reason? }` | 200 `{ appointment }`; 409 |
+| `POST /api/appointments/:id/reschedule` | booking guardian or provider side | `{ start }` | 200 `{ appointment, rescheduled_from }`; 409 |
+| `POST /api/appointments/:id/complete` | provider side | `{ status: "completed" \| "no_show" }` | 200; 409 before the start |
+| `GET /api/appointments/:id/ics` | booking guardian or provider side | - | `text/calendar` (same UID as the email invites) |
+| `GET\|POST /api/cron/booking` | `Authorization: Bearer <CRON_SECRET>` (Vercel cron, every minute) | - | 200 `{ expired }`; 401 |
+| `GET\|POST /api/provider/services`, `PATCH /api/provider/services/:id` | provider (own profile) | see `lib/booking/schemas.ts` | 201/200; 400 field errors; other providers' ids 404 |
+| `GET\|POST /api/provider/availability/rules`, `DELETE .../rules/:id`, `GET\|POST /api/provider/availability/overrides`, `DELETE .../overrides/:id` | provider (own profile) | `{ weekday, start_time, end_time, mode, location_id? }`, `{ date, kind, start_time?, end_time?, mode?, location_id?, note? }` | 201/200; 400; 404 |
+
+Anonymous holds: the hold route sets an httpOnly `dnm_booking` cookie (random 32 bytes, 1 day); only its SHA-256 is
+stored. `/api/appointments/hold` and the slots route are public in `lib/auth-access.ts`; every other booking route
+needs a session. `postSignInPath` lets guardians return to `/book/<profileId>?hold=<id>` after sign-in.
+
+## UI
+
+- `/p/<slug>` and `/find` result cards: `Book` -> `/book/<profileId>` (the profile page shows it when the provider
+  has an active service; cards when the profile offers a mode).
+- `/book/<profileId>` (public, family CSP, `noindex`): service, date strip, times (viewer's zone; in-clinic slots in a
+  different zone also show `... at the clinic`, NFR-2), `Continue` -> 10-minute countdown -> `Sign in` (phone OTP /
+  Google, returns with `?hold=`) -> `For which child?` (+ `Add a child`, which returns to the hold) -> disclosure
+  `Booking shares <child>'s name and age with <provider (location)>` -> `Confirm booking` (`Continue to payment` for
+  online services; 031 adds the checkout).
+- `/family/appointments`: upcoming / past, `Add to calendar`, `Reschedule` (`/family/appointments/:id/reschedule`),
+  `Cancel` (up to 2 h before the start).
+- `/dashboard/schedule` (link in the provider header): agenda (day/week in the profile's zone, child name and age,
+  status, a warning on confirmed appointments that no longer fit the hours, `Mark completed`, `No-show`, `Cancel`),
+  services editor, weekly hours (`Add hours`), date changes (`Block a date`, `Add extra hours`).
+
+## Notifications (FR-6)
+
+Enqueued by the SQL functions in the same transaction (topics in `lib/notify/topics.ts`, templates
+`lib/notify/templates/appointment*.ts`). Payload: `appointment_id`, `starts_at`, `ends_at`, `provider_name`, `mode`,
+`time_zone`, `location` (+ `cancelled_by`) - never the child. Dedup keys share the prefix `appt:<id>:`.
+
+| Topic | Dedup key / when | Recipients (re-checked at fan-out) | `.ics` |
+|---|---|---|---|
+| `appointment.confirmed` | `appt:<id>:confirmed`, now | guardian + provider, while confirmed | REQUEST |
+| `appointment.reminder_day_before` (FR-6 `reminder_24h`) | `appt:<id>:r24`, `deliver_after = start - 24 h` (only if still in the future) | guardian, while confirmed | - |
+| `appointment.reminder_two_hours` (FR-6 `reminder_2h`) | `appt:<id>:r2`, `start - 2 h` | guardian, while confirmed | - |
+| `appointment.cancelled` | `appt:<id>:cancelled` | guardian + provider | CANCEL |
+| `appointment.rescheduled` | `appt:<new id>:rescheduled` | guardian + provider | REQUEST |
+
+The outbox's topic check (032) allows no digits, hence the reminder topic names. Events use the chain's first
+appointment as `aggregate_id`, so the calendar UID (`appointment-<origin id>@doctornearme`) and SEQUENCE update the
+same calendar entry across reschedules.
+
+## Extension points
+
+- **031 payments:** `pending_payment` holds expire after 15 minutes (cron + next hold); on payment call
+  `booking_enqueue_confirmed(id)` after moving the appointment to `confirmed` in the same transaction (add a SQL
+  function `booking_mark_paid`). Late payments after `expired` are 031's.
+- **034 voice agent:** call `holdSlot(input, { sessionHash: hashBookingSession(<agent session id>) })` and
+  `getSlots()`; confirmation still needs a signed-in guardian.
+- **035 intake:** `services.intake_kind`, `appointments.case_id`, `service_snapshot.intake_kind`.
+- **037 Meet / 042 demo safeguard:** `lib/booking/hooks.ts` `checkHoldPreconditions()` runs before every hold
+  (Google account for video holds; `demo_ack` for `is_synthetic` profiles, plus an `is_demo` column).
+
+## Open questions (product / legal)
+
+- Cancellation window (2 h) and no-show policy per org; `GUARDIAN_CANCEL_WINDOW_MINUTES` and the SQL constant.
+- Retention of appointment records (041 registry entry `appointments`, pending legal review).
