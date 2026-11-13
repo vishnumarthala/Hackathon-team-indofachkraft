@@ -41,8 +41,8 @@ describe("grant request validation and helpers", () => {
     expect(GrantCreateSchema.safeParse({ ...base, source_org_id: "x" }).success).toBe(false);
   });
 
-  it("registers every scope's loader (022 reports, 021 health_profile, 023 documents, 024 assessments)", () => {
-    expect(Object.keys(SHARE_LOADERS).sort()).toEqual(["assessments", "documents", "health_profile", "reports"]);
+  it("registers every scope's loader (022 reports, 021 health_profile, 023 documents, 024 assessments, 025 iep)", () => {
+    expect(Object.keys(SHARE_LOADERS).sort()).toEqual(["assessments", "documents", "health_profile", "iep", "reports"]);
     expect(reportTitle("# Assessment summary\n\ntext")).toBe("Assessment summary");
     expect(reportTitle("no heading")).toBe("Assessment report");
   });
@@ -281,9 +281,9 @@ describe.skipIf(!enabled)("sharing grants (database)", { timeout: 90_000 }, () =
       insert into case_assignments (case_id, user_id) values (${caseA}, ${providerA.id}) returning id`;
     const ok = await authz.requireSharedAccess(childId, "iep");
     expect(ok instanceof Response ? ok.status : ok.sourceOrgIds).toEqual([orgB]);
-    // iep has no loader yet: listed as shared but not available.
+    // iep has a loader since 025; org B has published no plan for this child, so nothing is listed.
     const sources = await shared.listSharedForCase(providerA.id, { id: caseA, org_id: orgA, child_id: childId });
-    expect(sources[0].scopes).toEqual([{ scope: "iep", available: false, items: [] }]);
+    expect(sources[0].scopes).toEqual([{ scope: "iep", available: true, items: [] }]);
     await sql`update case_assignments set removed_at = now() where id = ${assignment.id}`;
     expect(((await authz.requireSharedAccess(childId, "iep")) as Response).status).toBe(404);
     await sql`update case_assignments set removed_at = null where id = ${assignment.id}`;

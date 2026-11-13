@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1285. Not yet approved: 1285.
+Rows: 1433. Not yet approved: 1433.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1027,6 +1027,7 @@ Rows: 1285. Not yet approved: 1285.
 | `caseTabs.health` | Health | स्वास्थ्य | ఆరోగ్యం |  | pending |
 | `caseTabs.documents` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
 | `caseTabs.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
+| `caseTabs.goals` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -1300,3 +1301,150 @@ Rows: 1285. Not yet approved: 1285.
 | `assessments.provider.errors.cancelled` | This questionnaire was cancelled. | यह प्रश्नावली रद्द कर दी गई थी। | ఈ ప్రశ్నావళి రద్దు చేయబడింది. |  | pending |
 | `assessments.provider.errors.stale` | These answers were changed in another window. Reload to continue. | ये जवाब किसी दूसरी विंडो में बदले गए थे। जारी रखने के लिए पेज दोबारा लोड करें। | ఈ జవాబులు మరో విండోలో మార్చబడ్డాయి. కొనసాగించడానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
 | `assessments.provider.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `iep.statuses.draft` | Draft | ड्राफ़्ट | డ్రాఫ్ట్ |  | pending |
+| `iep.statuses.active` | Active | सक्रिय | సక్రియం |  | pending |
+| `iep.statuses.completed` | Completed | पूरी हुई | పూర్తయింది |  | pending |
+| `iep.statuses.archived` | Archived | संग्रहीत | ఆర్కైవ్ చేయబడింది |  | pending |
+| `iep.goalStatuses.active` | Active | सक्रिय | సక్రియం |  | pending |
+| `iep.goalStatuses.achieved` | Achieved | हासिल | సాధించబడింది |  | pending |
+| `iep.goalStatuses.discontinued` | Discontinued | बंद किया गया | నిలిపివేయబడింది |  | pending |
+| `iep.domains.communication` | Communication | संवाद | సంభాషణ |  | pending |
+| `iep.domains.social` | Social | सामाजिक | సామాజిక |  | pending |
+| `iep.domains.behaviour` | Behaviour | व्यवहार | ప్రవర్తన |  | pending |
+| `iep.domains.fineMotor` | Fine motor | सूक्ष्म गतिक (फ़ाइन मोटर) | సూక్ష్మ కదలికలు (ఫైన్ మోటార్) |  | pending |
+| `iep.domains.grossMotor` | Gross motor | स्थूल गतिक (ग्रॉस मोटर) | స్థూల కదలికలు (గ్రాస్ మోటార్) |  | pending |
+| `iep.domains.selfCare` | Self-care | आत्म-देखभाल | స్వీయ సంరక్షణ |  | pending |
+| `iep.domains.cognitive` | Cognitive | संज्ञानात्मक | జ్ఞానాత్మక |  | pending |
+| `iep.domains.sensory` | Sensory | संवेदी | ఇంద్రియ |  | pending |
+| `iep.domains.academic` | Academic | पढ़ाई | చదువు |  | pending |
+| `iep.measures.percent` | Percentage of opportunities (0 to 100) | मौकों का प्रतिशत (0 से 100) | అవకాశాలలో శాతం (0 నుండి 100) |  | pending |
+| `iep.measures.count` | Count (0 or more) | गिनती (0 या अधिक) | లెక్క (0 లేదా ఎక్కువ) |  | pending |
+| `iep.measures.rating15` | Rating from 1 to 5 | 1 से 5 तक रेटिंग | 1 నుండి 5 వరకు రేటింగ్ |  | pending |
+| `iep.measures.yesNo` | Yes or no (1 = yes, 0 = no) | हाँ या नहीं (1 = हाँ, 0 = नहीं) | అవును లేదా కాదు (1 = అవును, 0 = కాదు) |  | pending |
+| `iep.values.percent` | {value}% | {value}% | {value}% |  | pending |
+| `iep.values.rating` | {value} of 5 | 5 में से {value} | 5 లో {value} |  | pending |
+| `iep.values.yes` | Yes | हाँ | అవును |  | pending |
+| `iep.values.no` | No | नहीं | కాదు |  | pending |
+| `iep.provider.title` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
+| `iep.provider.intro` | Write the child's plan with SMART goals, record progress and share the plan with the parents. | बच्चे की योजना SMART लक्ष्यों के साथ लिखें, प्रगति दर्ज करें और योजना माता-पिता के साथ साझा करें। | పిల్లల ప్రణాళికను SMART లక్ష్యాలతో రాయండి, పురోగతిని నమోదు చేయండి, ప్రణాళికను తల్లిదండ్రులతో పంచుకోండి. |  | pending |
+| `iep.provider.plansLabel` | Plans for this case | इस केस की योजनाएँ | ఈ కేసు ప్రణాళికలు |  | pending |
+| `iep.provider.newPlan` | Create a plan | योजना बनाएँ | ప్రణాళిక సృష్టించండి |  | pending |
+| `iep.provider.planTitle` | Plan title | योजना का नाम | ప్రణాళిక పేరు |  | pending |
+| `iep.provider.startDate` | Start date | शुरू होने की तारीख़ | ప్రారంభ తేదీ |  | pending |
+| `iep.provider.reviewDate` | Review date | समीक्षा की तारीख़ | సమీక్ష తేదీ |  | pending |
+| `iep.provider.reviewHint` | At most 12 months after the start date. | शुरू होने की तारीख़ से अधिकतम 12 महीने बाद। | ప్రారంభ తేదీ నుండి గరిష్ఠంగా 12 నెలల లోపు. |  | pending |
+| `iep.provider.create` | Create plan | योजना बनाएँ | ప్రణాళిక సృష్టించండి |  | pending |
+| `iep.provider.creating` | Creating... | बनाई जा रही है... | సృష్టిస్తోంది... |  | pending |
+| `iep.provider.empty` | No plan yet. Create one to start adding goals. | अभी कोई योजना नहीं है। लक्ष्य जोड़ने के लिए एक योजना बनाएँ। | ఇంకా ప్రణాళిక లేదు. లక్ష్యాలు జోడించడానికి ఒక ప్రణాళిక సృష్టించండి. |  | pending |
+| `iep.provider.dates` | {start} to {review} (review date) | {start} से {review} (समीक्षा की तारीख़) | {start} నుండి {review} వరకు (సమీక్ష తేదీ) |  | pending |
+| `iep.provider.publishToParent` | Publish to parent | माता-पिता के साथ साझा करें | తల్లిదండ్రులతో పంచుకోండి |  | pending |
+| `iep.provider.publishChanges` | Publish changes | बदलाव साझा करें | మార్పులను పంచుకోండి |  | pending |
+| `iep.provider.publishing` | Publishing... | साझा किया जा रहा है... | పంచుకుంటోంది... |  | pending |
+| `iep.provider.unpublishedChanges` | Unpublished changes | बदलाव साझा नहीं हुए | పంచుకోని మార్పులు |  | pending |
+| `iep.provider.publishedInfo` | Parents see version {version}, shared on {date}. | माता-पिता संस्करण {version} देखते हैं, {date} को साझा किया गया। | తల్లిదండ్రులు వెర్షన్ {version} చూస్తున్నారు, {date}న పంచుకోబడింది. |  | pending |
+| `iep.provider.notPublished` | Not shared with the parents yet. | अभी माता-पिता के साथ साझा नहीं किया गया। | ఇంకా తల్లిదండ్రులతో పంచుకోలేదు. |  | pending |
+| `iep.provider.upToDate` | Parents see the latest version. | माता-पिता नया संस्करण देख रहे हैं। | తల్లిదండ్రులు తాజా వెర్షన్ చూస్తున్నారు. |  | pending |
+| `iep.provider.published` | The plan is now shared with the parents. | योजना अब माता-पिता के साथ साझा है। | ప్రణాళిక ఇప్పుడు తల్లిదండ్రులతో పంచుకోబడింది. |  | pending |
+| `iep.provider.publishHint` | Publishing a new plan makes it the active plan for this case. The current active plan is then archived. | नई योजना साझा करने पर वह इस केस की सक्रिय योजना बन जाती है। मौजूदा सक्रिय योजना संग्रहीत हो जाती है। | కొత్త ప్రణాళికను పంచుకుంటే అది ఈ కేసుకు సక్రియ ప్రణాళిక అవుతుంది. ప్రస్తుత సక్రియ ప్రణాళిక ఆర్కైవ్ అవుతుంది. |  | pending |
+| `iep.provider.publishNeedsGoal` | Add at least one goal before you publish. | साझा करने से पहले कम से कम एक लक्ष्य जोड़ें। | పంచుకునే ముందు కనీసం ఒక లక్ష్యం జోడించండి. |  | pending |
+| `iep.provider.editPlan` | Edit plan | योजना बदलें | ప్రణాళిక మార్చండి |  | pending |
+| `iep.provider.save` | Save | सेव करें | సేవ్ చేయండి |  | pending |
+| `iep.provider.saving` | Saving... | सेव हो रहा है... | సేవ్ అవుతోంది... |  | pending |
+| `iep.provider.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `iep.provider.markCompleted` | Mark completed | पूरी हुई चिह्नित करें | పూర్తయినట్లు గుర్తించండి |  | pending |
+| `iep.provider.archive` | Archive | संग्रहीत करें | ఆర్కైవ్ చేయండి |  | pending |
+| `iep.provider.archiveConfirm` | Archive this plan? It can no longer be changed. | यह योजना संग्रहीत करें? इसके बाद इसे बदला नहीं जा सकेगा। | ఈ ప్రణాళికను ఆర్కైవ్ చేయాలా? తర్వాత దీన్ని మార్చలేరు. |  | pending |
+| `iep.provider.completeConfirm` | Mark this plan as completed? It can no longer be changed. | यह योजना पूरी हुई चिह्नित करें? इसके बाद इसे बदला नहीं जा सकेगा। | ఈ ప్రణాళిక పూర్తయినట్లు గుర్తించాలా? తర్వాత దీన్ని మార్చలేరు. |  | pending |
+| `iep.provider.closedNote` | This plan is closed and can no longer be changed. | यह योजना बंद है और अब बदली नहीं जा सकती। | ఈ ప్రణాళిక మూసివేయబడింది, ఇక మార్చలేరు. |  | pending |
+| `iep.provider.goalsLabel` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
+| `iep.provider.noGoals` | No goals yet. | अभी कोई लक्ष्य नहीं। | ఇంకా లక్ష్యాలు లేవు. |  | pending |
+| `iep.provider.addGoal` | Add goal | लक्ष्य जोड़ें | లక్ష్యం జోడించండి |  | pending |
+| `iep.goal.domain` | Domain | क्षेत्र | రంగం |  | pending |
+| `iep.goal.statement` | Goal | लक्ष्य | లక్ష్యం |  | pending |
+| `iep.goal.statementHint` | One sentence: what the child will do, how well and by when. | एक वाक्य: बच्चा क्या करेगा, कितनी अच्छी तरह और कब तक। | ఒక వాక్యం: పిల్లవాడు ఏమి చేస్తారు, ఎంత బాగా, ఎప్పటికి. |  | pending |
+| `iep.goal.specific` | Specific | विशिष्ट (Specific) | నిర్దిష్టం (Specific) |  | pending |
+| `iep.goal.specificHint` | What exactly will the child do? | बच्चा ठीक-ठीक क्या करेगा? | పిల్లవాడు సరిగ్గా ఏమి చేస్తారు? |  | pending |
+| `iep.goal.measurable` | Measurable | मापने योग्य (Measurable) | కొలవదగినది (Measurable) |  | pending |
+| `iep.goal.measurableHint` | How will you count or score it? | आप इसे कैसे गिनेंगे या आँकेंगे? | దీన్ని ఎలా లెక్కిస్తారు లేదా అంచనా వేస్తారు? |  | pending |
+| `iep.goal.achievable` | Achievable | हासिल करने योग्य (Achievable) | సాధించదగినది (Achievable) |  | pending |
+| `iep.goal.achievableHint` | Why is this realistic for the child now? | यह अभी बच्चे के लिए क्यों संभव है? | ఇది ఇప్పుడు పిల్లలకు ఎందుకు సాధ్యం? |  | pending |
+| `iep.goal.relevant` | Relevant | प्रासंगिक (Relevant) | సంబంధితం (Relevant) |  | pending |
+| `iep.goal.relevantHint` | Why does it matter for the child and family? | यह बच्चे और परिवार के लिए क्यों ज़रूरी है? | ఇది పిల్లలకు, కుటుంబానికి ఎందుకు ముఖ్యం? |  | pending |
+| `iep.goal.timeBound` | Time-bound | समय-सीमा (Time-bound) | కాల పరిమితి (Time-bound) |  | pending |
+| `iep.goal.timeBoundHint` | By when, and how often you will check. | कब तक, और आप कितनी बार जाँचेंगे। | ఎప్పటికి, మరియు ఎంత తరచుగా తనిఖీ చేస్తారు. |  | pending |
+| `iep.goal.measureType` | How we measure | हम कैसे मापते हैं | మేము ఎలా కొలుస్తాము |  | pending |
+| `iep.goal.baseline` | Baseline | शुरुआती स्तर | ప్రారంభ స్థాయి |  | pending |
+| `iep.goal.target` | Target | लक्ष्य स्तर | లక్ష్య స్థాయి |  | pending |
+| `iep.goal.targetDate` | Target date | लक्ष्य की तारीख़ | లక్ష్య తేదీ |  | pending |
+| `iep.goal.baselineToTarget` | Baseline to target | शुरुआती स्तर से लक्ष्य स्तर | ప్రారంభ స్థాయి నుండి లక్ష్య స్థాయి |  | pending |
+| `iep.goal.baselineToTargetValue` | {baseline} to {target} by {date} | {baseline} से {target}, {date} तक | {baseline} నుండి {target}, {date} నాటికి |  | pending |
+| `iep.goal.number` | Goal {n}: | लक्ष्य {n}: | లక్ష్యం {n}: |  | pending |
+| `iep.goal.save` | Save goal | लक्ष्य सेव करें | లక్ష్యం సేవ్ చేయండి |  | pending |
+| `iep.goal.edit` | Edit goal | लक्ष्य बदलें | లక్ష్యం మార్చండి |  | pending |
+| `iep.goal.markAchieved` | Mark achieved | हासिल चिह्नित करें | సాధించినట్లు గుర్తించండి |  | pending |
+| `iep.goal.reopen` | Make active again | फिर से सक्रिय करें | మళ్ళీ సక్రియం చేయండి |  | pending |
+| `iep.goal.delete` | Delete goal | लक्ष्य हटाएँ | లక్ష్యం తొలగించండి |  | pending |
+| `iep.goal.discontinue` | Discontinue goal | लक्ष्य बंद करें | లక్ష్యం నిలిపివేయండి |  | pending |
+| `iep.goal.deleteConfirm` | Delete this goal? | यह लक्ष्य हटाएँ? | ఈ లక్ష్యాన్ని తొలగించాలా? |  | pending |
+| `iep.goal.discontinueConfirm` | Discontinue this goal? It stays in the plan with its progress. | यह लक्ष्य बंद करें? यह अपनी प्रगति के साथ योजना में बना रहेगा। | ఈ లక్ష్యాన్ని నిలిపివేయాలా? ఇది దాని పురోగతితో పాటు ప్రణాళికలోనే ఉంటుంది. |  | pending |
+| `iep.progress.record` | Record progress | प्रगति दर्ज करें | పురోగతిని నమోదు చేయండి |  | pending |
+| `iep.progress.date` | Date | तारीख़ | తేదీ |  | pending |
+| `iep.progress.value` | Value | मान | విలువ |  | pending |
+| `iep.progress.note` | Note (optional) | टिप्पणी (वैकल्पिक) | గమనిక (ఐచ్ఛికం) |  | pending |
+| `iep.progress.save` | Save progress | प्रगति सेव करें | పురోగతి సేవ్ చేయండి |  | pending |
+| `iep.progress.saving` | Saving... | सेव हो रहा है... | సేవ్ అవుతోంది... |  | pending |
+| `iep.progress.saved` | Progress saved. | प्रगति सेव हो गई। | పురోగతి సేవ్ అయింది. |  | pending |
+| `iep.chart.title` | Progress chart: {goal} | प्रगति चार्ट: {goal} | పురోగతి చార్ట్: {goal} |  | pending |
+| `iep.chart.baseline` | Baseline | शुरुआत | ప్రారంభం |  | pending |
+| `iep.chart.target` | Target | लक्ष्य | లక్ష్యం |  | pending |
+| `iep.chart.showData` | Show data | आँकड़े दिखाएँ | డేటా చూపించు |  | pending |
+| `iep.chart.date` | Date | तारीख़ | తేదీ |  | pending |
+| `iep.chart.value` | Value | मान | విలువ |  | pending |
+| `iep.chart.note` | Note | टिप्पणी | గమనిక |  | pending |
+| `iep.chart.noData` | No progress recorded yet. | अभी कोई प्रगति दर्ज नहीं है। | ఇంకా పురోగతి నమోదు కాలేదు. |  | pending |
+| `iep.trend.label` | Progress summary | प्रगति का सार | పురోగతి సారాంశం |  | pending |
+| `iep.trend.none` | No progress recorded yet. | अभी कोई प्रगति दर्ज नहीं है। | ఇంకా పురోగతి నమోదు కాలేదు. |  | pending |
+| `iep.trend.latest` | Latest: {value} | नवीनतम: {value} | తాజా విలువ: {value} |  | pending |
+| `iep.trend.change` | Change from baseline: {change} | शुरुआती स्तर से बदलाव: {change} | ప్రారంభ స్థాయి నుండి మార్పు: {change} |  | pending |
+| `iep.trend.percent` | {percent}% of the way to the target | लक्ष्य की ओर {percent}% रास्ता तय | లక్ష్యం వైపు {percent}% దూరం పూర్తయింది |  | pending |
+| `iep.trend.onTrack` | On track | सही राह पर (on track) | సరైన దారిలో ఉంది (on track) |  | pending |
+| `iep.trend.notOnTrack` | Not on track yet | अभी सही राह पर नहीं | ఇంకా సరైన దారిలో లేదు |  | pending |
+| `iep.trend.needMore` | Record at least 2 values to see a trend. | रुझान देखने के लिए कम से कम 2 मान दर्ज करें। | ధోరణి చూడడానికి కనీసం 2 విలువలు నమోదు చేయండి. |  | pending |
+| `iep.errors.stale` | This plan was changed by someone else. Reload to see the latest version. | यह योजना किसी और ने बदली है। नया संस्करण देखने के लिए पेज दोबारा लोड करें। | ఈ ప్రణాళికను వేరొకరు మార్చారు. తాజా వెర్షన్ చూడడానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `iep.errors.closed` | This plan is closed and can no longer be changed. | यह योजना बंद है और अब बदली नहीं जा सकती। | ఈ ప్రణాళిక మూసివేయబడింది, ఇక మార్చలేరు. |  | pending |
+| `iep.errors.tooManyGoals` | A plan can have at most 20 goals. | एक योजना में अधिकतम 20 लक्ष्य हो सकते हैं। | ఒక ప్రణాళికలో గరిష్ఠంగా 20 లక్ష్యాలు ఉండవచ్చు. |  | pending |
+| `iep.errors.noGoals` | Add at least one goal before publishing. | साझा करने से पहले कम से कम एक लक्ष्य जोड़ें। | పంచుకునే ముందు కనీసం ఒక లక్ష్యం జోడించండి. |  | pending |
+| `iep.errors.nothingToPublish` | There are no changes to publish. | साझा करने के लिए कोई बदलाव नहीं है। | పంచుకోవడానికి మార్పులు ఏవీ లేవు. |  | pending |
+| `iep.errors.goalDiscontinued` | This goal was discontinued. | यह लक्ष्य बंद कर दिया गया है। | ఈ లక్ష్యం నిలిపివేయబడింది. |  | pending |
+| `iep.errors.measureLocked` | The measure cannot change after progress has been recorded. | प्रगति दर्ज होने के बाद मापने का तरीका नहीं बदल सकता। | పురోగతి నమోదు అయిన తర్వాత కొలిచే విధానం మార్చలేరు. |  | pending |
+| `iep.errors.targetDateRange` | The target date must be between the plan's start and review dates. | लक्ष्य की तारीख़ योजना की शुरू और समीक्षा की तारीख़ों के बीच होनी चाहिए। | లక్ష్య తేదీ ప్రణాళిక ప్రారంభ మరియు సమీక్ష తేదీల మధ్య ఉండాలి. |  | pending |
+| `iep.errors.planDatesExcludeGoals` | Some goals have target dates outside these plan dates. Change those goals first. | कुछ लक्ष्यों की तारीख़ इन योजना तारीख़ों से बाहर है। पहले उन लक्ष्यों को बदलें। | కొన్ని లక్ష్యాల తేదీలు ఈ ప్రణాళిక తేదీల బయట ఉన్నాయి. ముందు ఆ లక్ష్యాలను మార్చండి. |  | pending |
+| `iep.errors.futureDate` | The date cannot be in the future. | तारीख़ भविष्य की नहीं हो सकती। | తేదీ భవిష్యత్తులో ఉండకూడదు. |  | pending |
+| `iep.errors.valueRange` | Enter a value that fits the measure. | ऐसा मान डालें जो मापने के तरीके में फ़िट हो। | కొలిచే విధానానికి సరిపడే విలువను నమోదు చేయండి. |  | pending |
+| `iep.errors.statusChange` | This change is not allowed. | यह बदलाव संभव नहीं है। | ఈ మార్పు అనుమతించబడదు. |  | pending |
+| `iep.errors.notFound` | Not found. Reload the page. | नहीं मिला। पेज दोबारा लोड करें। | కనబడలేదు. పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `iep.errors.invalid` | Please check the highlighted fields. | कृपया चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
+| `iep.errors.saveFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `iep.errors.reload` | Reload | दोबारा लोड करें | మళ్ళీ లోడ్ చేయండి |  | pending |
+| `iep.fieldErrors.title` | Enter a title of up to 120 characters. | 120 अक्षरों तक का नाम डालें। | 120 అక్షరాల లోపు పేరు నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.startDate` | Enter a valid start date. | शुरू होने की सही तारीख़ डालें। | సరైన ప్రారంభ తేదీ నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.reviewDate` | The review date must be on or after the start date and within 12 months of it. | समीक्षा की तारीख़ शुरू की तारीख़ के बाद और उससे 12 महीनों के भीतर होनी चाहिए। | సమీక్ష తేదీ ప్రారంభ తేదీ తర్వాత, దాని నుండి 12 నెలల లోపు ఉండాలి. |  | pending |
+| `iep.fieldErrors.domain` | Choose a domain. | क्षेत्र चुनें। | రంగాన్ని ఎంచుకోండి. |  | pending |
+| `iep.fieldErrors.statement` | Write the goal in 10 to 500 characters. | लक्ष्य 10 से 500 अक्षरों में लिखें। | లక్ష్యాన్ని 10 నుండి 500 అక్షరాలలో రాయండి. |  | pending |
+| `iep.fieldErrors.smart` | Fill in this field (3 to 300 characters). | यह फ़ील्ड भरें (3 से 300 अक्षर)। | ఈ ఫీల్డ్ నింపండి (3 నుండి 300 అక్షరాలు). |  | pending |
+| `iep.fieldErrors.measureType` | Choose how we measure. | मापने का तरीका चुनें। | కొలిచే విధానాన్ని ఎంచుకోండి. |  | pending |
+| `iep.fieldErrors.baseline` | Enter a baseline that fits the measure. | ऐसा शुरुआती स्तर डालें जो मापने के तरीके में फ़िट हो। | కొలిచే విధానానికి సరిపడే ప్రారంభ స్థాయిని నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.target` | Enter a target that fits the measure and is different from the baseline. | ऐसा लक्ष्य स्तर डालें जो मापने के तरीके में फ़िट हो और शुरुआती स्तर से अलग हो। | కొలిచే విధానానికి సరిపడే, ప్రారంభ స్థాయికి భిన్నమైన లక్ష్య స్థాయిని నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.targetDate` | Choose a target date between the plan's start and review dates. | योजना की शुरू और समीक्षा की तारीख़ों के बीच लक्ष्य की तारीख़ चुनें। | ప్రణాళిక ప్రారంభ మరియు సమీక్ష తేదీల మధ్య లక్ష్య తేదీని ఎంచుకోండి. |  | pending |
+| `iep.fieldErrors.observedOn` | Enter a date that is not in the future. | ऐसी तारीख़ डालें जो भविष्य की न हो। | భవిష్యత్తులో లేని తేదీని నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.value` | Enter a value that fits the measure. | ऐसा मान डालें जो मापने के तरीके में फ़िट हो। | కొలిచే విధానానికి సరిపడే విలువను నమోదు చేయండి. |  | pending |
+| `iep.fieldErrors.note` | The note can have at most 500 characters. | टिप्पणी में अधिकतम 500 अक्षर हो सकते हैं। | గమనికలో గరిష్ఠంగా 500 అక్షరాలు ఉండవచ్చు. |  | pending |
+| `iep.family.link` | Plan and goals | योजना और लक्ष्य | ప్రణాళిక మరియు లక్ష్యాలు |  | pending |
+| `iep.family.title` | {name}'s plan | {name} की योजना | {name} ప్రణాళిక |  | pending |
+| `iep.family.back` | Back to {name} | {name} पर वापस जाएँ | {name} కి తిరిగి వెళ్ళండి |  | pending |
+| `iep.family.intro` | The goals your child's therapist set, and how your child is doing. Goals are shown as the therapist wrote them. | आपके बच्चे के थेरेपिस्ट द्वारा तय लक्ष्य, और आपका बच्चा कैसा कर रहा है। लक्ष्य वैसे ही दिखाए गए हैं जैसे थेरेपिस्ट ने लिखे। | మీ పిల్లల థెరపిస్ట్ నిర్ణయించిన లక్ష్యాలు, మీ పిల్లవాడు ఎలా చేస్తున్నారు. లక్ష్యాలు థెరపిస్ట్ రాసినట్లే చూపబడతాయి. |  | pending |
+| `iep.family.empty` | Your child's therapist has not shared a plan yet. | आपके बच्चे के थेरेपिस्ट ने अभी कोई योजना साझा नहीं की है। | మీ పిల్లల థెరపిస్ట్ ఇంకా ప్రణాళికను పంచుకోలేదు. |  | pending |
+| `iep.family.from` | From {org} | {org} से | {org} నుండి |  | pending |
+| `iep.family.sharedOn` | Shared on {date} | {date} को साझा किया गया | {date}న పంచుకోబడింది |  | pending |
+| `iep.family.progressTitle` | Progress | प्रगति | పురోగతి |  | pending |
+| `iep.family.progressIntro` | Values the care team recorded for each goal. | हर लक्ष्य के लिए केयर टीम द्वारा दर्ज मान। | ప్రతి లక్ష్యానికి కేర్ టీమ్ నమోదు చేసిన విలువలు. |  | pending |

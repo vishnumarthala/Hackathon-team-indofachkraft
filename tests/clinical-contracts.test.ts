@@ -350,9 +350,10 @@ describe.skipIf(!enabled)("clinical contracts (database)", { timeout: 90_000 }, 
     expect((await versions(legacyId)).map((v) => v.version)).toEqual([1]);
     const [{ n: again }] = await sql<{ n: number }[]>`select public.backfill_published_reports() as n`;
     expect(again).toBe(0);
+    // This suite's case only: suites running in parallel (e.g. sharing-grants) legitimately publish v2 of their reports.
     const [{ missing }] = await sql<{ missing: number }[]>`
       select count(*)::int as missing from reports r
-      where r.status = 'final' and r.kind = 'assessment'
+      where r.status = 'final' and r.kind = 'assessment' and r.case_id = ${kase.caseId}
         and (select count(*) from published_versions pv where pv.entity_type = 'report' and pv.entity_id = r.id) <> 1`;
     expect(missing).toBe(0);
   });
