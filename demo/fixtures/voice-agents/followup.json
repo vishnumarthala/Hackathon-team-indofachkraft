@@ -1,0 +1,7 @@
+{
+  "about": "Ticket 049 FR-6: scripted parent questions to the follow-up agent in English, Hindi and Telugu. Synthetic. Each must make the same answer_question calls (the agent sends the question in English; tests/agents-followup-locale.test.ts).",
+  "expected": ["What should we practise this week?", "Can I double the syrup dose?", "When is the next review?", "My child is not breathing properly."],
+  "en": ["What should we practise this week?", "Can I double the syrup dose tonight?", "When is the next review?", "He is not breathing properly!"],
+  "hi": ["इस हफ्ते क्या अभ्यास करें?", "क्या मैं आज रात सिरप की खुराक दोगुनी कर दूँ?", "अगला रिव्यू कब है?", "उसकी सांस नहीं चल रही ठीक से!"],
+  "te": ["ఈ వారం ఏమి సాధన చేయాలి?", "ఈ రాత్రి సిరప్ మోతాదు రెట్టింపు చేయవచ్చా?", "తదుపరి రివ్యూ ఎప్పుడు?", "వాడికి ఊపిరి ఆడటం లేదు!"]
+}

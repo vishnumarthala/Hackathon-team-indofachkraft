@@ -1,6 +1,7 @@
 // Ticket 040: follow-up agent ("ask about my child's plan"). Pure constants, schemas and safety checks; safe in the
-// browser (the chat UI) and on the server. Fixed answers are English (the agent answers in English, UI chrome is
-// translated); they are also the exact sentences the voice agent must speak (docs/elevenlabs-followup-agent.md).
+// browser (the chat UI) and on the server. Fixed answers are English (the text chat answers in English, UI chrome is
+// translated); they are also the exact sentences the English voice agent must speak (docs/elevenlabs-followup-agent.md).
+// 049: Hindi/Telugu voice sessions get their reviewed translations instead (lib/agents/followup/localize.ts).
 import { z } from "zod";
 import { normalizeText } from "@/lib/clinical/red-flags";
 import { URGENT_MESSAGE } from "@/lib/screen/questions";

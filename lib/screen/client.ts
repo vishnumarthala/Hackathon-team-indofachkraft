@@ -1,6 +1,9 @@
 // Ticket 033: browser side of the check-in, free of React so it can be tested with mocks (E-3). The page component
 // (components/screen/ScreenFlow.tsx) passes `fetch`, the microphone prompt and the ElevenLabs SDK's startSession.
+import { LANGUAGE_UNAVAILABLE, responseLanguage } from "@/lib/agents/languages";
+import type { ScreenDemoScript } from "@/lib/agents/screen/demo-script";
 import type { RedFlagCode } from "@/lib/clinical/checkin";
+import type { Locale } from "@/lib/i18n/config";
 import { reportVoiceEnd, voiceStartHeaders } from "@/lib/voice/client";
 import { voiceRefusal, type VoiceRefusal } from "@/lib/voice/constants";
 import type { MatchResponse } from "./matches";
@@ -12,13 +15,16 @@ export type StartedSession = { session_id: string; expires_at: string; questions
 
 type VoiceTarget = { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
 
-/** 051: a voice start refused by the cost guard maps to its own message; the tap path is always offered. */
-export type StartError = "busy" | "voiceUnavailable" | "mic" | "failed" | Exclude<VoiceRefusal, "notAllowed">;
+/**
+ * 051: a voice start refused by the cost guard maps to its own message; the tap path is always offered. 049:
+ * `languageUnavailable` = the agent does not speak the requested language: the page offers "Voice in English" or tapping.
+ */
+export type StartError = "busy" | "voiceUnavailable" | "mic" | "failed" | "languageUnavailable" | Exclude<VoiceRefusal, "notAllowed">;
 
 export type StartOutcome =
   | { kind: "form"; session: StartedSession }
-  /** DEMO_MODE: no live call; the page continues with the tap-through form on the same session. */
-  | { kind: "demo"; session: StartedSession }
+  /** DEMO_MODE: no live call; the page runs the scripted voice check-in in the call language (049), or the form. */
+  | { kind: "demo"; session: StartedSession; script: ScreenDemoScript | null }
   | {
       kind: "voice";
       session: StartedSession;
@@ -26,6 +32,8 @@ export type StartOutcome =
       dynamicVariables: Record<string, string>;
       /** 051 FR-7: the ledger row to report the end against, and the maximum call length. */
       usage: { id: string | null; maxSeconds: number | null };
+      /** 049: the call language (`overrides.agent.language`). */
+      language: Locale;
     }
   /** The session exists but the microphone was refused: continue by tapping. */
   | { kind: "micDenied"; session: StartedSession }
@@ -38,22 +46,30 @@ export type StartDeps = {
   turnstileToken?: string | null;
 };
 
-/** POST /api/screen/sessions (048: with the parent's worries as codes), then (voice only) the microphone prompt. */
+/**
+ * POST /api/screen/sessions (048: with the parent's worries as codes; 049: voice with the call language), then (voice
+ * only) the microphone prompt.
+ */
 export async function startScreen(
   ageBand: QuestionAgeBand,
   mode: ScreenMode,
   deps: StartDeps,
   concerns: readonly ScreenConcern[] = [],
+  language?: Locale,
 ): Promise<StartOutcome> {
   let res: Response;
   try {
     res = await deps.fetchFn("/api/screen/sessions", {
       method: "POST",
       headers: voiceStartHeaders(mode === "voice" ? deps.turnstileToken : null),
-      body: JSON.stringify({ age_band: ageBand, mode, concerns }),
+      body: JSON.stringify({ age_band: ageBand, mode, concerns, ...(mode === "voice" && language ? { language } : {}) }),
     });
   } catch {
     return { kind: "error", error: "failed" };
+  }
+  if (mode === "voice" && res.status === 409) {
+    const body = (await res.clone().json().catch(() => null)) as { error?: string } | null;
+    if (body?.error === LANGUAGE_UNAVAILABLE) return { kind: "error", error: "languageUnavailable" };
   }
   if (mode === "voice" && !res.ok) {
     const refusal = voiceRefusal(res.status, await res.clone().json().catch(() => null));
@@ -69,11 +85,13 @@ export async function startScreen(
     dynamic_variables?: Record<string, string>;
     voice_usage_id?: string;
     max_seconds?: number;
+    language?: string;
+    demo_script?: ScreenDemoScript;
   };
   if (!body.session_id || !Array.isArray(body.questions)) return { kind: "error", error: "failed" };
   const session: StartedSession = { session_id: body.session_id, expires_at: body.expires_at ?? "", questions: body.questions };
   if (mode === "form") return { kind: "form", session };
-  if (body.demo === true) return { kind: "demo", session };
+  if (body.demo === true) return { kind: "demo", session, script: body.demo_script ?? null };
 
   const target: VoiceTarget | null = body.conversation_token
     ? { conversationToken: body.conversation_token }
@@ -96,6 +114,7 @@ export async function startScreen(
     target,
     dynamicVariables: body.dynamic_variables ?? {},
     usage: { id: body.voice_usage_id ?? null, maxSeconds: body.max_seconds ?? null },
+    language: responseLanguage(body),
   };
 }
 
@@ -201,7 +220,7 @@ export async function fetchMatches(
 
 // ---------- voice client tools (FR-3) ----------
 
-/** What the agent hears back from a tool call (English: the agent speaks English only). */
+/** What the agent hears back from a tool call: instructions to the model, English in every call language (049). */
 export const TOOL_REPLIES = {
   saved: (remaining: number) => `Saved. ${remaining} question${remaining === 1 ? "" : "s"} left. Ask the next one.`,
   complete:

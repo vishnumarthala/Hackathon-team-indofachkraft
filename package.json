@@ -23,7 +23,8 @@
     "outbox:run": "tsx scripts/outbox-run.ts",
     "seed:hyderabad": "tsx scripts/seed-hyderabad.ts",
     "import:providers": "tsx scripts/import-providers.ts",
-    "import:schedule-pending": "tsx scripts/import-schedule-pending.ts"
+    "import:schedule-pending": "tsx scripts/import-schedule-pending.ts",
+    "agents:presets": "tsx scripts/elevenlabs-language-presets.ts"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.77.0",

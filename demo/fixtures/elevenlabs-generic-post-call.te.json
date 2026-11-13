@@ -1,0 +1,141 @@
+{
+  "type": "post_call_transcription",
+  "event_timestamp": 1794052800,
+  "data": {
+    "agent_id": "demo-generic-agent",
+    "conversation_id": "demo-generic-conversation-te",
+    "status": "done",
+    "metadata": {
+      "call_duration_secs": 241
+    },
+    "transcript": [
+      {
+        "role": "agent",
+        "message": "నమస్కారం Lakshmi (synthetic), నేను DoctorNearMe నుండి ఒక AI సహాయకుడిని, డాక్టర్‌ను కాదు. Anaya (synthetic) సందర్శన కోసం Dr Rao (synthetic) సిద్ధం కావడానికి నేను సహాయం చేస్తాను. ఈ కాల్ రికార్డ్ చేయబడి Dr Rao (synthetic) కోసం సారాంశం చేయబడుతుంది. దీనికి సుమారు ఐదు నిమిషాలు పడుతుంది. కొనసాగించవచ్చా?",
+        "time_in_call_secs": 0
+      },
+      {
+        "role": "user",
+        "message": "అవును, పర్వాలేదు.",
+        "time_in_call_secs": 12
+      },
+      {
+        "role": "agent",
+        "message": "ధన్యవాదాలు. ఈ సందర్శనకు ముఖ్య కారణం ఏమిటి?",
+        "time_in_call_secs": 16
+      },
+      {
+        "role": "user",
+        "message": "మా అమ్మాయికి ఫుట్‌బాల్ ప్రాక్టీస్ తర్వాత కుడి మోకాలిలో నొప్పి ఉంది, సుమారు మూడు వారాలుగా.",
+        "time_in_call_secs": 22
+      },
+      {
+        "role": "agent",
+        "message": "అది ఎలా మొదలైంది, అప్పటి నుండి ఏమైనా మారిందా?",
+        "time_in_call_secs": 34
+      },
+      {
+        "role": "user",
+        "message": "మ్యాచ్‌లో మోకాలు మెలిక పడింది. వాపు తగ్గింది కానీ పరిగెత్తినప్పుడు లేదా మెట్లు ఎక్కినప్పుడు నొప్పి మళ్ళీ వస్తుంది.",
+        "time_in_call_secs": 40
+      },
+      {
+        "role": "agent",
+        "message": "ఇప్పటి వరకు దానికి ఏమైనా చికిత్స చేశారా?",
+        "time_in_call_secs": 55
+      },
+      {
+        "role": "user",
+        "message": "ఐస్ ప్యాక్ పెట్టాం, మా ఫ్యామిలీ డాక్టర్ ఒక వారం విశ్రాంతి తీసుకోమన్నారు.",
+        "time_in_call_secs": 61
+      },
+      {
+        "role": "agent",
+        "message": "ఆమె ఇప్పుడు ఏమైనా మందులు వాడుతోందా?",
+        "time_in_call_secs": 72
+      },
+      {
+        "role": "user",
+        "message": "నొప్పి ఎక్కువైనప్పుడు మాత్రమే paracetamol సిరప్ 5 ml, వారానికి రెండు సార్లు ఉండొచ్చు.",
+        "time_in_call_secs": 78
+      },
+      {
+        "role": "agent",
+        "message": "ఆమెకు ఏమైనా అలర్జీలు ఉన్నాయా?",
+        "time_in_call_secs": 90
+      },
+      {
+        "role": "user",
+        "message": "ఆమెకు వేరుశెనగ అలర్జీ, దద్దుర్లు వస్తాయి.",
+        "time_in_call_secs": 95
+      },
+      {
+        "role": "agent",
+        "message": "ఇప్పుడు మిమ్మల్ని ఎక్కువగా ఏది బాధపెడుతోంది?",
+        "time_in_call_secs": 104
+      },
+      {
+        "role": "user",
+        "message": "ఆమె ఆటలు మానేస్తుందేమో అని, కొన్ని రోజులు స్కూల్ తర్వాత కుంటుతోంది.",
+        "time_in_call_secs": 110
+      },
+      {
+        "role": "agent",
+        "message": "సందర్శనలో ప్రొవైడర్‌ను ఏమైనా అడగాలనుకుంటున్నారా?",
+        "time_in_call_secs": 125
+      },
+      {
+        "role": "user",
+        "message": "ఆమె మళ్ళీ ఎప్పుడు ఫుట్‌బాల్ ఆడవచ్చు, ఇంట్లో చేయగల వ్యాయామాలు ఉన్నాయా?",
+        "time_in_call_secs": 131
+      },
+      {
+        "role": "agent",
+        "message": "ధన్యవాదాలు. క్లుప్తంగా: మెలిక పడిన తర్వాత మూడు వారాలుగా మోకాలి నొప్పి, అవసరమైనప్పుడు paracetamol, వేరుశెనగ అలర్జీ. సందర్శనలో మీ ప్రొవైడర్ మిమ్మల్ని చూస్తారు. వెళ్ళొస్తాను.",
+        "time_in_call_secs": 145
+      }
+    ],
+    "analysis": {
+      "data_collection_results": {
+        "consent_given": {
+          "value": true,
+          "rationale": "The parent agreed at the start."
+        },
+        "reason_for_visit": {
+          "value": "Right knee pain after football for three weeks",
+          "rationale": "Stated by the parent."
+        },
+        "history": {
+          "value": "Twisted the knee in a match; swelling settled, pain returns with running and stairs; rested a week on the family doctor's advice",
+          "rationale": "Stated by the parent."
+        },
+        "current_concerns": {
+          "value": "Fear she stops sports; limps after school some days",
+          "rationale": "Stated by the parent."
+        },
+        "current_medications": {
+          "value": "Paracetamol syrup 5 ml when needed, about twice a week",
+          "rationale": "Stated by the parent."
+        },
+        "allergies": {
+          "value": "Peanuts (hives)",
+          "rationale": "Stated by the parent."
+        },
+        "questions_for_provider": {
+          "value": "When can she return to football; home exercises",
+          "rationale": "Stated by the parent."
+        },
+        "red_flag_reported": {
+          "value": false,
+          "rationale": "No urgent warning sign described."
+        }
+      }
+    },
+    "conversation_initiation_client_data": {
+      "dynamic_variables": {
+        "intake_attempt_id": "00000000-0000-4000-8000-000000000000",
+        "language": "te"
+      }
+    }
+  }
+}

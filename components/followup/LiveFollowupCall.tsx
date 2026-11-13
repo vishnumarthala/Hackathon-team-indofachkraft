@@ -2,13 +2,17 @@
 
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef } from "react";
+import { voiceOverrides } from "@/lib/agents/languages";
 import { VOICE_MAX_MINUTES } from "@/lib/followup/constants";
+import type { Locale } from "@/lib/i18n/config";
 import { useVoiceCallGuard } from "@/components/voice/useVoiceCallGuard";
 
 export type LiveTarget = { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
 
 export type LiveFollowupProps = {
   target: LiveTarget;
+  /** 049: the call language (`overrides.agent.language` for Hindi and Telugu). */
+  language?: Locale;
   dynamicVariables: Record<string, string>;
   onLine: (role: "user" | "agent", eventId: number, text: string) => void;
   onStatus: (status: "connecting" | "listening" | "speaking") => void;
@@ -22,7 +26,7 @@ export type LiveFollowupProps = {
 /** A call that has not connected by then falls back to the text chat. */
 const CONNECT_TIMEOUT_SECONDS = 20;
 
-function LiveCall({ target, dynamicVariables, onLine, onStatus, onConversationId, onEnded, endRef }: LiveFollowupProps) {
+function LiveCall({ target, language = "en", dynamicVariables, onLine, onStatus, onConversationId, onEnded, endRef }: LiveFollowupProps) {
   const connected = useRef(false);
   const failed = useRef(false);
   const ended = useRef(false);
@@ -57,7 +61,7 @@ function LiveCall({ target, dynamicVariables, onLine, onStatus, onConversationId
     endRef.current = () => endSession();
     try {
       // The agent answers only through its server tool `answer_question` (docs/elevenlabs-followup-agent.md).
-      startSession({ ...target, dynamicVariables });
+      startSession({ ...target, dynamicVariables, ...voiceOverrides(language) });
     } catch {
       failed.current = true;
       finish();

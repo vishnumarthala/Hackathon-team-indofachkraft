@@ -1,0 +1,141 @@
+{
+  "type": "post_call_transcription",
+  "event_timestamp": 1794052800,
+  "data": {
+    "agent_id": "demo-generic-agent",
+    "conversation_id": "demo-generic-conversation-hi",
+    "status": "done",
+    "metadata": {
+      "call_duration_secs": 241
+    },
+    "transcript": [
+      {
+        "role": "agent",
+        "message": "नमस्ते Lakshmi (synthetic), मैं DoctorNearMe का एक AI सहायक हूँ, डॉक्टर नहीं। मैं Anaya (synthetic) की मुलाक़ात के लिए Dr Rao (synthetic) की तैयारी में मदद करता हूँ। यह कॉल रिकॉर्ड की जाती है और Dr Rao (synthetic) के लिए इसका सारांश बनाया जाता है। इसमें लगभग पाँच मिनट लगते हैं। क्या हम आगे बढ़ें?",
+        "time_in_call_secs": 0
+      },
+      {
+        "role": "user",
+        "message": "हाँ, ठीक है।",
+        "time_in_call_secs": 12
+      },
+      {
+        "role": "agent",
+        "message": "धन्यवाद। इस मुलाक़ात की मुख्य वजह क्या है?",
+        "time_in_call_secs": 16
+      },
+      {
+        "role": "user",
+        "message": "मेरी बेटी के दाएँ घुटने में फ़ुटबॉल प्रैक्टिस के बाद दर्द है, लगभग तीन हफ्ते से।",
+        "time_in_call_secs": 22
+      },
+      {
+        "role": "agent",
+        "message": "यह कैसे शुरू हुआ, और तब से क्या बदला है?",
+        "time_in_call_secs": 34
+      },
+      {
+        "role": "user",
+        "message": "मैच में उसका घुटना मुड़ गया था। सूजन कम हो गई लेकिन दौड़ने या सीढ़ियाँ चढ़ने पर दर्द फिर से आता है।",
+        "time_in_call_secs": 40
+      },
+      {
+        "role": "agent",
+        "message": "क्या अब तक इसका कोई इलाज हुआ है?",
+        "time_in_call_secs": 55
+      },
+      {
+        "role": "user",
+        "message": "हमने बर्फ़ की सिकाई की और हमारे फ़ैमिली डॉक्टर ने एक हफ्ते आराम करने को कहा।",
+        "time_in_call_secs": 61
+      },
+      {
+        "role": "agent",
+        "message": "क्या वह अभी कोई दवा ले रही है?",
+        "time_in_call_secs": 72
+      },
+      {
+        "role": "user",
+        "message": "सिर्फ़ दर्द ज़्यादा होने पर paracetamol सिरप 5 ml, शायद हफ्ते में दो बार।",
+        "time_in_call_secs": 78
+      },
+      {
+        "role": "agent",
+        "message": "क्या उसे कोई एलर्जी है?",
+        "time_in_call_secs": 90
+      },
+      {
+        "role": "user",
+        "message": "उसे मूंगफली से एलर्जी है, उसे पित्ती हो जाती है।",
+        "time_in_call_secs": 95
+      },
+      {
+        "role": "agent",
+        "message": "अभी आपको सबसे ज़्यादा किस बात की चिंता है?",
+        "time_in_call_secs": 104
+      },
+      {
+        "role": "user",
+        "message": "कि वह खेलना छोड़ देगी, और कुछ दिन स्कूल के बाद वह लंगड़ाती है।",
+        "time_in_call_secs": 110
+      },
+      {
+        "role": "agent",
+        "message": "क्या आप मुलाक़ात में प्रोवाइडर से कुछ पूछना चाहेंगे?",
+        "time_in_call_secs": 125
+      },
+      {
+        "role": "user",
+        "message": "वह फिर से फ़ुटबॉल कब खेल सकती है, और क्या घर पर करने के लिए कोई व्यायाम हैं?",
+        "time_in_call_secs": 131
+      },
+      {
+        "role": "agent",
+        "message": "धन्यवाद। संक्षेप में: मुड़ने के बाद तीन हफ्ते से घुटने में दर्द, ज़रूरत पर paracetamol और मूंगफली से एलर्जी। मुलाक़ात में आपके प्रोवाइडर आपसे मिलेंगे। नमस्ते।",
+        "time_in_call_secs": 145
+      }
+    ],
+    "analysis": {
+      "data_collection_results": {
+        "consent_given": {
+          "value": true,
+          "rationale": "The parent agreed at the start."
+        },
+        "reason_for_visit": {
+          "value": "Right knee pain after football for three weeks",
+          "rationale": "Stated by the parent."
+        },
+        "history": {
+          "value": "Twisted the knee in a match; swelling settled, pain returns with running and stairs; rested a week on the family doctor's advice",
+          "rationale": "Stated by the parent."
+        },
+        "current_concerns": {
+          "value": "Fear she stops sports; limps after school some days",
+          "rationale": "Stated by the parent."
+        },
+        "current_medications": {
+          "value": "Paracetamol syrup 5 ml when needed, about twice a week",
+          "rationale": "Stated by the parent."
+        },
+        "allergies": {
+          "value": "Peanuts (hives)",
+          "rationale": "Stated by the parent."
+        },
+        "questions_for_provider": {
+          "value": "When can she return to football; home exercises",
+          "rationale": "Stated by the parent."
+        },
+        "red_flag_reported": {
+          "value": false,
+          "rationale": "No urgent warning sign described."
+        }
+      }
+    },
+    "conversation_initiation_client_data": {
+      "dynamic_variables": {
+        "intake_attempt_id": "00000000-0000-4000-8000-000000000000",
+        "language": "hi"
+      }
+    }
+  }
+}

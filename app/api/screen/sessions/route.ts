@@ -1,3 +1,6 @@
+import { resolveCallLanguage } from "@/lib/agents/call-language";
+import { screenDemoScript } from "@/lib/agents/screen/demo";
+import type { Locale } from "@/lib/i18n/config";
 import { isDemoMode } from "@/lib/demo";
 import { env } from "@/lib/env";
 import { startAgentSession, type AgentStart } from "@/lib/elevenlabs/agent";
@@ -20,6 +23,9 @@ export const RATE_LIMITED = "Too many check-ins started from this connection. Pl
 // 051: tapping stays anonymous; voice needs a signed-in user, the Turnstile check (when configured) and room in the
 // user's quota and the platform budget (lib/voice/gate.ts), all before ElevenLabs is contacted. The check-in itself
 // stays anonymous with respect to the child: only `voice_usage` links the account to "a voice check-in happened".
+// 049: voice runs in the call language (`language`, default the viewer's UI locale) when the agent has it
+// (ELEVENLABS_SCREEN_LANGUAGES), else 409 `language_unavailable` before the gate: never a silent English call. The
+// agent hears the age band in that language; DEMO_MODE returns the scripted voice check-in in that language.
 export async function POST(req: Request) {
   if (!allowScreenSession(req)) {
     return Response.json({ error: RATE_LIMITED }, { status: 429, headers: { "Retry-After": "3600" } });
@@ -27,6 +33,12 @@ export async function POST(req: Request) {
   const parsed = await parseJson(req, CreateSessionSchema);
   if ("response" in parsed) return parsed.response;
   const { age_band, mode, concerns } = parsed.data;
+  let language: Locale = "en";
+  if (mode === "voice") {
+    const call = await resolveCallLanguage("screen", parsed.data.language);
+    if (!call.ok) return call.response;
+    language = call.language;
+  }
   // 048 FR-3: the instrument is fixed for the session (M-CHAT-R/F for 18-30 months only when licensed).
   const instrument = instrumentFor(age_band, env.MCHAT_LICENSED);
   const questions = screenQuestions(age_band, instrument);
@@ -42,7 +54,7 @@ export async function POST(req: Request) {
     grant = gate;
     if (!demo) {
       try {
-        voice = await startAgentSession(agentId as string);
+        voice = await startAgentSession(agentId as string, { language });
       } catch (err) {
         await grant.release();
         console.error(`screen voice start failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -54,9 +66,10 @@ export async function POST(req: Request) {
   const session = await createScreenSession(age_band, mode, { instrument, concerns });
   const base = { session_id: session.id, expires_at: session.expires_at.toISOString(), questions };
   if (demo) {
-    // No live call in DEMO_MODE: the start counts against the quota with 0 seconds and the page continues by tapping.
+    // No live call in DEMO_MODE: the start counts against the quota with 0 seconds; the page runs the scripted voice
+    // check-in in the call language (or continues by tapping).
     await grant?.endNow();
-    return ok({ ...base, demo: true }, 201);
+    return ok({ ...base, demo: true, language, demo_script: screenDemoScript(language, age_band) }, 201);
   }
   if (!voice || !grant) return ok(base, 201);
   return ok(
@@ -66,12 +79,14 @@ export async function POST(req: Request) {
       agent_id: voice.agent_id,
       voice_usage_id: grant.usageId,
       max_seconds: grant.maxSeconds,
+      language,
       // FR-3: the only values the agent receives. No names, no contact details.
       dynamic_variables: {
         screen_session_id: session.id,
         // 048 FR-9: the new bands, as the agent should say them ("2 and a half to 5 years").
-        age_band: SPOKEN_AGE_BAND[age_band],
+        age_band: SPOKEN_AGE_BAND[language][age_band],
         questions: agentQuestionList(questions),
+        language,
       },
     },
     201,

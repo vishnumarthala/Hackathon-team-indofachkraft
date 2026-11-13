@@ -1,4 +1,5 @@
 import { env } from "@/lib/env";
+import type { Locale } from "@/lib/i18n/config";
 
 export const CONVERSATION_TOKEN_URL = "https://api.elevenlabs.io/v1/convai/conversation/token";
 
@@ -25,7 +26,15 @@ export async function getConversationToken(agentId: string = env.ELEVENLABS_AGEN
   return json.token;
 }
 
-export type AgentStart = { agent_id: string; conversation_token: string | null };
+export type AgentStart = {
+  agent_id: string;
+  conversation_token: string | null;
+  /** 049: the call language the token was asked for; the browser starts the call with this language override. */
+  language?: Locale;
+};
+
+/** 049 FR-1: the call language a voice start asks for (the agent's language preset; the token itself is language-free). */
+export type AgentStartOptions = { language?: Locale };
 
 // Statuses meaning "this key may not mint tokens for this agent" (e.g. the agent lives in another
 // workspace). A public agent (authentication off) can still be started by its ID from the browser.
@@ -34,13 +43,16 @@ const PUBLIC_FALLBACK_STATUSES = new Set([401, 403, 404]);
 // Server only. Returns a conversation token when possible, otherwise the agent ID for a public start.
 // Throws when no agent is configured, or on other provider failures (network, 5xx).
 // 035: `agentId` selects another agent (the generic pre-consult intake agent); default the Child Development one.
-export async function startAgentSession(agentId: string = env.ELEVENLABS_AGENT_ID): Promise<AgentStart> {
-  if (!process.env.ELEVENLABS_API_KEY) return { agent_id: agentId, conversation_token: null };
+// 049: `opts.language` is the call language (screen, booking, generic intake and follow-up agents); it comes back in the
+// result so the route hands the same language to the browser's `overrides.agent.language`.
+export async function startAgentSession(agentId: string = env.ELEVENLABS_AGENT_ID, opts: AgentStartOptions = {}): Promise<AgentStart> {
+  const language = opts.language ? { language: opts.language } : {};
+  if (!process.env.ELEVENLABS_API_KEY) return { agent_id: agentId, conversation_token: null, ...language };
   try {
-    return { agent_id: agentId, conversation_token: await getConversationToken(agentId) };
+    return { agent_id: agentId, conversation_token: await getConversationToken(agentId), ...language };
   } catch (err) {
     if (err instanceof TokenRequestError && err.status !== null && PUBLIC_FALLBACK_STATUSES.has(err.status)) {
-      return { agent_id: agentId, conversation_token: null };
+      return { agent_id: agentId, conversation_token: null, ...language };
     }
     throw err;
   }
