@@ -100,7 +100,8 @@ There are 74 screens. Every route in the first four tables exists in `app/`; the
 
 | Route | Screen | Figma |
 |---|---|---|
-| `/` | Landing (desktop) | [12:11](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-11) |
+| `/` | Parents' home: free tap check-in first, voice after sign-in, Indian statistics (ticket 050; 390 first, en/hi/te) | [12:11](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-11) |
+| `/for-centres` | Landing for therapists and centres (the former `/`, Book a demo; ticket 050) | [12:11](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-11) (designer task: own frame in "Screens · Public & parents") |
 | `/find` | Find near me | [12:164](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-164) |
 | `/p/[slug]` | Provider profile | [12:319](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-319) |
 | `/book/[profileId]` | Choose a time | [12:411](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-411) |
@@ -205,7 +206,7 @@ The two v1 diagrams are marked superseded.
 
 **Family journey: Discover → Book → Prepare → Ongoing care.**
 
-1. **Discover.** Landing page, then the voice check-in (`/screen`). A red flag stops the call and
+1. **Discover.** Parents' home page (`/`), then the check-in (`/screen`; tap free, voice after sign-in). A red flag stops the call and
    shows 108/112. Otherwise the result leads to **Find near me** (`/find`), as a list plus map or through
    the voice booking sheet.
 2. **Book.** Provider profile → pick a slot (held for 15 minutes) → sign in with Google or a phone code

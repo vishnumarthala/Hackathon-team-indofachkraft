@@ -31,7 +31,7 @@ flowchart LR
     T[Therapist UI<br/>/dashboard /cases/*]
     P[Parent intake page<br/>/intake/token]
     S[Specialist page<br/>/specialist/token]
-    L[Landing /]
+    L[Parents' home /<br/>Centres /for-centres]
   end
   subgraph Next[Next.js app (local or Vercel)]
     API[API routes /api/*]
@@ -219,7 +219,8 @@ flowchart LR
 app/
   layout.tsx                      root layout: header + demo banner (001); fonts, <html lang>, I18nProvider (018)
   api/locale/route.ts             POST UI language / time zone preference (018)
-  page.tsx                        landing + pilot sign-up (014; placeholder from 001)
+  page.tsx                        parents' home: check-in, find, clinic code, Indian statistics (050)
+  for-centres/page.tsx            therapist / centre landing, Book a demo (014; moved from / in 050)
   dashboard/page.tsx              case list (004)
   dashboard/pilots/page.tsx       pilot sign-ups list (014)
   cases/new/page.tsx              new case form (004)
@@ -1022,6 +1023,27 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   leads, 1 per day. **Admin**: `/admin/ops` Voice usage card (minutes, cost USD/INR, top users, blocked starts) and the
   runtime cap override (`voice_settings`, audited `voice.caps_updated`). Alerts at 80% / 100% (`voice.budget_alert`).
 - Details, env vars and the checklist for new voice entry points: `docs/voice-cost-guard.md`.
+
+## 13e. Parent-first home page (ticket 050)
+
+- `/` is for parents (decision D-1): hero "Worried about your child's speech, play or development?", main action
+  **Start a free check-in** (`/screen`, tap, anonymous), second action **Find a therapist near you** (`/find`), and
+  the 051 voice link `Prefer to talk? Sign in to use voice (free)` → `/family/login?next=/screen?voice=1`. Then the
+  How it works strip (Check-in → Find → Visit → Practise at home), Indian statistics, a trust row, the clinic-code
+  card (`/family/children/claim`) and a one-line link to `/for-centres`. Links live in `components/landing/links.ts`.
+- `/for-centres` is the former landing (same components, `Book a demo`, title `landing.meta.title`). Its live voice
+  demo follows 051 (recorded sample for visitors).
+- `SiteNav` takes `variant="parents" | "centres"`: the parents' bar has How it works, Find, For centres and the CTA
+  **Start free check-in**, Log in → `/family/login`; the centres' bar keeps its section links (now
+  `/for-centres#...`), For centres (current) and For parents, CTA **Book a demo**, Log in → `/login`. The desktop
+  bar must fit one line in en/hi/te at 1280 px; the mobile menu lists every link. The footer has For parents /
+  For centres / Find care columns.
+- Statistics (decision D-2, Indian sources only): `components/landing/IndianStats.tsx` renders the four figures
+  (`landing.stats.*`) with linked "Sources:" (`INDIAN_STAT_SOURCES`, URLs from `specs/grill/doctornearme-pmf-check.md`).
+  Use it for any new page that quotes prevalence or workforce numbers; do not add US or German figures.
+- No new third-party scripts: `tests/no-tracking.test.ts` scans the module graph of `/` and `/for-centres`.
+- No `hreflang` alternates: the UI language is a cookie (018), so every language shares one URL; both pages set a
+  canonical URL instead.
 
 ## 14. Human setup checklist (not tickets)
 
