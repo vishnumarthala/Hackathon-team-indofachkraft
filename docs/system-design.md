@@ -144,6 +144,13 @@ flowchart LR
   (`home_program_publications`); guardians (`/family/children/[id]/home-program`, `Done today`), the
   `home_program` share scope and 040 (`getGuardianHomePrograms`) see only the published snapshot. Adherence weeks
   start Monday in the guardian's time zone. See `docs/home-program.md`.
+- **E-prescriptions (ticket 039).** Verified prescribers (028 `provider_can_prescribe`, re-checked at signing in the
+  route, the signing transaction and a database trigger) sign prescriptions started blank or from a 038 `rx_draft`
+  (`prescriptions`, `prescription_versions`). A signed version is immutable, stores child / allergy (021; "not
+  recorded" = unknown) / prescriber snapshots, `content_md` + sha256 and a deterministic `pdf-lib` PDF in the private
+  `prescriptions` bucket, is published to the guardian (`publishVersion`, `prescription`), strictly audited
+  (`rx.signed`, `rx.voided`) and notified (`prescription.signed` / `.voided`, in-app + email). Case tab
+  `Prescriptions` (prescribers only) and `/family/children/[id]/prescriptions`. See `docs/prescriptions.md`.
 - **Real patient data** still waits for the privacy/audit baseline (041) and legal review of the consent
   texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
@@ -233,7 +240,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
-          documents.md  assessments.md  notifications.md  iep.md  home-program.md  messaging.md
+          documents.md  assessments.md  notifications.md  iep.md  home-program.md  messaging.md  prescriptions.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -545,6 +552,8 @@ The AI scribe (ticket 038, `docs/scribe.md`) generalises the session pipeline to
 published by `finalizeSessionNote` (not by the `reports_publish_final` trigger, which skips both kinds) with the
 clinician's `visible_to_guardian` choice.
 Home programs publish with `entity_type = 'home_program'` (ticket 026, `docs/home-program.md`).
+Prescriptions publish with `entity_type = 'prescription'` when signed, and again (a `Prescription cancelled` notice) when
+voided (ticket 039, `docs/prescriptions.md`).
 
 ## 8. API contracts
 
@@ -583,6 +592,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
 | `GET\|POST /api/cases/:id/iep-plans`, `GET\|PATCH /api/iep-plans/:planId`, `POST /api/iep-plans/:planId/publish`, `GET\|POST /api/iep-plans/:planId/goals`, `PATCH\|DELETE /api/iep-goals/:goalId`, `GET\|POST /api/iep-goals/:goalId/progress`, `GET /api/family/children/:id/plan` | 025 | plan/goal writes carry the plan `version` | 201/200; 409 stale `This plan was changed by someone else. Reload to see the latest version.`; 400 field errors; 422 no goals / > 20 goals (`docs/iep.md`) |
 | `GET\|POST /api/cases/:id/home-programs`, `GET\|PATCH /api/home-programs/:pid`, `POST /api/home-programs/:pid/activities`, `POST /api/home-programs/:pid/publish`, `PATCH\|DELETE /api/home-activities/:aid`, `GET /api/family/children/:id/home-program`, `POST /api/family/home-activities/:aid/logs`, `DELETE /api/family/home-activity-logs/:id` | 026 | program PATCH / publish carry the program `version` | 201/200; 409 stale; 422 `Choose a goal from this child's plan` / > 15 active activities; guardian logs 201 new / 200 same day again, 400 future or > 14 days ago (`docs/home-program.md`) |
+| `GET\|POST /api/cases/:id/prescriptions`, `GET\|PATCH /api/prescriptions/:id`, `POST /api/prescriptions/:id/sign`, `POST /api/prescriptions/:id/void`, `GET /api/prescriptions/:id/pdf`, `GET /api/family/children/:id/prescriptions`, `GET /api/family/prescriptions/:id/pdf` | 039 | PATCH carries the prescription `version`; sign `{ confirm: true, allergy_override_reason? }` | 201/200; 403 `Only verified prescribers can write prescriptions`; 409 stale / signed; 422 incomplete or allergy match (`details.matches`); 503 strict audit (`docs/prescriptions.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
@@ -749,6 +759,8 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
 - Messaging (027): RLS select policies are the browser's path to `message_threads` / `messages` /
   `thread_reads` (also for Realtime); message text is never logged, audited or put in notifications
   (`docs/messaging.md`).
+- Prescriptions (039): PDFs in a private bucket, streamed only after the access check (no signed URLs); signed
+  versions immutable in the database; prescribing rights derived server-side on every request (`docs/prescriptions.md`).
 - Consent: intake page requires a consent checkbox before Start. Since 020 every gated step also needs the
   guardian's recorded consent for that feature (server-side; a client `parent_consent` flag is ignored);
   see `docs/consent.md`.

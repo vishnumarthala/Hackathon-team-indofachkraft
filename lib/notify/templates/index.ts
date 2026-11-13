@@ -7,6 +7,8 @@ import document_shared from "./document_shared";
 import home_program_published from "./home_program_published";
 import iep_published from "./iep_published";
 import message_created from "./message_created";
+import prescription_signed from "./prescription_signed";
+import prescription_voided from "./prescription_voided";
 import provider_claimed from "./provider_claimed";
 import provider_rejected from "./provider_rejected";
 import provider_suspended from "./provider_suspended";
@@ -36,6 +38,8 @@ export const TEMPLATES = {
   privacy_deletion_requested,
   privacy_deletion_completed,
   privacy_deletion_rejected,
+  prescription_signed,
+  prescription_voided,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

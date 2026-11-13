@@ -112,3 +112,21 @@ export async function assignedAssessmentGuardian(sql: Queryable, assessmentId: s
     where a.id = ${assessmentId} and a.child_id = ${childId} and a.status in ('assigned', 'in_progress')`;
   return rows.map((r) => r.user_id);
 }
+
+/** 039: active guardians of the prescription's (live) child, while the prescription is in `status` (signed -> only
+ * while not cancelled since; void -> the cancellation) and its latest published version is visible to guardians. */
+export async function prescriptionGuardians(
+  sql: Queryable,
+  prescriptionId: string,
+  childId: string,
+  status: "signed" | "void",
+): Promise<string[]> {
+  const rows = await sql<{ user_id: string }[]>`
+    select gl.user_id from public.prescriptions p
+    join public.children c on c.id = p.child_id and c.deleted_at is null
+    join public.guardian_links gl on gl.child_id = p.child_id and gl.status = 'active'
+    where p.id = ${prescriptionId} and p.child_id = ${childId} and p.status = ${status}
+      and (select pv.visible_to_guardian from public.published_versions pv
+           where pv.entity_type = 'prescription' and pv.entity_id = p.id order by pv.version desc limit 1)`;
+  return rows.map((r) => r.user_id);
+}

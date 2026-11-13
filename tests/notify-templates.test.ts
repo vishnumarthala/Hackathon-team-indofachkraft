@@ -32,6 +32,8 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "privacy.deletion_requested": { request_id: ID, child_id: CHILD },
   "privacy.deletion_completed": { request_id: ID },
   "privacy.deletion_rejected": { request_id: ID, child_id: CHILD },
+  "prescription.signed": { prescription_id: ID, child_id: CHILD, case_id: CASE },
+  "prescription.voided": { prescription_id: ID, child_id: CHILD, case_id: CASE },
 };
 
 const topics = Object.entries(TOPICS) as [keyof typeof TOPICS, (typeof TOPICS)[keyof typeof TOPICS]][];
@@ -75,6 +77,8 @@ describe("topic registry", () => {
         "privacy.deletion_requested",
         "privacy.deletion_completed",
         "privacy.deletion_rejected",
+        "prescription.signed",
+        "prescription.voided",
       ].sort(),
     );
     for (const [, def] of topics) expect(TEMPLATES[def.template]).toBeDefined();

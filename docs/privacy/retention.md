@@ -40,7 +40,8 @@ questionnaires + answers) and `published_versions` (latest guardian-visible vers
 views; drafts and progress notes never exported), 026 `home_programs` (the current published programs plus the requesting
 guardian's own practice logs; drafts and other guardians' notes never exported; logs deleted on erasure), 027 `messages` (the conversations this guardian can open, with the text they see and
 their own read markers; attachments as document ids), 038 `ai_scribe` (session-note/Rx drafts and goal-progress
-suggestions; shared notes are exported through `published_versions`), documents, health profile, consent records, sharing/care team,
+suggestions; shared notes are exported through `published_versions`), 039 `prescriptions` (signed and cancelled
+prescriptions as the guardian sees them, with the PDFs of signed ones; PDFs removed on erasure, rows go with the cases), documents, health profile, consent records, sharing/care team,
 notifications, exports, audit, provider credentials, pilot sign-ups. `published_versions` is append-only (024): rows with a
 case go with the case; case-less rows are removed only by `privacy_delete_published_versions()` (migration
 `20261113004102`).
