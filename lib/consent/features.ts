@@ -24,6 +24,7 @@ export const FEATURE_GATES: Record<ConsentFeature, { collect: string[]; recheck:
     recheck: ["POST /api/intake/:token/complete", "ElevenLabs webhook processing", "brief generation (Gemini)"],
   },
   session_recording: {
+    // 038: AI scribe uploads also need ai_transcription and ai_extraction at upload time.
     collect: ["POST /api/cases/:id/sessions"],
     recheck: ["upload completion (first transcription of a just-uploaded `created` recording)"],
   },
@@ -32,8 +33,8 @@ export const FEATURE_GATES: Record<ConsentFeature, { collect: string[]; recheck:
     recheck: ["before the Scribe request is sent"],
   },
   ai_extraction: {
-    collect: ["POST /api/sessions/:id/extract", "POST /api/sessions/:id/report"],
-    recheck: ["before each Gemini request (extraction and report drafting)"],
+    collect: ["POST /api/sessions/:id/extract", "POST /api/sessions/:id/report", "POST /api/sessions/:id/scribe"],
+    recheck: ["before each Gemini request (extraction, report drafting, AI scribe note and Rx draft)"],
   },
   ai_voice_note: {
     collect: ["POST /api/reports/:id/parent-voice-note"],

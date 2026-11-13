@@ -1,6 +1,6 @@
 # 026: Home program
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 023, 025: activities link to IEP goals and publish the same way; activity media/attachments use the document vault (023)
 

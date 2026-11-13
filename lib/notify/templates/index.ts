@@ -1,5 +1,10 @@
 // Template registry (FR-3): one file per template under lib/notify/templates/, each with en/hi/te strings.
 import type { Template } from "../types";
+import appointment_cancelled from "./appointment_cancelled";
+import appointment_confirmed from "./appointment_confirmed";
+import appointment_reminder_24h from "./appointment_reminder_24h";
+import appointment_reminder_2h from "./appointment_reminder_2h";
+import appointment_rescheduled from "./appointment_rescheduled";
 import assessment_assigned from "./assessment_assigned";
 import assessment_red_flag from "./assessment_red_flag";
 import assessment_submitted from "./assessment_submitted";
@@ -36,6 +41,11 @@ export const TEMPLATES = {
   privacy_deletion_requested,
   privacy_deletion_completed,
   privacy_deletion_rejected,
+  appointment_confirmed,
+  appointment_reminder_24h,
+  appointment_reminder_2h,
+  appointment_cancelled,
+  appointment_rescheduled,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

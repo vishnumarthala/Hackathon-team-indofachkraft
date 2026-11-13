@@ -335,7 +335,9 @@ export async function runExtraction(recordingId: string, deps: ExtractionDeps = 
     { previous_status: "transcribed" | "extracted"; segments: unknown; case_id: string; child_id: string }[]
   >`
     with prev as (
-      select id, status from recordings where id = ${recordingId} and kind = 'session' for update
+      select id, status from recordings
+      where id = ${recordingId} and kind = 'session' and template = 'child_dev_isaa' -- 038: ISAA template only
+      for update
     )
     update recordings r set status = 'extracting'
     from prev
@@ -344,9 +346,10 @@ export async function runExtraction(recordingId: string, deps: ExtractionDeps = 
       (select c.child_id from cases c where c.id = r.case_id) as child_id`;
 
   if (claimed.length === 0) {
-    const [current] = await sql<{ kind: string; status: string }[]>`
-      select kind, status from recordings where id = ${recordingId}`;
+    const [current] = await sql<{ kind: string; status: string; template: string }[]>`
+      select kind, status, template from recordings where id = ${recordingId}`;
     if (!current || current.kind !== "session") return notFound();
+    if (current.template !== "child_dev_isaa") return { ok: false, status: 409, error: "This session uses the AI scribe" };
     if (current.status === "extracting") return { ok: false, status: 409, error: "Extraction already running" };
     return { ok: false, status: 409, error: "Transcribe the session first" };
   }

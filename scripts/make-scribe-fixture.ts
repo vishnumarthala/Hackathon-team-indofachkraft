@@ -21,6 +21,11 @@ export type ScribeResponse = {
 
 export const SEGMENTS_FILE = "demo/fixtures/roleplay-segments.json";
 export const SCRIBE_FILE = "demo/fixtures/scribe-response.json";
+// 038: one role-play per AI scribe template (lib/scribe/templates.ts `demoTranscript`).
+export const SCRIBE_ROLEPLAYS = [
+  { segments: "demo/fixtures/roleplay-therapy-segments.json", scribe: "demo/fixtures/scribe-response-therapy.json" },
+  { segments: "demo/fixtures/roleplay-consult-segments.json", scribe: "demo/fixtures/scribe-response-consult.json" },
+] as const;
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
@@ -65,15 +70,17 @@ export function serializeScribeResponse(response: ScribeResponse): string {
   return `{\n${head.join(",\n")},\n  "words": [\n${words}\n  ]\n}\n`;
 }
 
-export function readRoleplaySegments(root = process.cwd()): Segment[] {
-  const raw = JSON.parse(readFileSync(path.join(root, SEGMENTS_FILE), "utf8"));
+export function readRoleplaySegments(root = process.cwd(), file: string = SEGMENTS_FILE): Segment[] {
+  const raw = JSON.parse(readFileSync(path.join(root, file), "utf8"));
   return z.array(SegmentSchema).parse(raw);
 }
 
 function main() {
-  const out = serializeScribeResponse(buildScribeResponse(readRoleplaySegments()));
-  writeFileSync(path.join(process.cwd(), SCRIBE_FILE), out);
-  console.log(`wrote ${SCRIBE_FILE}`);
+  for (const { segments, scribe } of [{ segments: SEGMENTS_FILE, scribe: SCRIBE_FILE }, ...SCRIBE_ROLEPLAYS]) {
+    const out = serializeScribeResponse(buildScribeResponse(readRoleplaySegments(process.cwd(), segments)));
+    writeFileSync(path.join(process.cwd(), scribe), out);
+    console.log(`wrote ${scribe}`);
+  }
 }
 
 if (process.argv[1] && /make-scribe-fixture\.ts$/.test(process.argv[1])) {

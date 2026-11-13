@@ -92,7 +92,7 @@ NFR-4: numbers are never logged in full. Errors pass through `redactPhones()`; a
 
 `proxy.ts` sends, for every `/family` page, `Content-Security-Policy` with a fresh nonce:
 `script-src 'self' 'nonce-…' 'strict-dynamic'` (plus `'unsafe-eval'` in `next dev` only),
-`connect-src 'self' <supabase origin>`, `frame-src 'none'`, `frame-ancestors 'none'`, `object-src 'none'`.
+`connect-src 'self' <supabase origin> <supabase ws(s) origin>` (the ws origin is Supabase Realtime for 027 messaging), `frame-src 'none'`, `frame-ancestors 'none'`, `object-src 'none'`.
 Next.js puts the nonce on its own scripts. No analytics, ads, tag managers or social pixels on any
 family/child page. Approved exceptions (ElevenLabs SDK for 033/040, Razorpay checkout for 031) are added
 per route prefix in `FAMILY_CSP_EXCEPTIONS` (`lib/csp.ts`) by the ticket that needs them, nothing else.

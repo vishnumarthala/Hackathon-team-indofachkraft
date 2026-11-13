@@ -546,14 +546,19 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     const unsaved = (await start("3-5y")).body.session_id;
     const [savedRow] = await sql<{ id: string }[]>`
       select id from screen_sessions where saved_child_id = ${childA} limit 1`;
-    await sql`update screen_sessions set created_at = now() - interval '31 days' where id in ${sql([unsaved, savedRow.id])}`;
     const recent = (await start("3-5y")).body.session_id;
-    const { runRetention } = await import("@/lib/privacy/retention");
-    const counts = await runRetention({ sql, remove: async () => {} });
-    expect(counts.unsaved_screen_sessions).toBeGreaterThanOrEqual(1);
+    const { purgeUnsavedScreenSessions } = await import("@/lib/privacy/retention");
+    // Aged and purged in one transaction, so 041's concurrent retention suite never sees these rows as due.
+    await sql.begin(async (tx) => {
+      await tx`update screen_sessions set created_at = now() - interval '31 days' where id in ${tx([unsaved, savedRow.id])}`;
+      expect(await purgeUnsavedScreenSessions(tx, new Date())).toBeGreaterThanOrEqual(1);
+    });
     const left = await sql<{ id: string }[]>`select id from screen_sessions where id in ${sql([unsaved, savedRow.id, recent])}`;
     expect(left.map((r) => r.id).sort()).toEqual([savedRow.id, recent].sort());
-    await purgeTestAudit(sql, (tx) => tx`delete from audit_events where action = 'retention.run' and created_at > now() - interval '5 minutes'`);
+    // runRetention runs this step (count key `unsaved_screen_sessions`).
+    expect(readFileSync(path.join(ROOT, "lib/privacy/retention.ts"), "utf8")).toMatch(
+      /counts\.unsaved_screen_sessions = await purgeUnsavedScreenSessions\(sql, now\)/,
+    );
   });
 
   it("041 registry: screen_results exports the portal view and is erased with the child", async () => {

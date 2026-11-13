@@ -34,7 +34,8 @@ export async function swapSpeakersInTx(tx: Tx, recordingId: string): Promise<Swa
     select id, case_id, kind, status, speaker_map, segments
     from recordings where id = ${recordingId} for update`;
   const rec = rows[0];
-  if (!rec || rec.kind !== "session") return { ok: false, status: 404, error: SESSION_NOT_FOUND };
+  // 038: in-clinic consults (`consult`) can be swapped too; they have no ISAA facts.
+  if (!rec || (rec.kind !== "session" && rec.kind !== "consult")) return { ok: false, status: 404, error: SESSION_NOT_FOUND };
   if (rec.status === "extracting") return { ok: false, status: 409, error: EXTRACTION_RUNNING };
   if (rec.status === "transcribing") return { ok: false, status: 409, error: TRANSCRIPTION_RUNNING };
   if (rec.status !== "transcribed" && rec.status !== "extracted") {

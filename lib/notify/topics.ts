@@ -7,13 +7,14 @@ import { env } from "@/lib/env";
 import type { Queryable } from "@/lib/pg";
 import {
   activeGrantRecipients,
+  appointmentParties,
   activeGuardians,
   assignedAssessmentGuardian,
   caseProviders,
-  childAccessFilter,
   existingUser,
   profileOwner,
   platformAdmins,
+  threadMessageRecipients,
   visibleDocumentGuardians,
 } from "./recipients";
 import type { TemplateName } from "./templates";
@@ -21,6 +22,19 @@ import type { Channel, OutboxEventRow } from "./types";
 import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
 
 const uuid = z.uuid();
+// 030 appointment events (display values for the templates; no child data).
+const appointmentPayload = z
+  .object({
+    appointment_id: uuid,
+    starts_at: z.iso.datetime({ offset: true }),
+    ends_at: z.iso.datetime({ offset: true }),
+    provider_name: z.string().min(1).max(120),
+    mode: z.enum(["in_clinic", "video"]),
+    time_zone: z.string().min(1).max(64),
+    location: z.string().max(300).nullable().optional(),
+    cancelled_by: z.enum(["guardian", "provider", "system"]).optional(),
+  })
+  .strict();
 const userList = z.array(uuid).min(1).max(100);
 
 export type RecipientContext = { sql: Queryable; event: OutboxEventRow };
@@ -53,20 +67,15 @@ export const TOPICS = {
     devOnly: true,
     recipients: (_payload, { sql, event }) => existingUser(sql, event.aggregate_id),
   }),
-  // 027 registers thread participants here; until then the producer names recipients, re-checked against the child.
+  // 027 FR-3: enqueued by `create_message_thread` / `send_thread_message` in the sending transaction, 2 minutes later
+  // (aggregate = the thread). At fan-out: the child's active guardians, the case's assigned care team and anyone who
+  // started or wrote in the thread, still with access, minus the sender and anyone who has read the thread since
+  // the message; nobody once the message is deleted. Generic text only (no sender, child or body).
   "message.created": topic({
-    payload: z
-      .object({
-        message_id: uuid,
-        child_id: uuid.optional(),
-        case_id: uuid.optional(),
-        recipient_user_ids: userList.optional(),
-      })
-      .strict(),
+    payload: z.object({ message_id: uuid }).strict(),
     channels: GUARDIAN_CHANNELS,
     template: "message_created",
-    recipients: async (p, { sql }) =>
-      p.child_id && p.recipient_user_ids ? childAccessFilter(sql, p.child_id, p.recipient_user_ids) : [],
+    recipients: (p, { sql }) => threadMessageRecipients(sql, p.message_id),
   }),
   // 023: a provider document became visible to the guardians (enqueued by `complete_document` /
   // `set_document_visibility`). In-app + email only. At fan-out: active guardians, and only while the document is
@@ -181,6 +190,38 @@ export const TOPICS = {
     template: "privacy_deletion_rejected",
     recipients: (p, { sql }) => deletionRequester(sql, p.request_id, "rejected"),
   }),
+  // 030: enqueued by the booking SQL functions in the same transaction (supabase/migrations/20261113003000_booking.sql).
+  // Payload: small display values only (provider name, time, mode, location) - never the child.
+  "appointment.confirmed": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_confirmed",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"]),
+  }),
+  "appointment.reminder_day_before": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_reminder_24h",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"], "guardian"),
+  }),
+  "appointment.reminder_two_hours": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_reminder_2h",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"], "guardian"),
+  }),
+  "appointment.cancelled": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_cancelled",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["cancelled"]),
+  }),
+  "appointment.rescheduled": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_rescheduled",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"]),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -195,6 +236,11 @@ export const PROVIDER_TOPICS = {
 
 export const SHARING_TOPICS = {
   granted: "sharing.granted",
+} as const satisfies Record<string, Topic>;
+
+// 027 FR-3: enqueued by `create_message_thread` / `send_thread_message` (migration 20261113002700).
+export const MESSAGE_TOPICS = {
+  created: "message.created",
 } as const satisfies Record<string, Topic>;
 
 // 024: questionnaires (enqueued in the producing transactions in lib/assessments).
@@ -215,6 +261,15 @@ export const PRIVACY_TOPICS = {
   deletionRequested: "privacy.deletion_requested",
   deletionCompleted: "privacy.deletion_completed",
   deletionRejected: "privacy.deletion_rejected",
+} as const satisfies Record<string, Topic>;
+
+// 030: booking (enqueued by the SQL state machine; reminders cancelled with outbox_cancel('appt:<id>:')).
+export const APPOINTMENT_TOPICS = {
+  confirmed: "appointment.confirmed",
+  reminder24h: "appointment.reminder_day_before",
+  reminder2h: "appointment.reminder_two_hours",
+  cancelled: "appointment.cancelled",
+  rescheduled: "appointment.rescheduled",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

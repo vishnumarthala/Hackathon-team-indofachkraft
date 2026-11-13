@@ -5,7 +5,7 @@
 import { auditStrict } from "@/lib/audit";
 import { supabaseAdmin } from "@/lib/db";
 import { logger } from "@/lib/log";
-import { pg, type Sql } from "@/lib/pg";
+import { pg, type Queryable, type Sql } from "@/lib/pg";
 import { UNSAVED_RETENTION_DAYS } from "@/lib/screen/questions";
 
 const log = logger("retention");
@@ -75,6 +75,14 @@ export type RetentionOptions = { sql?: Sql; now?: Date; policy?: RetentionPolicy
 const hours = (n: number) => `${n} hours`;
 const days = (n: number) => `${n} days`;
 
+/** 033 FR-5: deletes public check-ins never saved to a child, 30 days after they started. Returns the count. */
+export async function purgeUnsavedScreenSessions(sql: Queryable, now: Date): Promise<number> {
+  const done = await sql`
+    delete from public.screen_sessions
+    where saved_child_id is null and created_at < ${now}::timestamptz - ${days(UNSAVED_RETENTION_DAYS)}::interval`;
+  return done.count;
+}
+
 export async function runRetention(opts: RetentionOptions = {}): Promise<RetentionCounts> {
   const sql = opts.sql ?? (await pg());
   const now = opts.now ?? new Date();
@@ -122,7 +130,7 @@ export async function runRetention(opts: RetentionOptions = {}): Promise<Retenti
   {
     const due = await sql<{ id: string; storage_path: string | null }[]>`
       select id, storage_path from public.recordings
-      where status = 'created' and kind = 'session' and created_at < ${now}::timestamptz - ${hours(p.pendingRecordingHours)}::interval
+      where status = 'created' and kind in ('session', 'consult') and created_at < ${now}::timestamptz - ${hours(p.pendingRecordingHours)}::interval
       limit 1000`;
     const paths = due.map((r) => r.storage_path).filter((x): x is string => Boolean(x));
     if (paths.length) await remove("recordings", paths);
@@ -230,11 +238,7 @@ export async function runRetention(opts: RetentionOptions = {}): Promise<Retenti
   ).count;
 
   // 033 FR-5: public check-ins that were never saved to a child, 30 days after they started (registry `screen_results`).
-  counts.unsaved_screen_sessions = (
-    await sql`
-      delete from public.screen_sessions
-      where saved_child_id is null and created_at < ${now}::timestamptz - ${days(UNSAVED_RETENTION_DAYS)}::interval`
-  ).count;
+  counts.unsaved_screen_sessions = await purgeUnsavedScreenSessions(sql, now);
 
   // FR-6: website sign-ups after 24 months; audit events after 7 years (maintenance function).
   counts.pilot_signups = (

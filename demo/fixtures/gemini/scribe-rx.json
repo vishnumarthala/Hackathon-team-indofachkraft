@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "drug": "Melatonin",
+      "strength": "2 mg",
+      "form": "tablet",
+      "dose": "1 tablet",
+      "frequency": "once daily, 30 minutes before bed",
+      "duration_days": 30,
+      "route": "oral",
+      "instructions": "Give at the same time every night.",
+      "citations": [
+        {
+          "segment_id": "s10",
+          "quote": "Start melatonin two milligram tablet, one tablet by mouth thirty minutes before bed, for thirty days."
+        }
+      ]
+    }
+  ],
+  "advice": "Fixed bedtime routine with no screens for one hour before bed. Blood count and ferritin.",
+  "follow_up": "In four weeks with a sleep diary."
+}

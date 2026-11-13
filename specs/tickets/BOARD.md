@@ -74,8 +74,8 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 023 | Document vault | done | solo | waits for 022 |
 | 024 | Assessment portal and shared clinical contracts | done | solo | waits for 022 |
 | 025 | IEP plans, SMART goals and progress tracking | done | solo | waits for 022, 024 |
-| 026 | Home program | draft | solo | waits for 023, 025 |
-| 027 | Secure messaging (guardian <-> care team) | draft | solo | waits for 022, 023, 032 |
+| 026 | Home program | done | solo | waits for 023, 025 |
+| 027 | Secure messaging (guardian <-> care team) | done | solo | waits for 022, 023, 032 |
 | 032 | Notifications - transactional outbox, scheduler, email / in-app / WhatsApp adapters | done | solo | waits for 020 |
 | 041 | Privacy, audit and operations baseline | done | solo | waits for 023, 032 |
 
@@ -85,7 +85,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 |---|-------|--------|------|------|
 | 028 | Public provider profiles, credential verification, admin seeding and claim links | done | solo | waits for 017, 018 |
 | 029 | PostGIS "near me" directory with Google Maps | done | solo | waits for 028 |
-| 030 | Availability and atomic one-off booking | draft | solo | waits for 028, 032, 041 |
+| 030 | Availability and atomic one-off booking | done | solo | waits for 028, 032, 041 |
 | 031 | Razorpay payments (test mode) | draft | solo | waits for 030 |
 | 033 | Voice developmental check-in (public screen) | draft | solo | waits for 020, 024, 029, 041 |
 | 034 | Voice booking agent (web widget on /find) | draft | solo | waits for 030, 033 |
@@ -98,7 +98,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | # | Title | Status | Mode | Runs |
 |---|-------|--------|------|------|
 | 037 | Google Meet for video appointments | draft | solo | waits for 030 |
-| 038 | AI scribe for any provider type | draft | solo | waits for 024, 025, 028, 041 |
+| 038 | AI scribe for any provider type | done | solo | waits for 024, 025, 028, 041 |
 | 039 | E-prescriptions for verified prescribers | draft | solo | waits for 021, 028, 038 |
 | 040 | Follow-up agent ("ask about my child's plan") | draft | solo | waits for 026, 033, 039 |
 

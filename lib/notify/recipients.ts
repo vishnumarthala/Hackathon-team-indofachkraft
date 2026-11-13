@@ -85,6 +85,16 @@ export async function visibleDocumentGuardians(sql: Queryable, documentId: strin
   return rows.map((r) => r.user_id);
 }
 
+/** 027 FR-3: who hears about a new message, decided by `message_notification_recipients` at fan-out: the child's
+ * active guardians, the case's assigned care team and anyone who started or wrote in the thread, while they can
+ * still access it, minus the sender and anyone whose read marker is at or after the message; nobody once the
+ * message is deleted. */
+export async function threadMessageRecipients(sql: Queryable, messageId: string): Promise<string[]> {
+  const rows = await sql<{ user_id: string }[]>`
+    select r.user_id from public.message_notification_recipients(${messageId}::uuid) as r(user_id)`;
+  return rows.map((r) => r.user_id);
+}
+
 /** 041: active platform admins (deletion requests to review). */
 export async function platformAdmins(sql: Queryable): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`
@@ -101,4 +111,21 @@ export async function assignedAssessmentGuardian(sql: Queryable, assessmentId: s
     join public.guardian_links gl on gl.child_id = a.child_id and gl.user_id = a.assigned_to and gl.status = 'active'
     where a.id = ${assessmentId} and a.child_id = ${childId} and a.status in ('assigned', 'in_progress')`;
   return rows.map((r) => r.user_id);
+}
+
+/** 030: the booking guardian and the provider bound to the profile, while the appointment is in one of `statuses`
+ * (re-read at fan-out: a reminder of a cancelled appointment reaches nobody). `who` narrows to one side. */
+export async function appointmentParties(
+  sql: Queryable,
+  appointmentId: string,
+  statuses: string[],
+  who: "both" | "guardian" = "both",
+): Promise<string[]> {
+  const rows = await sql<{ guardian: string | null; provider: string | null }[]>`
+    select g.id as guardian, case when ${who} = 'both' then p.user_id end as provider
+    from public.appointments a
+    join public.provider_profiles p on p.id = a.provider_profile_id
+    left join public.user_profiles g on g.id = a.guardian_user_id and g.role = 'guardian'
+    where a.id = ${appointmentId} and a.status in ${sql(statuses)}`;
+  return rows.flatMap((r) => [r.guardian, r.provider].filter((id): id is string => Boolean(id)));
 }

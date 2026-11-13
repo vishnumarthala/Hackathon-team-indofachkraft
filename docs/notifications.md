@@ -124,10 +124,10 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | Topic | Recipients (re-checked at fan-out) | Channels | Template |
 |-------|------------------------------------|----------|----------|
 | `test.ping` (dev / DEMO_MODE only) | the user `aggregate_id` | in-app, email, WhatsApp | `test_ping` (optional `ics_start` adds an invite) |
-| `message.created` (027) | `recipient_user_ids` still able to reach `child_id` (027 replaces this with thread participants who have not read the thread) | in-app, email, WhatsApp | `message_created` |
+| `message.created` (027, enqueued by `create_message_thread` / `send_thread_message` in the sending transaction, `deliver_after` = +2 min, aggregate = the thread, payload `{ message_id }`) | the child's active guardians, the case's assigned care team and anyone who started or wrote in the thread, still with access, minus the sender and anyone who read the thread at or after the message; nobody once the message is deleted (`docs/messaging.md`) | in-app, email, WhatsApp | `message_created` (links to `/family/messages/<thread>` or `/dashboard/messages/<thread>`) |
 | `document.shared_with_guardian` (023, enqueued by `complete_document` / `set_document_visibility` in the same transaction) | active guardians of the child, only while the document is still a ready, guardian-visible provider upload of that child | in-app, email | `document_shared` |
 | `iep.published` (025, enqueued by `publishPlan` in the publishing transaction, dedup `iep:<plan id>:v<published version>`) | active guardians of the child | in-app, email, WhatsApp | `iep_published` (links to `/family/children/<id>/plan`) |
-| `home_program.published` (026) | active guardians of the child | in-app, email, WhatsApp | `home_program_published` |
+| `home_program.published` (026, enqueued by `publishProgram` in the publishing transaction, dedup `home_program:<program id>:v<published version>`) | active guardians of the child | in-app, email, WhatsApp | `home_program_published` (links to `/family/children/<id>/home-program`) |
 | `assessment.assigned` (024, enqueued by `createAssessment`) | the assigned guardian only, while the questionnaire is open and their link active | in-app, email, WhatsApp | `assessment_assigned` |
 | `assessment.red_flag` (024) | providers who can access the case under 022's rule (org owners/admins + assigned care team; optionally only `recipient_user_ids`) | in-app, email | `assessment_red_flag` |
 | `assessment.submitted` (024, enqueued by `submitAssessment`) | providers who can access the case under 022's rule | in-app, email | `assessment_submitted` |
@@ -135,9 +135,12 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `provider.verified` / `.rejected` / `.suspended` / `.claimed` (028) | the provider bound to the profile | in-app, email | `provider_*` |
 | `privacy.export_ready` (041, enqueued with the export's `ready` update) | the requesting guardian, while still linked to the live child and the export is ready | in-app, email | `privacy_export_ready` (links to the child's Privacy page) |
 | `privacy.deletion_requested` (041) | platform admins | in-app, email | `privacy_deletion_requested` |
+| `appointment.confirmed` / `.reminder_day_before` / `.reminder_two_hours` / `.cancelled` / `.rescheduled` (030, enqueued by the booking SQL functions; dedup `appt:<id>:confirmed` / `:r24` / `:r2` / `:cancelled` / `:rescheduled`, cancelled with `outbox_cancel('appt:<id>:')`) | the booking guardian + the provider bound to the profile (reminders: guardian only), while the appointment is still in the matching status | in-app, email, WhatsApp | `appointment_*` (email `.ics` REQUEST / CANCEL; provider name, time in the clinic's zone, mode, place - never the child; see `docs/booking.md`) |
 | `privacy.deletion_completed` / `privacy.deletion_rejected` (041) | the requesting guardian (account only: the erasure revokes the link) | in-app, email | `privacy_deletion_completed` / `privacy_deletion_rejected` (reason shown in the app only) |
 
-Later tickets register their own (030: `appointment.*` with `.ics`; 031 payments; 037 Meet links).
+Later tickets register their own (030 done: `appointment.*` with `.ics`; 031 payments; 037 Meet links). Topic names
+allow no digits (`outbox_events_topic_check`), so 030's 24 h / 2 h reminders are `appointment.reminder_day_before` /
+`appointment.reminder_two_hours`.
 
 ## Delivery
 
@@ -224,8 +227,13 @@ for the text; for example:
 | `home_program_published` | UTILITY | `{{1}}` app link | Your child's care team shared new activities to do at home. Open: {{1}} |
 | `assessment_assigned` | UTILITY | `{{1}}` app link | Your child's care team sent you a questionnaire to fill in. Open: {{1}} |
 | `test_ping` (optional, ops check) | UTILITY | `{{1}}` app link | Notifications are working for your DoctorNearMe account. Open: {{1}} |
+| `appointment_confirmed` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} |
+| `appointment_reminder_24h` (030) | UTILITY | `{{1}}` app link | Reminder: you have a DoctorNearMe appointment tomorrow. Details: {{1}} |
+| `appointment_reminder_2h` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment starts in 2 hours. Details: {{1}} |
+| `appointment_cancelled` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment was cancelled. Details: {{1}} |
+| `appointment_rescheduled` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment was moved to a new time. Details: {{1}} |
 
-030 adds `appointment_confirmed`, reminders and cancellations; each later ticket adds its rows here. The
+030 added `appointment_*` (rows above); each later ticket adds its rows here. The
 template name sent to Meta is the DoctorNearMe template name; the language code is the recipient's UI
 locale. Until a template is approved, set nothing: deliveries stay `skipped` (`whatsapp_not_configured`).
 

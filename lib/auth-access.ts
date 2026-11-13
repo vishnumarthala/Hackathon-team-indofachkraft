@@ -14,6 +14,9 @@ export function isPublicApiPath(pathname: string): boolean {
     pathname === "/api/demo/voice-token" ||
     pathname === "/api/providers/join" ||
     pathname === "/api/public/providers" ||
+    // 030: free slots and holds work before sign-in (the hold route allows guardians or an anonymous booking session).
+    /^\/api\/public\/providers\/[^/]+\/slots$/.test(pathname) ||
+    pathname === "/api/appointments/hold" ||
     pathname === "/api/webhooks/elevenlabs" ||
     // 041 FR-12: public health check (no data).
     pathname === "/api/health" ||
@@ -89,6 +92,11 @@ function isProviderOnboardingPath(pathname: string): boolean {
   return pathname === "/join" || pathname.startsWith("/claim/");
 }
 
+/** 030: the public booking flow (`/book/<profileId>`); a guardian signing in mid-booking returns there. */
+export function isBookingPath(pathname: string): boolean {
+  return pathname.startsWith("/book/");
+}
+
 /** Where a signed-in user goes after sign-in (FR-3): `next` only when it belongs to the user's area. */
 export function postSignInPath(role: AppRole, next: string | null | undefined): string {
   const safe = safeRelativePath(next);
@@ -96,7 +104,7 @@ export function postSignInPath(role: AppRole, next: string | null | undefined): 
   const path = safe.split(/[?#]/)[0];
   if (isProviderOnboardingPath(path)) return safe;
   // 033: a guardian who signs in to save a check-in result comes back to `/screen`.
-  if (role === "guardian") return isFamilyPortalPath(path) || underPrefix(path, "/screen") ? safe : homeForRole(role);
+  if (role === "guardian") return isFamilyPortalPath(path) || isBookingPath(path) || underPrefix(path, "/screen") ? safe : homeForRole(role);
   return isFamilyPath(path) ? homeForRole(role) : safe;
 }
 

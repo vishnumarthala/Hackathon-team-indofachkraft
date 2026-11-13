@@ -93,3 +93,27 @@ Full log: `evidence/acceptance.txt` (40 PASS, 0 FAIL; script `evidence/acceptanc
 - The dev server logged a hydration warning about `caret-color` on inputs during the headless run; it comes from the
   screenshot tooling (same as noted in 024), not from the app.
 - The acceptance data (`e033-*` accounts, synthetic children and two synthetic listings) is left in the slot 7 database.
+
+## Merge with `main` (026 home program, 027 messaging, 038 AI scribe, 030 booking)
+
+- `git merge main`. Conflicts resolved keeping both sides: `lib/csp.ts` (`needsFamilyCsp` = family || 030 booking ||
+  033 `/screen`; 033's ElevenLabs `connect-src` exception kept), `lib/auth-access.ts` (`postSignInPath`: guardian may
+  return to family, booking (030) and `/screen` paths), `lib/privacy/registry.ts` (`screen_results` + 038 `ai_scribe` +
+  026 `home_programs` ...), `lib/audit/strict-actions.ts` (`screen.result_saved` + 038/026/027 actions),
+  `app/privacy/page.tsx` (`COLLECT` with `scribe`, `screen`, `homeProgram`, `appointments`, `messages`),
+  `app/family/(portal)/children/[id]/page.tsx` (026 `homeProgram` translator + 033 `Check-ins`), `messages/{en,hi,te}.json`
+  (deep union, no value clashes), `messages/REVIEW.md` regenerated (`npx tsx scripts/i18n-review.ts`, 2109 rows).
+  `tests/no-tracking.test.ts` (030's crawl changes + 033's `/screen` allowlist entry), `lib/privacy/third-party-allowlist.ts`,
+  `lib/privacy/retention.ts`, `lib/consent/features.ts`, docs merged automatically. `lib/elevenlabs/agent.ts` had no conflict.
+- **Test isolation fix:** the full suite became flaky (1 in ~3 runs) because 033's retention test ran the whole
+  `runRetention()` concurrently with 041's retention suite and processed that suite's due audio first. The 033 step is
+  now `purgeUnsavedScreenSessions(sql, now)` (called by `runRetention`, count key unchanged) and the 033 test ages and
+  purges its rows inside one transaction; 5 consecutive full runs green afterwards.
+- **Crawl fix (pre-existing on `main`):** the live no-tracking crawl requested `/family/messages/[threadId]` literally
+  (027's page) and got 404; the crawl now creates a synthetic thread on the crawl guardian's case (removed with the case)
+  and substitutes `[threadId]`.
+- After `dnm-db.sh 7 <worktree> reset` (25 migrations): `npm run lint` exit 0, `npm run typecheck` exit 0,
+  `npx vitest run` 78 files, 1231 passed, 11 skipped (the opt-in `CT_DB_TESTS` block + the live crawl; every DB suite ran),
+  `npm run build` exit 0, the eval command 2 files, 55 passed, `NO_TRACKING_BASE_URL=http://localhost:3070 npx vitest run
+  tests/no-tracking.test.ts` 13 passed (live crawl of every `/family/**` page incl. 026/027/030 pages); `/screen` 200 with
+  the strict CSP and `POST /api/screen/sessions` (voice, DEMO_MODE) 201 against the merged dev server.

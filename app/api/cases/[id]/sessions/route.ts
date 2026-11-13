@@ -1,12 +1,15 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
-import { requireCaseAccess } from "@/lib/authz";
+import { requireCaseActor } from "@/lib/authz";
 import { requireCaseConsent } from "@/lib/consent";
 import { supabaseAdmin } from "@/lib/db";
 import { fail, ok, parseJson } from "@/lib/http";
+import { pg } from "@/lib/pg";
 import { getCase } from "@/lib/queries/cases";
 import { deleteRecording, insertSessionRecording, nextSessionNumber, RECORDINGS_BUCKET } from "@/lib/queries/recordings";
+import { checkScribeAppointment } from "@/lib/scribe/appointments";
+import { defaultTemplateFor, isNoteTemplate, recordingKindFor, SCRIBE_TEMPLATES } from "@/lib/scribe/templates";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -32,12 +35,21 @@ const sessionSchema = z.object({
   mime_type: z.enum(Object.keys(EXT_BY_MIME) as [AudioMime, ...AudioMime[]], { error: "Unsupported audio type" }),
   size_bytes: z.number(sizeError).int(sizeError).min(1, sizeError).max(MAX_AUDIO_BYTES, sizeError),
   consent: z.boolean().optional(),
+  // 038 FR-3: `Session type` (default from the uploader's provider type) and optional in-clinic appointment.
+  template: z.enum(SCRIBE_TEMPLATES, { error: "Unknown session type" }).optional(),
+  appointment_id: z.uuid({ error: "Invalid appointment" }).nullable().optional(),
 });
+
+async function uploaderProviderType(userId: string): Promise<string | null> {
+  const { data, error } = await supabaseAdmin().from("provider_profiles").select("provider_type").eq("user_id", userId).maybeSingle();
+  if (error) throw new Error(`Could not load provider profile: ${error.message}`);
+  return (data as { provider_type: string } | null)?.provider_type ?? null;
+}
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: caseId } = await params;
-  const denied = await requireCaseAccess(caseId);
-  if (denied) return denied;
+  const gate = await requireCaseActor(caseId);
+  if ("response" in gate) return gate.response;
   const found = await getCase(caseId);
   if (!found) return fail(404, "Case not found");
   // 020 FR-7: no upload URL without the guardian's session_recording consent.
@@ -47,6 +59,21 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const parsed = await parseJson(req, sessionSchema);
   if ("response" in parsed) return parsed.response;
   const { mime_type, consent } = parsed.data;
+  const template = parsed.data.template ?? defaultTemplateFor(await uploaderProviderType(gate.actor.user.id));
+  const appointmentId = parsed.data.appointment_id ?? null;
+
+  // 038 FR-3: an AI scribe upload is only useful with AI processing allowed; each step re-checks it later.
+  if (isNoteTemplate(template)) {
+    for (const feature of ["ai_transcription", "ai_extraction"] as const) {
+      const missing = await requireCaseConsent(caseId, feature);
+      if (missing) return missing;
+    }
+  }
+  // 038 FR-3: in-clinic recordings only; a video (Meet) appointment is refused.
+  if (appointmentId) {
+    const check = await checkScribeAppointment(await pg(), appointmentId, { id: found.id, org_id: found.org_id, child_id: found.child_id ?? null });
+    if (!check.ok) return fail(check.status, check.error);
+  }
 
   const recordingId = randomUUID();
   const path = `${caseId}/${recordingId}.${EXT_BY_MIME[mime_type]}`;
@@ -58,6 +85,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       session_number: sessionNumber,
       storage_path: path,
       mime_type,
+      kind: recordingKindFor(template),
+      template,
+      uploaded_by: gate.actor.user.id,
+      appointment_id: appointmentId,
     });
   } catch {
     return fail(500, "Could not create the session");
@@ -70,13 +101,18 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 
   const base = { caseId, entity: "recording", entityId: recordingId };
-  await audit({ ...base, action: "recording.created", details: { session_number: sessionNumber, mime_type } });
+  await audit({
+    ...base,
+    action: "recording.created",
+    details: { session_number: sessionNumber, mime_type, template, ...(appointmentId ? { appointment_id: appointmentId } : {}) },
+  });
   if (consent === true) await audit({ ...base, action: "recording.consent", details: { consent: true } });
 
   return ok(
     {
       recording_id: recordingId,
       session_number: sessionNumber,
+      template,
       bucket: RECORDINGS_BUCKET,
       path,
       token: data.token,

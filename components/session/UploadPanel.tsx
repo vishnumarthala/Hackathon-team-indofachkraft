@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, type ChangeEvent } from "react";
+import { useFormatter, useT } from "@/lib/i18n/client";
+import { isNoteTemplate, SCRIBE_TEMPLATES, type ScribeTemplate } from "@/lib/scribe/templates";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 import {
   NETWORK_ERROR,
@@ -49,8 +51,17 @@ const deps: FlowDeps = {
   },
 };
 
-export function UploadPanel({ caseId }: { caseId: string }) {
+/** 038: appointment choices for the `Appointment` select (video ones are shown but cannot be chosen). */
+export type AppointmentOption = { id: string; starts_at: string | null; mode: "in_clinic" | "video" | "unknown" };
+
+export type ScribeUploadOptions = { defaultTemplate: ScribeTemplate; appointments: AppointmentOption[] };
+
+export function UploadPanel({ caseId, scribe }: { caseId: string; scribe?: ScribeUploadOptions }) {
   const router = useRouter();
+  const ts = useT("scribe");
+  const format = useFormatter();
+  const [template, setTemplate] = useState<ScribeTemplate>(scribe?.defaultTemplate ?? "child_dev_isaa");
+  const [appointmentId, setAppointmentId] = useState("");
   const progress = useRef<FlowProgress>(newProgress());
   const [file, setFile] = useState<File | null>(null);
   const [consent, setConsent] = useState(false);
@@ -80,6 +91,7 @@ export function UploadPanel({ caseId }: { caseId: string }) {
       file,
       progress: progress.current,
       deps,
+      ...(scribe ? { template, appointmentId: appointmentId || null } : {}),
       onStep: (step, state, error) =>
         setSteps((current) => ({ ...current, [step]: { state, error: state === "failed" ? (error ?? null) : null } })),
     });
@@ -118,6 +130,57 @@ export function UploadPanel({ caseId }: { caseId: string }) {
           </p>
         )}
       </div>
+
+      {scribe && (
+        <>
+          <div>
+            <label htmlFor="session-template" className="block text-sm font-medium text-slate-800">
+              {ts("upload.sessionType")}
+            </label>
+            <select
+              id="session-template"
+              value={template}
+              disabled={running || started}
+              onChange={(e) => setTemplate(e.target.value as ScribeTemplate)}
+              aria-describedby="session-template-hint"
+              className="mt-1 block min-h-11 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            >
+              {SCRIBE_TEMPLATES.map((key) => (
+                <option key={key} value={key}>
+                  {ts(`templates.${key}`)}
+                </option>
+              ))}
+            </select>
+            <p id="session-template-hint" className="mt-1 text-sm text-slate-600">
+              {ts("upload.inClinicOnly")}
+            </p>
+          </div>
+          {scribe.appointments.length > 0 && (
+            <div>
+              <label htmlFor="session-appointment" className="block text-sm font-medium text-slate-800">
+                {ts("upload.appointment")}
+              </label>
+              <select
+                id="session-appointment"
+                value={appointmentId}
+                disabled={running || started}
+                onChange={(e) => setAppointmentId(e.target.value)}
+                className="mt-1 block min-h-11 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+              >
+                <option value="">{ts("upload.noAppointment")}</option>
+                {scribe.appointments.map((a) => {
+                  const date = a.starts_at ? format.dateTime(a.starts_at) : a.id.slice(0, 8);
+                  return (
+                    <option key={a.id} value={a.id} disabled={a.mode === "video"}>
+                      {a.mode === "video" ? ts("upload.videoAppointment", { date }) : ts("upload.clinicAppointment", { date })}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+        </>
+      )}
 
       <div className="flex items-start gap-2">
         <input
@@ -159,7 +222,9 @@ export function UploadPanel({ caseId }: { caseId: string }) {
           return (
             <li key={id} data-step={id} data-state={step.state} className="px-3 py-2 text-sm">
               <div className="flex items-center justify-between gap-3">
-                <span className="font-medium text-slate-900">{STEP_LABELS[id]}</span>
+                <span className="font-medium text-slate-900">
+                  {id === "extract" && scribe && isNoteTemplate(template) ? ts("upload.stepScribe") : STEP_LABELS[id]}
+                </span>
                 <span className={step.state === "failed" ? "font-semibold text-red-700" : "text-slate-700"}>
                   {STATE_LABELS[step.state]}
                 </span>

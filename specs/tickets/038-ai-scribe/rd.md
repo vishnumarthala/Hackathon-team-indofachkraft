@@ -1,6 +1,6 @@
 # 038: AI scribe for any provider type
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 024, 025, 028, 041: uses report-kind/speaker contracts (024) and IEP goals for progress suggestions (025); provider types and the prescriber check (028); real child data needs the privacy/audit baseline (041)
 

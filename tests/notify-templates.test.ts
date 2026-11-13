@@ -13,10 +13,21 @@ const CHILD_NAME = "Asha Ramaswamy";
 const DENY = /autism|ISAA|diagnos|score/i;
 const APP = "https://app.doctornearme.test";
 
+// 030: display values only (provider, time, mode, place) - never the child.
+const APPOINTMENT = {
+  appointment_id: ID,
+  starts_at: "2026-11-20T05:00:00Z",
+  ends_at: "2026-11-20T05:30:00Z",
+  provider_name: "Dr Synthetic Rao",
+  mode: "in_clinic",
+  time_zone: "Asia/Kolkata",
+  location: "Synthetic Clinic, Road 1, Banjara Hills, Hyderabad 500034",
+};
+
 // A valid sample payload per topic.
 const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "test.ping": { ics_start: "2026-11-20T10:00:00+05:30" },
-  "message.created": { message_id: ID, child_id: CHILD, case_id: CASE, recipient_user_ids: [USER] },
+  "message.created": { message_id: ID },
   "document.shared_with_guardian": { document_id: ID, child_id: CHILD },
   "iep.published": { plan_id: ID, child_id: CHILD, case_id: CASE },
   "home_program.published": { program_id: ID, child_id: CHILD },
@@ -32,6 +43,11 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "privacy.deletion_requested": { request_id: ID, child_id: CHILD },
   "privacy.deletion_completed": { request_id: ID },
   "privacy.deletion_rejected": { request_id: ID, child_id: CHILD },
+  "appointment.confirmed": APPOINTMENT,
+  "appointment.reminder_day_before": APPOINTMENT,
+  "appointment.reminder_two_hours": APPOINTMENT,
+  "appointment.cancelled": { ...APPOINTMENT, cancelled_by: "provider" },
+  "appointment.rescheduled": APPOINTMENT,
 };
 
 const topics = Object.entries(TOPICS) as [keyof typeof TOPICS, (typeof TOPICS)[keyof typeof TOPICS]][];
@@ -75,6 +91,11 @@ describe("topic registry", () => {
         "privacy.deletion_requested",
         "privacy.deletion_completed",
         "privacy.deletion_rejected",
+        "appointment.confirmed",
+        "appointment.reminder_day_before",
+        "appointment.reminder_two_hours",
+        "appointment.cancelled",
+        "appointment.rescheduled",
       ].sort(),
     );
     for (const [, def] of topics) expect(TEMPLATES[def.template]).toBeDefined();
@@ -126,8 +147,9 @@ describe("templates", () => {
           event: { id: "1", aggregate_type: "thread", aggregate_id: ID },
         }).link,
     );
-    expect(guardian).toBe("/family/messages");
-    expect(provider).toBe(`/cases/${CASE}`);
+    // 027: straight to the thread (the event's aggregate), never naming the child or sender.
+    expect(guardian).toBe(`/family/messages/${ID}`);
+    expect(provider).toBe(`/dashboard/messages/${ID}`);
   });
 
   it("sharing_granted links grantee admins to the case's Shared with us tab", () => {
@@ -140,6 +162,22 @@ describe("templates", () => {
     });
     expect(out.link).toBe(`/cases/${CASE}/shared`);
     expect(out.whatsapp).toBeUndefined();
+  });
+
+  it("030 appointment templates: provider, IST time, place; .ics REQUEST/CANCEL; family vs provider pages", () => {
+    const base = { locale: "en" as const, appUrl: APP, event: { id: "1", aggregate_type: "appointment", aggregate_id: ID } };
+    const payload = SAMPLES["appointment.confirmed"] as never;
+    const confirmed = TEMPLATES.appointment_confirmed.render({ ...base, role: "guardian", payload });
+    expect(confirmed.body).toBe(
+      "Your appointment with Dr Synthetic Rao on 20 Nov 2026, 10:30 am IST is confirmed. In clinic: Synthetic Clinic, Road 1, Banjara Hills, Hyderabad 500034.",
+    );
+    expect(confirmed.link).toBe("/family/appointments");
+    expect(confirmed.email?.ics).toMatchObject({ method: "REQUEST", start: "2026-11-20T05:00:00Z", end: "2026-11-20T05:30:00Z" });
+    expect(TEMPLATES.appointment_confirmed.render({ ...base, role: "provider", payload }).link).toBe("/dashboard/schedule");
+    expect(TEMPLATES.appointment_cancelled.render({ ...base, role: "guardian", payload }).email?.ics?.method).toBe("CANCEL");
+    expect(TEMPLATES.appointment_reminder_2h.render({ ...base, role: "guardian", payload }).email?.ics).toBeUndefined();
+    const video = TEMPLATES.appointment_reminder_24h.render({ ...base, role: "guardian", payload: { ...(payload as object), mode: "video", location: null } as never });
+    expect(video.body).toContain("Video consultation");
   });
 
   it("test_ping adds a 30-minute calendar invite only when asked", () => {

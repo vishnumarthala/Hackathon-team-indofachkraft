@@ -1,0 +1,50 @@
+# 038 acceptance (dev server :3080, DEMO_MODE=true, slot 8, own headless Chromium) 2026-11-13T02:57:54.784Z
+
+## E-1: therapy session via the UI (provider_a, SLP)
+PASS Session type defaults to the provider type's template (SLP -> therapy) :: therapy_session_note
+PASS Appointment select lists the child's appointments; the video one cannot be chosen :: ["No appointment","13 Nov 2026, 3:56 am GMT+1 - video call (not available)","13 Nov 2026, 2:56 am GMT+1 - in clinic"]
+PASS review shows the AI label on the AI outputs :: labels=3
+PASS note citations are clickable audio jumps :: buttons=13
+PASS 2 goal suggestions with quotes :: suggestions=2
+PASS GET scribe: draft note, no Rx draft for the SLP
+PASS suggestions carry quotes and values (G1 count 4, G2 60%) :: [["Asha will make 5 two-word requests without a prompt",4,"In this game she made four two-word requests without any prompt."],["Asha will wait for her turn in 80% of turn-taking games",60,"She waited for her turn in six out of ten rolls today, that is sixty percent."]]
+PASS Accept -> goal_progress row `ai_suggested_confirmed` with the recording :: {"id":"299ca37c-7365-44ec-96c6-97111992c891","goal_id":"a055ecaa-6bf0-4e8e-9f18-4e50aa797108","recorded_by":"daa2d4ea-df13-4634-bc6b-8675844d9d25","observed_on":"2026-11-13","value":4,"note":"AI suggestion confirmed by the clinician (session 1).","source":"ai_suggested_confirmed","recording_id":"47e763d4-80a3-4fa1-92c2-4556747dd12e","created_at":"2026-11-13T02:58:04.177Z"}
+PASS Reject -> no progress row for the other goal :: {"progress":[]}
+PASS guardian chart shows the accepted value :: Asha will make 5 two-word requests without a prompt | Latest: 4 | Change from baseline: +3 | 75% of the way to the target | Record at least 2 values to see a trend. | 6 | 0
+
+## E-3: guardian sees nothing until the note is finalized and shared
+PASS guardian notes page: empty while the note is a draft
+PASS guardian cannot read the scribe API :: {"status":403,"body":{"error":"Provider access required"}}
+PASS finalized but not shared -> guardian still sees nothing
+PASS finalized + shared -> guardian sees the note (no audio links) :: From e038 Centre A (synthetic) |  | Shared on 13 November 2026 |  | Therapy session note | Goals worked on | Practised two-word requ
+PASS guardian notes page fits 375 px :: [375,375]
+PASS idempotent re-run keeps the final note :: final
+
+## E-2: medical consult with Rx draft (provider_rx, verified paediatrician)
+PASS prescriber consult -> 200 with rx_draft_id :: {"created":201,"upload":200,"transcribe":200,"scribe":200,"rx":"60b45bd3-9378-4e88-9d68-230ecd7ffa34"}
+PASS Rx draft card links to 039's prescriptions editor :: /cases/7a57f534-b293-432f-bb8f-08e09dadd46d/prescriptions?from_report_id=60b45bd3-9378-4e88-9d68-230ecd7ffa34
+PASS same consult audio by the SLP (non-prescriber) -> no rx_draft :: 200
+PASS non-prescriber does not see the prescriber's Rx draft
+
+## E-3: guards
+PASS upload for a video appointment -> 422 in-clinic only :: {"status":422,"body":{"error":"The AI scribe is available for in-clinic sessions only"}}
+
+## E-4: authz negatives
+PASS provider_b (other org) POST /api/sessions/:id/scribe -> 404 :: {"status":404,"body":{"error":"Session not found"}}
+PASS provider_b GET -> 404
+PASS provider_b accepting a goal suggestion of org A's case -> 404 :: {"status":404,"body":{"error":"Suggestion not found"}}
+PASS provider_b opening the review page -> 404
+
+ALL PASS
+
+
+## E-3: consent (guardian withdraws ai_extraction in the portal API)
+PASS guardian withdraws ai_extraction :: 200
+PASS scribe without ai_extraction -> 422 before Gemini :: {"error":"Guardian consent required","details":{"feature":"ai_extraction","child_id":"05658882-2078-4989-a8dc-c8669d111e17"}}
+PASS AI scribe upload without ai_extraction -> 422 :: {"error":"Guardian consent required","details":{"feature":"ai_extraction","child_id":"05658882-2078-4989-a8dc-c8669d111e17"}}
+PASS guardian grants ai_extraction again :: 201
+PASS scribe works again after the new grant :: 200
+ALL PASS
+
+## Post-merge (main with 026, 027)
+PASS post-merge: guardian child page links both Home program (026) and Session notes (038), 375 px :: [375,375]

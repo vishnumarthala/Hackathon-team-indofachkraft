@@ -2,7 +2,7 @@
 // ads, tag managers or social pixels, ever. Next.js reads the nonce from the request header and adds it
 // to its own scripts. Approved exceptions (product owner 2026-11-12) are added per route prefix below by the
 // ticket that needs them: the ElevenLabs SDK (033, 040) and Razorpay checkout (031). Nothing else.
-import { isFamilyPath } from "@/lib/auth-access";
+import { isBookingPath, isFamilyPath } from "@/lib/auth-access";
 
 type CspAllowance = { scriptSrc?: string[]; connectSrc?: string[]; frameSrc?: string[] };
 
@@ -31,7 +31,8 @@ export function isScreenPath(pathname: string): boolean {
 }
 
 export function needsFamilyCsp(pathname: string): boolean {
-  return isFamilyPath(pathname) || isScreenPath(pathname);
+  // 030: the booking flow shows the guardian's children, so it gets the same no-third-party policy.
+  return isFamilyPath(pathname) || isBookingPath(pathname) || isScreenPath(pathname);
 }
 
 function exceptionsFor(pathname: string): Required<CspAllowance> {
@@ -68,7 +69,8 @@ export function familyCsp(options: { pathname: string; nonce: string; supabaseUr
     ["style-src", ["'self'", "'unsafe-inline'"]],
     ["img-src", ["'self'", "data:", "blob:"]],
     ["font-src", ["'self'", "data:"]],
-    ["connect-src", ["'self'", ...(supabaseOrigin ? [supabaseOrigin] : []), ...extra.connectSrc]],
+    // 027: Supabase Realtime (messaging) connects over ws(s):// to the same Supabase host.
+    ["connect-src", ["'self'", ...(supabaseOrigin ? [supabaseOrigin, supabaseOrigin.replace(/^http/, "ws")] : []), ...extra.connectSrc]],
     ["frame-src", extra.frameSrc.length ? extra.frameSrc : ["'none'"]],
     ["object-src", ["'none'"]],
     ["base-uri", ["'self'"]],

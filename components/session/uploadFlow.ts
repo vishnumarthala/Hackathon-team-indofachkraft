@@ -1,6 +1,7 @@
 // Upload -> transcribe -> extract flow of the New session page (008 FR-3, FR-4, FR-5).
 // Pure of React so the retry rules can be unit tested with fake dependencies.
 import { withConsentHint } from "@/lib/consent/features";
+import { isNoteTemplate, type ScribeTemplate } from "@/lib/scribe/templates";
 
 export const MAX_AUDIO_BYTES = 52_428_800;
 // Keep in sync with the list accepted by POST /api/cases/:id/sessions (005).
@@ -63,8 +64,11 @@ export async function runFlow(args: {
   progress: FlowProgress;
   deps: FlowDeps;
   onStep: (step: StepId, state: StepState, error?: string) => void;
+  /** 038: `Session type` and optional appointment. AI scribe templates run the scribe as the third step. */
+  template?: ScribeTemplate;
+  appointmentId?: string | null;
 }): Promise<FlowResult> {
-  const { caseId, file, progress, deps, onStep } = args;
+  const { caseId, file, progress, deps, onStep, template, appointmentId } = args;
   const failed = (step: StepId, error: string): FlowResult => {
     onStep(step, "failed", error);
     return { ok: false, step, error };
@@ -78,6 +82,8 @@ export async function runFlow(args: {
         mime_type: file.type,
         size_bytes: file.size,
         consent: true,
+        ...(template ? { template } : {}),
+        ...(appointmentId ? { appointment_id: appointmentId } : {}),
       });
       const { recording_id, path, token } = res.json;
       if (!res.ok || typeof recording_id !== "string" || typeof path !== "string" || typeof token !== "string") {
@@ -102,8 +108,9 @@ export async function runFlow(args: {
   onStep("transcribe", "done");
 
   onStep("extract", "running");
-  const res = await deps.post(`/api/sessions/${recordingId}/extract`);
-  if (!res.ok) return failed("extract", apiError(res, "Extraction failed"));
+  const scribe = isNoteTemplate(template);
+  const res = await deps.post(`/api/sessions/${recordingId}/${scribe ? "scribe" : "extract"}`);
+  if (!res.ok) return failed("extract", apiError(res, scribe ? "The AI scribe failed" : "Extraction failed"));
   onStep("extract", "done");
   return { ok: true, recordingId };
 }
