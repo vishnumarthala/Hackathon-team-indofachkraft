@@ -65,7 +65,8 @@ app.` via `withConsentHint()` (`lib/consent/features.ts`, safe in the browser).
   `requireChildGuardianPage(childId)`.
 - Providers: only through a case of their own org: `requireCaseAccess` / `requireCaseActor` (017), and
   `requireChildAccessViaCase(childId, caseId)` when a child id comes from the client. Two orgs with cases for
-  the same child never see each other's case data (cross-org sharing is ticket 022).
+  the same child never see each other's case data unless a guardian shares records (ticket 022,
+  `docs/sharing.md`). Since 022 a plain org member needs an assignment to the case.
 - Providers can never give consent digitally (`/api/family/**` -> 403). They record **paper** consent.
 - Platform admins revoke a guardian link with `POST /api/admin/guardian-links/:id/revoke`.
 - Ticket 028's provider self-registration refuses accounts with an active guardian link

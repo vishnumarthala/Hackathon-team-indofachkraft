@@ -9,7 +9,14 @@ export const PROVIDER_TOPICS = {
   claimed: "provider.claimed",
 } as const;
 
-export type NotifyTopic = (typeof PROVIDER_TOPICS)[keyof typeof PROVIDER_TOPICS];
+// Ticket 022 FR-5: a guardian shared a child's records with an organisation (recipients: grantee org owners/admins).
+export const SHARING_TOPICS = {
+  granted: "sharing.granted",
+} as const;
+
+export type NotifyTopic =
+  | (typeof PROVIDER_TOPICS)[keyof typeof PROVIDER_TOPICS]
+  | (typeof SHARING_TOPICS)[keyof typeof SHARING_TOPICS];
 
 export type NotifyPayload = Record<string, string | number | boolean | null>;
 

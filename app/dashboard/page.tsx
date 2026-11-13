@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const { user } = await requireProviderPage();
   const orgIds = await getActiveOrgIds(user.id);
-  const cases = await listCases(orgIds);
+  const cases = orgIds.length > 0 ? await listCases(user.id) : [];
   const timeZone = await getTimeZone();
 
   return (

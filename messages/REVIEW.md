@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 891. Not yet approved: 891.
+Rows: 974. Not yet approved: 974.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -755,6 +755,37 @@ Rows: 891. Not yet approved: 891.
 | `family.children.overview.leave` | Remove this child from my account | इस बच्चे को मेरे खाते से हटाएँ | ఈ బిడ్డను నా ఖాతా నుండి తీసివేయండి |  | pending |
 | `family.children.overview.leaveConfirm` | Remove {name} from your account? You will lose access until a new code links you again. | {name} को अपने खाते से हटाएँ? नया कोड जोड़ने तक आपकी पहुँच नहीं रहेगी। | {name} ను మీ ఖాతా నుండి తీసివేయాలా? కొత్త కోడ్ మళ్ళీ లింక్ చేసే వరకు మీకు యాక్సెస్ ఉండదు. |  | pending |
 | `family.children.overview.leaving` | Removing... | हटाया जा रहा है... | తీసివేస్తోంది... |  | pending |
+| `family.children.team.link` | Care team and sharing | देखभाल टीम और साझा करना | సంరక్షణ టీమ్, పంచుకోవడం |  | pending |
+| `family.children.team.back` | Back to {name} | {name} पर वापस | {name}కు వెనుకకు |  | pending |
+| `family.children.team.title` | Care team | देखभाल टीम | సంరక్షణ టీమ్ |  | pending |
+| `family.children.team.intro` | The providers looking after {name}, by organisation. | {name} की देखभाल करने वाले प्रदाता, संस्था के अनुसार। | {name}ను చూసుకుంటున్న ప్రొవైడర్లు, సంస్థల వారీగా. |  | pending |
+| `family.children.team.noOrgs` | No organisation is treating {name} yet. When your therapist gives you a code, add it under My children. | अभी कोई संस्था {name} का इलाज नहीं कर रही है। जब आपके थेरेपिस्ट आपको कोड दें, तो उसे मेरे बच्चे में जोड़ें। | ఇంకా ఏ సంస్థా {name}కు చికిత్స చేయడం లేదు. మీ థెరపిస్ట్ మీకు కోడ్ ఇచ్చినప్పుడు, దాన్ని నా పిల్లలులో జోడించండి. |  | pending |
+| `family.children.team.noProviders` | No providers assigned yet. | अभी कोई प्रदाता नहीं लगा है। | ఇంకా ఏ ప్రొవైడర్‌నూ కేటాయించలేదు. |  | pending |
+| `family.children.team.lead` | Lead | मुख्य | ముఖ్య |  | pending |
+| `family.children.team.member` | Member | सदस्य | సభ్యులు |  | pending |
+| `family.children.team.unnamed` | Care team member | देखभाल टीम सदस्य | సంరక్షణ టీమ్ సభ్యులు |  | pending |
+| `family.children.team.sharingTitle` | Sharing | साझा करना | పంచుకోవడం |  | pending |
+| `family.children.team.sharingIntro` | Share records between your providers | अपने प्रदाताओं के बीच रिकॉर्ड साझा करें | మీ ప్రొవైడర్ల మధ్య రికార్డులను పంచుకోండి |  | pending |
+| `family.children.team.sharingExplain` | Each organisation sees only its own records unless you share. You choose what to share and you can stop at any time. | जब तक आप साझा न करें, हर संस्था सिर्फ़ अपने रिकॉर्ड देखती है। क्या साझा करना है, यह आप चुनते हैं और आप कभी भी बंद कर सकते हैं। | మీరు పంచుకుంటే తప్ప, ప్రతి సంస్థ తన రికార్డులను మాత్రమే చూస్తుంది. ఏమి పంచుకోవాలో మీరే ఎంచుకుంటారు, ఎప్పుడైనా ఆపవచ్చు. |  | pending |
+| `family.children.team.needTwo` | Sharing is possible when two or more organisations are treating {name}. | जब दो या ज़्यादा संस्थाएँ {name} का इलाज कर रही हों, तब साझा किया जा सकता है। | రెండు లేదా అంతకంటే ఎక్కువ సంస్థలు {name}కు చికిత్స చేస్తున్నప్పుడు పంచుకోవచ్చు. |  | pending |
+| `family.children.team.pair` | From {from} to {to} | {from} से {to} को | {from} నుండి {to}కు |  | pending |
+| `family.children.team.what` | What to share | क्या साझा करें | ఏమి పంచుకోవాలి |  | pending |
+| `family.children.team.howLong` | For how long | कितने समय के लिए | ఎంత కాలం |  | pending |
+| `family.children.team.forever` | Until I stop it | जब तक मैं बंद न करूँ | నేను ఆపే వరకు |  | pending |
+| `family.children.team.months3` | 3 months | 3 महीने | 3 నెలలు |  | pending |
+| `family.children.team.months12` | 12 months | 12 महीने | 12 నెలలు |  | pending |
+| `family.children.team.share` | Share | साझा करें | పంచుకోండి |  | pending |
+| `family.children.team.saving` | Saving… | सेव कर रहे हैं… | సేవ్ చేస్తున్నాం… |  | pending |
+| `family.children.team.stop` | Stop sharing | साझा करना बंद करें | పంచుకోవడం ఆపండి |  | pending |
+| `family.children.team.stopping` | Stopping… | बंद कर रहे हैं… | ఆపుతున్నాం… |  | pending |
+| `family.children.team.stopConfirm` | Stop sharing with {org}? They lose access straight away. | {org} के साथ साझा करना बंद करें? उनकी पहुँच तुरंत खत्म हो जाएगी। | {org}తో పంచుకోవడం ఆపాలా? వారి యాక్సెస్ వెంటనే ముగుస్తుంది. |  | pending |
+| `family.children.team.sharedScopes` | Shared: {scopes} | साझा: {scopes} | పంచుకున్నవి: {scopes} |  | pending |
+| `family.children.team.sharedUntil` | Until {date} | {date} तक | {date} వరకు |  | pending |
+| `family.children.team.sharedUntilStopped` | Until you stop it | जब तक आप बंद न करें | మీరు ఆపే వరకు |  | pending |
+| `family.children.team.notShared` | Not shared | साझा नहीं | పంచుకోలేదు |  | pending |
+| `family.children.team.chooseScope` | Choose at least one type of record. | कम से कम एक तरह का रिकॉर्ड चुनें। | కనీసం ఒక రకమైన రికార్డును ఎంచుకోండి. |  | pending |
+| `family.children.team.notTreating` | This organisation is not treating your child | यह संस्था आपके बच्चे का इलाज नहीं कर रही है | ఈ సంస్థ మీ పిల్లలకు చికిత్స చేయడం లేదు |  | pending |
+| `family.children.team.saveFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `directory.title` | Find a provider near you | अपने पास कोई विशेषज्ञ खोजें | మీ దగ్గర నిపుణులను కనుగొనండి |  | pending |
 | `directory.intro` | Verified child-development specialists and centres in Hyderabad. Search by locality or PIN code. | हैदराबाद में सत्यापित बाल-विकास विशेषज्ञ और केंद्र। इलाके या पिन कोड से खोजें। | హైదరాబాద్‌లో ధృవీకరించబడిన పిల్లల అభివృద్ధి నిపుణులు మరియు కేంద్రాలు. ప్రాంతం లేదా పిన్ కోడ్‌తో వెతకండి. |  | pending |
 | `directory.metaTitle` | Find child-development specialists near you in Hyderabad \| DoctorNearMe | हैदराबाद में अपने पास बाल-विकास विशेषज्ञ खोजें \| DoctorNearMe | హైదరాబాద్‌లో మీ దగ్గర పిల్లల అభివృద్ధి నిపుణులను కనుగొనండి \| DoctorNearMe |  | pending |
@@ -906,3 +937,55 @@ Rows: 891. Not yet approved: 891.
 | `consentForm.print` | Print | प्रिंट करें | ప్రింట్ చేయండి |  | pending |
 | `consentForm.notConsent` | Printing this form is not consent. It counts only after the signed form is recorded by the centre. | यह फ़ॉर्म प्रिंट करना सहमति नहीं है। यह तभी मान्य है जब केंद्र हस्ताक्षरित फ़ॉर्म दर्ज करे। | ఈ ఫారం ప్రింట్ చేయడం సమ్మతి కాదు. సంతకం చేసిన ఫారాన్ని కేంద్రం నమోదు చేసిన తర్వాతే ఇది లెక్కలోకి వస్తుంది. |  | pending |
 | `consentForm.language` | Form language | फ़ॉर्म की भाषा | ఫారం భాష |  | pending |
+| `caseTabs.label` | Case sections | केस के हिस्से | కేసు విభాగాలు |  | pending |
+| `caseTabs.overview` | Overview | सारांश | సారాంశం |  | pending |
+| `caseTabs.brief` | Brief | ब्रीफ़ | బ్రీఫ్ |  | pending |
+| `caseTabs.sessions` | Sessions | सत्र | సెషన్లు |  | pending |
+| `caseTabs.report` | Report | रिपोर्ट | రిపోర్ట్ |  | pending |
+| `caseTabs.referral` | Referral | रेफ़रल | రిఫరల్ |  | pending |
+| `caseTabs.team` | Team | टीम | టీమ్ |  | pending |
+| `caseTabs.shared` | Shared with us | हमसे साझा | మాతో పంచుకున్నవి |  | pending |
+| `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
+| `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
+| `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
+| `sharing.scopes.home_program` | Home program | घर का कार्यक्रम | ఇంటి కార్యక్రమం |  | pending |
+| `sharing.scopes.documents` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
+| `sharing.scopes.health_profile` | Health profile | स्वास्थ्य प्रोफ़ाइल | ఆరోగ్య ప్రొఫైల్ |  | pending |
+| `careTeam.title` | Care team | देखभाल टीम | సంరక్షణ టీమ్ |  | pending |
+| `careTeam.intro` | Providers assigned to this case. Organisation owners and admins can open every case of the organisation; other members only the cases they are assigned to. | इस केस पर लगे प्रदाता। संस्था के मालिक और एडमिन संस्था का हर केस खोल सकते हैं; बाकी सदस्य सिर्फ़ वे केस जिन पर वे लगे हैं। | ఈ కేసుకు కేటాయించిన ప్రొవైడర్లు. సంస్థ యజమానులు, అడ్మిన్‌లు సంస్థలోని ప్రతి కేసును తెరవగలరు; మిగతా సభ్యులు తమకు కేటాయించిన కేసులను మాత్రమే. |  | pending |
+| `careTeam.empty` | Nobody is assigned to this case yet. | इस केस पर अभी कोई नहीं लगा है। | ఈ కేసుకు ఇంకా ఎవరినీ కేటాయించలేదు. |  | pending |
+| `careTeam.lead` | Lead | मुख्य | ముఖ్య |  | pending |
+| `careTeam.member` | Member | सदस्य | సభ్యులు |  | pending |
+| `careTeam.you` | (you) | (आप) | (మీరు) |  | pending |
+| `careTeam.unnamed` | Unnamed provider | बिना नाम के प्रदाता | పేరు లేని ప్రొవైడర్ |  | pending |
+| `careTeam.leftOrg` | No longer in the organisation | अब संस्था में नहीं | ఇప్పుడు సంస్థలో లేరు |  | pending |
+| `careTeam.remove` | Remove | हटाएँ | తొలగించండి |  | pending |
+| `careTeam.removing` | Removing… | हटा रहे हैं… | తొలగిస్తున్నాం… |  | pending |
+| `careTeam.removeConfirm` | Remove {name} from the care team? Unless they are an organisation owner or admin, they lose access to this case straight away. | {name} को देखभाल टीम से हटाएँ? अगर वे संस्था के मालिक या एडमिन नहीं हैं, तो वे तुरंत इस केस तक पहुँच खो देंगे। | {name}ను సంరక్షణ టీమ్ నుండి తొలగించాలా? వారు సంస్థ యజమాని లేదా అడ్మిన్ కాకపోతే, వెంటనే ఈ కేసుకు యాక్సెస్ కోల్పోతారు. |  | pending |
+| `careTeam.makeLead` | Make lead | मुख्य बनाएँ | ముఖ్యులుగా చేయండి |  | pending |
+| `careTeam.addTitle` | Add provider | प्रदाता जोड़ें | ప్రొవైడర్‌ను జోడించండి |  | pending |
+| `careTeam.person` | Provider | प्रदाता | ప్రొవైడర్ |  | pending |
+| `careTeam.choose` | Choose a person | कोई व्यक्ति चुनें | ఒక వ్యక్తిని ఎంచుకోండి |  | pending |
+| `careTeam.discipline` | Discipline | विशेषज्ञता | నిపుణత |  | pending |
+| `careTeam.disciplineHint` | For example Speech therapist. Leave empty to use their profile. | जैसे स्पीच थेरेपिस्ट। उनकी प्रोफ़ाइल से लेने के लिए खाली छोड़ें। | ఉదా. స్పీచ్ థెరపిస్ట్. వారి ప్రొఫైల్ నుండి తీసుకోవడానికి ఖాళీగా వదలండి. |  | pending |
+| `careTeam.role` | Role on this case | इस केस में भूमिका | ఈ కేసులో పాత్ర |  | pending |
+| `careTeam.add` | Add provider | प्रदाता जोड़ें | ప్రొవైడర్‌ను జోడించండి |  | pending |
+| `careTeam.adding` | Adding… | जोड़ रहे हैं… | జోడిస్తున్నాం… |  | pending |
+| `careTeam.noCandidates` | Everyone in your organisation is already on this care team. | आपकी संस्था के सभी लोग पहले से इस देखभाल टीम में हैं। | మీ సంస్థలోని అందరూ ఇప్పటికే ఈ సంరక్షణ టీమ్‌లో ఉన్నారు. |  | pending |
+| `careTeam.managersOnly` | Only the case lead or an organisation owner or admin can change the care team. | सिर्फ़ केस के मुख्य प्रदाता या संस्था के मालिक या एडमिन देखभाल टीम बदल सकते हैं। | కేసు ముఖ్య ప్రొవైడర్ లేదా సంస్థ యజమాని లేదా అడ్మిన్ మాత్రమే సంరక్షణ టీమ్‌ను మార్చగలరు. |  | pending |
+| `careTeam.lastLead` | Assign another lead first | पहले किसी और को मुख्य बनाएँ | ముందు మరొకరిని ముఖ్యులుగా కేటాయించండి |  | pending |
+| `careTeam.notInOrg` | This person is not in your organisation | यह व्यक्ति आपकी संस्था में नहीं है | ఈ వ్యక్తి మీ సంస్థలో లేరు |  | pending |
+| `careTeam.alreadyOnTeam` | This person is already on the care team | यह व्यक्ति पहले से देखभाल टीम में है | ఈ వ్యక్తి ఇప్పటికే సంరక్షణ టీమ్‌లో ఉన్నారు |  | pending |
+| `careTeam.saveFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `sharedWithUs.title` | Shared with us | हमसे साझा | మాతో పంచుకున్నవి |  | pending |
+| `sharedWithUs.intro` | Records that the child's parent has shared with your organisation from their other providers. Read only. | बच्चे के माता-पिता ने अपने दूसरे प्रदाताओं के जो रिकॉर्ड आपकी संस्था से साझा किए हैं। सिर्फ़ पढ़ने के लिए। | పిల్లల తల్లిదండ్రులు తమ ఇతర ప్రొవైడర్ల నుండి మీ సంస్థతో పంచుకున్న రికార్డులు. చదవడానికి మాత్రమే. |  | pending |
+| `sharedWithUs.empty` | Nothing has been shared with your organisation for this child. | इस बच्चे के लिए आपकी संस्था से अभी कुछ साझा नहीं किया गया है। | ఈ పిల్లల కోసం మీ సంస్థతో ఇంకా ఏమీ పంచుకోలేదు. |  | pending |
+| `sharedWithUs.from` | From {org} | {org} से | {org} నుండి |  | pending |
+| `sharedWithUs.until` | Shared until {date} | {date} तक साझा | {date} వరకు పంచుకున్నారు |  | pending |
+| `sharedWithUs.untilStopped` | Shared until the parent stops it | जब तक माता-पिता बंद न करें, तब तक साझा | తల్లిదండ్రులు ఆపే వరకు పంచుకున్నారు |  | pending |
+| `sharedWithUs.notAvailable` | Shared, but this type of record is not available in DoctorNearMe yet. | साझा किया गया है, पर इस तरह के रिकॉर्ड अभी DoctorNearMe में उपलब्ध नहीं हैं। | పంచుకున్నారు, కానీ ఈ రకం రికార్డులు ఇంకా DoctorNearMeలో అందుబాటులో లేవు. |  | pending |
+| `sharedWithUs.noItems` | Nothing of this type has been shared yet. | इस तरह का कुछ भी अभी साझा नहीं किया गया है। | ఈ రకమైనవి ఇంకా ఏమీ పంచుకోలేదు. |  | pending |
+| `sharedWithUs.open` | Open | खोलें | తెరవండి |  | pending |
+| `sharedWithUs.back` | Back to shared records | साझा रिकॉर्ड पर वापस | పంచుకున్న రికార్డులకు వెనుకకు |  | pending |
+| `sharedWithUs.readOnly` | Shared by {org}. Read only. | {org} ने साझा किया। सिर्फ़ पढ़ने के लिए। | {org} పంచుకున్నారు. చదవడానికి మాత్రమే. |  | pending |
+| `sharedWithUs.openFailed` | Could not open this record. Please try again. | यह रिकॉर्ड नहीं खुल सका। कृपया फिर से कोशिश करें। | ఈ రికార్డును తెరవలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
