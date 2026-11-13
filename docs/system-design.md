@@ -467,6 +467,14 @@ webhook): confirms through 030's helpers, re-books a late payment's slot if stil
 `appointments` apply the cancellation refund policy and move a payment with a reschedule. Migration
 `20261113003100_payments.sql`; details in `docs/payments.md`.
 
+### Ratings (ticket 036)
+
+`ratings` (one per completed appointment, written by its booking guardian within 30 days, editable for 7 days; 1-5
+stars, optional comment <= 500 screened for names/contact details; status `published` / `pending_review` / `hidden`)
+and the view `provider_rating_summary` (published only), which fills 029's `search_providers` `rating_avg` (from 3
+ratings) / `rating_count`. A trigger on `appointments` enqueues `appointment.rate_prompt` 2 h after completion. Migration
+`20261113003600_ratings.sql`; details in `docs/ratings.md`.
+
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
 ```ts
@@ -642,6 +650,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
 | `GET /api/integrations/google/{connect,callback,connection}`, `POST /api/integrations/google/disconnect`, `POST /api/appointments/:id/meet-link` | 037 | see `docs/google-meet.md` | 303 redirects (connect/callback, `?error=state` on a state mismatch); 404 other providers' profiles/appointments; 400 non-Meet link; 422 `Link your Google account to book a video consultation` on video holds/confirms |
 | `POST /api/appointments/:id/payment-order`, `POST /api/payments/verify`, `POST /api/payments/demo` (DEMO_MODE), `POST /api/webhooks/razorpay` (public, signed), `GET\|POST /api/cron/payments` | 031 | see `docs/payments.md` | 200 `{ key_id, order_id, amount_paise, currency, prefill }`; verify 400 signature mismatch; webhook 401 bad signature, 200 `{ received: true, duplicate: true }` on replay; 404 other owners; 409 nothing to pay / already paid; 410 hold expired |
+| `POST\|PATCH /api/appointments/:id/rating`, `POST /api/ratings/:id/report`, `POST /api/admin/ratings/:id` | 036 | see `docs/ratings.md` | 201 / 200; 403 `You can rate only your completed appointments`; 409 duplicate; 422 `Please remove names and contact details from your comment`; report: provider side only (404 otherwise); moderation: platform admin only (403) |
 | `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |

@@ -10,6 +10,7 @@ import { getFormatter, getT } from "@/lib/i18n/server";
 import { guardianIntakeNotices, type GuardianIntakeNotice } from "@/lib/intake/attempts";
 import { PAYMENT_LABEL_STYLE, paymentHoldOpen, paymentLabel } from "@/lib/payments/display";
 import { listPaymentsForAppointments } from "@/lib/payments/store";
+import { listGuardianRatings, listRateableAppointmentIds } from "@/lib/ratings/store";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,10 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
   const tp = await getT("payments");
   const payments = await listPaymentsForAppointments(all.map((a) => a.id));
   const { upcoming, past } = splitAppointments(all);
+  // 036 FR-5: `Rate this visit` on completed visits that can still be rated; the guardian's own rating otherwise.
+  const tr = await getT("ratings");
+  const completedIds = all.filter((a) => a.status === "completed").map((a) => a.id);
+  const [rateable, ratings] = await Promise.all([listRateableAppointmentIds(user.id, completedIds), listGuardianRatings(user.id, completedIds)]);
   // 035: the pre-consult intake of upcoming appointments (call link, consent hint or done).
   const intakes = await guardianIntakeNotices(user.id);
   const intakeNote = (notice: GuardianIntakeNotice | undefined) => {
@@ -118,6 +123,23 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
             ) : null}
             {changeable || a.status === "pending_payment" ? <CancelAppointmentButton appointmentId={a.id} /> : null}
             {a.status === "confirmed" && !changeable ? <p className="text-sm text-slate-600">{t("list.cancelWindow")}</p> : null}
+          </div>
+        ) : null}
+        {rateable.has(a.id) ? (
+          <Link href={`/family/appointments/${a.id}/rate`} className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700">
+            {tr("family.rate")}
+          </Link>
+        ) : null}
+        {ratings.has(a.id) ? (
+          <div className="flex flex-wrap items-center gap-2 text-sm text-slate-700" data-testid="my-rating">
+            <span>{tr("family.youRated", { stars: ratings.get(a.id)!.stars })}</span>
+            {ratings.get(a.id)!.status === "pending_review" ? <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900">{tr("family.underReview")}</span> : null}
+            {ratings.get(a.id)!.status === "hidden" ? <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{tr("family.hidden")}</span> : null}
+            {ratings.get(a.id)!.editable ? (
+              <Link href={`/family/appointments/${a.id}/rate`} className="inline-flex min-h-11 items-center font-medium text-teal-800 underline">
+                {tr("family.edit")}
+              </Link>
+            ) : null}
           </div>
         ) : null}
       </li>

@@ -336,6 +336,35 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "applyPaymentCaptured",
     impl: { kind: "auditStrict", module: "lib/payments/store.ts" },
   },
+  // ---------- 036 ratings (guardian writes, provider reports, admin moderation) ----------
+  {
+    action: "rating.created",
+    description: "Guardian rates a completed appointment",
+    routes: ["app/api/appointments/[id]/rating/route.ts"],
+    call: "createRating",
+    impl: { kind: "auditStrict", module: "lib/ratings/store.ts" },
+  },
+  {
+    action: "rating.updated",
+    description: "Guardian changes their rating within 7 days",
+    routes: ["app/api/appointments/[id]/rating/route.ts"],
+    call: "updateRating",
+    impl: { kind: "auditStrict", module: "lib/ratings/store.ts" },
+  },
+  {
+    action: "rating.reported",
+    description: "Provider reports a rating (taken off the profile until an admin decides)",
+    routes: ["app/api/ratings/[id]/report/route.ts"],
+    call: "reportRating",
+    impl: { kind: "auditStrict", module: "lib/ratings/store.ts" },
+  },
+  {
+    action: "rating.moderated",
+    description: "Platform admin publishes or hides a rating",
+    routes: ["app/api/admin/ratings/[id]/route.ts"],
+    call: "moderateRating",
+    impl: { kind: "auditStrict", module: "lib/ratings/store.ts" },
+  },
 ];
 
 export function strictAction(action: string): StrictAction | undefined {

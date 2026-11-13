@@ -16,6 +16,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const tn = await getT("notifications");
   const tb = await getT("booking.schedule");
   const tm = await getT("messaging");
+  const tr = await getT("ratings");
 
   return (
     <>
@@ -37,6 +38,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/schedule">
               {tb("nav")}
             </Link>
+            <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/ratings">
+              {tr("provider.nav")}
+            </Link>
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/settings">
               {tn("settingsLink")}
             </Link>
@@ -53,6 +57,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 </Link>
                 <Link className="text-sm font-medium text-slate-700 underline" href="/admin/notifications">
                   {tn("title")}
+                </Link>
+                <Link className="text-sm font-medium text-slate-700 underline" href="/admin/ratings">
+                  {tr("admin.title")}
                 </Link>
               </>
             ) : null}

@@ -562,6 +562,33 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 036 NFR-2: verified-booking ratings. The guardian's own data (rows go with their account: FK on delete cascade).
+    // Listed before `appointments` so the erasure deletes them while the appointments still name the child.
+    key: "ratings",
+    label: "Ratings and comments given after completed appointments",
+    owner: "user",
+    tables: ["ratings"],
+    retention:
+      "While the account is active; deleted with the guardian's account, and with the child's appointments when everything is erased.",
+    processors: ["supabase"],
+    export: async ({ sql, childId, guardianUserId }) => {
+      // Only the requesting guardian's ratings of this child's appointments (what /family/appointments shows them).
+      const rows = await sql`
+        select r.appointment_id, p.display_name as provider, r.stars, r.comment, r.status, r.created_at, r.edited_at
+        from public.ratings r
+        join public.appointments a on a.id = r.appointment_id
+        join public.provider_profiles p on p.id = r.provider_profile_id
+        where a.child_id = ${childId} and r.guardian_user_id = ${guardianUserId}
+        order by r.created_at`;
+      return { data: rowsJson(rows) };
+    },
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) =>
+        (await tx`delete from public.ratings where appointment_id in (select id from public.appointments where child_id = ${ctx.childId})`).count,
+    },
+  },
+  {
     // 030 NFR-4. Retention period pending legal review (rd.md open question): kept as the provider's schedule record.
     key: "appointments",
     label: "Appointments (booked time, provider, service, status history)",

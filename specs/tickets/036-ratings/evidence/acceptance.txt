@@ -1,0 +1,56 @@
+setup: provider_a /p/e036-dr-asha-mwegt3q4, provider_b /p/e036-dr-fresh-mwegt3q4
+
+== E-1: rate and display ==
+PASS provider_a marks 88ca5606 completed :: 200
+PASS provider_a marks 2dc66120 completed :: 200
+PASS provider_a marks 52d55f2e completed :: 200
+PASS provider_a marks 2a7ce349 completed :: 200
+PASS provider_a marks 6f367d07 completed :: 200
+PASS rate prompt enqueued on completion, due in ~2 h :: {"deliver_in_min":120}
+PASS no prompt before 2 h
+outbox:run --once -> {"at":"2026-11-13T04:16:45.588Z","pid":752,"fanned_out":5,"sent":5,"failed":0,"skipped":0,"payments":{"refunded":0,"pending":0,"failed":0}}
+PASS guardian_a in-app rate prompt (x4) :: {"id":"c59c4b05-c743-4ee3-8756-d538dd0f52ef","title":"How was your visit?","body":"Rate your visit with Dr Asha Rao (synthetic). Your rating is shown without your name.","link":"/family/appointments/2dc66120-701c-4917-b1db-02cba069c9c0/rate","created_at":"2026-11-13T04:16:45.532Z","read_at":null}
+PASS prompt links to the rate page
+PASS prompt email delivered (mock log)
+PASS guardian_a rates 5 -> 201 :: {"rating":{"id":"ec5a392d-6097-445d-8767-924c2fdcf591","appointment_id":"88ca5606-da9f-4930-922d-8858bd8a3cdd","stars":5,"comment":"Very patient and explained the home plan clearly.","status":"published","created_at":"2026-11-13T04:16:46.081Z","edited_at":null}}
+PASS guardian_a rates 4 -> 201 :: {"rating":{"id":"a4acd78a-1968-4432-bc95-a53cf012b130","appointment_id":"2dc66120-701c-4917-b1db-02cba069c9c0","stars":4,"comment":null,"status":"published","created_at":"2026-11-13T04:16:46.110Z","edited_at":null}}
+PASS guardian_a rates 5 -> 201 :: {"rating":{"id":"5d40cd15-0498-4408-98c4-f5ed8782d588","appointment_id":"52d55f2e-dccc-4458-8bbe-bdcdae258e8d","stars":5,"comment":"Good with toddlers and always on time.","status":"published","created_at":"2026-11-13T04:16:46.133Z","edited_at":null}}
+PASS guardian_b rates 4 -> 201 :: {"rating":{"id":"136405b1-260f-4958-80c3-7b05031f6f41","appointment_id":"6f367d07-4c98-4c56-9345-b78add9c4eda","stars":4,"comment":"Helpful, practical advice for speech at home.","status":"published","created_at":"2026-11-13T04:16:46.157Z","edited_at":null}}
+PASS /p/<slug> shows `4.5 ★ (4 ratings)`
+PASS /p/<slug> 3 comments with `Verified booking` (rendered list)
+PASS /p/<slug> month/year only (Nov 2026)
+PASS /p/<slug> does not contain guardian email
+PASS /p/<slug> does not contain guardian email
+PASS /p/<slug> does not contain child name Aarav
+PASS /p/<slug> does not contain child name Meera
+PASS /p/<slug> does not contain guardian id
+PASS /p/<slug> does not contain guardian id
+PASS directory search returns rating_avg 4.5 / rating_count 4 :: {"rating_avg":4.5,"rating_count":4}
+PASS fresh provider with 2 ratings -> `New on DoctorNearMe`
+PASS /family/appointments shows `Rate this visit` for the unrated completed visit
+PASS /family/appointments shows the guardian's own ratings
+
+== E-2: negatives ==
+PASS rate the non-completed appointment -> 403 :: {"error":"You can rate only your completed appointments"}
+PASS rate twice -> 409 :: {"error":"You already rated this visit"}
+PASS guardian_b rates guardian_a's appointment -> 403 :: {"error":"You can rate only your completed appointments"}
+PASS comment with 9876543210 -> 422 :: {"error":"Please remove names and contact details from your comment"}
+PASS comment with the child's name -> 422 :: {"error":"Please remove names and contact details from your comment"}
+PASS anonymous -> 401 :: 401
+PASS nothing saved for a4
+
+== E-3: moderation ==
+PASS another provider reporting -> 404 :: 404
+PASS provider_a reports a rating -> 200 pending_review :: {"rating":{"id":"136405b1-260f-4958-80c3-7b05031f6f41","status":"pending_review"}}
+PASS reported comment hidden from the profile
+PASS profile now `4.7 ★ (3 ratings)`
+PASS provider calling the admin moderation API -> 403 :: {"error":"Platform admin access required"}
+PASS /admin/ratings queue lists it with the guardian identity (admin only)
+PASS /admin/ratings as provider -> 404
+PASS hide without a note -> 400 :: {"error":"Invalid request","details":{"note":"Add a note saying why the rating is hidden"}}
+PASS admin publishes -> 200 published :: {"rating":{"id":"136405b1-260f-4958-80c3-7b05031f6f41","status":"published"}}
+PASS visible again on the profile, `4.5 ★ (4 ratings)`
+PASS /dashboard/ratings lists ratings with `Report a rating`, no guardian identity
+PASS audit trail :: [{"action":"rating.created","actor_role":"guardian"},{"action":"rating.reported","actor_role":"provider"},{"action":"rating.moderated","actor_role":"platform_admin"}]
+
+ALL PASS
