@@ -12,11 +12,10 @@ stdout | tests/appointment-intake.test.ts > appointment intake (database, route 
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-1 Child-Dev: case created in the org with the provider assigned, link in the confirmation, call -> brief on the case
 [notify] run: fanned_out=1 sent=0 failed=0 skipped=0
 
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-1 Child-Dev: case created in the org with the provider assigned, link in the confirmation, call -> brief on the case 151ms
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-2 generic: no language choice, one generic_intake_brief checked against the health profile; replay -> duplicate
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-1 Child-Dev: case created in the org with the provider assigned, link in the confirmation, call -> brief on the case 162ms
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-2 generic: no language choice, one generic_intake_brief checked against the health profile; replay -> duplicate 83ms
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 consent: no link without ai_intake_call, the consent hint instead; granting issues the link (notification)
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
@@ -26,11 +25,11 @@ stdout | tests/appointment-intake.test.ts > appointment intake (database, route 
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 consent: no link without ai_intake_call, the consent hint instead; granting issues the link (notification)
 [notify] run: fanned_out=1 sent=1 failed=0 skipped=1
 
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-2 generic: no language choice, one generic_intake_brief checked against the health profile; replay -> duplicate 73ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 consent: no link without ai_intake_call, the consent hint instead; granting issues the link (notification) 49ms
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > consent is re-checked at start and at completion (guardian link revoked -> consent no longer valid)
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 consent: no link without ai_intake_call, the consent hint instead; granting issues the link (notification) 84ms
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > consent is re-checked at start and at completion (guardian link revoked -> consent no longer valid) 56ms
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 cancel revokes the link (410), reschedule moves it (same token, new expiry), expiry at the start
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
@@ -40,7 +39,8 @@ stdout | tests/appointment-intake.test.ts > appointment intake (database, route 
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 cancel revokes the link (410), reschedule moves it (same token, new expiry), expiry at the start
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 cancel revokes the link (410), reschedule moves it (same token, new expiry), expiry at the start 101ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > consent is re-checked at start and at completion (guardian link revoked -> consent no longer valid) 40ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-3 cancel revokes the link (410), reschedule moves it (same token, new expiry), expiry at the start 86ms
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-4 case reuse in the org, a separate case in another org, and a token cannot complete another appointment
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
@@ -50,20 +50,20 @@ stdout | tests/appointment-intake.test.ts > appointment intake (database, route 
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-4 case reuse in the org, a separate case in another org, and a token cannot complete another appointment
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-4 case reuse in the org, a separate case in another org, and a token cannot complete another appointment 104ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > E-4 case reuse in the org, a separate case in another org, and a token cannot complete another appointment 98ms
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > 031: a paid booking links the case and issues the intake link once the payment is captured
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
 stdout | tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > 037: a video confirmation queues both the Meet job and the intake link
 [notify] run: fanned_out=1 sent=2 failed=0 skipped=2
 
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > 031: a paid booking links the case and issues the intake link once the payment is captured 60ms
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > 037: a video confirmation queues both the Meet job and the intake link 34ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > 031: a paid booking links the case and issues the intake link once the payment is captured 47ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > 037: a video confirmation queues both the Meet job and the intake link 26ms
  ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > D-4: a new service without intake_kind gets the provider type's default 10ms
- ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > the existing case-level intake link keeps working (009/010) 40ms
+ ✓ tests/appointment-intake.test.ts > appointment intake (database, route handlers, outbox) > the existing case-level intake link keeps working (009/010) 35ms
 
  Test Files  1 passed (1)
       Tests  15 passed (15)
-   Start at  04:57:21
-   Duration  1.74s (transform 314ms, setup 0ms, import 139ms, tests 1.53s, environment 0ms)
+   Start at  05:01:55
+   Duration  1.48s (transform 242ms, setup 0ms, import 120ms, tests 1.29s, environment 0ms)
 

@@ -2682,5 +2682,37 @@
         "generic": "Something went wrong. Please try again."
       }
     }
+  },
+  "voiceBooking": {
+    "button": "Book by voice",
+    "title": "Book by voice",
+    "intro": "Tell our assistant what you need, for example a Telugu-speaking speech therapist near Kukatpally on Saturday morning.",
+    "disclosure": "You will talk to an AI assistant in English. It will not ask for your child's name.",
+    "privacy": "Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe. The assistant can only hold a time for 10 minutes; you sign in and confirm on screen.",
+    "start": "Start",
+    "cancel": "Cancel",
+    "starting": "Starting...",
+    "demo": "Demo mode: a scripted conversation, no live voice call.",
+    "connecting": "Connecting...",
+    "listening": "Listening...",
+    "speaking": "Speaking...",
+    "end": "End call",
+    "ended": "The call has ended.",
+    "again": "Start again",
+    "captions": "Live captions",
+    "speakerAi": "Assistant",
+    "speakerYou": "You",
+    "holdTitle": "Time held for you",
+    "holdCard": "{provider} - {time} - held for 10 minutes",
+    "timeLeft": "Time left: {time}",
+    "holdExpired": "This hold has expired. Start again or pick a time below.",
+    "confirm": "Sign in and confirm",
+    "confirmNote": "Not booked yet. Sign in, choose your child and tap Confirm to book.",
+    "payNote": "After you confirm, you pay {fee} online to complete the booking.",
+    "errors": {
+      "busy": "Too many voice bookings were started from this connection. Please try again in an hour.",
+      "unavailable": "Voice booking is not available right now. Please use the search below.",
+      "connect": "The call could not connect. Please use the search below."
+    }
   }
 }

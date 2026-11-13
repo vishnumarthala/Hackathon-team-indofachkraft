@@ -98,3 +98,12 @@ Merge fix: `next build` failed with TS2589 ("type instantiation is excessively d
 `lib/i18n/translate.ts` once the merged catalogue reached ~2200 keys (plain `tsc --noEmit` passed).
 `createTranslator` now types its inner function loosely and casts once to `TFunction<N>` (no behaviour change; the
 i18n suites pass).
+
+## Merge of main (034 voice booking agent)
+
+Second `git merge main`. `lib/i18n/translate.ts`: main's version kept (034 fixed the same TS2589 the same way:
+loosely typed inner function, one cast to `TFunction<N>`); `messages/{en,hi,te}.json` merged cleanly with both sides'
+keys (`voiceBooking` + 035's `intake.appointment*` / `booking.*.intake`), `messages/REVIEW.md` regenerated (2266 rows);
+`docs/booking.md` keeps 034's voice-agent note and 035's intake pointer. After `$H 5 <worktree> reset` (30
+migrations): lint 0, typecheck 0, build 0, `npx vitest run` **83 files, 1351 passed, 11 skipped** (pre-existing
+opt-in skips; every DB suite ran), `tests/appointment-intake.test.ts` 15 passed.
