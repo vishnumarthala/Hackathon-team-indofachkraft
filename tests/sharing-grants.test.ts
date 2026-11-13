@@ -42,7 +42,7 @@ describe("grant request validation and helpers", () => {
   });
 
   it("registers the reports loader; other scopes register in their own tickets", () => {
-    expect(Object.keys(SHARE_LOADERS)).toEqual(["reports"]);
+    expect(Object.keys(SHARE_LOADERS)).toEqual(expect.arrayContaining(["reports", "health_profile"]));
     expect(reportTitle("# Assessment summary\n\ntext")).toBe("Assessment summary");
     expect(reportTitle("no heading")).toBe("Assessment report");
   });

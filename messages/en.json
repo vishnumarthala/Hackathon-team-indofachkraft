@@ -1146,7 +1146,8 @@
     "report": "Report",
     "referral": "Referral",
     "team": "Team",
-    "shared": "Shared with us"
+    "shared": "Shared with us",
+    "health": "Health"
   },
   "sharing": {
     "scopes": {
@@ -1199,5 +1200,87 @@
     "back": "Back to shared records",
     "readOnly": "Shared by {org}. Read only.",
     "openFailed": "Could not open this record. Please try again."
+  },
+  "health": {
+    "title": "Health profile",
+    "link": "Health profile",
+    "back": "Back to {name}",
+    "intro": "Allergies, medicines and other health details for {name}, kept in one place.",
+    "notice": "Providers treating {name} at organisations where {name} has an open case can see this profile.",
+    "sections": {
+      "allergies": "Allergies",
+      "medications": "Medicines",
+      "conditions": "Conditions",
+      "birth_history": "Birth history",
+      "developmental_history": "Development so far",
+      "emergency_contact": "Emergency contact",
+      "blood_group": "Blood group"
+    },
+    "fields": {
+      "substance": "Allergic to",
+      "reaction": "Reaction",
+      "severity": "Severity",
+      "medicineName": "Medicine",
+      "dose": "Dose",
+      "frequency": "How often",
+      "since": "Since (YYYY-MM)",
+      "conditionName": "Condition",
+      "notes": "Notes",
+      "contactName": "Name",
+      "contactPhone": "Phone number (with country code)",
+      "birthHint": "For example: born at 36 weeks, NICU stay, birth weight.",
+      "developmentHint": "For example: first words, walking, any concerns you noticed."
+    },
+    "severity": {
+      "mild": "Mild",
+      "moderate": "Moderate",
+      "severe": "Severe",
+      "unknown": "Not sure"
+    },
+    "bloodGroupUnknown": "Not known",
+    "bloodGroupNotSet": "Not set",
+    "addAllergy": "Add allergy",
+    "addMedicine": "Add medicine",
+    "addCondition": "Add condition",
+    "remove": "Remove",
+    "removeRow": "Remove row {number}",
+    "row": "Row {number}",
+    "nka": "No known allergies",
+    "nkaConflict": "Remove the allergies above, or untick No known allergies.",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved.",
+    "lastUpdated": "Last updated {date} by {name}",
+    "lastUpdatedNoName": "Last updated {date}",
+    "notSavedYet": "Not saved yet.",
+    "conflict": "This profile was changed by someone else. Reload to see the latest version.",
+    "reload": "Reload",
+    "invalid": "Some entries need attention: {sections}.",
+    "saveFailed": "Could not save. Please try again.",
+    "none": "None added.",
+    "notRecorded": "Not recorded",
+    "historyLink": "Version history",
+    "history": {
+      "title": "Version history",
+      "intro": "Every saved change to {name}'s health profile. Older versions cannot be edited.",
+      "empty": "No saved versions yet.",
+      "version": "Version {version}",
+      "savedBy": "Saved {date} by {name}",
+      "savedOn": "Saved {date}",
+      "changed": "Changed: {sections}",
+      "nothingChanged": "Saved without changes",
+      "current": "Current version",
+      "view": "View",
+      "viewVersion": "View version {version}",
+      "readOnly": "This is an older version, shown read only.",
+      "back": "Back to health profile",
+      "backToHistory": "Back to version history"
+    },
+    "provider": {
+      "empty": "The family has not added a health profile yet.",
+      "readOnly": "Only the child's parent or guardian can change this profile. Ask them to update it in their DoctorNearMe app.",
+      "updated": "Last updated {date}",
+      "severeAllergy": "Severe allergy: {substance}"
+    }
   }
 }

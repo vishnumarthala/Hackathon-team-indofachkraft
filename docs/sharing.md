@@ -122,7 +122,8 @@ and their items (`listSharedForCase`); `app/cases/[id]/shared/[scope]/[itemId]` 
 
 Until a scope registers a loader, a grant for it shows `Shared, but this type of record is not available in
 DoctorNearMe yet.` The `reports` scope (this ticket) = `reports` rows with `kind = 'assessment'` and
-`status = 'final'` from the source orgs' cases for the child. `health_profile` is registered by ticket 021.
+`status = 'final'` from the source orgs' cases for the child. `health_profile` (ticket 021) = the child's
+current health profile, one item per source org (id = child id); see `docs/health-profile.md`.
 
 ## RLS (browser reads only; the server uses the service role and the gates above)
 
