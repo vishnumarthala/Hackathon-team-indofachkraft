@@ -3,8 +3,10 @@ import Link from "next/link";
 import { CancelAppointmentButton, CompleteButtons } from "@/components/booking/AppointmentActions";
 import { HoursEditor, OverridesEditor, ServicesEditor } from "@/components/booking/ScheduleEditors";
 import { MeetPanel } from "@/components/google/MeetPanel";
+import { ConflictList } from "@/components/series/TimetableCard";
 import { requireProviderPage } from "@/lib/authz";
 import { hasStarted } from "@/lib/booking/display";
+import { listManageableConflicts } from "@/lib/booking/series";
 import { getProviderContext, listAgenda, listOverrides, listRules, listServices } from "@/lib/booking/store";
 import { addDays, isValidDate, todayIn, wallToUtc, weekdayOf } from "@/lib/booking/time";
 import { getMeetInfo } from "@/lib/google/meet";
@@ -31,6 +33,7 @@ export default async function SchedulePage({ searchParams }: Props) {
   const actor = await requireProviderPage();
   const t = await getT("booking");
   const tc = await getT("family.children");
+  const ts = await getT("series");
   const ctx = await getProviderContext(actor.user.id);
   if (!ctx) {
     return (
@@ -55,11 +58,13 @@ export default async function SchedulePage({ searchParams }: Props) {
   const from = wallToUtc(first, 0, tz) ?? new Date(`${first}T00:00:00Z`);
   const to = wallToUtc(addDays(first, span), 0, tz) ?? new Date(`${addDays(first, span)}T00:00:00Z`);
 
-  const [services, rules, overrides, agenda] = await Promise.all([
+  const [services, rules, overrides, agenda, conflicts] = await Promise.all([
     listServices(ctx.profile.id),
     listRules(ctx.profile.id),
     listOverrides(ctx.profile.id, addDays(today, -1)),
     listAgenda(ctx.profile.id, from, to),
+    // 043 FR-6: open conflicts of the weekly series this user manages.
+    listManageableConflicts(actor.user.id),
   ]);
   // 035 FR-6: intake status per appointment, linking to the brief in the case.
   const intakes = await agendaIntakeStatus(agenda.map((a) => a.id));
@@ -122,6 +127,11 @@ export default async function SchedulePage({ searchParams }: Props) {
                           </div>
                           <div className="flex flex-wrap gap-1">
                             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">{t(`status.${a.status}`)}</span>
+                            {a.series_id ? (
+                              <span data-testid="repeats-label" className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-900">
+                                {ts("schedule.repeats")}
+                              </span>
+                            ) : null}
                             {(() => {
                               const pay = paymentLabel(a, payments.get(a.id), "provider");
                               return pay ? (
@@ -161,6 +171,12 @@ export default async function SchedulePage({ searchParams }: Props) {
             );
           })}
         </div>
+      </section>
+
+      <section aria-labelledby="series-conflicts" className="space-y-3">
+        <h2 id="series-conflicts" className={h2}>{ts("conflicts.title")}</h2>
+        <p className="text-sm text-slate-700">{ts("conflicts.intro")}</p>
+        <ConflictList conflicts={conflicts} showCase />
       </section>
 
       <section aria-labelledby="services" className="space-y-3">

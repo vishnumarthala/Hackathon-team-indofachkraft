@@ -26,6 +26,19 @@ const APPOINTMENT = {
   location: "Synthetic Clinic, Road 1, Banjara Hills, Hyderabad 500034",
 };
 
+// 043: a weekly series (display values only).
+const SERIES = {
+  series_id: ID,
+  provider_name: "Dr Synthetic Rao",
+  mode: "in_clinic",
+  time_zone: "Asia/Kolkata",
+  weekdays: [0, 2, 4],
+  start_time: "10:00",
+  starts_on: "2026-11-16",
+  ends_on: null,
+  location: "Synthetic Clinic, Road 1, Banjara Hills, Hyderabad 500034",
+};
+
 // A valid sample payload per topic.
 const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "test.ping": { ics_start: "2026-11-20T10:00:00+05:30" },
@@ -59,6 +72,8 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "payment.refunded": { payment_id: ID, appointment_id: ID, reason: "slot_unavailable" },
   "appointment.rate_prompt": { appointment_id: ID, provider_name: "Dr Synthetic Rao" },
   "voice.budget_alert": { level: 80, period: "day" },
+  "series.created": SERIES,
+  "series.changed": { ...SERIES, change: "time_changed", date: "2026-11-30" },
 };
 
 const topics = Object.entries(TOPICS) as [keyof typeof TOPICS, (typeof TOPICS)[keyof typeof TOPICS]][];
@@ -116,6 +131,8 @@ describe("topic registry", () => {
         "payment.refunded",
         "appointment.rate_prompt",
         "voice.budget_alert",
+        "series.created",
+        "series.changed",
       ].sort(),
     );
     for (const [, def] of topics) expect(TEMPLATES[def.template]).toBeDefined();

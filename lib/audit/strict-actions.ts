@@ -373,6 +373,21 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "setVoiceCaps",
     impl: { kind: "auditStrict", module: "lib/voice/usage.ts" },
   },
+  // ---------- 047 import children ----------
+  {
+    action: "children.imported",
+    description: "Owner/admin imports children from a CSV (counts only in the audit row)",
+    routes: ["app/api/org/import/route.ts"],
+    call: "runImport",
+    impl: { kind: "auditStrict", module: "lib/import/store.ts" },
+  },
+  {
+    action: "children.import_undone",
+    description: "Owner/admin undoes an import within 24 hours",
+    routes: ["app/api/org/import/[id]/undo/route.ts"],
+    call: "undoImport",
+    impl: { kind: "auditStrict", module: "lib/import/store.ts" },
+  },
 ];
 
 export function strictAction(action: string): StrictAction | undefined {

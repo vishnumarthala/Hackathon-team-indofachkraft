@@ -1,0 +1,21 @@
+child_first_name*,child_last_name,date_of_birth*,guardian_name*,guardian_phone,preferred_language,therapist_email,notes
+Aarav,Reddy (synthetic),2021-03-14,Kavya Reddy,9000000101,te,therapist.a@clinic.example,Speech therapy twice a week
+Diya,Sharma (synthetic),05/07/2020,Rohit Sharma,+91 90000 00102,hi,therapist.b@clinic.example,
+Vihaan,Rao (synthetic),2022-11-02,Lakshmi Rao,09000000103,en,therapist.a@clinic.example,"OT, sensory diet"
+Ananya,Kumar (synthetic),19/01/2021,Suresh Kumar,9000000104,te,therapist.b@clinic.example,
+Ishaan,Gupta (synthetic),2019-08-30,Neha Gupta,919000000105,hi,therapist.a@clinic.example,
+Saanvi,Naidu (synthetic),2023-02-11,Ravi Naidu,9000000106,te,,
+Arjun,Varma (synthetic),3/4/2020,Padma Varma,9000000107,en,therapist.b@clinic.example,Transferred from another centre
+Myra,Joshi (synthetic),2021-12-25,Amit Joshi,90000-00108,hi,therapist.a@clinic.example,
+Reyansh,Chowdary (synthetic),2020-06-06,Swathi Chowdary,9000000109,te,therapist.b@clinic.example,
+Kiara,Menon (synthetic),27-09-2022,Arun Menon,9000000110,en,therapist.a@clinic.example,
+Advik,Patel (synthetic),2021-01-01,Priya Patel,9000000111,english,therapist.b@clinic.example,
+Navya,Iyer (synthetic),2022-04-18,Karthik Iyer,9000000112,Telugu,therapist.a@clinic.example,
+Kabir,Singh (synthetic),11/11/2019,Harpreet Singh,9000000113,Hindi,therapist.b@clinic.example,
+Aadhya,Goud (synthetic),2023-07-07,Sravani Goud,9000000114,te,therapist.a@clinic.example,
+Rudra,Yadav (synthetic),2020-10-10,Manoj Yadav,9000000115,hi,,
+Pari,Shetty (synthetic),15/05/2021,Deepa Shetty,9000000116,en,therapist.b@clinic.example,
+Atharv,Kulkarni (synthetic),2022-08-08,Sneha Kulkarni,9000000117,en,therapist.a@clinic.example,
+Ira,Bose (synthetic),2021-02-28,Sourav Bose,9000000118,en,therapist.b@clinic.example,
+Shaurya,Mishra (synthetic),01/12/2020,Pooja Mishra,9000000119,hi,therapist.a@clinic.example,
+Tara,Pillai (synthetic),2022-01-31,Vinod Pillai,9000000120,en,therapist.b@clinic.example,

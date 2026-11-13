@@ -144,6 +144,7 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `payment.refunded` (031, enqueued by `payment_mark_refunded` in the refunding transaction, dedup `payment:<id>:refunded`, payload `{ payment_id, appointment_id, reason }`) | the booking guardian, while the payment is refunded | in-app, email | `payment_refunded` (`Your payment was refunded because the time was no longer available.` for late payments; links to `/family/appointments`; see `docs/payments.md`) |
 | `privacy.deletion_completed` / `privacy.deletion_rejected` (041) | the requesting guardian (account only: the erasure revokes the link) | in-app, email | `privacy_deletion_completed` / `privacy_deletion_rejected` (reason shown in the app only) |
 | `appointment.rate_prompt` (036, enqueued by the `appointments_rate_prompt` trigger when an appointment becomes `completed`, dedup `appt:<id>:rate_prompt`, `deliver_after` = completion + 2 h, payload `{ appointment_id, provider_name }`) | the booking guardian, while the appointment is completed, not yet rated and within 30 days of completion | in-app, email | `rating_prompt` (`How was your visit?`, links to `/family/appointments/<id>/rate`; see `docs/ratings.md`) |
+| `series.created` / `series.changed` (043, enqueued by the series SQL functions in the changing transaction, aggregate `appointment_series`, only when the series has a family account; dedup `series:<id>:created`, `series:<old>:changed:<new>`, `series:<id>:paused:<from>:<to>`, `series:<id>:ended:<date>`, `series:<id>:conflict:<conflict>:<skipped\|moved>`; payload = provider, mode, zone, weekdays, `start_time`, dates, place + `change`, `date`, `until`, `new_start`) | the series' guardian while still actively linked to the live child | in-app, email, WhatsApp | `series_created` (`Weekly sessions booked`), `series_changed` (one message per change; per-session reminders stay `appointment_reminder_24h` for the next session only; see `docs/booking.md`) |
 
 Later tickets register their own (030 done: `appointment.*` with `.ics`; 031 payments; 037 done: Meet links). Topic names
 allow no digits (`outbox_events_topic_check`), so 030's 24 h / 2 h reminders are `appointment.reminder_day_before` /
@@ -268,6 +269,8 @@ for the text; for example:
 | `appointment_confirmed_allow_intake` (035: the child has no AI intake consent yet) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Allow the AI intake call in your DoctorNearMe app to prepare for this visit. |
 | `appointment_intake_link` (035) | UTILITY | `{{1}}` app link | Prepare for your DoctorNearMe visit: take the short AI intake call. Open: {{1}} |
 | `appointment_meet_ready` (037) | UTILITY | `{{1}}` app link | The video call link for your DoctorNearMe appointment is ready. Join from: {{1}} |
+| `series_created` (043) | UTILITY | `{{1}}` app link | Weekly sessions have been booked for your child on DoctorNearMe. Details: {{1}} |
+| `series_changed` (043) | UTILITY | `{{1}}` app link | Your child's weekly session timetable on DoctorNearMe has changed. Details: {{1}} |
 
 030 added `appointment_*` and 037 `appointment_meet_ready` (rows above); each later ticket adds its rows here. The
 template name sent to Meta is the DoctorNearMe template name; the language code is the recipient's UI

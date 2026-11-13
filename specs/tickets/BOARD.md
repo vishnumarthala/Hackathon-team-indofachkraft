@@ -106,11 +106,11 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 
 | # | Title | Status | Mode | Runs |
 |---|-------|--------|------|------|
-| 043 | Recurring therapy sessions (weekly series) | ready | solo | alongside |
+| 043 | Recurring therapy sessions (weekly series) | done | solo | alongside |
 | 044 | Attendance register | ready | solo | waits for 043 |
 | 045 | Packages and family payments on DoctorNearMe | ready | solo | waits for 043, 044 |
 | 046 | Payouts to centres and the platform fee (Razorpay Route) | ready | solo | waits for 044, 045 |
-| 047 | Import existing children from a spreadsheet | ready | solo | alongside |
+| 047 | Import existing children from a spreadsheet | done | solo | alongside |
 | 048 | Parent check-in up to 8 (age-aware, concern-based advice, inline slots) | ready | solo | waits for 051 |
 | 049 | Telugu and Hindi for the new voice agents | ready | solo | waits for 048, 051 |
 | 050 | Parent-first home page and Indian statistics | ready | solo | waits for 051 |

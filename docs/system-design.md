@@ -464,6 +464,17 @@ in `docs/booking.md`. 042 adds `appointments.is_demo` (bookings on demo profiles
 `outbox_event_is_demo()`; triggers keep demo bookings free, without Meet and in-app only
 (`20261113004200_demo_appointments.sql`, `docs/pilot-seeding.md`).
 
+### Weekly series (ticket 043)
+
+`appointment_series` (centre staff only: org owner/admin or the therapist bound to the profile; child with a case in
+the org; frozen `service_snapshot`; `weekdays smallint[]` 0 = Monday, 1-4 days; wall-clock `start_time` in `time_zone`;
+`billing_mode` `package`/`per_session`/`free`; pause window; `materialized_until`) generates real `confirmed`
+`appointments` (`series_id`, `series_occurrence_date`, unique per occurrence) on a rolling 8-week horizon
+(`series_materialize`, called on create and by `/api/cron/booking`). Clashes (slot taken, blocked date, outside hours) are
+never booked: they become `series_conflicts` for `Pick another time` / `Skip this date`. Changes (`series_change_from`,
+`series_pause`, `series_end`) cancel through 030's `booking_cancel` and send one family message per change. Migration
+`20261113004300_appointment_series.sql`; details and extension points for 044/045/047/052 in `docs/booking.md`.
+
 ### Google Meet (ticket 037)
 
 `provider_google_connections` (the provider's own Google grant; refresh token AES-256-GCM encrypted with
@@ -491,6 +502,18 @@ stars, optional comment <= 500 screened for names/contact details; status `publi
 and the view `provider_rating_summary` (published only), which fills 029's `search_providers` `rating_avg` (from 3
 ratings) / `rating_count`. A trigger on `appointments` enqueues `appointment.rate_prompt` 2 h after completion. Migration
 `20261113003600_ratings.sql`; details in `docs/ratings.md`.
+
+### Child import from CSV (ticket 047)
+
+`child_imports` (one per uploaded file and organisation: sha256 `file_hash`, row counts, `undo_until` = +24 h,
+`undone_at`; unique live hash per org = idempotent) and `child_import_rows` (spreadsheet row number, the created
+`child_id` / `case_id`, therapist, optional provider `notes` and `timetable` with `timetable_status` `pending` |
+`scheduled`, 043 `series_id`). The file itself is never stored. `import_children_rows()` creates per row an unclaimed
+`provider` child, an org case, the therapist's `lead` assignment and a 020 claim code (72 h, hash only) - never a
+consent record and never an outbox message. `undo_child_import()` deletes them within 24 h only if no row in any
+table with a foreign key to `cases`/`children` (other than the import's own assignments, unused codes and rows)
+references them and no intake link was issued. Migration `20261113004700_child_import.sql`; details in
+`docs/import-children.md`.
 
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
@@ -665,6 +688,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
+| `POST /api/provider/series`, `GET /api/provider/series/:id`, `POST /api/provider/series/:id/{change,pause,end}`, `POST /api/provider/series/conflicts/:id` | 043 | `{ case_id, provider_profile_id, service_id, weekdays, start_time, starts_on, ends_on?, billing_mode, notify_family? }` / `{ from, start_time?, weekdays?, provider_profile_id?, service_id?, ends_on?, billing_mode? }` / `{ from, to }` / `{ ends_on? }` / `{ action: "skip" }` or `{ action: "reschedule", start }` | 201 `{ series_id, created, conflicts }` / 200; 403 guardians; 404 other tenants and series the caller may not manage; 409 `slot_taken` / `pause_exists` / `already_resolved`; 422 `outside_hours` / `blocked_date` / `service_invalid` / `case_required` |
 | `GET /api/integrations/google/{connect,callback,connection}`, `POST /api/integrations/google/disconnect`, `POST /api/appointments/:id/meet-link` | 037 | see `docs/google-meet.md` | 303 redirects (connect/callback, `?error=state` on a state mismatch); 404 other providers' profiles/appointments; 400 non-Meet link; 422 `Link your Google account to book a video consultation` on video holds/confirms |
 | `POST /api/appointments/:id/payment-order`, `POST /api/payments/verify`, `POST /api/payments/demo` (DEMO_MODE), `POST /api/webhooks/razorpay` (public, signed), `GET\|POST /api/cron/payments` | 031 | see `docs/payments.md` | 200 `{ key_id, order_id, amount_paise, currency, prefill }`; verify 400 signature mismatch; webhook 401 bad signature, 200 `{ received: true, duplicate: true }` on replay; 404 other owners; 409 nothing to pay / already paid; 410 hold expired |
 | `POST\|PATCH /api/appointments/:id/rating`, `POST /api/ratings/:id/report`, `POST /api/admin/ratings/:id` | 036 | see `docs/ratings.md` | 201 / 200; 403 `You can rate only your completed appointments`; 409 duplicate; 422 `Please remove names and contact details from your comment`; report: provider side only (404 otherwise); moderation: platform admin only (403) |
@@ -684,6 +708,12 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `POST /api/agents/followup/demo/answer_question` | 040 | DEMO_MODE only (else 404); signed-in guardian who owns the session (else 401) | same handler as the tool |
 | `POST /api/family/screen-results` | 033 | `{ session_id, child_id }` | 201 (200 again) `{ saved: true }`; 401; 404 not your child; 422 `screen_result_save` consent; 409 unfinished / red flag / other child; 410 expired |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
+| `GET /api/org/import/template` | 047 | provider | 200 `text/csv` header row (UTF-8 BOM) |
+| `POST /api/org/import/preview` | 047 | multipart `org_id`, `file` (CSV <= 1 MB, <= 500 rows); owner/admin of the org (member 403, others 404) | 200 `{ file_hash, file_errors, file_warnings, summary, has_timetable, series_available, already_imported, rows: [{ row, status: valid\|error\|duplicate, errors, warnings, duplicate_of, ... }] }` (issues: `{ code, params, message: "Row N: ..." }`); 413 over 1 MB |
+| `POST /api/org/import` | 047 | as preview + `import_duplicates` (JSON row numbers to `Import anyway`) | 201 `{ result: "imported", import, items: [{ row, case_id, child_id, child_name, guardian_name, guardian_phone, code, expires_at, message, whatsapp_url, paper_consent_path }], failed, skipped }`; 200 `{ result: "existing", import }` (same file again); 422 file errors / nothing to import; 503 nothing saved |
+| `GET /api/org/import/:id` | 047 | owner/admin of the import's org | 200 `{ import, children }` |
+| `POST /api/org/import/:id/undo` | 047 | owner/admin | 200 `{ result: "undone", cases, children }`; 409 `blocked` (`details.blocked_rows`), expired (> 24 h) or already undone |
+| `POST /api/org/import/:id/codes` | 047 | owner/admin | 201 `{ items }` new codes for children no family has linked yet (older codes stop working); 409 undone |
 
 `ResolvedCitation = { kind: "fact" | "segment", id, recording_id, session_number | null, start_sec, label }`
 where `label` is e.g. `Session 1 · 01:23` or `Intake call · 02:10`.

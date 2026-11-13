@@ -15,6 +15,7 @@ import {
   profileOwner,
   platformAdmins,
   prescriptionGuardians,
+  seriesGuardian,
   threadMessageRecipients,
   visibleDocumentGuardians,
 } from "./recipients";
@@ -50,6 +51,29 @@ const appointmentPayload = z
 // 035: the intake link issued after consent was granted (lib/booking/case-link.ts issueIntakeLinksForChild).
 const intakeLinkPayload = appointmentPayload.extend({ intake_attempt_id: uuid }).strict();
 const userList = z.array(uuid).min(1).max(100);
+// 043 weekly series (display values only; no child data). `change` events add the dates of the change.
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const seriesPayload = z
+  .object({
+    series_id: uuid,
+    provider_name: z.string().min(1).max(120),
+    mode: z.enum(["in_clinic", "video"]),
+    time_zone: z.string().min(1).max(64),
+    weekdays: z.array(z.number().int().min(0).max(6)).min(1).max(4),
+    start_time: z.string().regex(/^\d{2}:\d{2}$/),
+    starts_on: isoDate,
+    ends_on: isoDate.nullable(),
+    location: z.string().max(300).nullable().optional(),
+  })
+  .strict();
+const seriesChangedPayload = seriesPayload
+  .extend({
+    change: z.enum(["time_changed", "paused", "ended", "skipped", "moved"]),
+    date: isoDate,
+    until: isoDate.optional(),
+    new_start: z.iso.datetime({ offset: true }).optional(),
+  })
+  .strict();
 
 export type RecipientContext = { sql: Queryable; event: OutboxEventRow };
 
@@ -309,6 +333,23 @@ export const TOPICS = {
     template: "rating_prompt",
     recipients: (p, { sql }) => ratingPromptGuardian(sql, p.appointment_id),
   }),
+  // 043 FR-8: enqueued by the series SQL functions (migration 20261113004300) in the changing transaction, only when the
+  // series has a family account (aggregate = the series). One summary per new series (dedup `series:<id>:created`), one
+  // message per change (`series:<id>:changed:<new id>` / `:paused:<from>:<to>` / `:ended:<date>` /
+  // `:conflict:<conflict id>:<skipped|moved>`). Per-session reminders stay 030's `appointment.reminder_day_before`,
+  // scheduled for the next occurrence only. At fan-out: the series' guardian while still actively linked to the child.
+  "series.created": topic({
+    payload: seriesPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "series_created",
+    recipients: (p, { sql }) => seriesGuardian(sql, p.series_id),
+  }),
+  "series.changed": topic({
+    payload: seriesChangedPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "series_changed",
+    recipients: (p, { sql }) => seriesGuardian(sql, p.series_id),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -369,6 +410,12 @@ export const APPOINTMENT_TOPICS = {
 // 036: ratings (rate prompt enqueued by the `appointments_rate_prompt` trigger, migration 20261113003600).
 export const RATING_TOPICS = {
   ratePrompt: "appointment.rate_prompt",
+} as const satisfies Record<string, Topic>;
+
+// 043: weekly series (enqueued by the series SQL functions).
+export const SERIES_TOPICS = {
+  created: "series.created",
+  changed: "series.changed",
 } as const satisfies Record<string, Topic>;
 
 // 031: payments (enqueued by the payment SQL functions).

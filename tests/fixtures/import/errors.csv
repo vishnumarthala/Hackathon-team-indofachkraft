@@ -1,0 +1,10 @@
+child_first_name,child_last_name,date_of_birth,guardian_name,guardian_phone,preferred_language,therapist_email,notes
+Zoya,Ali (synthetic),2021-05-05,Farah Ali,9000000201,en,therapist.a@clinic.example,
+Yash,Future (synthetic),2031-01-01,Kiran Future,9000000202,en,therapist.a@clinic.example,
+Meera,Unknown (synthetic),2021-06-06,Sunil Unknown,9000000203,te,nobody@elsewhere.example,
+Dev,Badphone (synthetic),2020-07-07,Rina Badphone,12345,hi,therapist.b@clinic.example,
+Nila,Ok (synthetic),12/08/2022,Prakash Ok,9000000205,te,therapist.b@clinic.example,
+,Noname (synthetic),2021-01-01,Someone,9000000206,en,,
+Ravi,Baddate (synthetic),31/02/2021,Geeta Baddate,9000000207,en,,
+Old,Teen (synthetic),2010-01-01,Parent Teen,9000000208,en,,
+Lata,Older (synthetic),2016-03-03,Parent Older,9000000209,xx,,

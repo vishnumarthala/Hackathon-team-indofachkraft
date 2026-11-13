@@ -622,6 +622,35 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 043: weekly timetables. Listed before `appointments`: erasure cancels the series' future sessions without one
+    // message per session, then deletes the series and their conflicts (appointments keep their time slot record).
+    key: "appointment_series",
+    label: "Weekly session timetables (days, time, therapist, status) and dates that could not be booked",
+    owner: "child",
+    tables: ["appointment_series", "series_conflicts"],
+    retention:
+      "Kept with the child's appointments as the centre's timetable record (period pending legal review). On erasure, future sessions are cancelled and the timetables are deleted.",
+    processors: ["supabase", "resend", "whatsapp"],
+    export: async ({ sql, childId }) => {
+      const rows = await sql`
+        select s.id, p.display_name as provider, s.service_snapshot ->> 'name' as service, s.service_snapshot ->> 'mode' as mode,
+               s.weekdays::int[] as weekdays, to_char(s.start_time, 'HH24:MI') as start_time, s.time_zone, s.starts_on::text as starts_on,
+               s.ends_on::text as ends_on, s.status, s.billing_mode, s.paused_from::text as paused_from, s.paused_until::text as paused_until,
+               s.created_at
+        from public.appointment_series s join public.provider_profiles p on p.id = s.provider_profile_id
+        where s.child_id = ${childId}
+        order by s.created_at`;
+      return { data: rowsJson(rows) };
+    },
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) => {
+        const [row] = await tx<{ n: number }[]>`select public.series_erase_child(${ctx.childId}) as n`;
+        return row.n;
+      },
+    },
+  },
+  {
     // 030 NFR-4. Retention period pending legal review (rd.md open question): kept as the provider's schedule record.
     key: "appointments",
     label: "Appointments (booked time, provider, service, status history)",
@@ -749,6 +778,18 @@ export const REGISTRY: PrivacyCategory[] = [
     },
     // Erasure: the `appointments` category cancels the child's future appointments; their `appointment.cancelled`
     // events enqueue `meet.delete`, which removes the calendar events. Links and event ids carry no child data.
+  },
+  {
+    // 047: CSV imports. The uploaded file is never stored; an import keeps its hash and counts, and one row per created
+    // child (ids, spreadsheet row number, the optional provider notes and timetable). Rows cascade with the child's case.
+    key: "child_imports",
+    label: "Spreadsheet imports of existing children (row links, provider notes, timetable)",
+    owner: "case",
+    tables: ["child_imports", "child_import_rows"],
+    retention:
+      "The uploaded file is not stored (only its hash and counts). Import rows stay with the child's case and are deleted with it, or when the import is undone within 24 hours.",
+    processors: ["supabase"],
+    erase: { scopes: EVERYTHING },
   },
 ];
 
