@@ -3,7 +3,7 @@
 // lib/privacy/export.ts, lib/privacy/deletion.ts, the privacy notice (/privacy) and docs/privacy/retention.md are all
 // driven by this list. The scheduled retention steps are in lib/privacy/retention.ts (keyed by the same `key`).
 //
-// Extending (026 home program, 027 messages, M2/M3 tickets; 024 and 025 are registered below): append an entry to
+// Extending (026 home program, M2/M3 tickets; 024, 025 and 027 are registered below): append an entry to
 // `REGISTRY` (or call `registerPrivacyCategory()` from your module) with
 //   * `export(ctx)`  - ONLY what the requesting guardian can already see in the portal (published versions, their
 //                      own messages, ...), as JSON-safe data; optional `files` for the ZIP;
@@ -338,6 +338,53 @@ export const REGISTRY: PrivacyCategory[] = [
       scopes: EVERYTHING,
       rows: async (tx, ctx) =>
         (await tx`update public.sharing_grants set revoked_at = now() where child_id = ${ctx.childId} and revoked_at is null`).count,
+    },
+  },
+  {
+    // 027: case-scoped conversations between the child's guardians and one organisation's care team.
+    key: "messages",
+    label: "Messages with the care team (027)",
+    owner: "case",
+    tables: ["message_threads", "messages", "thread_reads"],
+    retention:
+      "Kept with the clinical record of the case; a deleted message's text is overwritten at once; deleted with the child's cases on erasure.",
+    processors: ["supabase"],
+    // Only conversations this guardian can open in the portal (thread_access_level = 'guardian'), with the text they
+    // see (deleted messages as `This message was deleted.`), and only their own read markers. Attached documents
+    // are exported by the `documents` category; here only their ids.
+    export: async ({ sql, childId, guardianUserId }) => {
+      const threads = await sql<{ id: string; subject: string; org_name: string; created_at: Date; archived_at: Date | null; last_read_at: Date | null }[]>`
+        select t.id, t.subject, o.name as org_name, t.created_at, t.archived_at, r.last_read_at
+        from public.message_threads t
+        join public.organizations o on o.id = t.org_id
+        left join public.thread_reads r on r.thread_id = t.id and r.user_id = ${guardianUserId}
+        where t.child_id = ${childId} and public.thread_access_level(${guardianUserId}, t.id) = 'guardian'
+        order by t.created_at`;
+      if (threads.length === 0) return { data: [] };
+      const messages = await sql<{ thread_id: string; id: string; sender_kind: string; own: boolean; body: string; document_id: string | null; created_at: Date; deleted_at: Date | null }[]>`
+        select m.thread_id, m.id, m.sender_kind, m.sender_id = ${guardianUserId} as own,
+               m.body, m.document_id, m.created_at, m.deleted_at
+        from public.messages m
+        where m.thread_id in ${sql(threads.map((t) => t.id))}
+        order by m.created_at, m.id`;
+      return {
+        data: rowsJson(threads).map((t) => ({
+          ...t,
+          messages: rowsJson(messages.filter((m) => m.thread_id === t.id).map((m) => ({ id: m.id, sender_kind: m.sender_kind, own: m.own, body: m.body, document_id: m.document_id, created_at: m.created_at, deleted_at: m.deleted_at }))),
+        })),
+      };
+    },
+    erase: {
+      scopes: EVERYTHING,
+      // Threads cascade from cases as well; deleting them here also covers every organisation's threads of the
+      // child, and their outbox events (ids only) go with them.
+      rows: async (tx, ctx) => {
+        await tx`
+          delete from public.outbox_events
+          where aggregate_type = 'thread'
+            and aggregate_id in (select id from public.message_threads where child_id = ${ctx.childId})`;
+        return (await tx`delete from public.message_threads where child_id = ${ctx.childId}`).count;
+      },
     },
   },
   {
