@@ -1,0 +1,101 @@
+// Synthetic acceptance data for ticket 040 (local slot only). Usage: npx tsx .tmp/e040-seed.ts <accounts.json>
+import { readFileSync } from "node:fs";
+import { loadEnvConfig } from "@next/env";
+import postgres from "postgres";
+
+loadEnvConfig(process.cwd(), false, { info: () => {}, error: console.error });
+
+async function main() {
+  const acct = JSON.parse(readFileSync(process.argv[2], "utf8"));
+  const U = acct.users;
+  const orgA = acct.orgs.org_a.id as string;
+  const orgB = acct.orgs.org_b.id as string;
+  const sql = postgres(process.env.DATABASE_URL as string, { max: 2, prepare: false, onnotice: () => {} });
+  const provider = U.provider_a.id as string;
+  await sql`update user_profiles set phone_verified_at = now() where id in ${sql([U.guardian_a.id, U.guardian_b.id])}`;
+  const [profile] = await sql<{ id: string }[]>`
+    insert into provider_profiles (user_id, slug, display_name, provider_type, qualifications, registration_council,
+      registration_number, verification_status, verified_at, claimed, is_synthetic, created_by)
+    values (${provider}, 'e040-dr-synthetic', 'Dr Synthetic Paed (e040)', 'pediatrician', 'MBBS, MD (synthetic)', 'NMC', 'SYN-E040',
+            'verified', now(), true, true, ${provider})
+    on conflict (slug) do update set verification_status = 'verified' returning id`;
+
+  const child = async (user: string, name: string) =>
+    (await sql<{ id: string }[]>`select public.create_guardian_child(${user}::uuid, ${name}, '2022-07-10'::date, null, 'mother') as id`)[0].id;
+  const childA = await child(U.guardian_a.id, "Asha (synthetic)");
+  const childB = await child(U.guardian_b.id, "Ravi (synthetic)");
+  const kase = async (org: string, childId: string) =>
+    (await sql<{ id: string }[]>`
+      insert into cases (org_id, child_alias, parent_alias, child_id) values (${org}, 'e040 child (synthetic)', 'Parent (synthetic)', ${childId}) returning id`)[0].id;
+  const caseA = await kase(orgA, childA);
+  const caseB = await kase(orgB, childB);
+  await sql`insert into case_assignments (case_id, user_id) values (${caseA}, ${provider}) on conflict do nothing`;
+
+  // 020: guardian_a grants ai_follow_up for child A only (digital, verified phone).
+  const [link] = await sql<{ id: string }[]>`select id from guardian_links where child_id = ${childA} and user_id = ${U.guardian_a.id}`;
+  const docs = await sql<{ id: string }[]>`select distinct on (feature) id from consent_documents where locale = 'en' and feature = 'ai_follow_up' order by feature, version desc`;
+  await sql`select public.record_consent(${sql.json({
+    child_id: childA, action: "granted", method: "digital", features: ["ai_follow_up"], document_ids: docs.map((d) => d.id),
+    guardian_user_id: U.guardian_a.id, guardian_link_id: link.id, user_agent: "e040:synthetic",
+  })}::jsonb)`;
+
+  const iep = await import("@/lib/iep");
+  const goalBody = (statement: string, version: number) => ({
+    domain: "communication" as const, statement, specific: "Requests snacks and toys", measurable: "Count of requests per session",
+    achievable: "Uses single words today", relevant: "Less frustration at home", time_bound: "Within 3 months",
+    measure_type: "count" as const, baseline_value: 1, target_value: 5, target_date: "2027-02-28", version,
+  });
+  const plan = async (caseId: string, title: string, statement: string) => {
+    const p = await iep.createPlan({ caseId, actorUserId: provider, body: { title, start_date: "2026-11-13", review_date: "2027-03-31" } });
+    if (!p.ok) throw new Error(p.error);
+    const g = await iep.addGoal({ planId: p.plan.id, actorUserId: provider, body: goalBody(statement, 1) });
+    if (!g.ok) throw new Error(g.error);
+    const pub = await iep.publishPlan({ planId: p.plan.id, actorUserId: provider, version: g.plan_version });
+    if (!pub.ok) throw new Error(pub.error);
+    return { id: p.plan.id, version: g.plan_version + 1 };
+  };
+  const planA = await plan(caseA, "Term 1 communication plan", "Asha uses two-word requests at snack time in 4 of 5 chances");
+  const v2 = await iep.addGoal({ planId: planA.id, actorUserId: provider, body: { ...goalBody("DRAFT V2 goal: not published yet", planA.version), domain: "social" } });
+  if (!v2.ok) throw new Error(v2.error);
+  const planB = await plan(caseB, "Other family plan", "OTHER CHILD goal of guardian_b's child");
+
+  const hp = await import("@/lib/home-program");
+  const program = await hp.createProgram({ caseId: caseA, actorUserId: provider, body: { title: "Home practice, term 1" } });
+  if (!program.ok) throw new Error(program.error);
+  const act = await hp.addActivity({ programId: program.program.id, actorUserId: provider, body: {
+    title: "Snack-time requesting", instructions_md: "Hold up two snacks.\n\n- Wait 5 seconds\n- Model the 2-word phrase",
+    frequency_per_week: 5, duration_min: 10, materials: "Two favourite snacks", goal_id: null, document_id: null } });
+  if (!act.ok) throw new Error(act.error);
+  const pubP = await hp.publishProgram({ programId: program.program.id, actorUserId: provider, version: act.program_version });
+  if (!pubP.ok) throw new Error(pubP.error);
+
+  const rec = async (n: number) => (await sql<{ id: string }[]>`
+    insert into recordings (case_id, kind, session_number, status, mime_type, segments)
+    values (${caseA}, 'session', ${n}, 'transcribed', 'audio/wav', ${sql.json([{ id: "s1", speaker: "parent", speaker_label: "speaker_1", start_sec: 0, end_sec: 5, text: "TRANSCRIPT LINE never shown to guardians." }])}) returning id`)[0].id;
+  await sql`insert into reports (case_id, recording_id, kind, content, content_md, status) values (${caseA}, ${await rec(1)}, 'parent_summary', '{}'::jsonb, 'DRAFT REPORT text, not final.', 'draft')`;
+  await sql`insert into reports (case_id, recording_id, kind, content, content_md, status) values (${caseA}, ${await rec(2)}, 'parent_summary', '{}'::jsonb, '# Parent summary\n\nAsha practised requesting with snacks and is using more two-word phrases.', 'final')`;
+
+  const rx = await import("@/lib/rx");
+  const signed = async (drug: string) => {
+    const c = await rx.createPrescription({ caseId: caseA, actorUserId: provider, profileId: profile.id });
+    if (!c.ok) throw new Error(c.error);
+    const [{ version }] = await sql<{ version: number }[]>`select version from prescriptions where id = ${c.id}`;
+    const u = await rx.updateDraft({ prescriptionId: c.id, actorUserId: provider, body: { items: [{ drug, strength: "20 mg/ml", form: "drops", dose: "1 ml", frequency: "once a day", duration_days: 30, route: "oral", instructions: "After breakfast, mixed in a spoon of water" }], advice: "Give at the same time every day.", follow_up: "Review in 4 weeks", version } as never });
+    if (!u.ok) throw new Error(u.error);
+    const s = await rx.signPrescription({ prescriptionId: c.id, actorUserId: provider, allergyOverrideReason: null });
+    if (!s.ok) throw new Error(s.error);
+    return c.id;
+  };
+  const rxSigned = await signed("Synthetic-iron");
+  const rxVoid = await signed("Voidedmark-syrup");
+  const v = await rx.voidPrescription({ prescriptionId: rxVoid, actorUserId: provider, reason: "Wrong medicine (synthetic)" });
+  if (!v.ok) throw new Error(v.error);
+
+  console.log(JSON.stringify({ childA, childB, caseA, caseB, planA: planA.id, planB: planB.id, programA: program.program.id, rxSigned, rxVoid, profileId: profile.id }));
+  await sql.end();
+  process.exit(0);
+}
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

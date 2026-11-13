@@ -1,0 +1,33 @@
+PASS E-1 practise -> cites home program at its version :: 200 769ms {"answer":"This week, practise the activities in your child's home program, as often as each one says. Your family's practice log for this week is shown with the program. Open the home program for the steps.","citations":[{"entity_type":"home_program","entity_id":"ae0b82dd-eafb-4af8-8b66-9b3defc7bc7b","version":1,"label":"Home program: Home practice, term 1 (v1)","excerpt":"How often: 5 times a week, 10 minutes each time"}]}
+PASS E-1 absent -> not-found text :: 200 {"id":"6a355f8c-bcda-43f8-b736-102992e5c2c9","found":false,"answer":"I couldn't find that in your child's shared plans. Please ask your provider using Messages.","citations":[]}
+PASS E-1 review -> cites IEP plan v1 (not the unpublished v2 edit) :: 200 [{"entity_type":"iep_plan","entity_id":"aedb11d1-f3cc-4046-a123-42c65491cc9c","version":1,"label":"IEP plan: Term 1 communication plan (v1)","excerpt":"Plan dates: 13 November 2026 to 31 March 2027 (review date)."}]
+PASS E-1 medicine how-to -> cites the signed prescription (not the voided one) :: 200 [{"entity_type":"prescription","entity_id":"93c33d04-125e-41cb-bcc8-601d24131cfc","version":1,"label":"Prescription by Dr Synthetic Paed (e040), 13 November 2026 (v1)","excerpt":"Prescriber: Dr Synthetic Paed (e040), MBBS, MD (synthetic)"}]
+PASS E-2 dose change -> fixed medicine message :: 200 {"id":"ab452e80-a516-456e-addb-8da8e56d8506","found":false,"answer":"Please don't change any medicine without talking to the prescriber.","citations":[],"safety":"medical_advice"}
+PASS E-2 not breathing -> 108/112, no model call :: 200 {"found":false,"answer":"Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today.","citations":[],"safety":"red_flag"}; dev.log 'followup model call' lines before=4 after=4
+PASS E-2 audit followup.red_flag without the question text :: [{"action":"followup.red_flag","details":{"code":"breathing","channel":"text"},"actor_role":"guardian"}]
+PASS E-2 red-flag question not stored :: rows=0
+PASS E-3 without ai_follow_up -> 422 :: 422 {"error":"Guardian consent required","details":{"feature":"ai_follow_up","child_id":"e5f95cf5-54cb-4caa-b6c4-e03d0c323027"}}
+PASS E-3 guardian_b on guardian_a's child -> 404 :: 404 {"error":"Child not found"}
+PASS E-3 provider -> 403 :: 403 {"error":"Not allowed"}
+PASS E-3 anonymous -> 401 :: 401
+PASS E-4 voice session (guardian, consent) -> 201, token only variable :: 201 expires_at=2026-11-13T04:49:57.788Z
+PASS E-4 mocked agent tool call with valid session -> same answer :: 200 73ms answer="Your child's IEP plan lists the goals and the review date. Open the plan to see each goal and when it will be reviewed."
+PASS E-4 tool without secret -> 401 :: 401
+PASS E-4 foreign session (guardian_b, demo route) -> 401 :: 401 {"error":"Invalid or expired follow-up session"}
+PASS E-4 expired session -> 401 :: 401 {"error":"Invalid or expired follow-up session"}
+PASS CSP: ElevenLabs connect-src on /family/children/*/ask only :: ask=200 child=200
+PASS NFR-2 p95 < 6 s (DEMO fixtures, 10 questions) :: ms=40,40,40,45,46,47,48,49,49,50
+PASS UI child page links to the ask page :: href=/family/children/e10f027c-7f6d-40eb-8aff-0e35e8301af0/ask
+PASS UI input label and disclaimer :: label `Ask about Asha (synthetic)'s plan`, disclaimer visible
+PASS UI answer shows a Home program chip :: href=/family/children/e10f027c-7f6d-40eb-8aff-0e35e8301af0/ask/sources/home_program/ae0b82dd-eafb-4af8-8b66-9b3defc7bc7b/1 text=Home program: Home practice, term 1 (v1) “How often: 5 times a week, 10 minutes each time”
+PASS UI chip opens the cited published version :: /family/children/e10f027c-7f6d-40eb-8aff-0e35e8301af0/ask/sources/home_program/ae0b82dd-eafb-4af8-8b66-9b3defc7bc7b/1 h1=Home program: Home practice, term 1 (v1)
+PASS UI not-found answer has a Messages link :: href=/family/messages
+PASS UI red flag shows only the 108/112 message :: urgent alert visible
+PASS UI voice demo answers through the tool handler :: You: When is the next review? Assistant: Your child's IEP plan lists the goals and the review date. Open the plan to see each goal and when it will be reviewed.
+PASS UI no horizontal scroll at 375 px :: scrollWidth <= innerWidth
+PASS UI chrome translated (hi) :: hi disclaimer visible
+PASS UI guardian_b on child A's ask page -> 404 :: 404
+PASS UI without consent: no input, permissions link :: 200
+PASS UI no console errors :: ["A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random(
+
+31 PASS, 0 FAIL
