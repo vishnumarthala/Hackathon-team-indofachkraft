@@ -17,4 +17,5 @@ export default appointmentTemplate(
         : { title: "అపాయింట్‌మెంట్ సమయం మారింది", body: `ఒక అపాయింట్‌మెంట్ ${v.when} కి మార్చబడింది. ${v.where}.` },
   },
   "REQUEST",
+  { intake: true },
 );

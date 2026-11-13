@@ -14,12 +14,15 @@ export async function getCaseByToken(token: string): Promise<CaseRow | null> {
   return (data ?? null) as CaseRow | null;
 }
 
+// The case-level link (009) is complete once the case has its own intake call; 035 appointment intake calls of the
+// same case (appointment_id set) do not count.
 export async function hasIntakeRecording(caseId: string): Promise<boolean> {
   const { count, error } = await supabaseAdmin()
     .from("recordings")
     .select("id", { count: "exact", head: true })
     .eq("case_id", caseId)
-    .eq("kind", "intake_call");
+    .eq("kind", "intake_call")
+    .is("appointment_id", null);
   if (error) throw new Error(`Could not load recordings: ${error.message}`);
   return (count ?? 0) > 0;
 }
@@ -70,18 +73,26 @@ export type IntakeBrief = {
   report: ReportRow | null;
 };
 
-// 010: the latest intake recording of a case and its pre-session brief (null when none).
+// 010: the latest Child Development intake recording of a case and its pre-session brief (null when none). 035:
+// generic appointment intake calls (generic_intake_brief) are listed separately and skipped here.
 export async function getIntakeBrief(caseId: string): Promise<IntakeBrief | null> {
   if (!isUuid(caseId)) return null;
   const db = supabaseAdmin();
-  const rec = await db
+  const generic = await db
+    .from("intake_attempts")
+    .select("conversation_id")
+    .eq("case_id", caseId)
+    .eq("agent_kind", "generic")
+    .not("conversation_id", "is", null);
+  if (generic.error) throw new Error(`Could not load the intake calls: ${generic.error.message}`);
+  const skip = (generic.data ?? []).map((r) => r.conversation_id as string);
+  let query = db
     .from("recordings")
     .select("id, segments, created_at")
     .eq("case_id", caseId)
-    .eq("kind", "intake_call")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .eq("kind", "intake_call");
+  if (skip.length) query = query.or(`external_id.is.null,external_id.not.in.(${skip.map((id) => `"${id}"`).join(",")})`);
+  const rec = await query.order("created_at", { ascending: false }).limit(1).maybeSingle();
   if (rec.error) throw new Error(`Could not load the intake call: ${rec.error.message}`);
   if (!rec.data) return null;
   const rep = await db

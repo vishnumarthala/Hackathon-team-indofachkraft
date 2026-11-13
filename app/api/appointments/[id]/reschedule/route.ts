@@ -3,6 +3,7 @@ import { requireAppointmentActor } from "@/lib/booking/authz";
 import { withBookingErrors } from "@/lib/booking/errors";
 import { RescheduleSchema } from "@/lib/booking/schemas";
 import { getAppointment, rescheduleAppointment } from "@/lib/booking/store";
+import { drainMeetJobs } from "@/lib/google/meet";
 import { ok, parseJson } from "@/lib/http";
 import { drainSoon } from "@/lib/notify/outbox";
 
@@ -21,6 +22,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const result = await withBookingErrors(() => rescheduleAppointment(id, parsed.data.start, actor.userId, actor.kind));
   if ("response" in result) return result.response;
   if (result.data.event_id) drainSoon([String(result.data.event_id)]);
+  await drainMeetJobs(result.data.appointment_id);
 
   const appointment = await getAppointment(result.data.appointment_id);
   await audit({

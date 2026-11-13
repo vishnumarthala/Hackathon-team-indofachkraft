@@ -84,8 +84,8 @@ describe("instrument registry (FR-1)", () => {
 describe("report kinds (FR-2)", () => {
   it("lists the kinds in use plus the reserved ones, with audiences", () => {
     expect(REPORT_KIND_KEYS).toEqual(["pre_session_brief", "assessment", "parent_summary", "session_note", "rx_draft", "generic_intake_brief"]);
-    // 038 started producing session_note and rx_draft (migration 20261113003800_scribe.sql).
-    expect(REPORT_KIND_KEYS.filter((k) => REPORT_KINDS[k].inUse)).toEqual(["pre_session_brief", "assessment", "parent_summary", "session_note", "rx_draft"]);
+    // 038 started producing session_note and rx_draft (migration 20261113003800_scribe.sql), 035 generic_intake_brief.
+    expect(REPORT_KIND_KEYS.filter((k) => REPORT_KINDS[k].inUse)).toEqual(["pre_session_brief", "assessment", "parent_summary", "session_note", "rx_draft", "generic_intake_brief"]);
     expect(defaultVisibleToGuardian("assessment")).toBe(false);
     expect(defaultVisibleToGuardian("parent_summary")).toBe(true);
     expect(defaultVisibleToGuardian("pre_session_brief")).toBe(false);

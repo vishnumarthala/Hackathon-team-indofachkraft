@@ -41,7 +41,12 @@ export const REPORT_KINDS = {
   // (default off), not by the reports_publish_final trigger.
   session_note: { audience: "provider", publishable: true, producer: "038 AI scribe (lib/scribe/run.ts)", inUse: true },
   rx_draft: { audience: "provider", publishable: false, producer: "038 AI scribe draft, signed by 039 e-prescription", inUse: true },
-  generic_intake_brief: { audience: "provider", publishable: false, producer: "035 appointment intake", inUse: false },
+  generic_intake_brief: {
+    audience: "provider",
+    publishable: false,
+    producer: "035 appointment intake, generic agent (lib/intake/appointment-process.ts)",
+    inUse: true,
+  },
 } as const satisfies Record<string, ReportKindSpec>;
 
 export type ReportKind = keyof typeof REPORT_KINDS;

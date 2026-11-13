@@ -57,7 +57,18 @@ export type ServiceItem = {
   location_name: string | null;
 };
 
-export function ServicesEditor({ services, locations, orgs }: { services: ServiceItem[]; locations: Loc[]; orgs: Org[] }) {
+/** `defaultIntakeKind`: 035 D-4, the provider type's default for new services (changeable per service). */
+export function ServicesEditor({
+  services,
+  locations,
+  orgs,
+  defaultIntakeKind = "none",
+}: {
+  services: ServiceItem[];
+  locations: Loc[];
+  orgs: Org[];
+  defaultIntakeKind?: "child_dev" | "generic" | "none";
+}) {
   const t = useT("booking");
   const id = useId();
   const { busy, run, feedback, invalid } = useAction();
@@ -155,7 +166,7 @@ export function ServicesEditor({ services, locations, orgs }: { services: Servic
         </div>
         <div>
           <label htmlFor={`${id}-intake`} className={labelClass}>{t("schedule.services.intake")}</label>
-          <select id={`${id}-intake`} name="intake_kind" defaultValue="none" className={selectClass}>
+          <select id={`${id}-intake`} name="intake_kind" defaultValue={defaultIntakeKind} className={selectClass}>
             {(["none", "child_dev", "generic"] as const).map((k) => <option key={k} value={k}>{t(`schedule.services.intakeKinds.${k}`)}</option>)}
           </select>
         </div>

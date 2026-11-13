@@ -1,0 +1,44 @@
+{
+  "type": "post_call_transcription",
+  "event_timestamp": 1794052800,
+  "data": {
+    "agent_id": "demo-generic-agent",
+    "conversation_id": "demo-generic-conversation",
+    "status": "done",
+    "metadata": { "call_duration_secs": 241 },
+    "transcript": [
+      { "role": "agent", "message": "Hello, I am an AI assistant from DoctorNearMe, not a doctor. I help your provider prepare for the visit. This call is recorded and summarised for your provider. Is it okay to continue?", "time_in_call_secs": 0 },
+      { "role": "user", "message": "Yes, that is fine.", "time_in_call_secs": 12 },
+      { "role": "agent", "message": "Thank you. What is the main reason for this visit?", "time_in_call_secs": 16 },
+      { "role": "user", "message": "My daughter has pain in her right knee after football practice, for about three weeks now.", "time_in_call_secs": 22 },
+      { "role": "agent", "message": "How did it start, and has it changed since?", "time_in_call_secs": 34 },
+      { "role": "user", "message": "She twisted it during a match. The swelling went down but the pain comes back when she runs or climbs stairs.", "time_in_call_secs": 40 },
+      { "role": "agent", "message": "Has she had any treatment for it so far?", "time_in_call_secs": 55 },
+      { "role": "user", "message": "We used an ice pack and our family doctor said to rest for a week.", "time_in_call_secs": 61 },
+      { "role": "agent", "message": "Does she take any medicines now?", "time_in_call_secs": 72 },
+      { "role": "user", "message": "Only paracetamol syrup 5 ml when the pain is bad, maybe twice a week.", "time_in_call_secs": 78 },
+      { "role": "agent", "message": "Does she have any allergies?", "time_in_call_secs": 90 },
+      { "role": "user", "message": "She is allergic to peanuts, she gets hives.", "time_in_call_secs": 95 },
+      { "role": "agent", "message": "What worries you most right now?", "time_in_call_secs": 104 },
+      { "role": "user", "message": "That she will stop playing sports, and that she limps after school some days.", "time_in_call_secs": 110 },
+      { "role": "agent", "message": "Is there anything you would like to ask the provider at the visit?", "time_in_call_secs": 125 },
+      { "role": "user", "message": "When can she go back to football, and are there exercises we can do at home?", "time_in_call_secs": 131 },
+      { "role": "agent", "message": "Thank you. In short: knee pain for three weeks after a twist, paracetamol when needed and a peanut allergy. Your provider will see you at the visit. Goodbye.", "time_in_call_secs": 145 }
+    ],
+    "analysis": {
+      "data_collection_results": {
+        "consent_given": { "value": true, "rationale": "The parent agreed at the start." },
+        "reason_for_visit": { "value": "Right knee pain after football for three weeks", "rationale": "Stated by the parent." },
+        "history": { "value": "Twisted the knee in a match; swelling settled, pain returns with running and stairs; rested a week on the family doctor's advice", "rationale": "Stated by the parent." },
+        "current_concerns": { "value": "Fear she stops sports; limps after school some days", "rationale": "Stated by the parent." },
+        "current_medications": { "value": "Paracetamol syrup 5 ml when needed, about twice a week", "rationale": "Stated by the parent." },
+        "allergies": { "value": "Peanuts (hives)", "rationale": "Stated by the parent." },
+        "questions_for_provider": { "value": "When can she return to football; home exercises", "rationale": "Stated by the parent." },
+        "red_flag_reported": { "value": false, "rationale": "No urgent warning sign described." }
+      }
+    },
+    "conversation_initiation_client_data": {
+      "dynamic_variables": { "intake_attempt_id": "00000000-0000-4000-8000-000000000000" }
+    }
+  }
+}

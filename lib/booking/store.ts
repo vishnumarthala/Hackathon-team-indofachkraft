@@ -4,6 +4,7 @@
 import { env } from "@/lib/env";
 import { pg, type Queryable } from "@/lib/pg";
 import { BookingError } from "./errors";
+import { defaultIntakeKind } from "./intake-defaults";
 import type { HoldInput, OverrideCreate, RuleCreate, ServiceCreate, ServiceUpdate } from "./schemas";
 import { generateSlots, HORIZON_DAYS, type BusyRange, type RuleMode, type ServiceMode, type Slot, type SlotOverride, type SlotRule } from "./slots";
 import { addDays, todayIn } from "./time";
@@ -292,7 +293,7 @@ export async function listAgenda(profileId: string, from: Date, to: Date): Promi
 // ---------- provider management (FR-8) ----------
 
 export type ProviderContext = {
-  profile: { id: string; display_name: string; time_zone: string; verification_status: string; listed: boolean; slug: string };
+  profile: { id: string; display_name: string; time_zone: string; verification_status: string; listed: boolean; slug: string; provider_type: string };
   /** Organisations the provider is an active member of. */
   orgs: { id: string; name: string }[];
   /** Locations linked to the profile (028 provider_locations) in those organisations. */
@@ -302,7 +303,7 @@ export type ProviderContext = {
 export async function getProviderContext(userId: string): Promise<ProviderContext | null> {
   const sql = await pg();
   const [profile] = await sql<ProviderContext["profile"][]>`
-    select id, display_name, time_zone, verification_status, listed, slug from public.provider_profiles where user_id = ${userId}`;
+    select id, display_name, time_zone, verification_status, listed, slug, provider_type from public.provider_profiles where user_id = ${userId}`;
   if (!profile) return null;
   const orgs = await sql<{ id: string; name: string }[]>`
     select o.id, coalesce(o.public_name, o.name) as name from public.org_members m join public.organizations o on o.id = m.org_id
@@ -353,7 +354,8 @@ export async function createService(ctx: ProviderContext, input: ServiceCreate):
   const [row] = await sql<{ id: string }[]>`
     insert into public.services (provider_profile_id, org_id, location_id, name, mode, duration_min, fee_inr, payment_mode, buffer_min, intake_kind)
     values (${ctx.profile.id}, ${orgId}, ${input.mode === "in_clinic" ? (input.location_id ?? null) : null}, ${input.name}, ${input.mode},
-            ${input.duration_min}, ${input.fee_inr}, ${input.payment_mode}, ${input.buffer_min}, ${input.intake_kind})
+            ${input.duration_min}, ${input.fee_inr}, ${input.payment_mode}, ${input.buffer_min},
+            ${input.intake_kind ?? defaultIntakeKind(ctx.profile.provider_type)})
     returning id`;
   return (await getService(row.id)) as ServiceRow;
 }

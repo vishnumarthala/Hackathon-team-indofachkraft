@@ -1,0 +1,56 @@
+{
+  "$comment": "Ticket 035: generic (non Child Development) pre-consult intake. `fields` = the ElevenLabs agent's data collection items (docs/elevenlabs-generic-intake-agent.md); `brief` = the JSON Gemini returns for the generic_intake_brief report (zod mirror: lib/intake/generic.ts GenericIntakeBriefSchema). The medicine/allergy check against the 021 health profile is added by the server (health_check), not by the model.",
+  "fields": [
+    { "id": "consent_given", "type": "boolean", "label": "Consent given", "description": "The parent agreed to talk to an AI assistant and to the call being recorded and summarised for the provider" },
+    { "id": "reason_for_visit", "type": "string", "label": "Reason for visit", "description": "Why the parent booked this visit, in their own words" },
+    { "id": "history", "type": "string", "label": "History", "description": "When the problem started, how it changed, earlier treatment, relevant past illnesses or operations" },
+    { "id": "current_concerns", "type": "string", "label": "Current concerns", "description": "What worries the parent most right now" },
+    { "id": "current_medications", "type": "string", "label": "Current medicines", "description": "Medicines, supplements or remedies the child takes now, with dose if known" },
+    { "id": "allergies", "type": "string", "label": "Allergies", "description": "Known allergies and the reaction, or that there are none" },
+    { "id": "questions_for_provider", "type": "string", "label": "Questions for the provider", "description": "Questions the parent wants to ask at the visit" },
+    { "id": "red_flag_reported", "type": "boolean", "label": "Urgent warning sign mentioned", "description": "The parent described an emergency or urgent warning sign (the agent then advised calling 108 or 112)" }
+  ],
+  "brief": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["summary", "reason_for_visit", "history", "current_concerns", "medications", "allergies", "red_flags", "questions_for_provider"],
+    "properties": {
+      "summary": { "type": "string", "description": "At most 120 words, starting with 'Parent-reported:'" },
+      "reason_for_visit": { "type": "string", "minLength": 1, "maxLength": 600 },
+      "history": { "type": "string", "maxLength": 1500 },
+      "current_concerns": { "type": "array", "maxItems": 8, "items": { "type": "string", "minLength": 1, "maxLength": 300 } },
+      "medications": {
+        "type": "array",
+        "maxItems": 20,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "details"],
+          "properties": { "name": { "type": "string", "minLength": 1, "maxLength": 120 }, "details": { "type": "string", "maxLength": 200 } }
+        }
+      },
+      "allergies": {
+        "type": "array",
+        "maxItems": 20,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["substance", "reaction"],
+          "properties": { "substance": { "type": "string", "minLength": 1, "maxLength": 120 }, "reaction": { "type": "string", "maxLength": 200 } }
+        }
+      },
+      "red_flags": {
+        "type": "array",
+        "maxItems": 10,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["turn_id", "quote"],
+          "properties": { "turn_id": { "type": "string" }, "quote": { "type": "string", "minLength": 1, "maxLength": 300 } }
+        }
+      },
+      "questions_for_provider": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "type": "string", "minLength": 1, "maxLength": 300 } }
+    }
+  }
+}

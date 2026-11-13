@@ -29,6 +29,13 @@ export const THIRD_PARTY_ALLOWLIST: ThirdPartyEntry[] = [
     ticket: "033",
   },
   {
+    // 034: the voice booking widget on the public directory (approved by the product owner).
+    name: "ElevenLabs SDK (voice booking)",
+    origins: ["https://elevenlabs.io", "https://api.elevenlabs.io"],
+    routes: ["/find"],
+    ticket: "034",
+  },
+  {
     name: "Razorpay checkout",
     origins: ["https://checkout.razorpay.com"],
     // 031: the checkout page is `/book/<profileId>/pay/<appointmentId>` (lib/csp.ts FAMILY_CSP_EXCEPTIONS).

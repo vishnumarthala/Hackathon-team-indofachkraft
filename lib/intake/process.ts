@@ -159,10 +159,10 @@ export function demoPostCallData(token: string, conversationId: string): PostCal
 // ---------------------------------------------------------------------------------------------
 // Database (server only)
 
-type Sql = postgres.Sql;
+export type Sql = postgres.Sql;
 const globalForSql = globalThis as unknown as { __carethreadSql?: Sql };
 
-async function db(): Promise<Sql> {
+export async function db(): Promise<Sql> {
   if (typeof window !== "undefined") throw new Error("lib/intake/process.ts is server-only");
   if (!globalForSql.__carethreadSql) {
     const { default: postgresClient } = await import("postgres");
@@ -278,10 +278,26 @@ export async function processPostCall(input: unknown): Promise<ProcessResult> {
   const recordingId = await saveIntake(sql, caseRow, data, segments, facts);
   if (!recordingId) return { received: true, duplicate: true };
 
-  // Re-check right before the transcript goes to Gemini for the brief.
-  const briefStage = { stage: "brief_generation", caseId: caseRow.id, recordingId, markRecordingFailed: true };
-  if (!(await assertConsentOrAbort(caseRow.child_id, "ai_intake_call", briefStage))) {
-    return { received: true, case_id: caseRow.id, recording_id: recordingId, brief: false };
+  return generateChildDevBrief(sql, { caseId: caseRow.id, childId: caseRow.child_id, recordingId, segments, facts });
+}
+
+export type BriefTarget = {
+  caseId: string;
+  childId: string;
+  recordingId: string;
+  segments: Segment[];
+  facts: CaseSheetFact[];
+  /** 035: appointment-scoped intake (reports.appointment_id). */
+  appointmentId?: string | null;
+};
+
+// 010 brief pipeline, shared with the appointment intake (035): consent re-check right before the transcript goes to
+// Gemini, then one pre_session_brief per recording (`on conflict (recording_id, kind)` keeps retries idempotent).
+export async function generateChildDevBrief(sql: Sql, target: BriefTarget): Promise<ProcessResult> {
+  const { caseId, childId, recordingId, segments, facts } = target;
+  const briefStage = { stage: "brief_generation", caseId, recordingId, markRecordingFailed: true };
+  if (!(await assertConsentOrAbort(childId, "ai_intake_call", briefStage))) {
+    return { received: true, case_id: caseId, recording_id: recordingId, brief: false };
   }
 
   try {
@@ -293,31 +309,31 @@ export async function processPostCall(input: unknown): Promise<ProcessResult> {
     });
     const brief = filterRedFlags(generated, segments);
     const reports = await sql<{ id: string }[]>`
-      insert into reports (case_id, recording_id, kind, content, content_md, status)
-      values (${caseRow.id}, ${recordingId}, 'pre_session_brief', ${sql.json(brief)},
-              ${renderBriefMarkdown(brief, segments)}, 'draft')
+      insert into reports (case_id, recording_id, kind, content, content_md, status, appointment_id)
+      values (${caseId}, ${recordingId}, 'pre_session_brief', ${sql.json(brief)},
+              ${renderBriefMarkdown(brief, segments)}, 'draft', ${target.appointmentId ?? null})
       on conflict (recording_id, kind) do nothing
       returning id`;
     await audit({
-      caseId: caseRow.id,
+      caseId,
       actor: "ai",
       action: "brief.generated",
       entity: "report",
       entityId: reports[0]?.id,
       details: { recording_id: recordingId, red_flags: brief.red_flags.length },
     });
-    return { received: true, case_id: caseRow.id, recording_id: recordingId, brief: true };
+    return { received: true, case_id: caseId, recording_id: recordingId, brief: true };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`brief generation failed: ${message}`);
     await audit({
-      caseId: caseRow.id,
+      caseId,
       actor: "system",
       action: "intake.brief_failed",
       entity: "recording",
       entityId: recordingId,
       details: { error: message },
     });
-    return { received: true, case_id: caseRow.id, recording_id: recordingId, brief: false };
+    return { received: true, case_id: caseId, recording_id: recordingId, brief: false };
   }
 }

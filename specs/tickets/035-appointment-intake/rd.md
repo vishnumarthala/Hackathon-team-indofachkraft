@@ -1,6 +1,6 @@
 # 035: Appointment-scoped pre-consult intake
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 021, 024, 030, 041: uses clinical contracts/report kinds (024) and confirmed appointments (030); the pre-consult brief reads the child's health profile (021); real child data needs the privacy/audit baseline (041)
 

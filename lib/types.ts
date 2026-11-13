@@ -171,7 +171,7 @@ export type ReportRow = {
   id: string;
   case_id: string;
   recording_id: string | null;
-  kind: "pre_session_brief" | "assessment" | "parent_summary" | "session_note" | "rx_draft";
+  kind: "pre_session_brief" | "assessment" | "parent_summary" | "session_note" | "rx_draft" | "generic_intake_brief";
   content: unknown;
   content_md: string;
   audio_path: string | null;

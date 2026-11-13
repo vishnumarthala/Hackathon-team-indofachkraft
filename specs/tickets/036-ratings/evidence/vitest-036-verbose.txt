@@ -1,0 +1,73 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/036
+
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > completed, own, 1 day ago -> { status: 'completed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 1ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > completed, own, 29.9 days ago -> { status: 'completed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-10-14T12:24:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > completed, own, exactly 30 days ago -> { status: 'completed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-10-14T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > completed, own, 30 days + 1 minute ago -> { status: 'completed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-10-14T09:59:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > completed, someone else's -> { status: 'completed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > completed, guardian removed -> { status: 'completed', guardianUserId: null, completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > completed, already rated -> { status: 'completed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > someone else's, already rated (no leak) -> { status: 'completed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > held -> { status: 'held', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > pending_payment -> { status: 'pending_payment', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > confirmed -> { status: 'confirmed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > cancelled -> { status: 'cancelled', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > expired -> { status: 'expired', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > no_show -> { status: 'no_show', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: 2026-11-12T10:00:00.000Z } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > missing appointment -> null 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > completed without a completion time -> { status: 'completed', guardianUserId: '11111111-1111-4111-8111-111111111111', completedAt: null } 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > edits: owner within 7 days; closed after; hidden ratings locked; others not_owner 0ms
+ ✓ tests/ratings.test.ts > eligibility (FR-2, D-1) > status after a write: abuse -> review; a provider report stays in review; clean -> published 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: 9876543210 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: call me on +91 98765 43210 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: 098765-43210 any time 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: (040) 2345 6789 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: ९८७६५४३२१० please 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: mail parent.synthetic@example.test 1ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: write to parent [at] example [dot] com 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: insta @aarav_dad 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: see https://example.test/review 1ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: www.example.com has more 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects contact details: drsynthetic.in is the site 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects the child's name: Aarav loved the session 1ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects the child's name: my son aarav is happier 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects the child's name: AARAV REDDY 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > rejects the child's name: Reddy family thanks you 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > matches names in Indic scripts and other linked children, but not ordinary words 1ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > accepts ordinary comments: Waited 2 hours 30 minutes, worth it 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > accepts ordinary comments: Great therapist, 10/10, visit on 12/11/2026 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > accepts ordinary comments: Very patient. Explained the home plan clearly. 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > accepts ordinary comments: చాలా బాగా వివరించారు 2ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > accepts ordinary comments: बहुत अच्छे डॉक्टर 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > accepts ordinary comments: Fee was Rs 1500 and parking was easy 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > abuse list -> accepted for review: What a fraud 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > abuse list -> accepted for review: total SCAM clinic 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > abuse list -> accepted for review: fucking late again 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > abuse list -> accepted for review: doctor is a chutiya 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > abuse list -> accepted for review: బాగా లేదు, దొంగ 0ms
+ ✓ tests/ratings.test.ts > comment screening (FR-4, D-3) > empty comments become null; whitespace is tidied 0ms
+ ✓ tests/ratings.test.ts > display threshold (FR-5, D-2) > average from 3 published ratings, else New on DoctorNearMe 0ms
+ ✓ tests/ratings.test.ts > display threshold (FR-5, D-2) > comments show month and year only 9ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-1: complete -> prompt -> rate -> summary > completing through the provider route enqueues the rate prompt for 2 h later; fan-out reaches the guardian 175ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-1: complete -> prompt -> rate -> summary > the prompt is not sent once the visit is rated (recipients re-checked at fan-out) 15ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-1: complete -> prompt -> rate -> summary > 5, 4, 5 from guardian A and 4 from guardian B -> 4.5 from 4 published ratings; search_providers fills the columns 37ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-1: complete -> prompt -> rate -> summary > a provider with fewer than 3 ratings shows New on DoctorNearMe (search returns no average) 11ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-2: negatives (FR-3, FR-4) > not completed / someone else's / unknown / not a guardian -> 403; anonymous -> 401; twice -> 409 40ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-2: negatives (FR-3, FR-4) > 30-day window: completed 31 days ago -> 403, 29 days ago -> 201 12ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-2: negatives (FR-3, FR-4) > phone number, email, link or the child's name -> 422 and nothing saved; abuse words -> pending_review 33ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-2: negatives (FR-3, FR-4) > PATCH: own rating within 7 days; screened; 403 after 7 days; others 403 27ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-3: moderation (FR-6) > provider reports -> pending_review (off the profile); admin publishes -> visible; hide needs a note; provider on the admin API -> 403 48ms
+stderr | tests/ratings.test.ts > ratings (database, route handlers) > E-3: moderation (FR-6) > a failed audit write saves nothing (503)
+[audit] Audit write failed for rating.created: AUDIT_FAIL_ACTIONS test hook
+
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-3: moderation (FR-6) > admin queue shows the guardian's identity; public and provider views never do (NFR-1) 2ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > E-3: moderation (FR-6) > a failed audit write saves nothing (503) 8ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > schema and privacy (FR-1, NFR-2) > the database refuses ratings for appointments that are not the guardian's completed ones 7ms
+ ✓ tests/ratings.test.ts > ratings (database, route handlers) > schema and privacy (FR-1, NFR-2) > registry: exported for the guardian, deleted on full erasure and with the guardian's account 152ms
+
+ Test Files  1 passed (1)
+      Tests  61 passed (61)
+   Start at  05:15:55
+   Duration  1.40s (transform 279ms, setup 0ms, import 139ms, tests 1.20s, environment 0ms)
+

@@ -46,8 +46,27 @@ export const env = {
   get ELEVENLABS_SCREEN_AGENT_ID() {
     return read("ELEVENLABS_SCREEN_AGENT_ID");
   },
+  // 034: the English-only voice booking agent on /find (docs/elevenlabs-booking-agent.md) and the shared secret its
+  // server tools send as `X-Agent-Secret`. Optional: without both (and outside DEMO_MODE) /find has no voice widget;
+  // without the secret every tool call is refused.
+  get ELEVENLABS_BOOKING_AGENT_ID() {
+    return read("ELEVENLABS_BOOKING_AGENT_ID");
+  },
+  get ELEVENLABS_TOOL_SECRET() {
+    return read("ELEVENLABS_TOOL_SECRET");
+  },
   get ELEVENLABS_WEBHOOK_SECRET() {
     return required("ELEVENLABS_WEBHOOK_SECRET");
+  },
+  // 035: English-only generic pre-consult intake agent (docs/elevenlabs-generic-intake-agent.md). Optional: without it
+  // generic intake links work only in DEMO_MODE.
+  get ELEVENLABS_GENERIC_INTAKE_AGENT_ID() {
+    return read("ELEVENLABS_GENERIC_INTAKE_AGENT_ID");
+  },
+  // 035: HMAC key for appointment intake links (the token is derived from the attempt id, only its hash is stored).
+  // Optional: falls back to the service role key. Changing it invalidates every open appointment intake link.
+  get INTAKE_LINK_SECRET() {
+    return read("INTAKE_LINK_SECRET");
   },
   get GEMINI_API_KEY() {
     return required("GEMINI_API_KEY");
@@ -143,5 +162,17 @@ export const env = {
   /** Dev/test hook (lib/audit.ts `auditWouldFail`); ignored in production builds. */
   get AUDIT_FAIL_ACTIONS() {
     return read("AUDIT_FAIL_ACTIONS");
+  },
+  // 037: Google Calendar / Meet for video appointments (docs/google-meet.md). Server-only. Without the client id and
+  // secret, DEMO_MODE uses a local fake Google; otherwise `Connect Google Calendar` is unavailable.
+  get GOOGLE_OAUTH_CLIENT_ID() {
+    return read("GOOGLE_OAUTH_CLIENT_ID");
+  },
+  get GOOGLE_OAUTH_CLIENT_SECRET() {
+    return read("GOOGLE_OAUTH_CLIENT_SECRET");
+  },
+  /** 32 random bytes, base64. Encrypts stored OAuth refresh tokens (AES-256-GCM). */
+  get TOKEN_ENCRYPTION_KEY() {
+    return read("TOKEN_ENCRYPTION_KEY");
   },
 };

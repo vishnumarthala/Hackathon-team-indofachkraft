@@ -83,9 +83,19 @@ type SessionTarget = { conversationToken: string } | { agentId: string; connecti
 
 type SessionOptions = SessionTarget & {
   dynamicVariables: Record<string, string>;
-  overrides: { agent: { language: Language } };
+  overrides?: { agent: { language: Language } };
   onError: () => void;
 };
+
+/**
+ * 035: the appointment intake (`/intake/a/<token>`) uses its own API base; the generic (English-only) agent gets no
+ * language override.
+ */
+export type IntakeApiOptions = { apiBase?: string; overrideLanguage?: boolean };
+
+export function intakeApiBase(token: string, opts: IntakeApiOptions = {}): string {
+  return opts.apiBase ?? `/api/intake/${encodeURIComponent(token)}`;
+}
 
 export type StartDeps = {
   fetchFn: typeof fetch;
@@ -102,10 +112,11 @@ export async function startIntakeCall(
   language: Language,
   deps: StartDeps,
   messages: IntakeMessages = MESSAGES,
+  opts: IntakeApiOptions = {},
 ): Promise<StartResult> {
   let res: Response;
   try {
-    res = await deps.fetchFn(`/api/intake/${encodeURIComponent(token)}/start`, {
+    res = await deps.fetchFn(`${intakeApiBase(token, opts)}/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ language }),
@@ -145,7 +156,7 @@ export async function startIntakeCall(
     deps.startSession({
       ...target,
       dynamicVariables: body.dynamic_variables ?? {},
-      overrides: { agent: { language } },
+      ...(opts.overrideLanguage === false ? {} : { overrides: { agent: { language } } }),
       onError: deps.onSdkError,
     });
   } catch {
@@ -173,13 +184,14 @@ export function createCompletionPoller(
   fetchFn: (input: string, init?: RequestInit) => Promise<Response>,
   onState: (state: CompletionState) => void,
   messages: IntakeMessages = MESSAGES,
+  opts: IntakeApiOptions = {},
 ): CompletionPoller {
   let timer: ReturnType<typeof setTimeout> | null = null;
   let inFlight = false;
   let cancelled = false;
   let deadline = 0;
   let run = 0;
-  const url = `/api/intake/${encodeURIComponent(token)}/complete`;
+  const url = `${intakeApiBase(token, opts)}/complete`;
 
   const current = (id: number) => !cancelled && id === run;
 
@@ -238,7 +250,17 @@ export function completionText(state: CompletionState, messages: IntakeMessages 
 }
 
 /** `defaultLanguage` is the case's call language; without one the call language follows the UI locale. */
-export type IntakeCallProps = { token: string; childAlias: string; defaultLanguage: Language | null };
+export type IntakeCallProps = {
+  token: string;
+  childAlias: string;
+  defaultLanguage: Language | null;
+  /** 035 appointment intake: API base, simulator path, no language choice for the English-only generic agent. */
+  apiBase?: string;
+  simulatePath?: string;
+  languageSelect?: boolean;
+  /** Server-translated copy replacing the Child Development title / intro / consent label. */
+  copy?: { title: string; intro: string; consent: string };
+};
 
 export function IntakeCall(props: IntakeCallProps) {
   return (
@@ -248,13 +270,14 @@ export function IntakeCall(props: IntakeCallProps) {
   );
 }
 
-function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps) {
+function IntakeCallInner({ token, childAlias, defaultLanguage, apiBase, simulatePath, languageSelect = true, copy }: IntakeCallProps) {
   const t = useT("intake");
   const tStatus = useT("intake.status");
   const messages = useMemo(() => intakeMessages(tStatus), [tStatus]);
   const uiLocale = useLocale();
   // The call language is independent of the UI language: switching the UI never changes it.
-  const [language, setLanguage] = useState<Language>(defaultLanguage ?? uiLocale);
+  const [language, setLanguage] = useState<Language>(languageSelect ? (defaultLanguage ?? uiLocale) : "en");
+  const apiOptions = useMemo<IntakeApiOptions>(() => ({ apiBase, overrideLanguage: languageSelect }), [apiBase, languageSelect]);
   const [consent, setConsent] = useState(false);
   const [starting, setStarting] = useState(false);
   const [demo, setDemo] = useState(false);
@@ -273,7 +296,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
       setCompletion({ kind: "error", message: messages.saveFailed });
       return;
     }
-    pollerRef.current ??= createCompletionPoller(token, conversationId, (i, init) => fetch(i, init), setCompletion, messages);
+    pollerRef.current ??= createCompletionPoller(token, conversationId, (i, init) => fetch(i, init), setCompletion, messages, apiOptions);
     pollerRef.current.start();
   }
 
@@ -314,7 +337,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
         setWasConnected(false);
         setStarting(false);
       },
-    }, messages);
+    }, messages, apiOptions);
     if (result.kind === "demo") setDemo(true);
     if (result.kind === "error") setError(result.message);
     setStarting(false);
@@ -325,27 +348,29 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-semibold break-words">{t("title", { child: childAlias })}</h1>
-      <p className="text-base text-slate-800">{t("intro", { child: childAlias })}</p>
+      <h1 className="text-2xl font-semibold break-words">{copy?.title ?? t("title", { child: childAlias })}</h1>
+      <p className="text-base text-slate-800">{copy?.intro ?? t("intro", { child: childAlias })}</p>
 
-      <div>
-        <label htmlFor="intake-language" className="block text-sm font-medium text-slate-800">
-          {t("callLanguage")}
-        </label>
-        <select
-          id="intake-language"
-          value={language}
-          disabled={live}
-          onChange={(e) => setLanguage(e.target.value as Language)}
-          className="mt-1 min-h-11 w-full rounded border border-slate-300 bg-white px-3 py-2 text-base"
-        >
-          {LANGUAGE_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      {languageSelect && (
+        <div>
+          <label htmlFor="intake-language" className="block text-sm font-medium text-slate-800">
+            {t("callLanguage")}
+          </label>
+          <select
+            id="intake-language"
+            value={language}
+            disabled={live}
+            onChange={(e) => setLanguage(e.target.value as Language)}
+            className="mt-1 min-h-11 w-full rounded border border-slate-300 bg-white px-3 py-2 text-base"
+          >
+            {LANGUAGE_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <label className="flex items-start gap-3 text-base text-slate-800">
         <input
@@ -355,7 +380,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-1 h-5 w-5 shrink-0"
         />
-        <span>{t("consent")}</span>
+        <span>{copy?.consent ?? t("consent")}</span>
       </label>
 
       {!live && !ended && !demo && (
@@ -406,7 +431,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage }: IntakeCallProps
             {messages.demo}
           </p>
           <div id="demo-actions">
-            <SimulateCallButton token={token} />
+            <SimulateCallButton token={token} path={simulatePath} />
           </div>
         </div>
       )}

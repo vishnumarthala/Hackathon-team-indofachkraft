@@ -12,6 +12,8 @@ const USER = "44444444-4444-4444-8444-444444444444";
 const CHILD_NAME = "Asha Ramaswamy";
 const DENY = /autism|ISAA|diagnos|score/i;
 const APP = "https://app.doctornearme.test";
+// 035: appointment intake links are an HMAC of the attempt id.
+process.env.INTAKE_LINK_SECRET ??= "test-intake-link-secret";
 
 // 030: display values only (provider, time, mode, place) - never the child.
 const APPOINTMENT = {
@@ -43,11 +45,17 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "privacy.deletion_requested": { request_id: ID, child_id: CHILD },
   "privacy.deletion_completed": { request_id: ID },
   "privacy.deletion_rejected": { request_id: ID, child_id: CHILD },
+  "prescription.signed": { prescription_id: ID, child_id: CHILD, case_id: CASE },
+  "prescription.voided": { prescription_id: ID, child_id: CHILD, case_id: CASE },
   "appointment.confirmed": APPOINTMENT,
   "appointment.reminder_day_before": APPOINTMENT,
   "appointment.reminder_two_hours": APPOINTMENT,
   "appointment.cancelled": { ...APPOINTMENT, cancelled_by: "provider" },
   "appointment.rescheduled": APPOINTMENT,
+  "appointment.intake_link": { ...APPOINTMENT, intake_attempt_id: ID },
+  "appointment.meet_ready": { ...APPOINTMENT, mode: "video", location: null },
+  "appointment.meet_failed": { ...APPOINTMENT, mode: "video", location: null },
+  "google_calendar.reconnect_required": { provider_profile_id: ID },
   "payment.refunded": { payment_id: ID, appointment_id: ID, reason: "slot_unavailable" },
   "appointment.rate_prompt": { appointment_id: ID, provider_name: "Dr Synthetic Rao" },
 };
@@ -93,11 +101,17 @@ describe("topic registry", () => {
         "privacy.deletion_requested",
         "privacy.deletion_completed",
         "privacy.deletion_rejected",
+        "prescription.signed",
+        "prescription.voided",
         "appointment.confirmed",
         "appointment.reminder_day_before",
         "appointment.reminder_two_hours",
         "appointment.cancelled",
         "appointment.rescheduled",
+        "appointment.intake_link",
+        "appointment.meet_ready",
+        "appointment.meet_failed",
+        "google_calendar.reconnect_required",
         "payment.refunded",
         "appointment.rate_prompt",
       ].sort(),

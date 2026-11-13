@@ -8,11 +8,12 @@ import { getBookableProfile, getOwnedHold, listServices } from "@/lib/booking/st
 import { isUuid } from "@/lib/cases/validation";
 import { ageLabel } from "@/lib/children/age";
 import { listGuardianChildren } from "@/lib/children";
+import { hasGoogleIdentity } from "@/lib/google/meet";
 import { getT } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ profileId: string }>; searchParams: Promise<{ hold?: string }> };
+type Props = { params: Promise<{ profileId: string }>; searchParams: Promise<{ hold?: string; appointment?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { profileId } = await params;
@@ -26,7 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // No third-party scripts (family CSP in proxy.ts, lib/csp.ts).
 export default async function BookPage({ params, searchParams }: Props) {
   const { profileId } = await params;
-  const { hold: holdParam } = await searchParams;
+  // 034: the voice booking widget links here with `?appointment=<id>` (same meaning as `?hold=`).
+  const { hold, appointment } = await searchParams;
+  const holdParam = hold ?? appointment;
   if (!isUuid(profileId)) notFound();
   const profile = await getBookableProfile(profileId);
   if (!profile) notFound();
@@ -39,6 +42,8 @@ export default async function BookPage({ params, searchParams }: Props) {
   const role = user ? await getUserRole(user.id) : null;
   const isGuardian = role === "guardian";
   const children = user && isGuardian ? await listGuardianChildren(user.id) : [];
+  // 037 FR-5a: video services need a linked Google account (checked again by the hold/confirm routes).
+  const hasGoogle = user && isGuardian ? await hasGoogleIdentity(user.id) : false;
 
   let initialHold: FlowHold | null = null;
   if (holdParam && isUuid(holdParam)) {
@@ -78,6 +83,7 @@ export default async function BookPage({ params, searchParams }: Props) {
         viewer={{
           signedIn: Boolean(user),
           isGuardian,
+          hasGoogle,
           children: children.map(({ child }) => ({ id: child.id, name: child.display_name, age: ageLabel(tc, child.date_of_birth) })),
         }}
         initialHold={initialHold}
