@@ -6,9 +6,11 @@ import { clinicTimeIfDifferent, guardianCanChange, splitAppointments } from "@/l
 import { listGuardianSeries } from "@/lib/booking/series";
 import { groupByWeek, seriesSummary } from "@/lib/booking/series-display";
 import { GUARDIAN_CANCEL_WINDOW_MINUTES } from "@/lib/booking/slots";
+import { addMonths, familyAttendanceLabel, monthlyAttendance, monthOf } from "@/lib/booking/attendance-display";
 import { listGuardianAppointments, type AppointmentView } from "@/lib/booking/store";
 import { getMeetInfo } from "@/lib/google/meet";
 import { formatDate } from "@/lib/i18n/format";
+import { HTML_LANG } from "@/lib/i18n/config";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { guardianIntakeNotices, type GuardianIntakeNotice } from "@/lib/intake/attempts";
 import { PAYMENT_LABEL_STYLE, paymentHoldOpen, paymentLabel } from "@/lib/payments/display";
@@ -75,6 +77,14 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
   // 037: Meet link state of the guardian's own video appointments (Join video call inside the join window).
   const meet = await getMeetInfo(split.upcoming.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
   const day = (date: string) => formatDate(`${date}T12:00:00Z`, format.locale, "long", "UTC");
+  // 044 FR-7: past sessions say Attended / Missed / Cancelled by centre, plus "8 of 10 sessions attended in November"
+  // per child for this month and last month (sessions the centre cancelled do not count).
+  const ta = await getT("attendance.family");
+  const thisMonth = monthOf(new Date(), format.timeZone);
+  const monthName = (month: string) =>
+    new Intl.DateTimeFormat(HTML_LANG[format.locale], { month: "long", timeZone: "UTC", numberingSystem: "latn" }).format(new Date(`${month}-15T12:00:00Z`));
+  const monthly = monthlyAttendance(all, format.timeZone, [thisMonth, addMonths(thisMonth, -1)]);
+  const childCount = new Set(monthly.map((m) => m.childId)).size;
 
   const card = (a: AppointmentView, actions: boolean) => {
     const snap = a.service_snapshot;
@@ -82,6 +92,7 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
     const changeable = actions && guardianCanChange(a, GUARDIAN_CANCEL_WINDOW_MINUTES);
     const pay = paymentLabel(a, payments.get(a.id), "guardian");
     const payable = paymentHoldOpen(a);
+    const attendance = actions ? null : familyAttendanceLabel(a);
     return (
       <li key={a.id} className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
         <div className="flex flex-wrap items-start justify-between gap-2">
@@ -102,8 +113,13 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
             {a.child_name ? <p className="text-sm text-slate-700">{t("list.forChild", { child: a.child_name })}</p> : null}
           </div>
           <div className="flex flex-wrap gap-1">
-            <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLE[a.status] ?? "bg-slate-100 text-slate-700"}`}>
-              {a.status === "cancelled" && a.cancel_reason === "rescheduled"
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLE[a.status] ?? "bg-slate-100 text-slate-700"}`}
+              data-testid={attendance ? "attendance-label" : undefined}
+            >
+              {attendance
+                ? ta(attendance)
+                : a.status === "cancelled" && a.cancel_reason === "rescheduled"
                 ? t("list.movedTo")
                 : a.status === "cancelled" && a.cancelled_by
                   ? t(`list.cancelledBy.${a.cancelled_by}`)
@@ -248,6 +264,17 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
           <h2 id="past" className="text-lg font-semibold text-slate-900">
             {t("list.past")}
           </h2>
+          {monthly.length ? (
+            <ul className="space-y-1" data-testid="attendance-monthly">
+              {monthly.map((m) => (
+                <li key={`${m.month}-${m.childId ?? ""}`} className="rounded-2xl bg-teal-50 px-4 py-2 text-sm font-medium text-teal-900">
+                  {childCount > 1 && m.childName
+                    ? ta("monthlyChild", { child: m.childName, attended: m.attended, count: m.total, month: monthName(m.month) })
+                    : ta("monthly", { attended: m.attended, count: m.total, month: monthName(m.month) })}
+                </li>
+              ))}
+            </ul>
+          ) : null}
           <ul className="space-y-3">{past.map((a) => card(a, false))}</ul>
         </section>
       ) : null}

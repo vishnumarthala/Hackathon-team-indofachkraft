@@ -663,7 +663,7 @@ export const REGISTRY: PrivacyCategory[] = [
       const rows = await sql`
         select a.id, lower(a.slot) as starts_at, upper(a.slot) as ends_at, a.status, a.service_snapshot ->> 'name' as service,
                a.service_snapshot ->> 'mode' as mode, a.service_snapshot -> 'location' ->> 'name' as location,
-               p.display_name as provider, a.cancelled_by, a.rescheduled_from, a.created_at
+               p.display_name as provider, a.cancelled_by, a.rescheduled_from, a.attendance, a.created_at
         from public.appointments a join public.provider_profiles p on p.id = a.provider_profile_id
         where a.child_id = ${childId} and a.guardian_user_id = ${guardianUserId} and a.status not in ('held', 'expired')
         order by lower(a.slot)`;

@@ -4,13 +4,21 @@ import { supabaseAdmin } from "@/lib/db";
 import { pg } from "@/lib/pg";
 import { getCase } from "@/lib/queries/cases";
 import { requireCasePage } from "@/lib/authz";
-import { listCaseAppointments } from "@/lib/scribe/appointments";
+import { isUuid } from "@/lib/cases/validation";
+import { checkScribeAppointment, listCaseAppointments } from "@/lib/scribe/appointments";
 import { defaultTemplateFor } from "@/lib/scribe/templates";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewSessionPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function NewSessionPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ appointment?: string }>;
+}) {
   const { id } = await params;
+  const { appointment: requested } = await searchParams;
   const actor = await requireCasePage(id);
   const caseRow = await getCase(id);
   if (!caseRow) notFound();
@@ -20,6 +28,19 @@ export default async function NewSessionPage({ params }: { params: Promise<{ id:
     listCaseAppointments(await pg(), { id: caseRow.id, org_id: caseRow.org_id, child_id: caseRow.child_id ?? null }),
   ]);
   const defaultTemplate = defaultTemplateFor((profile as { provider_type: string } | null)?.provider_type);
+  // 044 FR-5 `Write note` from the attendance register: preselect that appointment (checked against this case).
+  const kase = { id: caseRow.id, org_id: caseRow.org_id, child_id: caseRow.child_id ?? null };
+  const options = appointments.map((a) => ({ id: a.id, starts_at: a.starts_at, mode: a.mode }));
+  let initialAppointmentId: string | undefined;
+  if (requested && isUuid(requested)) {
+    const check = await checkScribeAppointment(await pg(), requested, kase);
+    if (check.ok) {
+      initialAppointmentId = requested;
+      if (!options.some((o) => o.id === requested)) {
+        options.unshift({ id: requested, starts_at: check.appointment.starts_at, mode: check.appointment.mode });
+      }
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -31,7 +52,8 @@ export default async function NewSessionPage({ params }: { params: Promise<{ id:
         caseId={id}
         scribe={{
           defaultTemplate,
-          appointments: appointments.map((a) => ({ id: a.id, starts_at: a.starts_at, mode: a.mode })),
+          appointments: options,
+          initialAppointmentId,
         }}
       />
     </div>

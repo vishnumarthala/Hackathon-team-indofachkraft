@@ -13,7 +13,8 @@ import { whatsappUrl } from "@/lib/intake/message";
 import { canManage, getMembershipRole } from "@/lib/orgs";
 import { pg, type Queryable } from "@/lib/pg";
 import { decodeUtf8, MAX_FILE_BYTES } from "./csv";
-import { defaultSeriesScheduler, seriesTablesExist, type SeriesScheduler } from "./timetable";
+import { defaultSeriesScheduler, seriesTablesExist } from "./schedule";
+import type { SeriesScheduler } from "./timetable";
 import {
   issue,
   parseDateOfBirth,
@@ -348,6 +349,7 @@ export async function runImport(input: {
           serviceId: r.timetable.service_id,
           weekdays: r.timetable.weekdays,
           time: r.timetable.time,
+          billingMode: r.timetable.billing_mode,
           createdBy: actor.actorUserId,
         });
         if (seriesId) {
@@ -409,7 +411,7 @@ export async function runImport(input: {
 // ---------- undo (FR-5) ----------
 
 export type UndoOutcome =
-  | { result: "undone"; cases: number; children: number }
+  | { result: "undone"; cases: number; children: number; series: number; sessions: number }
   | { result: "blocked"; blocked_rows: number[] }
   | { result: "expired" | "already_undone" | "not_found" };
 
@@ -417,7 +419,7 @@ export async function undoImport(importId: string, actor: SessionAuditActor & { 
   const sql = await pg();
   return sql.begin(async (tx) => {
     const [{ outcome }] = await tx<{ outcome: UndoOutcome & { org_id?: string } }[]>`
-      select public.undo_child_import(${importId}::uuid, ${actor.actorUserId}::uuid) as outcome`;
+      select public.undo_child_import_with_series(${importId}::uuid, ${actor.actorUserId}::uuid) as outcome`;
     if (outcome.result === "undone") {
       await auditStrict(
         {
@@ -426,11 +428,12 @@ export async function undoImport(importId: string, actor: SessionAuditActor & { 
           action: "children.import_undone",
           entity: "child_import",
           entityId: importId,
-          details: { import_id: importId, cases: outcome.cases, children: outcome.children },
+          details: { import_id: importId, cases: outcome.cases, children: outcome.children, series: outcome.series, sessions: outcome.sessions },
         },
         tx,
       );
-      return { result: "undone", cases: outcome.cases, children: outcome.children };
+      // 044: the import's untouched weekly series and their future sessions go too (counts in the response).
+      return { result: "undone", cases: outcome.cases, children: outcome.children, series: outcome.series, sessions: outcome.sessions };
     }
     return outcome;
   });

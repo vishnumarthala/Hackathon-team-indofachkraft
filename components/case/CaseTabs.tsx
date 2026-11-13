@@ -14,6 +14,8 @@ const TABS = [
   { key: "assessments", segment: "assessments" },
   { key: "goals", segment: "goals" },
   { key: "homeProgram", segment: "home-program" },
+  // 044 FR-6: monthly attendance calendar + CSV export.
+  { key: "attendance", segment: "attendance" },
   // 039: verified prescribers only (decided on the server, see app/cases/[id]/layout.tsx).
   { key: "prescriptions", segment: "prescriptions", prescriberOnly: true },
   { key: "team", segment: "team" },

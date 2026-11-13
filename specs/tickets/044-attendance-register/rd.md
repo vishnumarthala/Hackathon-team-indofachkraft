@@ -1,6 +1,6 @@
 # 044: Attendance register
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 043: marks attendance on series occurrences
 
