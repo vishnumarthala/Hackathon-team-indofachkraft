@@ -5,6 +5,7 @@ import { auditStrict, type AuditEvent } from "@/lib/audit";
 import { pg, type Queryable, type Tx } from "@/lib/pg";
 import { getPaymentGateway, razorpaySettings, type PaymentGateway, type RazorpaySettings } from "./razorpay";
 import type { ParsedWebhook } from "./webhook";
+import { applyLinkPaid, closeLink } from "@/lib/fees/store";
 
 export const PAYMENT_STATUSES = ["created", "authorized", "captured", "failed", "refund_pending", "refunded"] as const;
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
@@ -15,13 +16,18 @@ export type RefundReason =
   | "guardian_cancelled"
   | "system_cancelled"
   | "amount_mismatch"
-  | "external";
+  | "external"
+  // 045
+  | "not_billable"
+  | "session_refund";
 
 export type PaymentRow = {
   id: string;
   appointment_id: string;
   gateway: "razorpay" | "demo";
   razorpay_order_id: string;
+  /** 045: DoctorNearMe receipt number once captured. */
+  receipt_no: string | null;
   razorpay_payment_id: string | null;
   amount_paise: number;
   currency: "INR";
@@ -42,6 +48,7 @@ function toRow(r: Record<string, unknown>): PaymentRow {
     appointment_id: String(r.appointment_id),
     gateway: r.gateway as PaymentRow["gateway"],
     razorpay_order_id: String(r.razorpay_order_id),
+    receipt_no: (r.receipt_no as string | null) ?? null,
     razorpay_payment_id: (r.razorpay_payment_id as string | null) ?? null,
     amount_paise: Number(r.amount_paise),
     currency: "INR",
@@ -55,7 +62,7 @@ function toRow(r: Record<string, unknown>): PaymentRow {
   };
 }
 
-const COLUMNS = "id, appointment_id, gateway, razorpay_order_id, razorpay_payment_id, amount_paise, currency, status, refund_id, refund_reason, failure_reason, captured_at, refunded_at, created_at";
+const COLUMNS = "id, appointment_id, gateway, razorpay_order_id, receipt_no, razorpay_payment_id, amount_paise, currency, status, refund_id, refund_reason, failure_reason, captured_at, refunded_at, created_at";
 
 /** The appointment's payment: the non-failed one, else the latest failed attempt. */
 export async function getPaymentForAppointment(appointmentId: string, sql?: Queryable): Promise<PaymentRow | null> {
@@ -277,6 +284,8 @@ export type WebhookResult = {
   eventIds: string[];
   /** Payments that now wait for a refund (run the refund job right away). */
   refundPaymentIds: string[];
+  /** 045: fee work to run right away (link refresh, fee refunds). */
+  feeJobs?: boolean;
 };
 
 /**
@@ -295,6 +304,7 @@ export async function handleWebhookEvent(eventId: string, parsed: ParsedWebhook)
     if (!inserted.length) return { duplicate: true, outcome: "duplicate", eventIds: [], refundPaymentIds: [] };
 
     let outcome = "ignored";
+    let feeJobs = false;
     let paymentRowId: string | null = null;
     const eventIds: string[] = [];
     const refundPaymentIds: string[] = [];
@@ -320,10 +330,54 @@ export async function handleWebhookEvent(eventId: string, parsed: ParsedWebhook)
           outcome = await markPaymentFailed(p.order_id as string, p.id, p.error, tx);
         }
       }
+    } else if (parsed.event === "payment_link.paid" || parsed.event === "payment_link.cancelled" || parsed.event === "payment_link.expired") {
+      // 045: package and balance links.
+      const link = parsed.paymentLink;
+      const [own] = link ? await tx<{ id: string }[]>`select id from public.payments where razorpay_payment_link_id = ${link.id}` : [];
+      if (!link || !own) {
+        outcome = "unknown_link";
+      } else {
+        paymentRowId = own.id;
+        if (parsed.event === "payment_link.paid") {
+          if (!p) {
+            outcome = "missing_payment";
+          } else {
+            const r = await applyLinkPaid(
+              {
+                linkId: link.id,
+                paymentId: p.id,
+                amountPaise: p.amount,
+                capturedAt: p.created_at ? new Date(p.created_at * 1000) : null,
+                source: "webhook",
+              },
+              tx,
+            );
+            outcome = r.outcome;
+            feeJobs = true;
+          }
+        } else {
+          outcome = await closeLink(link.id, parsed.event === "payment_link.expired" ? "link_expired" : "link_cancelled", tx);
+        }
+      }
     } else if (parsed.event === "refund.processed") {
       const refund = parsed.refund;
-      const [own] = refund ? await tx<{ id: string }[]>`select id from public.payments where razorpay_payment_id = ${refund.payment_id}` : [];
-      if (!refund || !own) {
+      // 045: partial refunds of link payments are fee refunds (one ledger row each).
+      const [feeRefund] = refund ? await tx<{ id: string }[]>`select id from public.fee_refunds where razorpay_refund_id = ${refund.id}` : [];
+      const [own] = refund
+        ? await tx<{ id: string; purpose: string }[]>`select id, purpose from public.payments where razorpay_payment_id = ${refund.payment_id}`
+        : [];
+      if (refund && feeRefund) {
+        paymentRowId = own?.id ?? null;
+        const [row] = await tx<{ r: { outcome: string; event_id: string | null } }[]>`
+          select public.fees_mark_refund_processed(${feeRefund.id}, ${refund.id}) as r`;
+        outcome = `fee_refund_${row.r.outcome}`;
+        if (row.r.event_id) eventIds.push(String(row.r.event_id));
+      } else if (refund && own && own.purpose !== "appointment") {
+        // A refund of a link payment we do not know yet (the job records it when it sees the refund id).
+        paymentRowId = own.id;
+        outcome = "fee_refund_pending";
+        feeJobs = true;
+      } else if (!refund || !own) {
         outcome = "unknown_payment";
       } else {
         paymentRowId = own.id;
@@ -335,6 +389,6 @@ export async function handleWebhookEvent(eventId: string, parsed: ParsedWebhook)
 
     await tx`update public.payment_events set processed_at = now(), outcome = ${outcome.slice(0, 80)}, payment_id = ${paymentRowId}
              where id = ${inserted[0].id}`;
-    return { duplicate: false, outcome, eventIds, refundPaymentIds };
+    return { duplicate: false, outcome, eventIds, refundPaymentIds, feeJobs };
   });
 }

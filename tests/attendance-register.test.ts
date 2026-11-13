@@ -118,7 +118,7 @@ describe.skipIf(!enabled)("attendance register (database, route handlers)", { ti
     extraProfiles.push(profile.id);
     const [svc] = await sql<{ id: string }[]>`
       insert into services (provider_profile_id, org_id, name, mode, duration_min, fee_inr, payment_mode)
-      values (${profile.id}, ${orgId}, ${`OT ${name} (synthetic)`}, 'video', 30, 600, 'at_clinic') returning id`;
+      values (${profile.id}, ${orgId}, ${`OT ${name} (synthetic)`}, 'video', 30, 600, 'online') returning id`;
     return { user, profileId: profile.id, serviceId: svc.id };
   }
 
@@ -129,7 +129,7 @@ describe.skipIf(!enabled)("attendance register (database, route handlers)", { ti
     world = bookingWorld(sql, db, "t044");
     owner = await world.provider("pa");
     outsider = await world.provider("pb");
-    paidService = await world.service(owner, { duration: 30, payment: "at_clinic", fee: 800, name: "Speech therapy (synthetic)" });
+    paidService = await world.service(owner, { duration: 30, payment: "online", fee: 800, name: "Speech therapy (synthetic)" });
     freeService = await world.service(owner, { duration: 30, payment: "free", name: "Free check-in (synthetic)" });
     onlineService = await world.service(owner, { duration: 30, payment: "online", fee: 900, name: "Online prepaid (synthetic)" });
     frontDesk = await world.user("desk", "provider");

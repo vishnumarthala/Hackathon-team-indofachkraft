@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CancelAppointmentButton, CompleteButtons } from "@/components/booking/AppointmentActions";
 import { HoursEditor, OverridesEditor, ServicesEditor } from "@/components/booking/ScheduleEditors";
+import { AtClinicNotice } from "@/components/fees/AtClinicNotice";
 import { MeetPanel } from "@/components/google/MeetPanel";
 import { ConflictList } from "@/components/series/TimetableCard";
 import { requireProviderPage } from "@/lib/authz";
 import { hasStarted } from "@/lib/booking/display";
 import { listManageableConflicts } from "@/lib/booking/series";
-import { getProviderContext, listAgenda, listOverrides, listRules, listServices } from "@/lib/booking/store";
+import { atClinicNoticeDue, getProviderContext, listAgenda, listOverrides, listRules, listServices } from "@/lib/booking/store";
 import { addDays, isValidDate, todayIn, wallToUtc, weekdayOf } from "@/lib/booking/time";
 import { getMeetInfo } from "@/lib/google/meet";
 import { ageLabel } from "@/lib/children/age";
@@ -181,6 +182,7 @@ export default async function SchedulePage({ searchParams }: Props) {
 
       <section aria-labelledby="services" className="space-y-3">
         <h2 id="services" className={h2}>{t("schedule.services.title")}</h2>
+        {(await atClinicNoticeDue(ctx.profile.id)) ? <AtClinicNotice /> : null}
         {locations.length === 0 ? <p className="text-sm text-slate-600">{t("schedule.noLocations")}</p> : null}
         <ServicesEditor services={services} locations={locations} orgs={ctx.orgs} defaultIntakeKind={defaultIntakeKind(ctx.profile.provider_type)} />
       </section>

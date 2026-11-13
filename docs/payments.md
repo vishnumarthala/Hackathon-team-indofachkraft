@@ -1,4 +1,4 @@
-# Payments: Razorpay, test mode (ticket 031)
+# Payments: Razorpay, test mode (tickets 031, 045)
 
 Online prepayment for services with `payment_mode = 'online'`, using Razorpay Orders + Checkout in **test mode only**
 (D-1: a `RAZORPAY_KEY_ID` that does not start with `rzp_test_` stops the server at start-up, `instrumentation.ts`, and is
@@ -177,3 +177,135 @@ audit fail-closed, privacy export).
 Appointments on demo (`is_synthetic`) profiles are `is_demo`: their snapshot is `free` / ₹0, so they confirm without
 payment; `POST /api/appointments/:id/payment-order` answers 409 `not_payable` and the `payments_refuse_demo` trigger
 refuses a payment row for them. See `docs/pilot-seeding.md`.
+
+## Packages and the family account (ticket 045)
+
+Decision 8 (corrected 2026-11-13): **the family pays on DoctorNearMe**, and DoctorNearMe pays the centre per delivered
+consultation (Razorpay Route, ticket 046). "Pay at clinic" is retired. Migration
+`supabase/migrations/20261113004500_packages_family_payments.sql`, code in `lib/fees/**`.
+
+### What is paid how
+
+| Session | How it is paid | `appointments.consultation_amount_paise` |
+|---|---|---|
+| One-off online booking (031) | Prepaid at booking (Razorpay order + Checkout) | the payment amount |
+| Session covered by an active package of the same organisation | The package's payment link (paid once) | package price / sessions, rounded down; the **last** session takes the remainder (D-4) |
+| Any other billable session (per-session series, a package series without a package, legacy `at_clinic` one-offs) | A `charge` on the family account, collected with the account's **balance payment link** | the service fee |
+
+"Billable" is 044's `appointments.billable` (set when attendance is marked or corrected, never by later policy edits).
+A trigger (`appointments_fees_on_billable` -> `fees_apply_billable`) runs in the marking transaction whenever `billable`
+changes:
+
+- `true`: prepaid one-off -> consultation amount = payment; else an active package covering the service (earliest expiry
+  first) -> one session used (`used_up` at the total); else a `charge` row + a request to refresh the balance link.
+- back to `false` (a correction): a package session is given back (`used_up` -> `active` while valid); an unpaid charge
+  is cancelled by a credit `adjustment` (ref = the charge); a **paid** charge is refunded from the payment that settled it
+  (`fee_refunds`, reason `not_billable`); a prepaid one-off is refunded in full (031's `payment_request_refund`, reason
+  `not_billable`).
+
+**Final rule for prepaid one-offs (reconciles 031 and 044):** `billable` decides. A prepaid session that ends up not
+billable (absent without `bill_absent`, a late family cancellation recorded without `bill_late_cancel`, a centre
+cancellation) is refunded in full; a billable one keeps its payment. A guardian's own cancellation in the app keeps 031's
+rule (>= 24 h before -> refund, later -> kept).
+
+### Data model
+
+| Table / column | Notes |
+|---|---|
+| `packages` | Organisation catalogue: `name`, `session_count` 1-60, `price_inr`, `validity_days` 7-180, `service_ids uuid[]` (this org's services it covers), `active`. Editing never changes offers already made. |
+| `child_packages` | One offer / purchase: frozen `snapshot`, `service_ids`, `price_paise`, `sessions_total` / `sessions_used`, `status` `pending_payment` -> `active` -> `used_up` / `expired`; `cancelled` (offer expired after 7 days, link closed, refunded). `starts_on` = payment day (IST), `expires_on` = starts_on + validity - 1. `payment_id` = the package payment. |
+| `payments` (031, extended) | `purpose` `appointment` (031 order) / `package` / `balance` (payment links). Link payments carry `org_id`, `child_id`, `child_package_id`, `razorpay_payment_link_id`, `payment_link_url` (the Razorpay short URL only, NFR-3), `link_expires_at`; `appointment_id` and `razorpay_order_id` are null for them. Link payments stay `captured` after partial refunds (see `fee_refunds`). `receipt_no` on every captured payment. Refund reasons gain `not_billable`, `session_refund`. |
+| `family_ledger` | Per organisation x child, **append-only** (trigger raises on update / delete / truncate; only the `dnm.ledger_maintenance` flag used by test clean-up may delete). `kind` `charge` / `payment` / `refund` / `adjustment`; `amount_paise` positive (adjustments signed: + owes more, - credit); `appointment_id`, `child_package_id`, `payment_id`, `ref_id` (the row it cancels / refunds), `note`, `receipt_no` (payment rows), `created_by` (null = system). No foreign keys: a financial record outlives the rows it mentions. |
+| `fee_link_items` | Which ledger rows a balance link covers (`amount_paise`). A charge is settled when it carries a `payment_id` (one-off, package) or sits in a captured link. |
+| `fee_link_requests` | Accounts whose balance link must be refreshed (written by SQL, consumed by `lib/fees/jobs.ts`). |
+| `fee_refunds` | Partial refunds of link payments (`package_unused`, `session_charge`, `not_billable`, `overpaid`): the refund job's queue (lease, attempts, back-off like 031). |
+| `platform_receipt_counters` | `fy` -> next number. |
+| `appointments.consultation_amount_paise`, `appointments.child_package_id` | What the consultation is worth (046 pays it out) and the package that paid it. |
+| `services.migrated_from_at_clinic_at`, `provider_profiles.at_clinic_notice_dismissed_at` | FR-2 one-time notice. |
+
+**Balance due** = sum(charge) - sum(payment) + sum(adjustment) (`fees_balance(org, child)`). A `refund` row records
+money returned together with the part of a charge it cancels, so it does not move the balance. `fees_open_items(org,
+child)` lists what a balance link must cover (unsettled, uncancelled charges and manual adjustments); its sum equals the
+balance (the DB tests assert it).
+
+### Payment links (FR-3, FR-4, FR-5)
+
+- `Offer package` (owner/admin): a `pending_payment` child package + a Razorpay **payment link** (`POST /v1/payment_links`,
+  test mode; `expire_by` = 7 days, `reference_id` = our payment id, `callback_url` = `/api/payments/links/callback`,
+  Razorpay's own SMS/email off). The guardian gets `fees.payment_request` (in-app + WhatsApp `payment_request` + email);
+  the desk shows the QR (`GET /api/fees/payments/:id/qr`, SVG of the short URL only).
+- Balance link: one open link per account covering exactly the open items. A new charge or adjustment cancels the open
+  link at Razorpay and creates one for the new total (a link's amount cannot change). `Request payment` (owner/admin)
+  refreshes it and notifies the guardian. Links last 30 days and are renewed a day before they expire.
+- Captured by the signed `payment_link.paid` webhook, or the signed redirect to `/api/payments/links/callback`
+  (`HMAC_SHA256(link_id|reference_id|status|payment_id, key_secret)`), both through `fees_apply_link_paid` (one
+  transaction, idempotent): package -> `active` + `charge` + `payment` rows; balance -> `payment` row (anything it
+  covered that was cancelled meanwhile is re-applied and refunded); amount mismatch or a package no longer pending ->
+  captured and refunded in full. `payment_link.cancelled` / `.expired` close the row (`fees_close_link`).
+- The family's `Pay ₹X with UPI or card` button and the package `Pay` button open the link (Razorpay's hosted checkout),
+  so `/family/**` keeps its strict no-third-party CSP (no checkout script needed there).
+- DEMO_MODE: the demo gateway creates `plink_DEMO…` links whose URL is `/pay/demo/<link id>` (our stand-in for
+  Razorpay's page, public, no child data); `Simulate successful payment` returns the signed redirect and follows it to
+  the same callback route.
+
+### Receipts (FR-6, NFR-2)
+
+Every captured payment (031 one-offs too; existing captured payments were backfilled in capture order) gets
+`DNM/<FY>/<000001>`: the Indian financial year of the capture time in Asia/Kolkata (`2026-27` from 1 April 2026), from
+`platform_receipt_counters`, assigned by the `payments_assign_receipt` trigger in the capturing transaction (a rollback
+returns the number; the counter row serialises concurrent captures: gap-free, tested with 20 parallel captures). The PDF
+(`GET /api/fees/payments/:id/receipt`, `lib/fees/receipt.ts`, pdf-lib, Helvetica so amounts print as `Rs.`) reads "Paid
+to DoctorNearMe on behalf of <centre>" with the items, total, refunds, the Razorpay payment id and the date; no child
+name. Guardians of the child and staff with access to one of the child's cases in that organisation may download it.
+The guardian gets `fees.receipt` (in-app + WhatsApp `payment_receipt` + email; the link opens the Payments page).
+
+### Refunds (FR-9) and adjustments (FR-7, FR-10)
+
+- `POST /api/cases/:id/fees/refunds` (owner/admin, reason required): `{ kind: "package", child_package_id }` refunds
+  price - used consultation amounts - earlier refunds (the package becomes `cancelled`); `{ kind: "session",
+  appointment_id }` refunds a prepaid one-off in full (031 path) or a paid session charge from its balance payment.
+- The fee refund job (`lib/fees/jobs.ts`) calls `registerRefundPrecondition` hooks first (**046 registers one that reverses
+  the matching Route transfer**), then `POST /payments/:id/refund` with `amount` and receipt `fr-<id>` (reused if it
+  already exists), then `fees_mark_refund_processed` writes the `refund` row and `fees.refunded` (in-app + email).
+- `POST /api/cases/:id/fees/adjustments` (owner/admin): `{ amount_inr: ±N, reason }` -> a signed `adjustment` row. Rows
+  are never edited.
+
+### Reminders and badges (FR-8)
+
+The fee job (every minute with `/api/cron/payments`, `npm run -s outbox:run`, and right after marking / webhooks)
+enqueues `fees.balance_reminder` once per unpaid session charge whose session is >= 3 days old (dedup
+`fees:balance:<org>:<child>:<charge>`) and `fees.package_reminder` once per package with <= 2 sessions left or <= 7 days to
+expiry (`fees:package:<id>:ending`). Staff see `Overdue` / `Package ending` badges on the case Fees tab and
+`/dashboard/fees`. It also expires unpaid offers after 7 days (link cancelled) and marks packages `expired` after their
+last day (046 decides what happens to unused sessions).
+
+### APIs and pages
+
+| Route | Who | What |
+|---|---|---|
+| `GET /api/cases/:id/fees` | case access (022) | account, open links, active packages, `can_manage` |
+| `POST /api/cases/:id/fees/offer` | owner/admin (members 403, other orgs 404) | `{ package_id }` -> 201 `{ child_package_id, payment_id, url, amount_paise }`; 409 `offer_pending` / `package_inactive` |
+| `POST /api/cases/:id/fees/request-payment` | owner/admin | 200 `{ payment_id, url, amount_paise }`; 409 `nothing_due` |
+| `POST /api/cases/:id/fees/adjustments` | owner/admin | `{ amount_inr, reason }` -> 201 `{ ledger_id, balance_paise }` |
+| `POST /api/cases/:id/fees/refunds` | owner/admin | see above -> 201 `{ fee_refund_id, payment_id, amount_paise, via }`; 409 `nothing_to_refund` / `not_refundable` / `not_paid` |
+| `GET/POST /api/orgs/:id/packages`, `PATCH /api/orgs/:id/packages/:packageId` | members read; owner/admin write | the catalogue |
+| `GET /api/fees/payments/:id/qr` | staff with access to the child's case in that org | SVG QR of an open link |
+| `GET /api/fees/payments/:id/receipt` | the child's guardians, staff as above | receipt PDF |
+| `GET /api/payments/links/callback` | public, signature-checked | capture + redirect (guardian -> Payments page, others -> `/pay/done`) |
+| `POST /api/payments/links/demo` | public, DEMO_MODE only | the demo payment page's API |
+| `POST /api/provider/services/notice` | provider | dismiss the "pay at clinic retired" notice |
+
+Pages: case tab `Fees` (`/cases/[id]/fees`), `/dashboard/fees`, `/dashboard/settings/packages`,
+`/family/children/[id]/payments`, `/pay/demo/[linkId]` (DEMO_MODE), `/pay/done`.
+
+### For 046 (payouts)
+
+- `fees_consultations(p_org uuid, p_appointment uuid)` (SQL) / `listConsultations({ orgId?, appointmentId? })`
+  (`lib/fees/store.ts`): one row per billable appointment with `consultation_amount_paise`, `source`
+  (`one_off` / `package` / `per_session`), the funding `payment_id` (our `payments.id`; null while a per-session charge is
+  unpaid), `razorpay_payment_id`, `payment_amount_paise`, `refunded_paise` (everything refunded from that payment so
+  far), `child_package_id` and `marked_at`. Several package sessions share one payment (one transfer each).
+- Refund hook: `registerRefundPrecondition(async (refund) => { ... })` in `lib/fees/store.ts` runs before every fee refund
+  is sent to Razorpay (throw to retry later). 031's full refunds (`payments.status = refund_pending`, `lib/payments/jobs.ts`)
+  have no hook yet: 046 should add the same reversal step there.
+- Expired packages keep `status = 'expired'` with their unused sessions; 046's `package_expiry_policy` decides.

@@ -104,7 +104,8 @@ describe.skipIf(!enabled)("booking state machine (database, route handlers)", { 
     providerA = await world.provider("pa");
     providerB = await world.provider("pb");
     free30 = await world.service(providerA, { duration: 30, payment: "free" });
-    atClinic45Video = await world.service(providerA, { mode: "video", duration: 45, payment: "at_clinic", fee: 800 });
+    // 045: "pay at clinic" is retired; a free 45-minute video service confirms directly.
+    atClinic45Video = await world.service(providerA, { mode: "video", duration: 45, payment: "free" });
     online30 = await world.service(providerA, { duration: 30, payment: "online", fee: 600 });
     guardianA = await world.guardian("ga");
     await world.linkGoogle(guardianA.user); // 037 FR-5a: video bookings need a linked Google account
@@ -329,7 +330,7 @@ describe.skipIf(!enabled)("booking state machine (database, route handlers)", { 
       expect(await outbox(h.json.appointment_id as string)).toEqual([]);
     });
 
-    it("video at_clinic service confirms directly; .ics download for the guardian and the provider only", async () => {
+    it("video free service confirms directly; .ics download for the guardian and the provider only", async () => {
       const id = await booked(futureSlot(36, 45), guardianA, atClinic45Video);
       as(guardianA.user);
       const ics = await routes.ics.GET(new Request(`http://localhost/api/appointments/${id}/ics`), ctx({ id }) as never);
@@ -515,7 +516,7 @@ describe.skipIf(!enabled)("booking state machine (database, route handlers)", { 
     it("services: create in-clinic + video; modes on the profile follow active services; validation", async () => {
       as(providerB.user);
       const created = await call(routes.services.POST, post("http://localhost/api/provider/services", {
-        name: "Speech therapy (synthetic)", mode: "video", duration_min: 45, fee_inr: 700, payment_mode: "at_clinic",
+        name: "Speech therapy (synthetic)", mode: "video", duration_min: 45, fee_inr: 700, payment_mode: "online",
       }));
       expect(created.status).toBe(201);
       const [modes] = await sql<{ offers_video: boolean; offers_in_clinic: boolean }[]>`select offers_video, offers_in_clinic from provider_profiles where id = ${providerB.profileId}`;

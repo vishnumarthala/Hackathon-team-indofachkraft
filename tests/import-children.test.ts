@@ -247,7 +247,7 @@ describe.skipIf(!enabled)("import routes (database)", { timeout: 120_000 }, () =
     }
     await sql`
       insert into services (provider_profile_id, org_id, location_id, name, mode, duration_min, fee_inr, payment_mode)
-      values (${profileB}, ${orgId}, ${loc.id}, 'OT in clinic (synthetic)', 'in_clinic', 45, 700, 'at_clinic')`;
+      values (${profileB}, ${orgId}, ${loc.id}, 'OT in clinic (synthetic)', 'in_clinic', 45, 700, 'online')`;
   });
 
   afterAll(async () => {

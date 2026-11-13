@@ -113,7 +113,7 @@ describe.skipIf(!enabled)("weekly series (database, route handlers)", { timeout:
         insert into availability_rules (provider_profile_id, org_id, location_id, weekday, start_time, end_time, mode, valid_from)
         values (${owner.profileId}, ${owner.orgId}, ${owner.locationId}, ${weekday}, '09:00', '17:00', 'both', current_date - 2)`;
     }
-    svc45 = await world.service(owner, { duration: 45, payment: "at_clinic", fee: 800, name: "Speech therapy (synthetic)" });
+    svc45 = await world.service(owner, { duration: 45, payment: "online", fee: 800, name: "Speech therapy (synthetic)" });
     svc30 = await world.service(owner, { duration: 30, payment: "free" });
     outsider = await world.provider("pb");
     family = await world.guardian("ga");

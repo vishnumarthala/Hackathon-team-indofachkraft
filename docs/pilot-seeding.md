@@ -37,7 +37,7 @@ What it creates (deterministic for a given `--seed`, `--count` and `--prefix`):
 - One location per organisation in one of 14 localities (Banjara Hills, Jubilee Hills, Gachibowli, Madhapur, HITEC
   City, Kondapur, Kukatpally, Miyapur, Ameerpet, Begumpet, Secunderabad, Dilsukhnagar, LB Nagar, Mehdipatnam), with
   the PIN code and centroid of 029's bundled table (`demo/fixtures/geocode/hyderabad.json`) jittered within 800 m.
-- Services (030): an in-clinic service for everyone (₹500-₹2,500, `online` or `at_clinic`), a video consultation for
+- Services (030): an in-clinic service for everyone (₹500-₹2,500, `online`; `at_clinic` was retired by 045), a video consultation for
   about half (`online`), sometimes a free 15-minute introductory call or a developmental assessment. Weekly hours
   Monday-Friday morning and evening, often Saturday morning, in the location's time zone.
 

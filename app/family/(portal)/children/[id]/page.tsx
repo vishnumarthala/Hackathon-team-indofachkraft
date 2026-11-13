@@ -108,6 +108,12 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
           {(await getT("followup"))("link")}
         </Link>
         <Link
+          href={`/family/children/${child.id}/payments`}
+          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+        >
+          {(await getT("fees.family"))("link")}
+        </Link>
+        <Link
           href={`/family/children/${child.id}/privacy`}
           className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
         >

@@ -1,6 +1,6 @@
 # 045: Packages and family payments on DoctorNearMe
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 043, 044: packages cover series sessions; attendance uses them up
 

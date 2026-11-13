@@ -2,6 +2,7 @@ import { auditActorOf, AuditWriteError, auditFailure } from "@/lib/audit";
 import { requireProviderApi } from "@/lib/authz";
 import { AttendanceMarkSchema, attendanceErrorResponse, markAttendance, toAttendanceErrorCode } from "@/lib/booking/attendance";
 import { isUuid } from "@/lib/cases/validation";
+import { runFeeJobsSoon } from "@/lib/fees/jobs";
 import { fail, ok, parseJson } from "@/lib/http";
 
 export const runtime = "nodejs";
@@ -22,6 +23,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const actor = { ...auditActorOf(gate.actor.user, gate.actor.role), actorUserId: gate.actor.user.id };
   try {
     const r = await markAttendance(id, actor, parsed.data.attendance, parsed.data.reason ?? null);
+    // 045: a billable session may have added a charge -> the balance payment link follows right after the response.
+    if (r.result !== "unchanged") runFeeJobsSoon();
     return ok({ result: r.result, appointment_id: r.appointment_id, attendance: r.to, status: r.to_status, billable: r.billable });
   } catch (err) {
     const code = toAttendanceErrorCode(err);

@@ -718,6 +718,42 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 045: packages and the family account. Amounts, statuses, receipt numbers and Razorpay ids; staff-typed adjustment
+    // reasons. Financial record: kept on erasure like 031's payments (the ledger is append-only). Package catalogues
+    // (`packages`) and the receipt counter hold no personal data and are listed for completeness.
+    key: "family_payments",
+    label: "Session packages, the family account (charges, payments, refunds, adjustments) and receipts",
+    owner: "child",
+    tables: [
+      "packages",
+      "child_packages",
+      "family_ledger",
+      "fee_link_items",
+      "fee_link_requests",
+      "fee_refunds",
+      "platform_receipt_counters",
+      "appointments.consultation_amount_paise",
+    ],
+    retention:
+      "Kept as a financial record (period pending legal review; Indian accounting rules usually require 8 years), also after erasure. Holds no card or UPI details.",
+    processors: ["supabase", "razorpay", "resend", "whatsapp"],
+    retainedOnErasure: true,
+    export: async ({ sql, childId }) => {
+      // What the guardian sees on the child's Payments page.
+      const packages = await sql`
+        select cp.id, o.name as centre, cp.snapshot ->> 'name' as name, cp.sessions_total, cp.sessions_used, cp.price_paise, cp.status,
+               cp.starts_on::text as starts_on, cp.expires_on::text as expires_on, cp.created_at
+        from public.child_packages cp join public.organizations o on o.id = cp.org_id
+        where cp.child_id = ${childId} order by cp.created_at`;
+      const ledger = await sql`
+        select l.id::text as id, o.name as centre, l.kind, l.amount_paise, l.note, l.appointment_id, l.child_package_id, l.receipt_no,
+               l.created_at
+        from public.family_ledger l join public.organizations o on o.id = l.org_id
+        where l.child_id = ${childId} order by l.id`;
+      return { data: { packages: rowsJson(packages), ledger: rowsJson(ledger) } };
+    },
+  },
+  {
     key: "audit_events",
     label: "Audit log",
     owner: "case",

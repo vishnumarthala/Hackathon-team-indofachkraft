@@ -218,7 +218,8 @@ describe.skipIf(!enabled)("appointment intake (database, route handlers, outbox)
     providerA = await world.provider("pa");
     providerB = await world.provider("pb");
     childDevA = await world.service(providerA, { duration: 30, payment: "free", name: "Development consult (synthetic)" });
-    genericA = await world.service(providerA, { duration: 30, payment: "at_clinic", fee: 500, name: "Knee physio (synthetic)" });
+    // 045: "pay at clinic" is retired; a free service confirms directly.
+    genericA = await world.service(providerA, { duration: 30, payment: "free", name: "Knee physio (synthetic)" });
     childDevB = await world.service(providerB, { duration: 30, payment: "free", name: "Speech consult (synthetic)" });
     await sql`update services set intake_kind = 'child_dev' where id in ${sql([childDevA, childDevB])}`;
     await sql`update services set intake_kind = 'generic' where id = ${genericA}`;

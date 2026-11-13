@@ -417,6 +417,49 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "setAttendancePolicy",
     impl: { kind: "auditStrict", module: "lib/booking/attendance.ts" },
   },
+  // ---------- 045 packages and family payments (money) ----------
+  {
+    action: "fees.packages_changed",
+    description: "Owner/admin adds or changes a session package",
+    routes: ["app/api/orgs/[id]/packages/route.ts"],
+    call: "createPackage",
+    impl: { kind: "auditStrict", module: "lib/fees/store.ts" },
+  },
+  {
+    action: "fees.packages_changed",
+    description: "Owner/admin edits or stops offering a session package",
+    routes: ["app/api/orgs/[id]/packages/[packageId]/route.ts"],
+    call: "updatePackage",
+    impl: { kind: "auditStrict", module: "lib/fees/store.ts" },
+  },
+  {
+    action: "fees.package_offered",
+    description: "Owner/admin offers a package to a child (payment link sent to the guardian)",
+    routes: ["app/api/cases/[id]/fees/offer/route.ts"],
+    call: "offerPackage",
+    impl: { kind: "auditStrict", module: "lib/fees/store.ts" },
+  },
+  {
+    action: "fees.payment_requested",
+    description: "Owner/admin sends the family a payment link for the balance",
+    routes: ["app/api/cases/[id]/fees/request-payment/route.ts"],
+    call: "requestPayment",
+    impl: { kind: "auditStrict", module: "lib/fees/store.ts" },
+  },
+  {
+    action: "fees.adjustment_added",
+    description: "Owner/admin adds a ledger adjustment (with a reason)",
+    routes: ["app/api/cases/[id]/fees/adjustments/route.ts"],
+    call: "addAdjustment",
+    impl: { kind: "auditStrict", module: "lib/fees/store.ts" },
+  },
+  {
+    action: "fees.refund_requested",
+    description: "Owner/admin refunds a package's unused sessions or a paid session",
+    routes: ["app/api/cases/[id]/fees/refunds/route.ts"],
+    call: "requestRefund",
+    impl: { kind: "auditStrict", module: "lib/fees/store.ts" },
+  },
 ];
 
 export function strictAction(action: string): StrictAction | undefined {

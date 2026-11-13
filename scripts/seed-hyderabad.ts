@@ -195,7 +195,7 @@ export type PlanService = {
   mode: "in_clinic" | "video";
   duration_min: number;
   fee_inr: number;
-  payment_mode: "online" | "at_clinic" | "free";
+  payment_mode: "online" | "free";
   buffer_min: number;
   intake_kind: "child_dev" | "generic" | "none";
 };
@@ -227,7 +227,10 @@ function fee(r: Rand, min = 500, max = 2500): number {
 
 function servicesFor(r: Rand, type: ProviderType, video: boolean): PlanService[] {
   const p = PROFILE[type];
-  const inClinicPayment = chance(r, 0.5) ? "online" : "at_clinic";
+  // 045 FR-2: "pay at clinic" is retired, every paid service is paid on DoctorNearMe. The draw stays so the rest of the
+  // seeded plan (fees, buffers, ...) is unchanged.
+  chance(r, 0.5);
+  const inClinicPayment = "online";
   const list: PlanService[] = [
     { name: p.service, mode: "in_clinic", duration_min: p.duration, fee_inr: fee(r), payment_mode: inClinicPayment, buffer_min: pick(r, [0, 10, 15]), intake_kind: p.intake },
   ];
@@ -238,7 +241,7 @@ function servicesFor(r: Rand, type: ProviderType, video: boolean): PlanService[]
     }
   }
   if ((type === "developmental_pediatrician" || type === "child_psychologist") && chance(r, 0.4)) {
-    list.push({ name: "Developmental assessment", mode: "in_clinic", duration_min: pick(r, [60, 90]), fee_inr: fee(r, 1500, 2500), payment_mode: "at_clinic", buffer_min: 15, intake_kind: "child_dev" });
+    list.push({ name: "Developmental assessment", mode: "in_clinic", duration_min: pick(r, [60, 90]), fee_inr: fee(r, 1500, 2500), payment_mode: "online", buffer_min: 15, intake_kind: "child_dev" });
   }
   return list;
 }

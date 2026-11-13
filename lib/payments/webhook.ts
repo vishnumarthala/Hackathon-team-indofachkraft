@@ -2,12 +2,23 @@
 // Card, VPA (UPI id), bank, wallet, email, phone, notes, acquirer data, descriptions and anything not listed below are
 // dropped before anything is stored or logged. Pure (no I/O).
 
-export const HANDLED_EVENTS = ["payment.authorized", "payment.captured", "payment.failed", "refund.processed"] as const;
+export const HANDLED_EVENTS = [
+  "payment.authorized",
+  "payment.captured",
+  "payment.failed",
+  "refund.processed",
+  // 045: Razorpay payment links (packages, balances).
+  "payment_link.paid",
+  "payment_link.cancelled",
+  "payment_link.expired",
+] as const;
 export type HandledEvent = (typeof HANDLED_EVENTS)[number];
 
 const PAYMENT_KEYS = ["id", "entity", "order_id", "status", "amount", "currency", "method", "captured", "refund_status", "amount_refunded", "error_code", "error_reason", "error_source", "error_step", "created_at"] as const;
 const REFUND_KEYS = ["id", "entity", "payment_id", "amount", "currency", "status", "speed_processed", "created_at"] as const;
 const ORDER_KEYS = ["id", "entity", "amount", "amount_paid", "currency", "status", "attempts", "created_at"] as const;
+// 045: never the customer block, description or short URL.
+const LINK_KEYS = ["id", "entity", "amount", "amount_paid", "currency", "status", "reference_id", "created_at"] as const;
 
 type Json = Record<string, unknown>;
 
@@ -38,7 +49,16 @@ function entityOf(payload: unknown, name: string): unknown {
 
 export type ParsedWebhook = {
   event: string;
-  payment?: { id: string; order_id: string | null; amount: number | null; status: string | null; error: string | null };
+  payment?: {
+    id: string;
+    order_id: string | null;
+    amount: number | null;
+    status: string | null;
+    error: string | null;
+    /** Unix seconds (Razorpay `created_at`), when present. */
+    created_at: number | null;
+  };
+  paymentLink?: { id: string; status: string | null; amount: number | null };
   refund?: { id: string; payment_id: string; status: string | null };
   /** Allowlisted copy for payment_events.payload. */
   stored: Json;
@@ -51,12 +71,14 @@ export function parseWebhook(rawBody: string): ParsedWebhook {
   const payment = pick(entityOf(body.payload, "payment"), PAYMENT_KEYS);
   const refund = pick(entityOf(body.payload, "refund"), REFUND_KEYS);
   const order = pick(entityOf(body.payload, "order"), ORDER_KEYS);
+  const link = pick(entityOf(body.payload, "payment_link"), LINK_KEYS);
   const stored: Json = {
     event: body.event.slice(0, 80),
     ...(typeof body.created_at === "number" ? { created_at: body.created_at } : {}),
     ...(payment ? { payment } : {}),
     ...(refund ? { refund } : {}),
     ...(order ? { order } : {}),
+    ...(link ? { payment_link: link } : {}),
   };
   const str = (v: unknown) => (typeof v === "string" && v ? v : null);
   const error = [str(payment?.error_code), str(payment?.error_reason)].filter(Boolean).join(": ") || null;
@@ -70,8 +92,12 @@ export function parseWebhook(rawBody: string): ParsedWebhook {
             amount: typeof payment.amount === "number" ? payment.amount : null,
             status: str(payment.status),
             error,
+            created_at: typeof payment.created_at === "number" ? payment.created_at : null,
           },
         }
+      : {}),
+    ...(link && str(link.id)
+      ? { paymentLink: { id: link.id as string, status: str(link.status), amount: typeof link.amount === "number" ? link.amount : null } }
       : {}),
     ...(refund && str(refund.id) && str(refund.payment_id)
       ? { refund: { id: refund.id as string, payment_id: refund.payment_id as string, status: str(refund.status) } }

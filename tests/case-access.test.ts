@@ -31,7 +31,8 @@ function routeFiles(dir: string): string[] {
 }
 
 // Gates that resolve the case and check access (017 requireCaseAccess and stricter wrappers).
-const GATE = /await (requireCaseAccess|requireCaseActor|requireRecordingAccess|requireRecordingActor|requireReportAccess|requireFactAccess|requireChildAccessViaCase)\(/;
+// 045: requireFeesCaseApi (lib/fees/authz.ts) = getCaseAccessLevel + the case's child, owner/admin for money changes.
+const GATE = /await (requireCaseAccess|requireCaseActor|requireRecordingAccess|requireRecordingActor|requireReportAccess|requireFactAccess|requireChildAccessViaCase|requireFeesCaseApi)\(/;
 // Anything that reads case data.
 const DB_READ = /supabaseAdmin\(|await (get|list|load|find|fetch)[A-Z]\w*\(/;
 
