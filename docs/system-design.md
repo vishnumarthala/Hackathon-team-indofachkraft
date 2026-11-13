@@ -460,6 +460,17 @@ in `docs/booking.md`. 042 adds `appointments.is_demo` (bookings on demo profiles
 `outbox_event_is_demo()`; triggers keep demo bookings free, without Meet and in-app only
 (`20261113004200_demo_appointments.sql`, `docs/pilot-seeding.md`).
 
+### Weekly series (ticket 043)
+
+`appointment_series` (centre staff only: org owner/admin or the therapist bound to the profile; child with a case in
+the org; frozen `service_snapshot`; `weekdays smallint[]` 0 = Monday, 1-4 days; wall-clock `start_time` in `time_zone`;
+`billing_mode` `package`/`per_session`/`free`; pause window; `materialized_until`) generates real `confirmed`
+`appointments` (`series_id`, `series_occurrence_date`, unique per occurrence) on a rolling 8-week horizon
+(`series_materialize`, called on create and by `/api/cron/booking`). Clashes (slot taken, blocked date, outside hours) are
+never booked: they become `series_conflicts` for `Pick another time` / `Skip this date`. Changes (`series_change_from`,
+`series_pause`, `series_end`) cancel through 030's `booking_cancel` and send one family message per change. Migration
+`20261113004300_appointment_series.sql`; details and extension points for 044/045/047/052 in `docs/booking.md`.
+
 ### Google Meet (ticket 037)
 
 `provider_google_connections` (the provider's own Google grant; refresh token AES-256-GCM encrypted with
@@ -673,6 +684,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
+| `POST /api/provider/series`, `GET /api/provider/series/:id`, `POST /api/provider/series/:id/{change,pause,end}`, `POST /api/provider/series/conflicts/:id` | 043 | `{ case_id, provider_profile_id, service_id, weekdays, start_time, starts_on, ends_on?, billing_mode, notify_family? }` / `{ from, start_time?, weekdays?, provider_profile_id?, service_id?, ends_on?, billing_mode? }` / `{ from, to }` / `{ ends_on? }` / `{ action: "skip" }` or `{ action: "reschedule", start }` | 201 `{ series_id, created, conflicts }` / 200; 403 guardians; 404 other tenants and series the caller may not manage; 409 `slot_taken` / `pause_exists` / `already_resolved`; 422 `outside_hours` / `blocked_date` / `service_invalid` / `case_required` |
 | `GET /api/integrations/google/{connect,callback,connection}`, `POST /api/integrations/google/disconnect`, `POST /api/appointments/:id/meet-link` | 037 | see `docs/google-meet.md` | 303 redirects (connect/callback, `?error=state` on a state mismatch); 404 other providers' profiles/appointments; 400 non-Meet link; 422 `Link your Google account to book a video consultation` on video holds/confirms |
 | `POST /api/appointments/:id/payment-order`, `POST /api/payments/verify`, `POST /api/payments/demo` (DEMO_MODE), `POST /api/webhooks/razorpay` (public, signed), `GET\|POST /api/cron/payments` | 031 | see `docs/payments.md` | 200 `{ key_id, order_id, amount_paise, currency, prefill }`; verify 400 signature mismatch; webhook 401 bad signature, 200 `{ received: true, duplicate: true }` on replay; 404 other owners; 409 nothing to pay / already paid; 410 hold expired |
 | `POST\|PATCH /api/appointments/:id/rating`, `POST /api/ratings/:id/report`, `POST /api/admin/ratings/:id` | 036 | see `docs/ratings.md` | 201 / 200; 403 `You can rate only your completed appointments`; 409 duplicate; 422 `Please remove names and contact details from your comment`; report: provider side only (404 otherwise); moderation: platform admin only (403) |

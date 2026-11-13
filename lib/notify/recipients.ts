@@ -147,3 +147,16 @@ export async function appointmentParties(
     where a.id = ${appointmentId} and a.status in ${sql(statuses)}`;
   return rows.flatMap((r) => [r.guardian, r.provider].filter((id): id is string => Boolean(id)));
 }
+
+/** 043: the series' family account, while it is still a guardian actively linked to the (live) child. Paper-consent
+ * series (no guardian account) reach nobody. */
+export async function seriesGuardian(sql: Queryable, seriesId: string): Promise<string[]> {
+  const rows = await sql<{ user_id: string }[]>`
+    select s.guardian_user_id as user_id
+    from public.appointment_series s
+    join public.user_profiles g on g.id = s.guardian_user_id and g.role = 'guardian'
+    join public.guardian_links gl on gl.child_id = s.child_id and gl.user_id = s.guardian_user_id and gl.status = 'active'
+    join public.children c on c.id = s.child_id and c.deleted_at is null
+    where s.id = ${seriesId}`;
+  return rows.map((r) => r.user_id);
+}

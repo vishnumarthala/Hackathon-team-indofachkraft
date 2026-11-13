@@ -67,6 +67,9 @@ export type AppointmentView = {
   created_at: string;
   /** 042 FR-2a: booked on a demo profile (free, no payment, no Meet, in-app notifications only). */
   is_demo: boolean;
+  /** 043: a session of a weekly series (null for one-off bookings), and the series date it stands for. */
+  series_id: string | null;
+  series_occurrence_date: string | null;
 };
 
 export type BookableProfile = {
@@ -98,7 +101,7 @@ const APPOINTMENT_SELECT = (sql: Queryable) => sql`
          c.display_name as child_name, c.date_of_birth::text as child_date_of_birth, a.guardian_user_id,
          a.cancelled_by, a.cancel_reason, a.rescheduled_from, a.origin_appointment_id,
          p.display_name as provider_name, p.slug as provider_slug, p.time_zone as provider_time_zone, a.created_at,
-         a.is_demo
+         a.is_demo, a.series_id, a.series_occurrence_date::text as series_occurrence_date
   from public.appointments a
   join public.provider_profiles p on p.id = a.provider_profile_id
   left join public.children c on c.id = a.child_id and c.deleted_at is null`;
@@ -282,9 +285,14 @@ export type AgendaItem = AppointmentView & { outside_availability: boolean };
 export async function listAgenda(profileId: string, from: Date, to: Date): Promise<AgendaItem[]> {
   const sql = await pg();
   const rows = await sql`
-    select x.*, case when x.status = 'confirmed' and x.ends_at > now() then not public.booking_slot_valid(
+    select x.*, case when x.status <> 'confirmed' or x.ends_at <= now() then false
+      -- 043: series sessions need not sit on the booking grid, only inside the hours and off blocked dates.
+      when x.series_id is not null then coalesce(public.series_slot_problem(
         x.provider_profile_id, x.service_snapshot ->> 'mode', nullif(x.service_snapshot -> 'location' ->> 'id', '')::uuid,
-        (x.service_snapshot ->> 'duration_min')::int, x.starts_at) else false end as outside_availability
+        (x.service_snapshot ->> 'duration_min')::int, 0, x.starts_at, x.id) in ('blocked_date', 'outside_hours'), false)
+      else not public.booking_slot_valid(
+        x.provider_profile_id, x.service_snapshot ->> 'mode', nullif(x.service_snapshot -> 'location' ->> 'id', '')::uuid,
+        (x.service_snapshot ->> 'duration_min')::int, x.starts_at) end as outside_availability
     from (${APPOINTMENT_SELECT(sql)}
           where a.provider_profile_id = ${profileId} and a.status <> 'expired'
             and not (a.status = 'cancelled' and a.cancel_reason = 'hold_released')

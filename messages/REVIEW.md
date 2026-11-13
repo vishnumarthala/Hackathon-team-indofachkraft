@@ -11,6 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
+Rows: 2570. Not yet approved: 2570.
 Rows: 2588. Not yet approved: 2588.
 
 | key | en | hi | te | reviewer | status |
@@ -2500,6 +2501,91 @@ Rows: 2588. Not yet approved: 2588.
 | `followup.source.notAvailable` | This document is not shared with you, or no longer is. | यह दस्तावेज़ आपके साथ साझा नहीं है, या अब नहीं है। | ఈ పత్రం మీతో పంచుకోబడలేదు, లేదా ఇకపై పంచుకోబడలేదు. |  | pending |
 | `followup.source.updated` | This document has been updated since the answer. You are seeing the current version ({version}). | उत्तर के बाद यह दस्तावेज़ अपडेट हुआ है। आप वर्तमान संस्करण ({version}) देख रहे हैं। | సమాధానం తర్వాత ఈ పత్రం నవీకరించబడింది. మీరు ప్రస్తుత వెర్షన్ ({version}) చూస్తున్నారు. |  | pending |
 | `followup.source.back` | Back to questions | प्रश्नों पर वापस जाएँ | ప్రశ్నలకు తిరిగి వెళ్ళండి |  | pending |
+| `series.timetable.title` | Timetable | समय-सारणी | టైమ్‌టేబుల్ |  | pending |
+| `series.timetable.intro` | Weekly sessions for this child. Sessions are booked 8 weeks ahead; dates that clash are listed under Conflicts. | इस बच्चे के साप्ताहिक सेशन। सेशन 8 हफ़्ते आगे तक बुक होते हैं; जिन तारीख़ों पर टकराव है वे 'टकराव' में दिखती हैं। | ఈ పిల్లల వారపు సెషన్లు. సెషన్లు 8 వారాల ముందు వరకు బుక్ అవుతాయి; ఢీకొనే తేదీలు 'ఘర్షణలు' కింద కనిపిస్తాయి. |  | pending |
+| `series.timetable.none` | No weekly timetable yet. | अभी कोई साप्ताहिक समय-सारणी नहीं है। | ఇంకా వారపు టైమ్‌టేబుల్ లేదు. |  | pending |
+| `series.timetable.add` | New weekly timetable | नई साप्ताहिक समय-सारणी | కొత్త వారపు టైమ్‌టేబుల్ |  | pending |
+| `series.timetable.therapist` | Therapist | थेरेपिस्ट | థెరపిస్ట్ |  | pending |
+| `series.timetable.service` | Service | सेवा | సేవ |  | pending |
+| `series.timetable.weekdays` | Days (1 to 4) | दिन (1 से 4) | రోజులు (1 నుండి 4) |  | pending |
+| `series.timetable.time` | Time | समय | సమయం |  | pending |
+| `series.timetable.timeZoneNote` | Clinic time ({zone}). | क्लिनिक का समय ({zone})। | క్లినిక్ సమయం ({zone}). |  | pending |
+| `series.timetable.startsOn` | Start date | शुरू होने की तारीख़ | ప్రారంభ తేదీ |  | pending |
+| `series.timetable.endsOn` | End date (optional) | समाप्ति की तारीख़ (वैकल्पिक) | ముగింపు తేదీ (ఐచ్ఛికం) |  | pending |
+| `series.timetable.billing` | Billing | भुगतान | చెల్లింపు |  | pending |
+| `series.timetable.billingModes.package` | Package | पैकेज | ప్యాకేజీ |  | pending |
+| `series.timetable.billingModes.per_session` | Pay per session | हर सेशन का भुगतान | ప్రతి సెషన్‌కు చెల్లింపు |  | pending |
+| `series.timetable.billingModes.free` | Free | निःशुल्क | ఉచితం |  | pending |
+| `series.timetable.notifyFamily` | Show in the family's app and send them updates | परिवार के ऐप में दिखाएँ और उन्हें अपडेट भेजें | కుటుంబం యాప్‌లో చూపించి, వారికి అప్‌డేట్‌లు పంపండి |  | pending |
+| `series.timetable.noGuardian` | This child has no family app account (paper consent). The timetable works without messages. | इस बच्चे का कोई पारिवारिक ऐप खाता नहीं है (काग़ज़ी सहमति)। समय-सारणी बिना संदेशों के काम करती है। | ఈ పిల్లలకు కుటుంబ యాప్ ఖాతా లేదు (పేపర్ సమ్మతి). టైమ్‌టేబుల్ సందేశాలు లేకుండా పనిచేస్తుంది. |  | pending |
+| `series.timetable.noTherapists` | No therapist you can schedule has an active in-clinic or video service in this organisation. | जिस थेरेपिस्ट का आप शेड्यूल बना सकते हैं, उसकी इस संगठन में कोई सक्रिय क्लिनिक या वीडियो सेवा नहीं है। | మీరు షెడ్యూల్ చేయగల థెరపిస్ట్‌కు ఈ సంస్థలో క్రియాశీల క్లినిక్ లేదా వీడియో సేవ లేదు. |  | pending |
+| `series.timetable.create` | Create timetable | समय-सारणी बनाएँ | టైమ్‌టేబుల్ సృష్టించండి |  | pending |
+| `series.timetable.createdSummary` | Timetable saved. Sessions booked: {created}. Dates with conflicts: {conflicts}. | समय-सारणी सहेजी गई। बुक हुए सेशन: {created}। टकराव वाली तारीख़ें: {conflicts}। | టైమ్‌టేబుల్ సేవ్ అయింది. బుక్ అయిన సెషన్లు: {created}. ఘర్షణ ఉన్న తేదీలు: {conflicts}. |  | pending |
+| `series.timetable.every` | Every {days} at {time} | हर {days} को {time} पर | ప్రతి {days} {time} కి |  | pending |
+| `series.timetable.with` | with {therapist} | {therapist} के साथ | {therapist} తో |  | pending |
+| `series.timetable.status.active` | Active | सक्रिय | క్రియాశీలం |  | pending |
+| `series.timetable.status.paused` | Paused | रुकी हुई | ఆపబడింది |  | pending |
+| `series.timetable.status.ended` | Ended | समाप्त | ముగిసింది |  | pending |
+| `series.timetable.pausedRange` | Paused {from} to {to} | {from} से {to} तक रुकी हुई | {from} నుండి {to} వరకు ఆపబడింది |  | pending |
+| `series.timetable.fromDate` | From {date} | {date} से | {date} నుండి |  | pending |
+| `series.timetable.endsOnLabel` | Last day {date} | आख़िरी दिन {date} | చివరి రోజు {date} |  | pending |
+| `series.timetable.billingLabel` | Billing: {mode} | भुगतान: {mode} | చెల్లింపు: {mode} |  | pending |
+| `series.timetable.upcoming` | Next sessions | अगले सेशन | తదుపరి సెషన్లు |  | pending |
+| `series.timetable.noUpcoming` | No upcoming sessions. | कोई आने वाला सेशन नहीं। | రాబోయే సెషన్లు లేవు. |  | pending |
+| `series.timetable.showAll` | Show all {count} sessions | सभी {count} सेशन दिखाएँ | మొత్తం {count} సెషన్లు చూపించండి |  | pending |
+| `series.timetable.moved` | Moved | समय बदला गया | సమయం మార్చబడింది |  | pending |
+| `series.timetable.thisSession` | This session only | सिर्फ़ यह सेशन | ఈ సెషన్ మాత్రమే |  | pending |
+| `series.timetable.move` | Move | समय बदलें | సమయం మార్చండి |  | pending |
+| `series.timetable.moveDate` | New date | नई तारीख़ | కొత్త తేదీ |  | pending |
+| `series.timetable.moveTime` | New time | नया समय | కొత్త సమయం |  | pending |
+| `series.timetable.moveSave` | Move session | सेशन का समय बदलें | సెషన్ సమయం మార్చండి |  | pending |
+| `series.timetable.moveHint` | The new time must be a free bookable slot within 14 days. | नया समय 14 दिनों के भीतर का कोई ख़ाली बुक करने योग्य स्लॉट होना चाहिए। | కొత్త సమయం 14 రోజుల లోపల ఖాళీగా ఉన్న బుక్ చేయగల స్లాట్ అయి ఉండాలి. |  | pending |
+| `series.timetable.changeFuture` | This and future sessions | यह और आगे के सेशन | ఈ సెషన్ మరియు తర్వాతి సెషన్లు |  | pending |
+| `series.timetable.changeFrom` | Change from | इस तारीख़ से बदलें | ఈ తేదీ నుండి మార్చండి |  | pending |
+| `series.timetable.changeSave` | Save change | बदलाव सहेजें | మార్పు సేవ్ చేయండి |  | pending |
+| `series.timetable.pause` | Pause | रोकें | ఆపండి |  | pending |
+| `series.timetable.pauseFrom` | From | से | నుండి |  | pending |
+| `series.timetable.pauseTo` | To | तक | వరకు |  | pending |
+| `series.timetable.pauseSave` | Pause sessions | सेशन रोकें | సెషన్లు ఆపండి |  | pending |
+| `series.timetable.end` | End timetable | समय-सारणी समाप्त करें | టైమ్‌టేబుల్ ముగించండి |  | pending |
+| `series.timetable.endOn` | Last day | आख़िरी दिन | చివరి రోజు |  | pending |
+| `series.timetable.endSave` | End timetable | समय-सारणी समाप्त करें | టైమ్‌టేబుల్ ముగించండి |  | pending |
+| `series.timetable.close` | Close | बंद करें | మూసివేయండి |  | pending |
+| `series.timetable.saved` | Saved | सहेजा गया | సేవ్ అయింది |  | pending |
+| `series.timetable.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `series.timetable.invalid` | Check the highlighted fields. | हाइलाइट किए गए फ़ील्ड जाँचें। | హైలైట్ చేసిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
+| `series.timetable.errors.slot_taken` | This time is taken. Please pick another time. | यह समय पहले से लिया जा चुका है। कृपया कोई और समय चुनें। | ఈ సమయం ఇప్పటికే తీసుకోబడింది. దయచేసి వేరే సమయం ఎంచుకోండి. |  | pending |
+| `series.timetable.errors.blocked_date` | The therapist is not available on that date. | थेरेपिस्ट उस तारीख़ को उपलब्ध नहीं हैं। | ఆ తేదీన థెరపిస్ట్ అందుబాటులో లేరు. |  | pending |
+| `series.timetable.errors.outside_hours` | This time is outside the therapist's weekly hours. | यह समय थेरेपिस्ट के साप्ताहिक घंटों से बाहर है। | ఈ సమయం థెరపిస్ట్ వారపు గంటల వెలుపల ఉంది. |  | pending |
+| `series.timetable.errors.too_soon` | Pick a later time. | कोई बाद का समय चुनें। | తర్వాతి సమయం ఎంచుకోండి. |  | pending |
+| `series.timetable.errors.case_required` | The child needs a case in this organisation first. | पहले इस संगठन में बच्चे का केस होना चाहिए। | ముందుగా ఈ సంస్థలో పిల్లల కేసు ఉండాలి. |  | pending |
+| `series.timetable.errors.service_invalid` | Choose an active service of this therapist. | इस थेरेपिस्ट की कोई सक्रिय सेवा चुनें। | ఈ థెరపిస్ట్ యొక్క క్రియాశీల సేవను ఎంచుకోండి. |  | pending |
+| `series.timetable.errors.starts_in_past` | The start date cannot be in the past. | शुरू होने की तारीख़ बीती हुई नहीं हो सकती। | ప్రారంభ తేదీ గతంలో ఉండకూడదు. |  | pending |
+| `series.timetable.errors.pause_exists` | This timetable is already paused. | यह समय-सारणी पहले से रुकी हुई है। | ఈ టైమ్‌టేబుల్ ఇప్పటికే ఆపబడింది. |  | pending |
+| `series.timetable.errors.already_resolved` | This date was already handled. | इस तारीख़ पर पहले ही कार्रवाई हो चुकी है। | ఈ తేదీపై ఇప్పటికే చర్య తీసుకున్నారు. |  | pending |
+| `series.timetable.errors.invalid_transition` | This timetable has ended. | यह समय-सारणी समाप्त हो चुकी है। | ఈ టైమ్‌టేబుల్ ముగిసింది. |  | pending |
+| `series.timetable.errors.slot_unavailable` | This time is not a bookable slot. Please pick another time. | यह समय बुक करने योग्य स्लॉट नहीं है। कृपया कोई और समय चुनें। | ఈ సమయం బుక్ చేయగల స్లాట్ కాదు. దయచేసి వేరే సమయం ఎంచుకోండి. |  | pending |
+| `series.timetable.errors.too_far` | Single sessions can be moved up to 14 days ahead. | एक सेशन का समय 14 दिन आगे तक ही बदला जा सकता है। | ఒక సెషన్ సమయాన్ని 14 రోజుల ముందు వరకు మాత్రమే మార్చవచ్చు. |  | pending |
+| `series.timetable.errors.too_late` | It is too late to change this session. | इस सेशन को बदलने में अब बहुत देर हो चुकी है। | ఈ సెషన్‌ను మార్చడానికి చాలా ఆలస్యమైంది. |  | pending |
+| `series.conflicts.title` | Conflicts | टकराव | ఘర్షణలు |  | pending |
+| `series.conflicts.intro` | These dates could not be booked. Nothing was double-booked. | ये तारीख़ें बुक नहीं हो सकीं। कुछ भी दो बार बुक नहीं हुआ। | ఈ తేదీలు బుక్ కాలేదు. ఏదీ రెండుసార్లు బుక్ కాలేదు. |  | pending |
+| `series.conflicts.none` | No conflicts. | कोई टकराव नहीं। | ఘర్షణలు లేవు. |  | pending |
+| `series.conflicts.reasons.slot_taken` | Time already taken | समय पहले से लिया गया | సమయం ఇప్పటికే తీసుకోబడింది |  | pending |
+| `series.conflicts.reasons.blocked_date` | Date blocked | तारीख़ ब्लॉक है | తేదీ బ్లాక్ చేయబడింది |  | pending |
+| `series.conflicts.reasons.outside_hours` | Outside weekly hours | साप्ताहिक घंटों से बाहर | వారపు గంటల వెలుపల |  | pending |
+| `series.conflicts.pick` | Pick another time | कोई और समय चुनें | వేరే సమయం ఎంచుకోండి |  | pending |
+| `series.conflicts.skip` | Skip this date | यह तारीख़ छोड़ें | ఈ తేదీని వదిలేయండి |  | pending |
+| `series.conflicts.pickSave` | Book this time | यह समय बुक करें | ఈ సమయం బుక్ చేయండి |  | pending |
+| `series.conflicts.openCase` | Open case | केस खोलें | కేసు తెరవండి |  | pending |
+| `series.schedule.repeats` | Repeats | दोहराता है | పునరావృతం |  | pending |
+| `series.family.title` | Weekly timetable | साप्ताहिक समय-सारणी | వారపు టైమ్‌టేబుల్ |  | pending |
+| `series.family.every` | Every {days} at {time} with {therapist} | हर {days} को {time} पर {therapist} के साथ | ప్రతి {days} {time} కి {therapist} తో |  | pending |
+| `series.family.clinicTime` | {time} at the clinic | क्लिनिक में {time} | క్లినిక్‌లో {time} |  | pending |
+| `series.family.forChild` | For {child} | {child} के लिए | {child} కోసం |  | pending |
+| `series.family.pausedRange` | Paused from {from} to {to} | {from} से {to} तक रुकी हुई | {from} నుండి {to} వరకు ఆపబడింది |  | pending |
+| `series.family.weekOf` | Week of {date} | {date} वाला हफ़्ता | {date} వారం |  | pending |
+| `series.family.noUpcoming` | No upcoming sessions in this timetable. | इस समय-सारणी में कोई आने वाला सेशन नहीं। | ఈ టైమ్‌టేబుల్‌లో రాబోయే సెషన్లు లేవు. |  | pending |
+| `series.family.cancelOnly` | You can cancel a single session up to 2 hours before it starts. To change the timetable, contact the centre. | आप किसी एक सेशन को उसके शुरू होने से 2 घंटे पहले तक रद्द कर सकते हैं। समय-सारणी बदलने के लिए सेंटर से संपर्क करें। | ఒక సెషన్‌ను అది ప్రారంభమయ్యే 2 గంటల ముందు వరకు రద్దు చేయవచ్చు. టైమ్‌టేబుల్ మార్చడానికి సెంటర్‌ను సంప్రదించండి. |  | pending |
 | `childImport.nav` | Import children | बच्चों को इम्पोर्ट करें | పిల్లలను ఇంపోర్ట్ చేయండి |  | pending |
 | `childImport.title` | Import children from a spreadsheet | स्प्रेडशीट से बच्चों को इम्पोर्ट करें | స్ప్రెడ్‌షీట్ నుండి పిల్లలను ఇంపోర్ట్ చేయండి |  | pending |
 | `childImport.intro` | Bring the children you already see into DoctorNearMe in one go. Upload a CSV file (up to 500 rows and 1 MB, UTF-8). Nothing is sent to families: you get a list of codes to share when you choose. | जिन बच्चों को आप पहले से देखते हैं, उन्हें एक बार में DoctorNearMe में लाएँ। एक CSV फ़ाइल अपलोड करें (अधिकतम 500 पंक्तियाँ और 1 MB, UTF-8)। परिवारों को कुछ नहीं भेजा जाता: आपको कोड की एक सूची मिलती है, जिसे आप जब चाहें साझा करें। | మీరు ఇప్పటికే చూస్తున్న పిల్లలను ఒకేసారి DoctorNearMe లోకి తీసుకురండి. ఒక CSV ఫైల్ అప్‌లోడ్ చేయండి (గరిష్ఠంగా 500 వరుసలు, 1 MB, UTF-8). కుటుంబాలకు ఏమీ పంపబడదు: మీకు కోడ్‌ల జాబితా వస్తుంది, మీకు కావలసినప్పుడు పంచుకోండి. |  | pending |
