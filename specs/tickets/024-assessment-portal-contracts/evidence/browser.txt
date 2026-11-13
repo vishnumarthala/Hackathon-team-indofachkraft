@@ -1,0 +1,34 @@
+# Integrated browser (Chromium, dev server :3040), synthetic accounts from `seed:users -- --prefix acct`.
+# Screenshots: family-redflag-te-375.png, provider-assessments-tab.png, provider-assessment-detail.png.
+# The checks below are the accessibility snapshots / innerText captured by the agent.
+
+## guardian_a, 375 x 812, /family/assessments/<new questionnaire>
+- English: header `Parent developmental check-in`, `For Anu (synthetic)`, `This is a developmental check-in, not a diagnosis.`,
+  `Questions are in English for now. A checked translation is coming.`, one fieldset `Question 1 of 21` with radios
+  Never / Sometimes / Often / Always, buttons Previous (disabled) / Next / Save and continue later. Nav shows `Questionnaires`.
+- Answered q1..q5 `Often` with Next, `Save and continue later` -> `Saved. You can continue later.`; page reload ->
+  fieldset `Question 6 of 21` (answers kept; DB: 5 responses, audit assessment.responses_saved version 2).
+- Language switched to తెలుగు: chrome translated (`ప్రశ్నావళులకు తిరిగి`, `Anu (synthetic) కోసం`,
+  `ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు.`, `భద్రత ప్రశ్న 16 / 21`, `లేదు` / `అవును`,
+  `సేవ్ చేసి తర్వాత కొనసాగించండి`), question text stays English (lang="en").
+- Safety question 16 (`Has your child stopped using words or skills that they used to have?`) answered `అవును`:
+  red alert appears immediately: `దయచేసి వెంటనే మీ బిడ్డ డాక్టర్‌ను సంప్రదించండి. అత్యవసర పరిస్థితిలో 108 (అంబులెన్స్) లేదా 112 కు కాల్ చేయండి.`
+  and is auto-saved (DB: rf_skill_regression = "yes"; audit assessment.red_flag { codes: ["skill_regression"] }).
+- Layout: document scrollWidth 375 = innerWidth 375 (no horizontal scroll); answer buttons min-h-11.
+
+## provider_a, 1100 px, /cases/<case>/assessments (Telugu, then English)
+- Tab `అంచనాలు` / `Assessments` between Referral and Team; `Send questionnaire` form (Questionnaire, Parent = `తల్లి` (mother;
+  guardian has no display name), optional due date); list: `in progress` + `1 red flag` badge with Open / Cancel;
+  `Reviewed` + `1 red flag` + `Shared with parent` with Open.
+- Detail of the reviewed one: `This is a developmental check-in, not a diagnosis.`; alert `Red flags: the parent answered yes` /
+  `Lost words or skills`; Score `21 of 45 points`, `See a professional soon`, fixed copy, domain breakdown; 21 answers with the
+  red-flag answer highlighted (data-red-flag); `Reviewed`, `Reviewer note: Call the family (synthetic).`,
+  `The result is shared with the parent.`, `Published summary (version 1)` rendered from published_versions.content_md
+  (no reviewer note in it).
+
+## provider_a review through the UI (provider-review-shared.png)
+- Second questionnaire submitted by guardian_a (all `never`, red flags `no`): detail shows `15 of 45 points`,
+  `Discuss with a professional` (5 reverse-worded questions x 3 points).
+- Typed the note `Reviewed in clinic (synthetic).`, ticked `Share result with parent`, clicked `Mark reviewed` ->
+  page refreshes to `Reviewed`, `The result is shared with the parent.`, `Published summary (version 1)` with the
+  band copy and the not-a-diagnosis sentence; the note is not part of the summary.

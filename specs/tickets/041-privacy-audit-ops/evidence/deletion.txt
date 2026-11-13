@@ -1,8 +1,8 @@
-request 84252588-8672-4803-9c32-a1080e138bff
+request 39175ded-05dc-45f6-b0c1-af1c5148979c
 processor_deletions [
  {
   "processor": "elevenlabs",
-  "external_ref": "e041-conv-8dedcba1",
+  "external_ref": "e041-conv-a663678a",
   "status": "deleted",
   "response_code": 200
  },
@@ -16,5 +16,5 @@ processor_deletions [
 consent [{"action":"granted","n":7},{"action":"withdrawn","n":7}]
 child {"display_name":"Deleted child","date_of_birth":null,"deleted":true}
 objects before 7 after 0
-rows {"cases":0,"recordings":0,"documents":0,"health":0}
+rows {"cases":0,"recordings":0,"documents":0,"health":0,"assessments":0,"iep_plans":0,"published_versions":0}
 audit before 11 after 15

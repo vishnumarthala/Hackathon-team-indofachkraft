@@ -104,7 +104,9 @@ export function auditFailure(err: unknown): Response {
 
 /** Attributes audit rows written later in this transaction by SQL that names a human actor kind but no id. */
 export async function setTxAuditActor(tx: Queryable, actor: SessionAuditActor | null | undefined): Promise<void> {
-  await tx`select set_config('dnm.actor_user_id', ${actor?.actorUserId ?? ""}, true)`;
+  // `app.actor_user_id` is 024's setting (published_by of publish_version); both name the same session user.
+  await tx`select set_config('dnm.actor_user_id', ${actor?.actorUserId ?? ""}, true),
+                  set_config('app.actor_user_id', ${actor?.actorUserId ?? ""}, true)`;
 }
 
 function hashIp(ip: string): string {

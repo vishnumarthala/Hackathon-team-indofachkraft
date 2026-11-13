@@ -2,16 +2,16 @@ PASS setup: provider_a creates an org A case - HTTP 201
 PASS setup: guardian_a claims the child - HTTP 201
 PASS setup: three documents (family, visible provider, provider-only)
 PASS E-1.1 audit rows after migration >= before; case_ref filled for old rows - before 6, after 6|5|5|5
-PASS E-1.2 provider_a confirms a fact: actor_user_id = provider_a, actor_role = provider (body actor ignored) - {"actor":"therapist","actor_user_id":"13ab1afc-79b4-404a-87b4-6c4619a1ec88","actor_role":"provider","child_id":"5c04bb04-5b22-4ade-b698-6225c307e240","org_id":"ecc4d98b-f452-4f8a-b44c-74cd3f3bb91f"}
+PASS E-1.2 provider_a confirms a fact: actor_user_id = provider_a, actor_role = provider (body actor ignored) - {"actor":"therapist","actor_user_id":"5d1dd475-6ccd-4866-b575-6866d41aa107","actor_role":"provider","child_id":"00bea872-5637-42cc-99f4-b41acf55846a","org_id":"6d19748c-6fc5-4c80-91ef-e1750a10fab6"}
 PASS E-1.3 case deleted via SQL: its audit rows still exist with case_ref - 3 rows: case.assignment_initial/system, case.created/provider, case.updated/provider
 PASS E-3 POST exports -> 202 { export_id } - HTTP 202
 PASS E-3 export built by the job right after the request (after()) - ready
-PASS E-3 guardian_a notified (in-app) - {"id":"973de849-3b7a-418d-b0fa-c1bd3d3ddc46","title":"Your data download is ready","body":"The copy of your child's data you asked for is ready. It can be downloaded for 7 days.","link":"/family/child
+PASS E-3 guardian_a notified (in-app) - {"id":"5fa29e9f-4ad3-4c58-8f26-5252fc520750","title":"Your data download is ready","body":"The copy of your child's data you asked for is ready. It can be downloaded for 7 days.","link":"/family/child
 PASS E-3 download -> 302 signed URL - HTTP 302
-PASS E-3 ZIP: child.json + documents/ (2 files) - child.json, documents/0d7ed9a2-35e0-46aa-be64-29bcd213aeb9-letter.pdf, documents/1ca95df0-d47f-48ed-a149-923c284597d2-plan.pdf
+PASS E-3 ZIP: child.json + documents/ (2 files) - child.json, documents/5cf91f51-acdc-47c1-9787-50421ae52d36-letter.pdf, documents/d4e647c7-b7b0-4d81-85d2-bb73ece7c4bc-plan.pdf
 PASS E-3 child.json has consents and the health profile
 PASS E-3 provider-only document absent; visible + family documents present - e041 School letter, e041 Therapy plan
-PASS E-3 published plans: section not present (024/025 not merged; registry hook documented)
+PASS E-3 024/025: questionnaire + answers, published plan and published versions exported; hidden version absent - assessments 1, plans 1, published 1
 PASS E-3 guardian_b downloading the export -> 404 - HTTP 404
 PASS E-3 provider_a downloading the export -> 403 - HTTP 403
 PASS E-3 4th request in a day -> 429 - HTTP 429 {"error":"You can request 3 downloads per day. Please try again tomorrow."}
@@ -21,9 +21,9 @@ PASS E-4 /admin/privacy/requests lists the request with Approve/Reject - HTTP 20
 PASS E-4 platform_admin approves -> 200 - HTTP 200
 PASS E-4 job completed right after approval - completed
 PASS E-4 child pseudonymised - {"display_name":"Deleted child","date_of_birth":null,"deleted":true}
-PASS E-4 recordings, objects and documents removed - objects before 7, after 0; {"cases":0,"recordings":0,"documents":0,"health":0}
+PASS E-4 recordings, objects and documents removed - objects before 7, after 0; {"cases":0,"recordings":0,"documents":0,"health":0,"assessments":0,"iep_plans":0,"published_versions":0}
 PASS E-4 consents show appended `withdrawn` records - [{"action":"granted","n":7},{"action":"withdrawn","n":7}]
-PASS E-4 processor_deletions: ElevenLabs row per conversation (mock 200) + Gemini not_applicable - [{"processor":"elevenlabs","external_ref":"e041-conv-8dedcba1","status":"deleted","response_code":200},{"processor":"gemini","external_ref":"no-deletion-api","status":"not_applicable","response_code":null}]
+PASS E-4 processor_deletions: ElevenLabs row per conversation (mock 200) + Gemini not_applicable - [{"processor":"elevenlabs","external_ref":"e041-conv-a663678a","status":"deleted","response_code":200},{"processor":"gemini","external_ref":"no-deletion-api","status":"not_applicable","response_code":null}]
 PASS E-4 guardian notified
 PASS E-4 audit rows retained - before 11, after 15
 PASS E-4.2 provider opening the case afterwards -> 404 - page 404, api 404

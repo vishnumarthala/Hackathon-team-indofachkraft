@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SPEAKER_ROLES } from "@/lib/clinical/speakers";
 
 const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
 const maxWords = (max: number) =>
@@ -7,7 +8,8 @@ const maxWords = (max: number) =>
 export const LanguageSchema = z.enum(["en", "hi", "te"]);
 export type Language = z.infer<typeof LanguageSchema>;
 
-export const SpeakerRoleSchema = z.enum(["therapist", "parent", "agent", "unknown"]);
+// 024 FR-5: the speaker-role contract (meanings and labels in lib/clinical/speakers.ts).
+export const SpeakerRoleSchema = z.enum(SPEAKER_ROLES);
 export type SpeakerRole = z.infer<typeof SpeakerRoleSchema>;
 
 export const SegmentSchema = z.object({

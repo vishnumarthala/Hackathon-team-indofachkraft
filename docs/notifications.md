@@ -126,10 +126,11 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `test.ping` (dev / DEMO_MODE only) | the user `aggregate_id` | in-app, email, WhatsApp | `test_ping` (optional `ics_start` adds an invite) |
 | `message.created` (027) | `recipient_user_ids` still able to reach `child_id` (027 replaces this with thread participants who have not read the thread) | in-app, email, WhatsApp | `message_created` |
 | `document.shared_with_guardian` (023, enqueued by `complete_document` / `set_document_visibility` in the same transaction) | active guardians of the child, only while the document is still a ready, guardian-visible provider upload of that child | in-app, email | `document_shared` |
-| `iep.published` (025) | active guardians of the child | in-app, email, WhatsApp | `iep_published` |
+| `iep.published` (025, enqueued by `publishPlan` in the publishing transaction, dedup `iep:<plan id>:v<published version>`) | active guardians of the child | in-app, email, WhatsApp | `iep_published` (links to `/family/children/<id>/plan`) |
 | `home_program.published` (026) | active guardians of the child | in-app, email, WhatsApp | `home_program_published` |
-| `assessment.assigned` (024) | active guardians of the child | in-app, email, WhatsApp | `assessment_assigned` |
+| `assessment.assigned` (024, enqueued by `createAssessment`) | the assigned guardian only, while the questionnaire is open and their link active | in-app, email, WhatsApp | `assessment_assigned` |
 | `assessment.red_flag` (024) | providers who can access the case under 022's rule (org owners/admins + assigned care team; optionally only `recipient_user_ids`) | in-app, email | `assessment_red_flag` |
+| `assessment.submitted` (024, enqueued by `submitAssessment`) | providers who can access the case under 022's rule | in-app, email | `assessment_submitted` |
 | `sharing.granted` (022, enqueued by a trigger on `sharing_grants` inside `create_sharing_grant`) | active owners/admins of the grantee org, only while the grant is in force (not revoked/expired, child live) and the granting guardian's link is active; org and child read from the grant row | in-app, email | `sharing_granted` (links to the grantee case's `Shared with us` tab) |
 | `provider.verified` / `.rejected` / `.suspended` / `.claimed` (028) | the provider bound to the profile | in-app, email | `provider_*` |
 | `privacy.export_ready` (041, enqueued with the export's `ready` update) | the requesting guardian, while still linked to the live child and the export is ready | in-app, email | `privacy_export_ready` (links to the child's Privacy page) |

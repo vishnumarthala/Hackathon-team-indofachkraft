@@ -34,8 +34,15 @@ establishment rules), and whether 90 days of raw audio is needed at all.
 `{ key, label, owner: child|case|user, tables, buckets?, retention, retentionEnv?, processors, retainedOnErasure?, export?, erase? }`.
 The privacy notice, the export, the erasure job and this document are driven by it.
 
-To add a category (024 assessments, 025 IEP, 026 home program, 027 messages, M2/M3 appointments, payments, Meet events,
-ratings, prescriptions, screen sessions):
+Registered so far: child profile, case records, session audio, intake conversations, 024 `assessments` (guardian's own
+questionnaires + answers) and `published_versions` (latest guardian-visible versions), 025 `iep_plans` (published plan
+views; drafts and progress notes never exported), documents, health profile, consent records, sharing/care team,
+notifications, exports, audit, provider credentials, pilot sign-ups. `published_versions` is append-only (024): rows with a
+case go with the case; case-less rows are removed only by `privacy_delete_published_versions()` (migration
+`20261113004102`).
+
+To add a category (026 home program, 027 messages, M2/M3 appointments, payments, Meet events, ratings, prescriptions,
+screen sessions):
 
 1. Append an entry to `REGISTRY` (or call `registerPrivacyCategory()` from your module at load time).
 2. `export({ sql, childId, guardianUserId })` returns `{ data, files? }` with **only what this guardian can already see

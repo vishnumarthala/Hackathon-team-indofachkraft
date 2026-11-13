@@ -1,0 +1,40 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/025
+
+ ✓ tests/iep.test.ts > FR-2 validation > value ranges by measure type 1ms
+ ✓ tests/iep.test.ts > FR-2 validation > all five SMART fields are required (3-300 characters) 3ms
+ ✓ tests/iep.test.ts > FR-2 validation > baseline and target must fit the measure and differ 0ms
+ ✓ tests/iep.test.ts > FR-2 validation > plan dates: review on/after start and within 12 months; target date inside the plan 0ms
+ ✓ tests/iep.test.ts > FR-2 validation > PATCH needs a version; status only completed/archived 1ms
+ ✓ tests/iep.test.ts > FR-2 validation > progress: no future dates (India), optional note up to 500 4ms
+ ✓ tests/iep.test.ts > FR-7 goalTrend > 0 points: all null 0ms
+ ✓ tests/iep.test.ts > FR-7 goalTrend > 1 point: values but no on_track 0ms
+ ✓ tests/iep.test.ts > FR-7 goalTrend > 2+ points: on track when moving towards the target (input order does not matter) 0ms
+ ✓ tests/iep.test.ts > FR-7 goalTrend > decreasing targets (baseline 10 -> target 2) 0ms
+ ✓ tests/iep.test.ts > FR-7 goalTrend > uses the last 5 observations for the slope; same-day entries keep their recording order 0ms
+ ✓ tests/iep.test.ts > FR-4 markdown > title, dates, goals grouped by domain with SMART text and baseline -> target 1ms
+ ✓ tests/iep.test.ts > FR-4 markdown > provider text cannot change the document structure; plan status is not part of it 0ms
+ ✓ tests/iep.test.ts > chart and text (FR-5, FR-7, NFR-2, NFR-3) > SVG with 3 points, baseline and target lines, accessible name and a Show data table 4ms
+ ✓ tests/iep.test.ts > chart and text (FR-5, FR-7, NFR-2, NFR-3) > no points: lines only and the empty text; ranges per measure 0ms
+ ✓ tests/iep.test.ts > chart and text (FR-5, FR-7, NFR-2, NFR-3) > trend text in en/hi/te, `On track` shown 3ms
+ ✓ tests/iep.test.ts > chart and text (FR-5, FR-7, NFR-2, NFR-3) > maps API errors (409 stale, field details) to translated keys 8ms
+ ✓ tests/iep.test.ts > provider Goals tab renders (FR-5, NFR-3) > header with `Publish changes` + `Unpublished changes`, labelled Add goal fields, Record progress, chart 9ms
+ ✓ tests/iep.test.ts > provider Goals tab renders (FR-5, NFR-3) > Telugu chrome, goal text as written 4ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > E-1.1: create a plan; a goal without `Measurable` is rejected; a full SMART goal is added 125ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > E-1.2: publish -> active, published version 1 visible to the guardian, outbox iep.published, audit 44ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > E-1.3 / NFR-1: an unpublished edit shows `Unpublished changes`; the guardian keeps the old text until republished 49ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > E-2: progress 1, 2, 3 -> 3 points and on track for provider and guardian; future date 400; notes stay internal 55ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > E-3: two providers save from the same version -> the second gets 409 with the reload message 27ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > one active plan per case: publishing a new plan archives the previous one; guardian sees the newest 54ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > delete: draft plans delete the goal, active plans discontinue it; max 20 goals 209ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > E-4.1: provider_b (org B) gets 404 on org A's plan; with an `iep` grant it reads the published plan under `Shared with us`, read only 102ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > E-4.2 / E-4.3: other guardians, unassigned members, guardians on provider APIs, anonymous 21ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > a guardian with no published plan gets the empty list; a revoked link ends access 14ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > 038 hook: confirmed AI suggestions record source and a recording of the same case only 15ms
+ ✓ tests/iep-access.test.ts > IEP plans (database) > RLS: the care team reads plans, goals and progress; guardians and other orgs read nothing; no client writes 20ms
+
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+   Start at  02:48:33
+   Duration  1.42s (transform 228ms, setup 0ms, import 276ms, tests 1.29s, environment 0ms)
+

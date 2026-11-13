@@ -1,25 +1,15 @@
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > allows the app origin, and approved origins only on their routes 1ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.googletagmanager.com/gtm.js?id=GTM-X, on any route 0ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.google-analytics.com/analytics.js, on any route 0ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://connect.facebook.net/en_US/fbevents.js, on any route 0ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://static.hotjar.com/c/hotjar-1.js, on any route 0ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.clarity.ms/tag/abc, on any route 0ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js, on any route 0ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://cdn.segment.com/analytics.js/v1/x/analytics.min.js, on any route 0ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > allowlist entries are approved vendors, scoped to /family routes, and never trackers 1ms
- ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > the family CSP allows only self (+nonce) and the route's allowlisted origins; lib/csp exceptions are allowlisted 0ms
- ✓ tests/no-tracking.test.ts > static scan of /family/** modules (FR-13) > finds the family pages and their modules 0ms
- ✓ tests/no-tracking.test.ts > static scan of /family/** modules (FR-13) > no external <script>, next/script, injected script tags or tracker code 5ms
-stdout | tests/no-tracking.test.ts > rendered /family/** pages load no third-party scripts (live crawl) > every family page, signed in as a synthetic guardian with a child
-[no-tracking] crawled 17 pages:
+[no-tracking] crawled 20 pages:
 /family/appointments (17 scripts)
-/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/documents (18 scripts)
-/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/health/history/1 (17 scripts)
-/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/health/history (17 scripts)
-/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/health (21 scripts)
-/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee (18 scripts)
-/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/privacy (18 scripts)
-/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/team (18 scripts)
+/family/assessments/f72df389-2b72-4fb5-b74d-c5200a3bcc63 (23 scripts)
+/family/assessments (17 scripts)
+/family/children/5feed539-4928-450b-a5fe-551c9c843d0d/documents (18 scripts)
+/family/children/5feed539-4928-450b-a5fe-551c9c843d0d/health/history/1 (17 scripts)
+/family/children/5feed539-4928-450b-a5fe-551c9c843d0d/health/history (17 scripts)
+/family/children/5feed539-4928-450b-a5fe-551c9c843d0d/health (21 scripts)
+/family/children/5feed539-4928-450b-a5fe-551c9c843d0d (18 scripts)
+/family/children/5feed539-4928-450b-a5fe-551c9c843d0d/plan (20 scripts)
+/family/children/5feed539-4928-450b-a5fe-551c9c843d0d/privacy (18 scripts)
+/family/children/5feed539-4928-450b-a5fe-551c9c843d0d/team (18 scripts)
 /family/children/claim (18 scripts)
 /family/children/new (18 scripts)
 /family/children (18 scripts)
@@ -29,5 +19,5 @@ stdout | tests/no-tracking.test.ts > rendered /family/** pages load no third-par
 /family (17 scripts)
 /family/settings (18 scripts)
 /family/login (17 scripts)
- ✓ tests/no-tracking.test.ts > rendered /family/** pages load no third-party scripts (live crawl) > every family page, signed in as a synthetic guardian with a child 5077ms
+ ✓ tests/no-tracking.test.ts > rendered /family/** pages load no third-party scripts (live crawl) > every family page, signed in as a synthetic guardian with a child 2049ms
       Tests  13 passed (13)

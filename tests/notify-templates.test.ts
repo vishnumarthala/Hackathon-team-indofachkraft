@@ -22,6 +22,7 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "home_program.published": { program_id: ID, child_id: CHILD },
   "assessment.assigned": { assessment_id: ID, child_id: CHILD },
   "assessment.red_flag": { assessment_id: ID, child_id: CHILD, case_id: CASE },
+  "assessment.submitted": { assessment_id: ID, child_id: CHILD, case_id: CASE },
   "sharing.granted": { grant_id: ID, child_id: CHILD, source_org_id: ID, grantee_org_id: USER, grantee_case_id: CASE },
   "provider.verified": { provider_profile_id: ID, submission_id: ID },
   "provider.rejected": { provider_profile_id: ID, submission_id: ID },
@@ -59,6 +60,7 @@ describe("topic registry", () => {
       [
         "assessment.assigned",
         "assessment.red_flag",
+        "assessment.submitted",
         "document.shared_with_guardian",
         "home_program.published",
         "iep.published",

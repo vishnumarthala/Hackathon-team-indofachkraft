@@ -8,6 +8,7 @@ import type { Queryable } from "@/lib/pg";
 import {
   activeGrantRecipients,
   activeGuardians,
+  assignedAssessmentGuardian,
   caseProviders,
   childAccessFilter,
   existingUser,
@@ -76,7 +77,7 @@ export const TOPICS = {
     template: "document_shared",
     recipients: (p, { sql }) => visibleDocumentGuardians(sql, p.document_id, p.child_id),
   }),
-  // 025
+  // 025: enqueued by publishPlan() in the publishing transaction (dedup `iep:<plan id>:v<published version>`).
   "iep.published": topic({
     payload: z.object({ plan_id: uuid, child_id: uuid, case_id: uuid.optional() }).strict(),
     channels: GUARDIAN_CHANNELS,
@@ -90,14 +91,16 @@ export const TOPICS = {
     template: "home_program_published",
     recipients: (p, { sql }) => activeGuardians(sql, p.child_id),
   }),
-  // 024
+  // 024: enqueued by createAssessment() in the assigning transaction. Only the assigned guardian, and only while the
+  // questionnaire is still open and their link to the child is active.
   "assessment.assigned": topic({
     payload: z.object({ assessment_id: uuid, child_id: uuid, case_id: uuid.optional() }).strict(),
     channels: GUARDIAN_CHANNELS,
     template: "assessment_assigned",
-    recipients: (p, { sql }) => activeGuardians(sql, p.child_id),
+    recipients: (p, { sql }) => assignedAssessmentGuardian(sql, p.assessment_id, p.child_id),
   }),
-  // 024: providers of the case (optionally only the named ones, still re-checked against the case org).
+  // 024: enqueued by saveResponses() when a red-flag question is newly answered yes. Providers of the case (org
+  // owners/admins + assigned care team; optionally only the named ones, still re-checked against the case org).
   "assessment.red_flag": topic({
     payload: z
       .object({ assessment_id: uuid, child_id: uuid, case_id: uuid, recipient_user_ids: userList.optional() })
@@ -108,6 +111,13 @@ export const TOPICS = {
       const providers = await caseProviders(sql, p.case_id, p.child_id);
       return p.recipient_user_ids ? providers.filter((id) => p.recipient_user_ids?.includes(id)) : providers;
     },
+  }),
+  // 024: enqueued by submitAssessment(). Providers of the case (022 rule), re-checked at fan-out.
+  "assessment.submitted": topic({
+    payload: z.object({ assessment_id: uuid, child_id: uuid, case_id: uuid }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "assessment_submitted",
+    recipients: (p, { sql }) => caseProviders(sql, p.case_id, p.child_id),
   }),
   // 022: emitted by a trigger on sharing_grants inside create_sharing_grant (migration 20261113003201). Owners/admins
   // of the grantee org, only while the grant is in force and the granting guardian's link is still active.
@@ -185,6 +195,13 @@ export const PROVIDER_TOPICS = {
 
 export const SHARING_TOPICS = {
   granted: "sharing.granted",
+} as const satisfies Record<string, Topic>;
+
+// 024: questionnaires (enqueued in the producing transactions in lib/assessments).
+export const ASSESSMENT_TOPICS = {
+  assigned: "assessment.assigned",
+  submitted: "assessment.submitted",
+  redFlag: "assessment.red_flag",
 } as const satisfies Record<string, Topic>;
 
 // 023 FR-9: enqueued by `complete_document` / `set_document_visibility` (migration 20261113002300).

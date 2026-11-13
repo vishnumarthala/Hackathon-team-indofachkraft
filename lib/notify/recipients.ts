@@ -91,3 +91,14 @@ export async function platformAdmins(sql: Queryable): Promise<string[]> {
     select p.id from public.user_profiles p join auth.users u on u.id = p.id where p.role = 'platform_admin'`;
   return rows.map((r) => r.id);
 }
+
+/** 024: the guardian a questionnaire is assigned to, while it is still open, the child is live and their link is
+ * active (another guardian of the same child gets nothing). */
+export async function assignedAssessmentGuardian(sql: Queryable, assessmentId: string, childId: string): Promise<string[]> {
+  const rows = await sql<{ user_id: string }[]>`
+    select a.assigned_to as user_id from public.assessments a
+    join public.children c on c.id = a.child_id and c.deleted_at is null
+    join public.guardian_links gl on gl.child_id = a.child_id and gl.user_id = a.assigned_to and gl.status = 'active'
+    where a.id = ${assessmentId} and a.child_id = ${childId} and a.status in ('assigned', 'in_progress')`;
+  return rows.map((r) => r.user_id);
+}

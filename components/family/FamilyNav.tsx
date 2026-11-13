@@ -7,6 +7,7 @@ import { useT } from "@/lib/i18n/client";
 export const FAMILY_NAV = [
   { href: "/family", key: "home" },
   { href: "/family/children", key: "children" },
+  { href: "/family/assessments", key: "assessments" },
   { href: "/family/appointments", key: "appointments" },
   { href: "/family/messages", key: "messages" },
   { href: "/family/documents", key: "documents" },

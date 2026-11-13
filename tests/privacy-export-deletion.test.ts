@@ -30,6 +30,7 @@ describe.skipIf(!enabled)("041 export and deletion (database)", { timeout: 120_0
   const conv = (n: number) => `t041-conv-${n}-${randomUUID().slice(0, 8)}`;
   const convs: string[] = [];
   const docs: { guardian?: string; visible?: string; hidden?: string } = {};
+  const ids: Record<string, string> = {};
   const exportIds: string[] = [];
   const as = (u: TestUser | null) => {
     session.user = u;
@@ -96,6 +97,27 @@ describe.skipIf(!enabled)("041 export and deletion (database)", { timeout: 120_0
     docs.guardian = (await uploader.upload(guardianA, { childId: kase.childId }, { title: "t041 School letter", category: "school", file_name: "letter.pdf", mime_type: "application/pdf" }, PDF_BYTES)).id;
     docs.visible = (await uploader.upload(providerA, { caseId: kase.caseId }, { title: "t041 Visible note", category: "assessment", file_name: "visible.png", mime_type: "image/png", visible_to_guardian: true }, PNG_BYTES)).id;
     docs.hidden = (await uploader.upload(providerA, { caseId: kase.caseId }, { title: "t041 Provider-only note", category: "assessment", file_name: "hidden.png", mime_type: "image/png", visible_to_guardian: false }, PNG_BYTES)).id;
+
+    // 024 / 025 data of child 1: a questionnaire assigned to guardian A with an answer, a published IEP plan (visible),
+    // a hidden published report version, and a case-less published summary (only the 041 exception can erase it).
+    const [assessment] = await sql<{ id: string }[]>`
+      insert into assessments (case_id, child_id, org_id, template_id, assigned_to, assigned_by, status, submitted_at)
+      values (${kase.caseId}, ${kase.childId}, ${orgA}, '00000000-0000-4000-8024-000000000001', ${guardianA.id}, ${providerA.id},
+              'submitted', now())
+      returning id`;
+    ids.assessment = assessment.id;
+    await sql`insert into assessment_responses (assessment_id, item_id, value, answered_by) values (${assessment.id}, 'q1', '2'::jsonb, ${guardianA.id})`;
+    const [plan] = await sql<{ id: string }[]>`
+      insert into iep_plans (case_id, child_id, org_id, title, start_date, review_date, status, created_by)
+      values (${kase.caseId}, ${kase.childId}, ${orgA}, 't041 Plan (synthetic)', current_date, current_date + 30, 'active', ${providerA.id})
+      returning id`;
+    ids.plan = plan.id;
+    const publish = async (p: Record<string, unknown>) =>
+      (await sql<{ id: string }[]>`select (public.publish_version(${sql.json(p as postgres.JSONValue)}::jsonb)).id as id`)[0].id;
+    const planVersion = await publish({ entity_type: "iep_plan", entity_id: plan.id, case_id: kase.caseId, content_md: "# t041 Plan v1 (synthetic)", visible_to_guardian: true });
+    await sql`insert into iep_publications (published_version_id, plan_id, plan_version, title, goals) values (${planVersion}, ${plan.id}, 1, 't041 Plan (synthetic)', '[]'::jsonb)`;
+    await publish({ entity_type: "report", entity_id: kase.reportId, case_id: kase.caseId, content_md: "# t041 Hidden report (synthetic)", visible_to_guardian: false });
+    await publish({ entity_type: "assessment", entity_id: randomUUID(), child_id: kase.childId, org_id: orgA, content_md: "# t041 Caseless summary (synthetic)", visible_to_guardian: true });
 
     // Child 2 ("all_ai_processing").
     kase2 = await world.kase(orgA);
@@ -170,6 +192,15 @@ describe.skipIf(!enabled)("041 export and deletion (database)", { timeout: 120_0
       for (const buf of files.values()) expect(buf.toString("latin1")).not.toContain("Provider-only");
       // Clinical case data the guardian cannot see in the portal is not exported.
       expect(JSON.stringify(child)).not.toContain("He lines up toys");
+      // 024 / 025: the guardian's questionnaire with their answer, published documents visible to them (incl. the case-less
+      // one) and the published plan; hidden versions are not exported.
+      expect(s.assessments).toHaveLength(1);
+      expect(s.assessments[0]).toMatchObject({ id: ids.assessment, status: "submitted", answers: [{ item_id: "q1", value: 2 }] });
+      expect(s.assessments[0]).not.toHaveProperty("reviewer_note");
+      const published = s.published_versions.map((v: { content_md: string }) => v.content_md).sort();
+      expect(published).toEqual(["# t041 Caseless summary (synthetic)", "# t041 Plan v1 (synthetic)"]);
+      expect(s.iep_plans).toEqual([expect.objectContaining({ plan_id: ids.plan, title: "t041 Plan (synthetic)", version: 1 })]);
+      for (const buf of files.values()) expect(buf.toString("utf8")).not.toContain("Hidden report");
 
       // Notification to the requester (in-app; email through the stubbed sender).
       const eventId = await outboxEvent(`privacy.export_ready:${export_id}`);
@@ -268,6 +299,9 @@ describe.skipIf(!enabled)("041 export and deletion (database)", { timeout: 120_0
         return { status: "deleted" as const, responseCode: 200 };
       });
 
+      // 024's append-only rule still holds outside the erasure function.
+      await expect(sql`delete from published_versions where child_id = ${kase.childId} and case_id is null`).rejects.toThrow(/append-only/);
+
       expect(await executeDeletion(requestId, { deleteConversation: deleter })).toBe("failed");
       const log1 = await sql`select processor, external_ref, status, response_code, attempts from processor_deletions where request_id = ${requestId} order by processor, external_ref`;
       expect(log1).toEqual(
@@ -293,6 +327,11 @@ describe.skipIf(!enabled)("041 export and deletion (database)", { timeout: 120_0
       expect((await sql`select 1 from child_health_profiles where child_id = ${kase.childId}`).length).toBe(0);
       expect((await sql`select 1 from child_health_profile_history where child_id = ${kase.childId}`).length).toBe(0);
       expect((await sql`select 1 from privacy_exports where child_id = ${kase.childId}`).length).toBe(0);
+      expect((await sql`select 1 from assessments where child_id = ${kase.childId}`).length).toBe(0);
+      expect((await sql`select 1 from assessment_responses where assessment_id = ${ids.assessment}`).length).toBe(0);
+      expect((await sql`select 1 from iep_plans where child_id = ${kase.childId}`).length).toBe(0);
+      expect((await sql`select 1 from iep_publications where plan_id = ${ids.plan}`).length).toBe(0);
+      expect((await sql`select 1 from published_versions where child_id = ${kase.childId}`).length).toBe(0);
       expect(await objectExists("recordings", paths.audio)).toBe(false);
       for (const p of paths.docs) expect(await objectExists("documents", p)).toBe(false);
       for (const p of paths.exports) expect(await objectExists("exports", p)).toBe(false);

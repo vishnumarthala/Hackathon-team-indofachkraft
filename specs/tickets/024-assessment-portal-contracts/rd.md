@@ -1,6 +1,6 @@
 # 024: Assessment portal and shared clinical contracts
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 022: assessments are case-scoped, use assignments and register the `assessments`/`reports` sharing scopes
 

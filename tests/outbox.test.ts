@@ -160,7 +160,7 @@ describe.skipIf(!enabled)("notifications outbox (database)", { timeout: 120_000 
     expect(new Set(rows.map((r) => r.recipient_user_id))).toEqual(new Set([guardianA.id]));
     expect(rows.map((r) => r.channel)).toEqual(["email", "in_app", "whatsapp"]);
     const [inApp] = await sql`select title, body, link, locale from notifications where event_id = ${id} and channel = 'in_app'`;
-    expect(inApp).toEqual({ title: "New plan", body: "Your child's therapist shared a new plan.", link: `/family/children/${childId}`, locale: "en" });
+    expect(inApp).toEqual({ title: "New plan", body: "Your child's therapist shared a new plan.", link: `/family/children/${childId}/plan`, locale: "en" });
 
     // assessment.red_flag goes to the case org's providers only (not guardians, not other orgs).
     const flag = await outbox.enqueue(sql, {

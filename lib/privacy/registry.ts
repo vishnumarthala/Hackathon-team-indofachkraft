@@ -3,7 +3,7 @@
 // lib/privacy/export.ts, lib/privacy/deletion.ts, the privacy notice (/privacy) and docs/privacy/retention.md are all
 // driven by this list. The scheduled retention steps are in lib/privacy/retention.ts (keyed by the same `key`).
 //
-// Extending (024 assessments, 025 IEP, 026 home program, 027 messages, M2/M3 tickets): append an entry to
+// Extending (026 home program, 027 messages, M2/M3 tickets; 024 and 025 are registered below): append an entry to
 // `REGISTRY` (or call `registerPrivacyCategory()` from your module) with
 //   * `export(ctx)`  - ONLY what the requesting guardian can already see in the portal (published versions, their
 //                      own messages, ...), as JSON-safe data; optional `files` for the ZIP;
@@ -154,6 +154,81 @@ export const REGISTRY: PrivacyCategory[] = [
           select external_id from public.recordings where case_id in ${sql(ctx.caseIds)} and external_id is not null`;
         return rows.map((r) => ({ processor: "elevenlabs", ref: r.external_id }));
       },
+    },
+  },
+  {
+    key: "assessments",
+    label: "Questionnaires assigned to the guardian and their answers (024)",
+    owner: "case",
+    tables: ["assessments", "assessment_responses"],
+    retention: "Kept with the clinical record of the case; deleted with the child's cases on erasure.",
+    processors: ["supabase"],
+    // Exactly the guardian's portal view (024 listGuardianAssessments): questionnaires assigned to this guardian, not
+    // cancelled, with their own answers. Provider scores and reviewer notes are not shown in the portal: not exported.
+    export: async ({ sql, childId, guardianUserId }) => {
+      const rows = await sql<{ id: string; title: string; instrument_key: string; status: string; due_on: string | null; submitted_at: Date | null; created_at: Date }[]>`
+        select a.id, t.title, t.instrument_key, a.status, a.due_on::text as due_on, a.submitted_at, a.created_at
+        from public.assessments a join public.assessment_templates t on t.id = a.template_id
+        where a.child_id = ${childId} and a.assigned_to = ${guardianUserId} and a.status <> 'cancelled'
+        order by a.created_at`;
+      const answers = rows.length
+        ? await sql<{ assessment_id: string; item_id: string; value: unknown; answered_at: Date }[]>`
+            select assessment_id, item_id, value, answered_at from public.assessment_responses
+            where assessment_id in ${sql(rows.map((r) => r.id))} order by assessment_id, item_id`
+        : [];
+      return {
+        data: rowsJson(rows).map((r) => ({
+          ...r,
+          answers: rowsJson(answers.filter((x) => x.assessment_id === r.id)).map(({ item_id, value, answered_at }) => ({ item_id, value, answered_at })),
+        })),
+      };
+    },
+    // Rows cascade from `cases` (final erasure step); deleted explicitly too so nothing depends on cascade order.
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) => (await tx`delete from public.assessments where child_id = ${ctx.childId}`).count,
+    },
+  },
+  {
+    key: "published_versions",
+    label: "Published clinical documents (reports, plans, questionnaire summaries) (024)",
+    owner: "case",
+    tables: ["published_versions"],
+    retention: "Append-only clinical record, kept while the child is in care; removed with the case on erasure.",
+    processors: ["supabase"],
+    // 024 listGuardianVisible: the latest version of each document, only when it is visible to the guardian.
+    export: async ({ sql, childId }) => {
+      const rows = await sql`
+        select entity_type, entity_id, version, content_md, published_at from (
+          select distinct on (entity_type, entity_id) * from public.published_versions
+          where child_id = ${childId} order by entity_type, entity_id, version desc
+        ) latest
+        where visible_to_guardian order by published_at`;
+      return { data: rowsJson(rows) };
+    },
+    // Case-linked rows go with the cases (024's trigger allows only that); case-less rows need the 041 exception.
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) =>
+        (await tx<{ n: number }[]>`select public.privacy_delete_published_versions(${ctx.childId}::uuid) as n`)[0].n,
+    },
+  },
+  {
+    key: "iep_plans",
+    label: "IEP plans, SMART goals, progress and published plan snapshots (025)",
+    owner: "case",
+    tables: ["iep_plans", "iep_goals", "goal_progress", "iep_publications"],
+    retention: "Kept with the clinical record of the case; deleted with the child's cases on erasure.",
+    processors: ["supabase"],
+    // 025 getGuardianPlans: the latest published plan per organisation with published goal wording and live values.
+    // Drafts and progress notes are never exported.
+    export: async ({ childId }) => {
+      const { getGuardianPlans } = await import("@/lib/iep");
+      return { data: await getGuardianPlans(childId) };
+    },
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) => (await tx`delete from public.iep_plans where child_id = ${ctx.childId}`).count,
     },
   },
   {

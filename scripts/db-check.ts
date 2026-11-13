@@ -18,6 +18,12 @@ const TABLES = [
   "consent_records",
   "child_claim_codes",
   "child_consent_state",
+  // 024
+  "clinical_instruments",
+  "published_versions",
+  "assessment_templates",
+  "assessments",
+  "assessment_responses",
 ];
 const BUCKETS = ["recordings", "consent-forms"];
 
@@ -54,6 +60,18 @@ async function main() {
     } catch (err) {
       failed = true;
       console.log(`cases without child_id ERR ${err instanceof Error ? err.message : String(err)}`);
+    }
+    // 024 FR-3: every final report has a published version (expected 0).
+    try {
+      const [row] = await sql<{ n: number }[]>`
+        select count(*)::int as n from public.reports r
+        where r.status = 'final' and not exists (
+          select 1 from public.published_versions pv where pv.entity_type = 'report' and pv.entity_id = r.id)`;
+      console.log(`final reports without a published version: ${row.n}`);
+      if (row.n !== 0) failed = true;
+    } catch (err) {
+      failed = true;
+      console.log(`final reports without a published version ERR ${err instanceof Error ? err.message : String(err)}`);
     }
   } finally {
     await sql.end({ timeout: 2 });

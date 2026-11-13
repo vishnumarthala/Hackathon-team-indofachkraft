@@ -72,7 +72,7 @@ export async function requireProviderProfileOwner(
   return result;
 }
 
-async function lookupCaseId(table: "recordings" | "reports" | "facts", id: string): Promise<string | null> {
+async function lookupCaseId(table: "recordings" | "reports" | "facts" | "assessments" | "iep_plans", id: string): Promise<string | null> {
   if (!isUuid(id)) return null;
   const { data, error } = await supabaseAdmin().from(table).select("case_id").eq("id", id).maybeSingle();
   if (error) throw new Error(`Could not load ${table} row: ${error.message}`);
@@ -118,6 +118,66 @@ export function requireReportAccess(reportId: string, notFoundMessage = "Report 
 
 export function requireFactAccess(factId: string, notFoundMessage = "Fact not found") {
   return gate(() => lookupCaseId("facts", factId), notFoundMessage);
+}
+
+/** requireReportAccess() that also returns the provider (024: finalising records who published). */
+export async function requireReportActor(
+  reportId: string,
+  notFoundMessage = "Report not found",
+): Promise<{ actor: Actor } | { response: Response }> {
+  const result = await requireProviderApi();
+  if ("response" in result) return result;
+  if (!(await canAccessCase(result.actor.user.id, await lookupCaseId("reports", reportId)))) {
+    return { response: fail(404, notFoundMessage) };
+  }
+  return result;
+}
+
+// ---------- 024: assessments ----------
+
+/**
+ * Provider access to an assessment = access to its case (022 rule). Missing, malformed and other tenants' ids
+ * give the same 404. Returns the provider and the assessment's case id.
+ */
+export async function requireAssessmentActor(
+  assessmentId: string,
+  notFoundMessage = "Assessment not found",
+): Promise<{ actor: Actor; caseId: string } | { response: Response }> {
+  const result = await requireProviderApi();
+  if ("response" in result) return result;
+  const caseId = await lookupCaseId("assessments", assessmentId);
+  if (!caseId || !(await canAccessCase(result.actor.user.id, caseId))) return { response: fail(404, notFoundMessage) };
+  return { actor: result.actor, caseId };
+}
+
+// ---------- 025: IEP plans and goals ----------
+
+/** Provider access to an IEP plan = access to its case (022 rule). Missing/other tenants' ids -> 404. */
+export async function requireIepPlanActor(
+  planId: string,
+  notFoundMessage = "Plan not found",
+): Promise<{ actor: Actor; caseId: string } | { response: Response }> {
+  const result = await requireProviderApi();
+  if ("response" in result) return result;
+  const caseId = await lookupCaseId("iep_plans", planId);
+  if (!caseId || !(await canAccessCase(result.actor.user.id, caseId))) return { response: fail(404, notFoundMessage) };
+  return { actor: result.actor, caseId };
+}
+
+/** Provider access to an IEP goal = access to its plan's case. Returns the plan and case ids. */
+export async function requireIepGoalActor(
+  goalId: string,
+  notFoundMessage = "Goal not found",
+): Promise<{ actor: Actor; caseId: string; planId: string } | { response: Response }> {
+  const result = await requireProviderApi();
+  if ("response" in result) return result;
+  if (!isUuid(goalId)) return { response: fail(404, notFoundMessage) };
+  const { data, error } = await supabaseAdmin().from("iep_goals").select("plan_id").eq("id", goalId).maybeSingle();
+  if (error) throw new Error(`Could not load iep_goals row: ${error.message}`);
+  const planId = (data as { plan_id: string } | null)?.plan_id ?? null;
+  const caseId = planId ? await lookupCaseId("iep_plans", planId) : null;
+  if (!planId || !caseId || !(await canAccessCase(result.actor.user.id, caseId))) return { response: fail(404, notFoundMessage) };
+  return { actor: result.actor, caseId, planId };
 }
 
 export async function requirePlatformAdminPage(): Promise<Actor> {

@@ -132,6 +132,11 @@ flowchart LR
   `child_health_profile_history` written by a trigger. Providers read it through an accessible case
   (`GET /api/cases/:id/health`, `Health` tab, `Severe allergy` banner). Later tickets use
   `getPrescribingHealthFacts` / `healthSummary`. See `docs/health-profile.md`.
+- **IEP plans, SMART goals and progress (ticket 025).** Case-scoped plans (`iep_plans`, one `active` per case)
+  with SMART goals by domain (`iep_goals`) and progress points (`goal_progress`), plan-level optimistic
+  concurrency (`version`, 409). Publishing renders markdown and stores it with `publishVersion` (`iep_plan`,
+  visible to guardians) plus a goal snapshot (`iep_publications`); guardians (`/family/children/[id]/plan`) and the
+  `iep` share scope see only published text with live progress values. See `docs/iep.md`.
 - **Real patient data** still waits for the privacy/audit baseline (041) and legal review of the consent
   texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
@@ -213,7 +218,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
-          documents.md
+          documents.md  assessments.md  notifications.md  iep.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -501,6 +506,25 @@ in Appendix A. Red-flag items: 15 (lost speech), 29 (self-injury).
 
 **Case sheet** (`schemas/case-sheet.json`): ElevenLabs data-collection fields (Appendix B).
 
+### Clinical contracts (ticket 024, design rules 8 and 9)
+
+Shared contracts that later tickets (025 IEP, 026 home program, 033 voice screen, 035 intake, 038 scribe,
+039 e-Rx, 040 follow-up) build on. The ISAA behaviour above is unchanged; `tests/regression-child-dev.test.ts`
+runs the whole Child Development pipeline on the demo fixtures and compares every output with a baseline
+captured before 024 (`tests/fixtures/regression-child-dev/baseline.json`).
+
+| Contract | Module | Rule |
+|---|---|---|
+| Instrument registry | `lib/clinical/instruments.ts` (`getInstrument`, `InstrumentDefinition`, `score`), table `clinical_instruments` | Keys `ISAA`, `CASE_SHEET`, `ISAA_PARENT_CHECKIN`; `definition` = the `schemas/*.json` file (a test fails on drift). `facts.instrument` is a foreign key to it. `score("ISAA", facts)` delegates to `scoreIsaa` unchanged. New standardised instruments need a licensing review. |
+| Parent check-in | `schemas/isaa-parent-checkin.json`, `lib/clinical/checkin.ts` (`scoreCheckin`, `checkinRedFlags`, `URGENT_COPY`) | 15 ISAA-derived parent questions (never/sometimes/often/always, some reverse-worded) + 6 yes/no red-flag questions (`skill_regression`, `self_injury`, `seizure`, `breathing`, `not_eating_drinking`, `safety_concern`). Bands `no_strong_signs` (0-9) / `discuss_with_professional` (10-19) / `see_professional_soon` (20-45, or any red flag). Copy always says `This is a developmental check-in, not a diagnosis.`; any red flag shows `Please contact your child's doctor now. In an emergency call 108 (ambulance) or 112.` English only; thresholds and wording await clinical review. |
+| Report kinds | `lib/clinical/reports.ts` (`REPORT_KINDS`) | In use: `pre_session_brief`, `assessment`, `parent_summary`; reserved: `session_note` (038), `rx_draft` (038/039), `generic_intake_brief` (035). Each has `audience`, `publishable`, `producer`. The ticket that starts writing a reserved kind extends the `reports.kind` check in its migration. |
+| Published versions | `lib/clinical/publish.ts` (`publishVersion(tx, input)`, `getLatestPublished`, `listGuardianVisible`, `contentHash`, `setActor`), table `published_versions`, SQL `publish_version(jsonb)` | **`content_md` is authoritative**; `reports.content` (jsonb) is only the AI draft input. One append-only row per (entity_type, entity_id, version): `report`, `iep_plan`, `home_program`, `prescription`, `assessment`; `content_hash` = sha256(content_md); update/delete raise (rows go only with their case; `child_id` follows its case when 020's claim merges a placeholder child, trigger `cases_child_follow`). `publish_version` is the only writer (service role cannot insert); call `publishVersion(tx, ...)` inside the transaction that changes the entity. A report becoming `final` publishes itself in the same transaction (trigger `reports_publish_final`; `assessment` -> provider only, `parent_summary` -> visible to the guardian; a changed final `content_md` -> next version). The latest version decides guardian visibility. Guardians read only `visible_to_guardian` versions; other orgs only through a sharing grant. Existing final reports were backfilled (`backfill_published_reports()`); `npm run db:check` reports final reports without a version. |
+| Speaker roles | `lib/clinical/speakers.ts`, `SpeakerRoleSchema` | Stored values unchanged: `therapist` = the clinician of any provider type, `parent` = guardian/caregiver, `agent` = AI assistant, `unknown`; new `child`, `other_adult`. UI labels via i18n `speakers.*` (`Clinician`, `Parent or caregiver`, `Child`, `Other adult`, `AI assistant`, `Unknown`); prompts keep the stored value. The 008 swap only exchanges therapist <-> parent. |
+
+The assessment portal (questionnaires sent to guardians, review, publishing, `assessments` share scope) is
+described in `docs/assessments.md`.
+IEP plans publish with `entity_type = 'iep_plan'` (ticket 025, `docs/iep.md`).
+
 ## 8. API contracts
 
 All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validation, 404 unknown id/token,
@@ -534,6 +558,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/family/children/:id/sharing-grants`, `POST .../sharing-grants/:grantId/revoke` | 022 | `{ source_org_id, grantee_org_id, scopes, expires_in_days?: 90 \| 365 \| null }` | 201 `{ grant }`; 422 org not treating the child (`docs/sharing.md`) |
 | `GET\|PUT /api/family/children/:id/health`, `GET /api/cases/:id/health` | 021 | PUT: full profile + `version` | 200 `{ profile }`; 409 stale version; 400 `details` by field path; case route 404 without profile (`docs/health-profile.md`) |
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
+| `GET\|POST /api/cases/:id/iep-plans`, `GET\|PATCH /api/iep-plans/:planId`, `POST /api/iep-plans/:planId/publish`, `GET\|POST /api/iep-plans/:planId/goals`, `PATCH\|DELETE /api/iep-goals/:goalId`, `GET\|POST /api/iep-goals/:goalId/progress`, `GET /api/family/children/:id/plan` | 025 | plan/goal writes carry the plan `version` | 201/200; 409 stale `This plan was changed by someone else. Reload to see the latest version.`; 400 field errors; 422 no goals / > 20 goals (`docs/iep.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |

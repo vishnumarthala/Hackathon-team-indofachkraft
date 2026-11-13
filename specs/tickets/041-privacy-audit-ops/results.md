@@ -80,7 +80,7 @@ tests. Raw evidence in `evidence/` (`acceptance.txt` 43 checks, all PASS; `ui.tx
 
 ## Notes
 
-- **For 024 / 025 / 026 / 027 (and M2/M3):** register your data in `lib/privacy/registry.ts` (append to `REGISTRY` or
+- **For 026 / 027 (and M2/M3; 024 and 025 are registered, see the merge section):** register your data in `lib/privacy/registry.ts` (append to `REGISTRY` or
   `registerPrivacyCategory()`): `export()` returns only what the guardian can see (published versions, own threads),
   `erase.objects/externalRefs/rows` and `scopes`; see `docs/privacy/retention.md` ("how later tickets register").
   Published plans/assessments/messages appear in the export once those entries exist. Add your security-critical
@@ -116,3 +116,34 @@ tests. Raw evidence in `evidence/` (`acceptance.txt` 43 checks, all PASS; `ui.tx
   templates).
 - The acceptance data (`e041-*` accounts, synthetic children) was wiped by the final `db reset` before the last full
   test run; the slot 5 stack is left running.
+
+## Merge with `main` (024 assessments / clinical contracts, 025 IEP, claim-code test fix)
+
+- `git merge main`. Conflicts resolved keeping both sides: `app/api/reports/[id]/route.ts` (main's
+  `actorUserId: gate.actor.user.id`, without the hard-coded `therapist`), `app/family/(portal)/children/[id]/page.tsx`
+  (`Plan` and `Privacy and data` links), `lib/notify/recipients.ts` (`platformAdmins` + 024's
+  `assignedAssessmentGuardian`), `messages/{en,hi,te}.json` (deep-merged, no value clashes), `messages/REVIEW.md`
+  regenerated (`npx tsx scripts/i18n-review.ts`, 1610 rows). `lib/authz.ts`, `lib/notify/topics.ts`, templates, docs,
+  `tests/notify-templates.test.ts`, `tests/outbox.test.ts` auto-merged; `vercel.json` and seed scripts had no conflict.
+- **Registry:** `assessments` (export: questionnaires assigned to the requesting guardian with their answers - no score or
+  reviewer note; erase with the cases), `published_versions` (export: latest guardian-visible version of each document;
+  case-linked rows go with the case cascade allowed by 024's trigger), `iep_plans` (export: 025 `getGuardianPlans` -
+  published wording, live values, no drafts or notes; erase plans -> goals, progress, publications). The privacy
+  notice lists questionnaires and therapy plans (en/hi/te).
+- **New migration `20261113004102_privacy_published_versions.sql`:** 024's append-only `published_versions` rows without a
+  case could never be erased; `privacy_delete_published_versions(child)` (service role only) sets the transaction-local
+  `dnm.privacy_maintenance` flag that the replaced `published_versions_append_only()` honours for deletes only. 024's
+  other rules are unchanged; a direct delete still raises (tested).
+- **Audit actors:** 024/025 wrote raw `audit_events` inserts with hard-coded `therapist` / `parent`. Their `auditTx`
+  helpers now call `auditStrict(event, tx)` with the session user id from the routes (role from `user_profiles` by the
+  audit trigger), still in the same transaction; `setTxAuditActor()` also sets 024's `app.actor_user_id`
+  (`published_by`). No 024/025 test deleted audit rows (nothing to switch to `tests/helpers/audit.ts`).
+- **No-tracking crawl** now also covers `/family/assessments`, `/family/assessments/[id]` (a synthetic questionnaire is
+  created for the crawl guardian) and `/family/children/[id]/plan`: 20 pages, all scripts same-origin.
+- After `dnm-db.sh 5 <worktree> reset` (19 migrations): `npm run lint` exit 0, `npm run typecheck` exit 0,
+  `npx vitest run` 69 files, 1029 passed, 11 skipped (the opt-in `CT_DB_TESTS` block of 10 + the live crawl; every DB
+  suite ran, incl. 024/025's), `npm run build` exit 0; the eval command 4 files, 56 passed, 1 skipped.
+- Live re-check (dev server 3050, fresh `seed:users --prefix e041`): `acceptance.txt` 43/43 PASS - E-1 (attribution,
+  case deletion), E-2 (hook on 503 / off 201), E-3 export now containing the questionnaire with answers, the published
+  plan and published versions (hidden version absent), E-4 erasure removing assessments, IEP plans and published versions
+  too, E-5. Dev log grep: no seeded identifiers (`log-grep-merge.txt`).

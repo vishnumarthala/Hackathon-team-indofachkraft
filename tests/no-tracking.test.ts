@@ -163,12 +163,22 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
     if (error || !created.user) throw new Error(`createUser: ${error?.message}`);
     const userId = created.user.id;
     let childId: string | null = null;
+    let caseId: string | null = null;
     try {
       await sql`update user_profiles set role = 'guardian', phone_verified_at = now() where id = ${userId}`;
       const [child] = await sql<{ id: string }[]>`
         select public.create_guardian_child(${userId}::uuid, 't041 Crawl (synthetic)', '2023-01-01'::date, null, 'mother') as id`;
       childId = child.id;
       await sql`insert into child_health_profiles (child_id, blood_group, updated_by) values (${childId}, 'O+', ${userId})`;
+      // 024: a questionnaire assigned to this guardian, so /family/assessments/[id] renders.
+      const [kase] = await sql<{ id: string }[]>`
+        insert into cases (org_id, child_alias, parent_alias, child_id)
+        values ('00000000-0000-4000-8000-00000000a001', 't041 Crawl (synthetic)', 'Parent (synthetic)', ${childId}) returning id`;
+      caseId = kase.id;
+      const [assessment] = await sql<{ id: string }[]>`
+        insert into assessments (case_id, child_id, org_id, template_id, assigned_to)
+        values (${caseId}, ${childId}, '00000000-0000-4000-8000-00000000a001', '00000000-0000-4000-8024-000000000001', ${userId})
+        returning id`;
 
       const jar: { name: string; value: string }[] = [];
       const ssr = createServerClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string, {
@@ -178,7 +188,9 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
       if (signIn.error) throw new Error(`sign in: ${signIn.error.message}`);
       const cookie = jar.map((c) => `${c.name}=${c.value}`).join("; ");
 
-      const routes = FAMILY_PAGES.map(routeOf).map((r) => r.replace("[id]", childId as string).replace("[version]", "1"));
+      const routes = FAMILY_PAGES.map(routeOf).map((r) =>
+        r.replace("[id]", r.startsWith("/family/assessments/") ? assessment.id : (childId as string)).replace("[version]", "1"),
+      );
       const failures: string[] = [];
       const checked: string[] = [];
       for (const route of routes) {
@@ -198,6 +210,7 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
       expect(checked.length).toBe(routes.length);
       console.info(`[no-tracking] crawled ${checked.length} pages:\n${checked.join("\n")}`);
     } finally {
+      if (caseId) await sql`delete from cases where id = ${caseId}`;
       if (childId) {
         await sql.begin(async (tx) => {
           await tx`set local session_replication_role = replica`;
