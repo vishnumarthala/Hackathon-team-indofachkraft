@@ -134,9 +134,12 @@ same calendar entry across reschedules.
 
 ## Extension points
 
-- **031 payments:** `pending_payment` holds expire after 15 minutes (cron + next hold); on payment call
-  `booking_enqueue_confirmed(id)` after moving the appointment to `confirmed` in the same transaction (add a SQL
-  function `booking_mark_paid`). Late payments after `expired` are 031's.
+- **031 payments (done, `docs/payments.md`):** `pending_payment` holds expire after 15 minutes (cron + next hold);
+  `payment_apply_captured` moves the appointment to `confirmed` and calls `booking_enqueue_confirmed(id)` in the same
+  transaction (late payments: same row re-confirmed if the slot is still free, else refund). Triggers on `appointments`
+  refund paid cancellations (provider/system always, guardian >= 24 h before) and move the payment with a reschedule.
+  `Continue to payment` opens `/book/<profileId>/pay/<appointmentId>`; `/family/appointments` keeps expired bookings
+  whose late payment is being refunded.
 - **034 voice agent:** call `holdSlot(input, { sessionHash: hashBookingSession(<agent session id>) })` and
   `getSlots()`; confirmation still needs a signed-in guardian.
 - **035 intake:** `services.intake_kind`, `appointments.case_id`, `service_snapshot.intake_kind`.

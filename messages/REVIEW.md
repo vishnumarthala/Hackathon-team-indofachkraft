@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2109. Not yet approved: 2109.
+Rows: 2157. Not yet approved: 2157.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1474,6 +1474,7 @@ Rows: 2109. Not yet approved: 2109.
 | `privacy.notice.collect.homeProgram` | Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes). | घर की गतिविधियाँ: आपकी देखभाल टीम घर पर अभ्यास के लिए जो गतिविधियाँ प्रकाशित करती है, और आप जो दर्ज करते हैं (किया, कैसा रहा, मिनट, नोट)। | ఇంటి కార్యకలాపాలు: ఇంట్లో సాధన కోసం మీ సంరక్షణ బృందం ప్రచురించే కార్యకలాపాలు, మీరు నమోదు చేసేవి (చేశాం, ఎలా జరిగింది, నిమిషాలు, గమనికలు). |  | pending |
 | `privacy.notice.collect.messages` | Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them. | देखभाल टीम के साथ संदेश: DoctorNearMe बातचीत में आप और देखभाल टीम जो लिखते हैं, जोड़े गए दस्तावेज़ों के लिंक, और आपने उन्हें आखिरी बार कब पढ़ा। | సంరక్షణ బృందంతో సందేశాలు: DoctorNearMe సంభాషణల్లో మీరు మరియు సంరక్షణ బృందం రాసేవి, జోడించిన పత్రాల లింకులు, మరియు మీరు వాటిని చివరిసారి ఎప్పుడు చదివారు. |  | pending |
 | `privacy.notice.collect.screen` | Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs. | हमारे सार्वजनिक जाँच पेज से विकास जाँच: आपके बच्चे की उम्र का दायरा और आपके जवाब, बिना किसी नाम के। अगर आप आवाज़ इस्तेमाल करते हैं, तो कॉल ElevenLabs द्वारा प्रोसेस की जाती है। | మా పబ్లిక్ పరిశీలన పేజీ నుండి అభివృద్ధి పరిశీలన: మీ బిడ్డ వయస్సు శ్రేణి, మీ సమాధానాలు, ఏ పేరూ లేకుండా. మీరు వాయిస్ ఉపయోగిస్తే, కాల్‌ను ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
+| `privacy.notice.collect.payments` | Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them. | जिन अपॉइंटमेंट का आप ऑनलाइन भुगतान करते हैं उनके भुगतान: राशि, स्थिति, रिफ़ंड और Razorpay संदर्भ संख्या। आपके कार्ड या UPI विवरण Razorpay संभालता है; हम उन्हें कभी नहीं देखते या रखते। | మీరు ఆన్‌లైన్‌లో చెల్లించే అపాయింట్‌మెంట్ల చెల్లింపులు: మొత్తం, స్థితి, రీఫండ్‌లు, Razorpay రిఫరెన్స్ నంబర్లు. మీ కార్డ్ లేదా UPI వివరాలను Razorpay నిర్వహిస్తుంది; మేము వాటిని ఎప్పుడూ చూడము, నిల్వ చేయము. |  | pending |
 | `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
 | `privacy.notice.purposes` | To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising. | आपका पारिवारिक खाता और आपके चुने विशेषज्ञों के साथ बच्चे की देखभाल चलाने के लिए; इनटेक सारांश, लिखित रूप और मसौदा रिपोर्ट तैयार करने के लिए जिन्हें एक विशेषज्ञ जाँचता है; आपको रिमाइंडर और अपडेट भेजने के लिए; कानून द्वारा ज़रूरी रिकॉर्ड रखने के लिए; और सेवा को सुरक्षित रखने के लिए। हम डेटा कभी नहीं बेचते और विज्ञापन के लिए कभी उपयोग नहीं करते। | మీ కుటుంబ ఖాతాను మరియు మీరు ఎంచుకున్న నిపుణులతో మీ పిల్లల సంరక్షణను నడపడానికి; ఒక నిపుణుడు తనిఖీ చేసే ఇన్‌టేక్ సారాంశాలు, లిఖిత రూపాలు మరియు ముసాయిదా రిపోర్టులు సిద్ధం చేయడానికి; మీకు రిమైండర్లు మరియు అప్‌డేట్లు పంపడానికి; చట్టం కోరే రికార్డులను ఉంచడానికి; మరియు సేవను సురక్షితంగా ఉంచడానికి. మేము డేటాను ఎప్పుడూ అమ్మము, ప్రకటనల కోసం ఎప్పుడూ ఉపయోగించము. |  | pending |
 | `privacy.notice.processorsTitle` | Who processes it for us, and where | हमारे लिए इसे कौन प्रोसेस करता है, और कहाँ | మా కోసం దీన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎక్కడ |  | pending |
@@ -1495,6 +1496,9 @@ Rows: 2109. Not yet approved: 2109.
 | `privacy.notice.processors.supabase.name` | Supabase | Supabase | Supabase |  | pending |
 | `privacy.notice.processors.supabase.purpose` | Database and file storage | डेटाबेस और फ़ाइल भंडारण | డేటాబేస్ మరియు ఫైల్ నిల్వ |  | pending |
 | `privacy.notice.processors.supabase.location` | {region} | {region} | {region} |  | pending |
+| `privacy.notice.processors.razorpay.name` | Razorpay | Razorpay | Razorpay |  | pending |
+| `privacy.notice.processors.razorpay.purpose` | Online payments and refunds for appointments | अपॉइंटमेंट के ऑनलाइन भुगतान और रिफ़ंड | అపాయింట్‌మెంట్ల ఆన్‌లైన్ చెల్లింపులు, రీఫండ్‌లు |  | pending |
+| `privacy.notice.processors.razorpay.location` | India | भारत | భారతదేశం |  | pending |
 | `privacy.notice.crossBorder` | AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time. | AI सुविधाएँ आपके बच्चे का डेटा भारत के बाहर भेजती हैं। वे तभी चलती हैं जब आप उस बच्चे के लिए अनुमति देते हैं, और आप कभी भी अनुमति वापस ले सकते हैं। | AI సౌకర్యాలు మీ పిల్లల డేటాను భారతదేశం బయటకు పంపుతాయి. ఆ పిల్లల కోసం మీరు అనుమతించిన తర్వాతే అవి పనిచేస్తాయి, మరియు మీరు ఎప్పుడైనా ఉపసంహరించుకోవచ్చు. |  | pending |
 | `privacy.notice.retentionTitle` | How long we keep it | हम इसे कितने समय तक रखते हैं | మేము దీన్ని ఎంతకాలం ఉంచుతాము |  | pending |
 | `privacy.notice.retentionWhat` | Data | डेटा | డేటా |  | pending |
@@ -1523,6 +1527,8 @@ Rows: 2109. Not yet approved: 2109.
 | `privacy.notice.retention.messages.how` | While your child is in care, with the clinical record; a deleted message's text is removed at once | जब तक आपका बच्चा देखभाल में है, क्लिनिकल रिकॉर्ड के साथ; हटाए गए संदेश का पाठ तुरंत मिटा दिया जाता है | మీ పిల్లలు సంరక్షణలో ఉన్నంతకాలం, క్లినికల్ రికార్డుతో పాటు; తొలగించిన సందేశం యొక్క పాఠం వెంటనే తీసివేయబడుతుంది |  | pending |
 | `privacy.notice.retention.screen.what` | Check-ins from the public check-in page that you did not save | सार्वजनिक जाँच पेज की वे जाँचें जिन्हें आपने सेव नहीं किया | మీరు సేవ్ చేయని పబ్లిక్ పరిశీలన పేజీ పరిశీలనలు |  | pending |
 | `privacy.notice.retention.screen.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
+| `privacy.notice.retention.payments.what` | Payments (amount, status, refunds) | भुगतान (राशि, स्थिति, रिफ़ंड) | చెల్లింపులు (మొత్తం, స్థితి, రీఫండ్‌లు) |  | pending |
+| `privacy.notice.retention.payments.how` | Kept as a financial record (period pending legal review), also after deletion; no card or UPI details | वित्तीय रिकॉर्ड के रूप में रखा जाता है (अवधि कानूनी समीक्षा के अधीन), हटाने के बाद भी; कोई कार्ड या UPI विवरण नहीं | ఆర్థిక రికార్డుగా ఉంచబడుతుంది (కాలం న్యాయ సమీక్షలో ఉంది), తొలగించిన తర్వాత కూడా; కార్డ్ లేదా UPI వివరాలు ఉండవు |  | pending |
 | `privacy.notice.rightsTitle` | Your rights | आपके अधिकार | మీ హక్కులు |  | pending |
 | `privacy.notice.rights.access` | Access: download a copy of your child's data from the child's Privacy page in the app. | पहुँच: ऐप में बच्चे के गोपनीयता पेज से बच्चे के डेटा की कॉपी डाउनलोड करें। | యాక్సెస్: యాప్‌లో పిల్లల గోప్యతా పేజీ నుండి పిల్లల డేటా కాపీని డౌన్‌లోడ్ చేయండి. |  | pending |
 | `privacy.notice.rights.correction` | Correction: change details in the app, or ask the clinic to correct a record. | सुधार: ऐप में विवरण बदलें, या क्लिनिक से रिकॉर्ड ठीक करने को कहें। | సవరణ: యాప్‌లో వివరాలు మార్చండి, లేదా రికార్డును సరిచేయమని క్లినిక్‌ను అడగండి. |  | pending |
@@ -2124,3 +2130,45 @@ Rows: 2109. Not yet approved: 2109.
 | `screen.landing.title` | Worried about your child's development? | अपने बच्चे के विकास को लेकर चिंतित हैं? | మీ బిడ్డ అభివృద్ధి గురించి ఆందోళనగా ఉందా? |  | pending |
 | `screen.landing.text` | Answer a few short questions by voice or by tapping. About 5 minutes and free. A developmental check-in, not a diagnosis, with specialists near you. | आवाज़ से या टैप करके कुछ छोटे सवालों के जवाब दें। लगभग 5 मिनट, मुफ़्त: विकास की एक जाँच, निदान नहीं, और आपके पास के विशेषज्ञ। | మాట ద్వారా లేదా ట్యాప్ చేసి కొన్ని చిన్న ప్రశ్నలకు సమాధానం ఇవ్వండి. సుమారు 5 నిమిషాలు, ఉచితం: అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు, మీ దగ్గరి నిపుణులతో. |  | pending |
 | `screen.landing.cta` | Start the developmental check-in | विकास जाँच शुरू करें | అభివృద్ధి పరిశీలన ప్రారంభించండి |  | pending |
+| `payments.labels.paid` | Paid | भुगतान हो गया | చెల్లించారు |  | pending |
+| `payments.labels.paidOnline` | Paid online | ऑनलाइन भुगतान हुआ | ఆన్‌లైన్‌లో చెల్లించారు |  | pending |
+| `payments.labels.pending` | Payment pending | भुगतान बाकी | చెల్లింపు పెండింగ్ |  | pending |
+| `payments.labels.refundPending` | Refund in progress | रिफ़ंड जारी है | రీఫండ్ జరుగుతోంది |  | pending |
+| `payments.labels.refunded` | Refunded | रिफ़ंड हो गया | రీఫండ్ అయింది |  | pending |
+| `payments.labels.notRefunded` | Paid, not refunded | भुगतान हुआ, रिफ़ंड नहीं | చెల్లించారు, రీఫండ్ లేదు |  | pending |
+| `payments.labels.atClinic` | Pay at clinic | क्लिनिक पर भुगतान | క్లినిక్‌లో చెల్లించండి |  | pending |
+| `payments.list.payNow` | Pay now | अभी भुगतान करें | ఇప్పుడే చెల్లించండి |  | pending |
+| `payments.pay.metaTitle` | Pay for your appointment | अपने अपॉइंटमेंट का भुगतान करें | మీ అపాయింట్‌మెంట్‌కు చెల్లించండి |  | pending |
+| `payments.pay.title` | Pay for your appointment | अपने अपॉइंटमेंट का भुगतान करें | మీ అపాయింట్‌మెంట్‌కు చెల్లించండి |  | pending |
+| `payments.pay.with` | with {name} | {name} के साथ | {name} తో |  | pending |
+| `payments.pay.service` | Service | सेवा | సేవ |  | pending |
+| `payments.pay.when` | When | कब | ఎప్పుడు |  | pending |
+| `payments.pay.amount` | Amount | राशि | మొత్తం |  | pending |
+| `payments.pay.countdown` | Pay within {time} to keep this time. | यह समय रखने के लिए {time} के अंदर भुगतान करें। | ఈ సమయాన్ని ఉంచుకోవడానికి {time} లోపు చెల్లించండి. |  | pending |
+| `payments.pay.policyTitle` | Cancellation and refunds | रद्द करना और रिफ़ंड | రద్దు మరియు రీఫండ్‌లు |  | pending |
+| `payments.pay.policy` | Cancel 24 hours or more before the appointment and you get a full refund. If you cancel later, the payment is not refunded. If the provider cancels, you always get a full refund. Refunds reach your account in 5-7 working days. | अपॉइंटमेंट से 24 घंटे या उससे पहले रद्द करने पर पूरा पैसा वापस मिलता है। बाद में रद्द करने पर भुगतान वापस नहीं होता। अगर प्रदाता रद्द करते हैं, तो आपको हमेशा पूरा पैसा वापस मिलता है। रिफ़ंड 5-7 कार्य दिवसों में आपके खाते में पहुँचता है। | అపాయింట్‌మెంట్‌కు 24 గంటలు లేదా అంతకంటే ముందు రద్దు చేస్తే పూర్తి రీఫండ్ వస్తుంది. తర్వాత రద్దు చేస్తే చెల్లింపు తిరిగి రాదు. ప్రొవైడర్ రద్దు చేస్తే, మీకు ఎల్లప్పుడూ పూర్తి రీఫండ్ వస్తుంది. రీఫండ్‌లు 5-7 పని దినాల్లో మీ ఖాతాకు చేరుతాయి. |  | pending |
+| `payments.pay.secure` | Payments are processed by Razorpay. We never see or store your card or UPI details. | भुगतान Razorpay द्वारा प्रोसेस किए जाते हैं। हम आपके कार्ड या UPI विवरण कभी नहीं देखते या रखते। | చెల్లింపులను Razorpay ప్రాసెస్ చేస్తుంది. మీ కార్డ్ లేదా UPI వివరాలను మేము ఎప్పుడూ చూడము, నిల్వ చేయము. |  | pending |
+| `payments.pay.testMode` | Test mode: no real money moves. Use Razorpay test cards only. | टेस्ट मोड: कोई असली पैसा नहीं कटता। केवल Razorpay टेस्ट कार्ड इस्तेमाल करें। | టెస్ట్ మోడ్: నిజమైన డబ్బు కదలదు. Razorpay టెస్ట్ కార్డ్‌లను మాత్రమే ఉపయోగించండి. |  | pending |
+| `payments.pay.payNow` | Pay now | अभी भुगतान करें | ఇప్పుడే చెల్లించండి |  | pending |
+| `payments.pay.opening` | Opening payment… | भुगतान खुल रहा है… | చెల్లింపు తెరుచుకుంటోంది… |  | pending |
+| `payments.pay.confirming` | Confirming your payment… | आपके भुगतान की पुष्टि हो रही है… | మీ చెల్లింపును నిర్ధారిస్తున్నాం… |  | pending |
+| `payments.pay.paid` | Payment received. Your appointment is booked. | भुगतान मिल गया। आपका अपॉइंटमेंट बुक हो गया। | చెల్లింపు అందింది. మీ అపాయింట్‌మెంట్ బుక్ అయింది. |  | pending |
+| `payments.pay.paidDetail` | We sent you a confirmation. You can see it in My appointments. | हमने आपको पुष्टि भेज दी है। आप इसे मेरे अपॉइंटमेंट में देख सकते हैं। | మేము మీకు ధృవీకరణ సందేశం పంపాము. దీన్ని నా అపాయింట్‌మెంట్లలో చూడవచ్చు. |  | pending |
+| `payments.pay.refundStarted` | This time was no longer available, so we are refunding your payment in full. | यह समय अब उपलब्ध नहीं था, इसलिए हम आपका पूरा भुगतान वापस कर रहे हैं। | ఈ సమయం ఇక అందుబాటులో లేదు, కాబట్టి మీ చెల్లింపును పూర్తిగా తిరిగి ఇస్తున్నాం. |  | pending |
+| `payments.pay.failed` | The payment did not go through. You can try again. | भुगतान नहीं हो पाया। आप फिर से कोशिश कर सकते हैं। | చెల్లింపు జరగలేదు. మీరు మళ్లీ ప్రయత్నించవచ్చు. |  | pending |
+| `payments.pay.dismissed` | Payment not finished. You can try again while the time is held. | भुगतान पूरा नहीं हुआ। समय रुका रहने तक आप फिर से कोशिश कर सकते हैं। | చెల్లింపు పూర్తి కాలేదు. సమయం ఉంచబడినంత వరకు మీరు మళ్లీ ప్రయత్నించవచ్చు. |  | pending |
+| `payments.pay.expired` | The time to pay has run out and this time was released. | भुगतान का समय खत्म हो गया और यह समय छोड़ दिया गया। | చెల్లించే సమయం ముగిసింది, ఈ సమయం విడుదల చేయబడింది. |  | pending |
+| `payments.pay.pickAgain` | Pick a time again | फिर से समय चुनें | మళ్లీ సమయం ఎంచుకోండి |  | pending |
+| `payments.pay.cancelled` | This appointment was cancelled. | यह अपॉइंटमेंट रद्द हो गया। | ఈ అపాయింట్‌మెంట్ రద్దయింది. |  | pending |
+| `payments.pay.nothingToPay` | There is nothing to pay online for this appointment. | इस अपॉइंटमेंट के लिए ऑनलाइन कुछ भुगतान नहीं करना है। | ఈ అపాయింట్‌మెంట్‌కు ఆన్‌లైన్‌లో చెల్లించాల్సింది ఏమీ లేదు. |  | pending |
+| `payments.pay.viewAppointments` | My appointments | मेरे अपॉइंटमेंट | నా అపాయింట్‌మెంట్లు |  | pending |
+| `payments.pay.demoTitle` | Demo payment | डेमो भुगतान | డెమో చెల్లింపు |  | pending |
+| `payments.pay.demoNote` | Demo mode: nobody is charged. Choose what happens. | डेमो मोड: किसी से पैसा नहीं लिया जाता। चुनें कि क्या हो। | డెమో మోడ్: ఎవరి నుండీ డబ్బు తీసుకోరు. ఏమి జరగాలో ఎంచుకోండి. |  | pending |
+| `payments.pay.demoSuccess` | Simulate successful payment | सफल भुगतान का अनुकरण करें | విజయవంతమైన చెల్లింపును అనుకరించండి |  | pending |
+| `payments.pay.demoFailure` | Simulate failed payment | विफल भुगतान का अनुकरण करें | విఫలమైన చెల్లింపును అనుకరించండి |  | pending |
+| `payments.pay.errors.not_configured` | Online payment is not available right now. Please try again later. | ऑनलाइन भुगतान अभी उपलब्ध नहीं है। कृपया बाद में फिर कोशिश करें। | ఆన్‌లైన్ చెల్లింపు ప్రస్తుతం అందుబాటులో లేదు. దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి. |  | pending |
+| `payments.pay.errors.gateway_error` | The payment could not be started. Please try again. | भुगतान शुरू नहीं हो सका। कृपया फिर कोशिश करें। | చెల్లింపును ప్రారంభించలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `payments.pay.errors.invalid_signature` | We could not verify the payment. If money was taken, it will be refunded automatically. | हम भुगतान की पुष्टि नहीं कर सके। अगर पैसा कटा है, तो वह अपने आप वापस हो जाएगा। | మేము చెల్లింపును ధృవీకరించలేకపోయాం. డబ్బు తీసుకుని ఉంటే, అది ఆటోమేటిక్‌గా తిరిగి వస్తుంది. |  | pending |
+| `payments.pay.errors.hold_expired` | The time to pay has run out. Please pick the time again. | भुगतान का समय खत्म हो गया। कृपया फिर से समय चुनें। | చెల్లించే సమయం ముగిసింది. దయచేసి మళ్లీ సమయం ఎంచుకోండి. |  | pending |
+| `payments.pay.errors.already_paid` | This appointment is already paid. | इस अपॉइंटमेंट का भुगतान पहले ही हो चुका है। | ఈ అపాయింట్‌మెంట్‌కు ఇప్పటికే చెల్లించారు. |  | pending |
+| `payments.pay.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |

@@ -21,6 +21,7 @@ effect.
 | Audit events | Kept **7 years**, then deleted by `audit_purge_expired()` (refuses anything younger than 1 year) | `audit_events` | `RETENTION_AUDIT_YEARS` (7) |
 | Consent records (020) and signed paper forms | Kept (legal proof of consent), also after erasure, with free text stripped | - | - |
 | Appointments (030: `appointments`, `appointment_events`) | Kept as the provider's appointment record (period pending legal review). Erasure (`everything`): future appointments cancelled (provider notified), the child removed from every appointment (`booking_erase_child`) | - | - |
+| Payments (031: `payments`, `payment_events`) | Kept as a financial record (period pending legal review; Indian accounting rules usually require 8 years), also after erasure (`retainedOnErasure`). Amounts, statuses and Razorpay ids only; no child data, no card/UPI details (webhook payloads allowlisted). Export: the requesting guardian's payments for the child's appointments | - | - |
 | Messages with the care team (027: `message_threads`, `messages`, `thread_reads`) | Kept with the clinical record of the case; a deleted message's text is overwritten at once; removed with the child's threads (every organisation) and their outbox events on erasure | - | - |
 | Clinical records (cases, transcripts, confirmed facts, final reports) | Kept while the child is in care and as long as the law requires the clinic to keep them; erasure is reviewed (D-5) | - | - |
 

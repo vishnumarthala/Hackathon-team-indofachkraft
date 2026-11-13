@@ -291,6 +291,14 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "archiveThread",
     impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "archive_message_thread", migration: "supabase/migrations/20261113002700_messaging.sql" },
   },
+  // ---------- 031 payments ----------
+  {
+    action: "payment.captured",
+    description: "A payment is captured and the appointment confirmed (checkout handler; the webhook uses the same function)",
+    routes: ["app/api/payments/verify/route.ts"],
+    call: "applyPaymentCaptured",
+    impl: { kind: "auditStrict", module: "lib/payments/store.ts" },
+  },
 ];
 
 export function strictAction(action: string): StrictAction | undefined {

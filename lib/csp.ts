@@ -20,10 +20,27 @@ const ELEVENLABS_CONNECT = [
   "wss://livekit.rtc.in.residency.elevenlabs.io",
 ];
 
-/** Route prefix -> extra sources (approved exceptions only). */
+/**
+ * Route prefix -> extra sources (approved exceptions only). A `*` segment matches one path segment (the payment page
+ * key below). Every script origin must also be in lib/privacy/third-party-allowlist.ts for that route
+ * (tests/no-tracking.test.ts).
+ */
 export const FAMILY_CSP_EXCEPTIONS: Record<string, CspAllowance> = {
   "/screen": { connectSrc: ELEVENLABS_CONNECT },
+  // 031: Razorpay Checkout on the payment page only (script, its API iframe and telemetry endpoint).
+  "/book/*/pay/*": {
+    scriptSrc: ["https://checkout.razorpay.com"],
+    connectSrc: ["https://api.razorpay.com", "https://lumberjack.razorpay.com"],
+    frameSrc: ["https://api.razorpay.com", "https://checkout.razorpay.com"],
+  },
 };
+
+function underRoutePrefix(pathname: string, prefix: string): boolean {
+  if (!prefix.includes("*")) return pathname === prefix || pathname.startsWith(`${prefix}/`);
+  const want = prefix.split("/").filter(Boolean);
+  const have = pathname.split("/").filter(Boolean);
+  return have.length >= want.length && want.every((seg, i) => seg === "*" || seg === have[i]);
+}
 
 /** 033 NFR-1: the public check-in gets the same strict CSP as child pages (no analytics, ElevenLabs only). */
 export function isScreenPath(pathname: string): boolean {
@@ -38,7 +55,7 @@ export function needsFamilyCsp(pathname: string): boolean {
 function exceptionsFor(pathname: string): Required<CspAllowance> {
   const merged = { scriptSrc: [] as string[], connectSrc: [] as string[], frameSrc: [] as string[] };
   for (const [prefix, allowance] of Object.entries(FAMILY_CSP_EXCEPTIONS)) {
-    if (pathname !== prefix && !pathname.startsWith(`${prefix}/`)) continue;
+    if (!underRoutePrefix(pathname, prefix)) continue;
     merged.scriptSrc.push(...(allowance.scriptSrc ?? []));
     merged.connectSrc.push(...(allowance.connectSrc ?? []));
     merged.frameSrc.push(...(allowance.frameSrc ?? []));
