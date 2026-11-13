@@ -425,6 +425,47 @@ export function UndoButton({ importId }: { importId: string }) {
   );
 }
 
+/** 044 extra scope: create the weekly series of this import's timetables that are still saved (`pending`). */
+export function SchedulePendingButton({ importId }: { importId: string }) {
+  const t = useT("childImport");
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
+
+  async function onClick() {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const res = await fetch(`/api/org/import/${importId}/schedule`, { method: "POST" });
+      const json = await readJson(res);
+      if (res.ok) {
+        setMessage({ text: t("schedulePendingDone", { scheduled: Number(json.scheduled ?? 0), pending: Number(json.pending ?? 0) }), ok: true });
+        router.refresh();
+      } else {
+        setMessage({ text: typeof json.error === "string" ? json.error : t("requestFailed"), ok: false });
+      }
+    } catch {
+      setMessage({ text: t("requestFailed"), ok: false });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <p className="text-sm text-slate-700">{t("schedulePendingHelp")}</p>
+      <button type="button" onClick={onClick} disabled={busy} className={buttonClass}>
+        {t("schedulePending")}
+      </button>
+      {message ? (
+        <p role="status" className={message.ok ? "text-sm text-emerald-800" : "text-sm text-red-700"}>
+          {message.text}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export function RegenerateCodes({ importId, consentGiven }: { importId: string; consentGiven: Record<string, boolean> }) {
   const t = useT("childImport");
   const [busy, setBusy] = useState(false);

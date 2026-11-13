@@ -1,24 +1,30 @@
 import Link from "next/link";
 import { typeSlug } from "@/lib/geo/constants";
 import { getT } from "@/lib/i18n/server";
+import { PARENT_LINKS } from "./links";
 import { Logo } from "./ui";
 
 export async function SiteFooter() {
   const t = await getT();
+  // 050: parents first; the centre pitch and its sections live on /for-centres.
   const cols = [
     {
-      title: t("footer.product"),
+      title: t("nav.forParents"),
       links: [
-        { href: "/#voice-demo", label: t("nav.intakeCall") },
-        { href: "/#how", label: t("nav.howItWorks") },
-        { href: "/#features", label: t("footer.features") },
-        { href: "/#trust", label: t("footer.trust") },
-        { href: "/#faq", label: t("nav.faq") },
+        { href: PARENT_LINKS.checkIn, label: t("landing.parents.checkIn") },
+        { href: PARENT_LINKS.find, label: t("landing.parents.find") },
+        { href: PARENT_LINKS.claim, label: t("landing.parents.claimCta") },
+        { href: "/family/login", label: t("footer.familySignIn") },
       ],
     },
     {
-      title: t("footer.getStarted"),
+      title: t("nav.forCentres"),
       links: [
+        { href: PARENT_LINKS.forCentres, label: t("landing.parents.centresCta") },
+        { href: "/for-centres#voice-demo", label: t("nav.intakeCall") },
+        { href: "/for-centres#features", label: t("footer.features") },
+        { href: "/for-centres#trust", label: t("footer.trust") },
+        { href: "/for-centres#faq", label: t("nav.faq") },
         { href: "/book-demo", label: t("nav.bookDemo") },
         { href: "/login", label: t("nav.logIn") },
       ],

@@ -12,6 +12,8 @@ Copy rules in every language: no word for "diagnose" or "diagnosis" except "not 
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
 Rows: 2811. Not yet approved: 2811.
+Rows: 2763. Not yet approved: 2763.
+Rows: 2760. Not yet approved: 2760.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -30,6 +32,9 @@ Rows: 2811. Not yet approved: 2811.
 | `nav.signIn` | Sign in | साइन इन करें | సైన్ ఇన్ |  | pending |
 | `nav.logIn` | Log in | लॉग इन | లాగిన్ |  | pending |
 | `nav.bookDemo` | Book a demo | डेमो बुक करें | డెమో బుక్ చేయండి |  | pending |
+| `nav.forCentres` | For centres | सेंटर के लिए | సెంటర్ల కోసం |  | pending |
+| `nav.forParents` | For parents | माता-पिता के लिए | తల్లిదండ్రుల కోసం |  | pending |
+| `nav.startCheckIn` | Start free check-in | मुफ़्त जाँच शुरू करें | ఉచిత పరిశీలన ప్రారంభించండి |  | pending |
 | `nav.openMenu` | Open menu | मेनू खोलें | మెనూ తెరవండి |  | pending |
 | `nav.closeMenu` | Close menu | मेनू बंद करें | మెనూ మూసివేయండి |  | pending |
 | `nav.problem` | The problem | समस्या | సమస్య |  | pending |
@@ -37,9 +42,8 @@ Rows: 2811. Not yet approved: 2811.
 | `nav.howItWorks` | How it works | यह कैसे काम करता है | ఇది ఎలా పనిచేస్తుంది |  | pending |
 | `nav.whoFor` | Who it's for | यह किसके लिए है | ఇది ఎవరి కోసం |  | pending |
 | `nav.faq` | FAQ | सवाल-जवाब | ప్రశ్నలు |  | pending |
-| `footer.tagline` | The AI assistant for early intervention therapists. AI documents, the clinician decides. | अर्ली इंटरवेंशन थेरेपिस्ट के लिए AI सहायक। AI लिखता है, फ़ैसला क्लिनिशियन करते हैं। | ఎర్లీ ఇంటర్వెన్షన్ థెరపిస్టుల కోసం AI సహాయకుడు. AI రాస్తుంది, నిర్ణయం క్లినీషియన్‌దే. |  | pending |
-| `footer.product` | Product | प्रोडक्ट | ప్రోడక్ట్ |  | pending |
-| `footer.getStarted` | Get started | शुरू करें | మొదలుపెట్టండి |  | pending |
+| `footer.tagline` | A free child development check-in for parents, therapists near you, and an AI assistant for their centres. AI documents, the clinician decides. | माता-पिता के लिए बच्चे के विकास की मुफ़्त जाँच, आपके पास के थेरेपिस्ट, और उनके सेंटर के लिए AI सहायक। AI लिखता है, फ़ैसला क्लिनिशियन करते हैं। | తల్లిదండ్రుల కోసం ఉచిత పిల్లల అభివృద్ధి పరిశీలన, మీ దగ్గరి థెరపిస్టులు, వారి సెంటర్ల కోసం AI సహాయకుడు. AI రాస్తుంది, నిర్ణయం క్లినీషియన్‌దే. |  | pending |
+| `footer.familySignIn` | Family sign-in | परिवार साइन इन | కుటుంబ సైన్ ఇన్ |  | pending |
 | `footer.features` | Features | सुविधाएँ | ఫీచర్లు |  | pending |
 | `footer.trust` | Trust and privacy | भरोसा और प्राइवेसी | నమ్మకం మరియు గోప్యత |  | pending |
 | `footer.copyright` | © 2026 DoctorNearMe. Built for early intervention teams in India. | © 2026 DoctorNearMe. भारत की अर्ली इंटरवेंशन टीमों के लिए बनाया गया। | © 2026 DoctorNearMe. భారతదేశంలోని ఎర్లీ ఇంటర్వెన్షన్ బృందాల కోసం రూపొందించబడింది. |  | pending |
@@ -293,6 +297,35 @@ Rows: 2811. Not yet approved: 2811.
 | `login.heroText` | Your cases, briefs and ISAA reviews are waiting in your workspace. | आपके केस, ब्रीफ़ और ISAA रिव्यू आपके वर्कस्पेस में इंतज़ार कर रहे हैं। | మీ కేసులు, బ్రీఫ్‌లు మరియు ISAA రివ్యూలు మీ వర్క్‌స్పేస్‌లో ఎదురుచూస్తున్నాయి. |  | pending |
 | `landing.meta.title` | DoctorNearMe - autism and early intervention, with an AI assistant for therapists | DoctorNearMe - ऑटिज़्म और अर्ली इंटरवेंशन, थेरेपिस्ट के लिए AI सहायक के साथ | DoctorNearMe - ఆటిజం మరియు ఎర్లీ ఇంటర్వెన్షన్, థెరపిస్టుల కోసం AI సహాయకుడితో |  | pending |
 | `landing.meta.description` | Autism and early intervention care near you, with an AI assistant for therapists. | आपके पास ऑटिज़्म और अर्ली इंटरवेंशन की देखभाल, थेरेपिस्ट के लिए AI सहायक के साथ। | మీ దగ్గరలో ఆటిజం మరియు ఎర్లీ ఇంటర్వెన్షన్ సంరక్షణ, థెరపిస్టుల కోసం AI సహాయకుడితో. |  | pending |
+| `landing.parents.meta.title` | DoctorNearMe – child development check-in and therapists near you (Hyderabad) | DoctorNearMe – बच्चे के विकास की जाँच और आपके पास के थेरेपिस्ट (हैदराबाद) | DoctorNearMe – పిల్లల అభివృద్ధి పరిశీలన మరియు మీ దగ్గరి థెరపిస్టులు (హైదరాబాద్) |  | pending |
+| `landing.parents.meta.description` | A free check-in for your child's speech, play and development in English, Hindi or Telugu, and verified therapists near you in Hyderabad. | आपके बच्चे की बोली, खेल और विकास के लिए अंग्रेज़ी, हिंदी या तेलुगु में मुफ़्त जाँच, और हैदराबाद में आपके पास के सत्यापित थेरेपिस्ट। | మీ బిడ్డ మాట, ఆట మరియు అభివృద్ధి కోసం ఇంగ్లీష్, హిందీ లేదా తెలుగులో ఉచిత పరిశీలన, హైదరాబాద్‌లో మీ దగ్గరి ధృవీకరించిన థెరపిస్టులు. |  | pending |
+| `landing.parents.badge` | For parents in Hyderabad | हैदराबाद के माता-पिता के लिए | హైదరాబాద్ తల్లిదండ్రుల కోసం |  | pending |
+| `landing.parents.title` | Worried about your child's speech, play or development? | अपने बच्चे की बोली, खेल या विकास को लेकर चिंतित हैं? | మీ బిడ్డ మాట, ఆట లేదా అభివృద్ధి గురించి ఆందోళనగా ఉందా? |  | pending |
+| `landing.parents.text` | Answer a few short questions by tapping. Free, about 5 minutes, for children up to 8. A check-in, not a diagnosis: you see what to watch and who can help near you. | टैप करके कुछ छोटे सवालों के जवाब दें। मुफ़्त, लगभग 5 मिनट, 8 साल तक के बच्चों के लिए। यह जाँच है, निदान नहीं: आप देखेंगे कि किन बातों पर ध्यान दें और आपके पास कौन मदद कर सकता है। | ట్యాప్ చేసి కొన్ని చిన్న ప్రశ్నలకు సమాధానం ఇవ్వండి. ఉచితం, సుమారు 5 నిమిషాలు, 8 ఏళ్ళ వరకు పిల్లల కోసం. ఇది పరిశీలన మాత్రమే, నిర్ధారణ కాదు: దేనిని గమనించాలో, మీ దగ్గర ఎవరు సహాయం చేయగలరో మీకు తెలుస్తుంది. |  | pending |
+| `landing.parents.checkIn` | Start a free check-in | मुफ़्त जाँच शुरू करें | ఉచిత పరిశీలన ప్రారంభించండి |  | pending |
+| `landing.parents.find` | Find a therapist near you | अपने पास थेरेपिस्ट खोजें | మీ దగ్గర థెరపిస్ట్‌ను కనుగొనండి |  | pending |
+| `landing.parents.howEyebrow` | How it works | यह कैसे काम करता है | ఇది ఎలా పనిచేస్తుంది |  | pending |
+| `landing.parents.howTitle` | From a first worry to practice at home | पहली चिंता से घर पर अभ्यास तक | మొదటి ఆందోళన నుండి ఇంట్లో సాధన వరకు |  | pending |
+| `landing.parents.step1Title` | Check-in | जाँच | పరిశీలన |  | pending |
+| `landing.parents.step1Text` | Answer short questions about your child. Free, about 5 minutes. | अपने बच्चे के बारे में छोटे सवालों के जवाब दें। मुफ़्त, लगभग 5 मिनट। | మీ బిడ్డ గురించి చిన్న ప్రశ్నలకు సమాధానం ఇవ్వండి. ఉచితం, సుమారు 5 నిమిషాలు. |  | pending |
+| `landing.parents.step2Title` | Find | खोजें | కనుగొనండి |  | pending |
+| `landing.parents.step2Text` | See verified therapists and centres near you. | अपने पास के सत्यापित थेरेपिस्ट और सेंटर देखें। | మీ దగ్గరి ధృవీకరించిన థెరపిస్టులు మరియు సెంటర్లను చూడండి. |  | pending |
+| `landing.parents.step3Title` | Visit | मिलें | సందర్శించండి |  | pending |
+| `landing.parents.step3Text` | Book a visit and share your check-in with the therapist if you choose. | विज़िट बुक करें और चाहें तो अपनी जाँच थेरेपिस्ट के साथ साझा करें। | విజిట్ బుక్ చేయండి, కావాలంటే మీ పరిశీలనను థెరపిస్ట్‌తో పంచుకోండి. |  | pending |
+| `landing.parents.step4Title` | Practise at home | घर पर अभ्यास | ఇంట్లో సాధన |  | pending |
+| `landing.parents.step4Text` | Get home activities from your therapist and see progress in the family app. | थेरेपिस्ट से घर की गतिविधियाँ पाएँ और फ़ैमिली ऐप में प्रगति देखें। | థెరపిస్ట్ నుండి ఇంటి కార్యకలాపాలు పొందండి, ఫ్యామిలీ యాప్‌లో పురోగతి చూడండి. |  | pending |
+| `landing.parents.trustTitle` | Made for families | परिवारों के लिए बना | కుటుంబాల కోసం రూపొందించబడింది |  | pending |
+| `landing.parents.verifiedTitle` | Verified providers | सत्यापित प्रोवाइडर | ధృవీకరించిన ప్రొవైడర్లు |  | pending |
+| `landing.parents.verifiedText` | Providers marked as verified have had their details checked by our team. | जिन प्रोवाइडर पर सत्यापित लिखा है, उनकी जानकारी हमारी टीम ने जाँची है। | ధృవీకరించినట్లు గుర్తించిన ప్రొవైడర్ల వివరాలను మా బృందం తనిఖీ చేసింది. |  | pending |
+| `landing.parents.noTrackingTitle` | No ads or tracking on child pages | बच्चे के पेजों पर कोई विज्ञापन या ट्रैकिंग नहीं | పిల్లల పేజీల్లో ప్రకటనలు లేదా ట్రాకింగ్ లేదు |  | pending |
+| `landing.parents.noTrackingText` | Pages about your child load no ads, analytics or tracking scripts. | आपके बच्चे से जुड़े पेज कोई विज्ञापन, एनालिटिक्स या ट्रैकिंग स्क्रिप्ट लोड नहीं करते। | మీ బిడ్డకు సంబంధించిన పేజీలు ఎలాంటి ప్రకటనలు, అనలిటిక్స్ లేదా ట్రాకింగ్ స్క్రిప్టులను లోడ్ చేయవు. |  | pending |
+| `landing.parents.dataTitle` | Your data stays yours | आपका डेटा आपका ही रहता है | మీ డేటా మీదే |  | pending |
+| `landing.parents.dataText` | You decide who sees your child's information, and you can download or delete it. | आपके बच्चे की जानकारी कौन देखे, यह आप तय करते हैं, और आप उसे डाउनलोड या डिलीट कर सकते हैं। | మీ బిడ్డ సమాచారాన్ని ఎవరు చూడాలో మీరే నిర్ణయిస్తారు, దాన్ని డౌన్‌లోడ్ చేయవచ్చు లేదా తొలగించవచ్చు. |  | pending |
+| `landing.parents.claimTitle` | Already with a centre? | पहले से किसी सेंटर से जुड़े हैं? | ఇప్పటికే ఒక సెంటర్‌తో ఉన్నారా? |  | pending |
+| `landing.parents.claimText` | Enter the clinic code from your centre to see your child's visits and home activities. | अपने बच्चे की विज़िट और घर की गतिविधियाँ देखने के लिए सेंटर से मिला क्लिनिक कोड डालें। | మీ బిడ్డ విజిట్‌లు మరియు ఇంటి కార్యకలాపాలు చూడటానికి మీ సెంటర్ ఇచ్చిన క్లినిక్ కోడ్ నమోదు చేయండి. |  | pending |
+| `landing.parents.claimCta` | Enter your clinic code | अपना क्लिनिक कोड डालें | మీ క్లినిక్ కోడ్ నమోదు చేయండి |  | pending |
+| `landing.parents.centresText` | Run a therapy centre or practice? | थेरेपी सेंटर या प्रैक्टिस चलाते हैं? | థెరపీ సెంటర్ లేదా ప్రాక్టీస్ నడుపుతున్నారా? |  | pending |
+| `landing.parents.centresCta` | DoctorNearMe for centres | सेंटर के लिए DoctorNearMe | సెంటర్ల కోసం DoctorNearMe |  | pending |
 | `landing.hero.badge` | For early intervention therapists | अर्ली इंटरवेंशन थेरेपिस्ट के लिए | ఎర్లీ ఇంటర్వెన్షన్ థెరపిస్టుల కోసం |  | pending |
 | `landing.hero.title` | Spend the session with the child, | सेशन का समय बच्चे को दें, | సెషన్ సమయం పిల్లల కోసం, |  | pending |
 | `landing.hero.titleEm` | not the paperwork. | कागज़ी काम को नहीं। | కాగితాల పని కోసం కాదు. |  | pending |
@@ -327,23 +360,24 @@ Rows: 2811. Not yet approved: 2811.
 | `landing.reel.packetVoiceNote` | Parent voice note | माता-पिता का वॉइस नोट | తల్లిదండ్రుల వాయిస్ నోట్ |  | pending |
 | `landing.reel.sendToSpecialist` | Send to specialist | स्पेशलिस्ट को भेजें | స్పెషలిస్టుకు పంపండి |  | pending |
 | `landing.problem.eyebrow` | The problem | समस्या | సమస్య |  | pending |
-| `landing.problem.title` | The signs appear at 2. | लक्षण 2 साल की उम्र में दिखते हैं। | లక్షణాలు 2 ఏళ్ళకు కనిపిస్తాయి. |  | pending |
-| `landing.problem.titleEm` | Help arrives at 4 to 6. | मदद 4 से 6 साल में पहुँचती है। | సహాయం 4 నుండి 6 ఏళ్ళకు అందుతుంది. |  | pending |
-| `landing.problem.stat1Value` | ~2 years | ~2 साल | ~2 ఏళ్ళు |  | pending |
-| `landing.problem.stat1Label` | Parents notice the first signs (23 months on average) | माता-पिता पहले लक्षण देखते हैं (औसतन 23 महीने में) | తల్లిదండ్రులు మొదటి లక్షణాలను గమనిస్తారు (సగటున 23 నెలలకు) |  | pending |
-| `landing.problem.stat2Value` | Before 3 | 3 से पहले | 3 కి ముందు |  | pending |
-| `landing.problem.stat2Label` | The window: the younger support starts, the bigger the gains | सही समय: मदद जितनी जल्दी शुरू हो, फ़ायदा उतना बड़ा | సరైన సమయం: సహాయం ఎంత త్వరగా మొదలైతే, ప్రయోజనం అంత ఎక్కువ |  | pending |
-| `landing.problem.stat3Value` | 4 years | 4 साल | 4 ఏళ్ళు |  | pending |
-| `landing.problem.stat3Label` | Median age at which US children are identified; only half are evaluated by age 3 | अमेरिका में बच्चों की पहचान की औसत उम्र; 3 साल तक केवल आधे बच्चों का आकलन होता है | అమెరికాలో పిల్లలను గుర్తించే మధ్యస్థ వయస్సు; 3 ఏళ్ళ లోపు సగం మందికి మాత్రమే మూల్యాంకనం జరుగుతుంది |  | pending |
-| `landing.problem.stat4Value` | 6.5 years | 6.5 साल | 6.5 ఏళ్ళు |  | pending |
-| `landing.problem.stat4Label` | Average age at which German children are identified: after Kita, at school entry | जर्मनी में बच्चों की पहचान की औसत उम्र: किंडरगार्टन के बाद, स्कूल शुरू होने पर | జర్మనీలో పిల్లలను గుర్తించే సగటు వయస్సు: కిండర్‌గార్టెన్ తర్వాత, బడిలో చేరేటప్పుడు |  | pending |
-| `landing.problem.prevalence1Value` | 1 in 31 | 31 में 1 | 31 లో 1 |  | pending |
-| `landing.problem.prevalence1Label` | US children have autism (1 in 20 boys) | अमेरिकी बच्चों को ऑटिज़्म है (लड़कों में 20 में 1) | అమెరికా పిల్లలకు ఆటిజం ఉంది (అబ్బాయిలలో 20 లో 1) |  | pending |
-| `landing.problem.prevalence2Value` | 1 in 100 | 100 में 1 | 100 లో 1 |  | pending |
-| `landing.problem.prevalence2Label` | children worldwide | बच्चे, पूरी दुनिया में | పిల్లలు, ప్రపంచవ్యాప్తంగా |  | pending |
+| `landing.problem.title` | The signs show early. | लक्षण जल्दी दिखते हैं। | లక్షణాలు త్వరగా కనిపిస్తాయి. |  | pending |
+| `landing.problem.titleEm` | Help arrives late. | मदद देर से पहुँचती है। | సహాయం ఆలస్యంగా అందుతుంది. |  | pending |
 | `landing.problem.whyLate` | Why so late? | इतनी देर क्यों? | ఎందుకింత ఆలస్యం? |  | pending |
-| `landing.problem.whyLateText` | Too few specialists, year-long waitlists, and therapists who spend their sessions on paperwork. | बहुत कम स्पेशलिस्ट, साल भर की वेटिंग लिस्ट, और थेरेपिस्ट जिनका सेशन कागज़ी काम में चला जाता है। | చాలా తక్కువ మంది స్పెషలిస్టులు, ఏడాది పొడవునా వెయిటింగ్ లిస్టులు, సెషన్ సమయాన్ని కాగితాల పనికి వెచ్చించే థెరపిస్టులు. |  | pending |
-| `landing.problem.sources` | Sources: CDC ADDM 2025 · WHO · Höfer et al. 2019 | स्रोत: CDC ADDM 2025 · WHO · Höfer et al. 2019 | మూలాలు: CDC ADDM 2025 · WHO · Höfer et al. 2019 |  | pending |
+| `landing.problem.whyLateText` | Too few specialists, long waitlists, and therapists who spend their sessions on paperwork. | बहुत कम स्पेशलिस्ट, लंबी वेटिंग लिस्ट, और थेरेपिस्ट जिनका सेशन कागज़ी काम में चला जाता है। | చాలా తక్కువ మంది స్పెషలిస్టులు, పొడవైన వెయిటింగ్ లిస్టులు, సెషన్ సమయాన్ని కాగితాల పనికి వెచ్చించే థెరపిస్టులు. |  | pending |
+| `landing.stats.eyebrow` | India, in numbers | भारत, आंकड़ों में | భారతదేశం, సంఖ్యల్లో |  | pending |
+| `landing.stats.title` | Early help matters, and it is hard to find. | जल्दी मदद ज़रूरी है, और उसे ढूँढना मुश्किल है। | త్వరగా సహాయం ముఖ్యం, కానీ దాన్ని కనుగొనడం కష్టం. |  | pending |
+| `landing.stats.autismValue` | 1 in 100 | 100 में 1 | 100 లో 1 |  | pending |
+| `landing.stats.autismLabel` | children under 10 in India may have autism | भारत में 10 साल से कम उम्र के बच्चों को ऑटिज़्म हो सकता है | భారతదేశంలో 10 ఏళ్ళ లోపు పిల్లలకు ఆటిజం ఉండవచ్చు |  | pending |
+| `landing.stats.nddValue` | 1 in 8 | 8 में 1 | 8 లో 1 |  | pending |
+| `landing.stats.nddLabel` | children under 10 has at least one neurodevelopmental condition | 10 साल से कम उम्र के बच्चों में कम से कम एक न्यूरोडेवलपमेंटल स्थिति होती है | 10 ఏళ్ళ లోపు పిల్లలకు కనీసం ఒక న్యూరోడెవలప్‌మెంటల్ పరిస్థితి ఉంటుంది |  | pending |
+| `landing.stats.ageValue` | 4.6 years | 4.6 साल | 4.6 ఏళ్ళు |  | pending |
+| `landing.stats.ageLabel` | average age at which autism was identified, in an Indian clinic sample of 1,321 children | ऑटिज़्म की पहचान की औसत उम्र, 1,321 बच्चों के एक भारतीय क्लिनिक सैंपल में | ఆటిజంను గుర్తించిన సగటు వయస్సు, 1,321 మంది పిల్లల భారతీయ క్లినిక్ నమూనాలో |  | pending |
+| `landing.stats.prosValue` | ~15,000 | ~15,000 | ~15,000 |  | pending |
+| `landing.stats.prosLabel` | registered speech and hearing professionals for 1.4 billion people | रजिस्टर्ड स्पीच और हियरिंग प्रोफ़ेशनल, 140 करोड़ लोगों के लिए | నమోదైన స్పీచ్ మరియు హియరింగ్ నిపుణులు, 140 కోట్ల మంది ప్రజలకు |  | pending |
+| `landing.stats.sources` | Sources: | स्रोत: | మూలాలు: |  | pending |
+| `landing.stats.sourceInclen` | INCLEN study, 2018 | INCLEN अध्ययन, 2018 | INCLEN అధ్యయనం, 2018 |  | pending |
+| `landing.stats.sourceAge` | Indian Journal of Public Health (Chandigarh, n=1,321) | Indian Journal of Public Health (चंडीगढ़, n=1,321) | Indian Journal of Public Health (చండీగఢ్, n=1,321) |  | pending |
+| `landing.stats.sourceRci` | Rehabilitation Council of India register, 2023-24 | भारतीय पुनर्वास परिषद (RCI) रजिस्टर, 2023-24 | భారత పునరావాస మండలి (RCI) రిజిస్టర్, 2023-24 |  | pending |
 | `landing.voice.eyebrow` | Step 1 · The AI intake call | चरण 1 · AI इनटेक कॉल | దశ 1 · AI ఇన్‌టేక్ కాల్ |  | pending |
 | `landing.voice.title` | Hear how DoctorNearMe | सुनिए DoctorNearMe | DoctorNearMe తల్లిదండ్రులతో |  | pending |
 | `landing.voice.titleEm` | talks to parents. | माता-पिता से कैसे बात करता है। | ఎలా మాట్లాడుతుందో వినండి. |  | pending |
@@ -415,21 +449,14 @@ Rows: 2811. Not yet approved: 2811.
 | `landing.solution.eyebrow` | The solution | समाधान | పరిష్కారం |  | pending |
 | `landing.solution.title` | One thread, from the first call | एक ही धागा, पहली कॉल से | ఒకే దారం, మొదటి కాల్ నుండి |  | pending |
 | `landing.solution.titleEm` | to the specialist. | स्पेशलिस्ट तक। | స్పెషలిస్ట్ వరకు. |  | pending |
-| `landing.solution.evidence1Value` | 4 in 10 | 10 में 4 | 10 లో 4 |  | pending |
-| `landing.solution.evidence1Label` | toddlers identified with autism at 1 to 3 years no longer met the criteria at age 5 to 7 | 1 से 3 साल की उम्र में ऑटिज़्म के साथ पहचाने गए छोटे बच्चे 5 से 7 साल की उम्र में मापदंडों पर खरे नहीं उतरे | 1 నుండి 3 ఏళ్ళ వయస్సులో ఆటిజంతో గుర్తించిన చిన్నారులు 5 నుండి 7 ఏళ్ళ వయస్సులో ఆ ప్రమాణాలకు సరిపోలేదు |  | pending |
-| `landing.solution.evidence2Value` | +17.6 vs +7 | +17.6 बनाम +7 | +17.6 vs +7 |  | pending |
-| `landing.solution.evidence2Label` | IQ points after 2 years of early intervention vs usual care (randomised trial) | 2 साल के अर्ली इंटरवेंशन के बाद IQ अंक, सामान्य देखभाल की तुलना में (रैंडमाइज़्ड ट्रायल) | 2 ఏళ్ళ ఎర్లీ ఇంటర్వెన్షన్ తర్వాత IQ పాయింట్లు, సాధారణ సంరక్షణతో పోలిస్తే (ర్యాండమైజ్డ్ ట్రయల్) |  | pending |
-| `landing.solution.sources` | Sources: Harstad et al., JAMA Pediatrics 2023 · Dawson et al., Pediatrics 2010 | स्रोत: Harstad et al., JAMA Pediatrics 2023 · Dawson et al., Pediatrics 2010 | మూలాలు: Harstad et al., JAMA Pediatrics 2023 · Dawson et al., Pediatrics 2010 |  | pending |
 | `landing.solution.parentsTalkIn` | Parents talk in | माता-पिता इन भाषाओं में बात करते हैं | తల్లిదండ్రులు మాట్లాడే భాషలు |  | pending |
-| `landing.solution.soon` | soon | जल्द | త్వరలో |  | pending |
-| `landing.solution.german` | Deutsch | Deutsch | Deutsch |  | pending |
 | `landing.how.tablistLabel` | How DoctorNearMe works | DoctorNearMe कैसे काम करता है | DoctorNearMe ఎలా పనిచేస్తుంది |  | pending |
 | `landing.how.intakeLabel` | 1. Intake call | 1. इनटेक कॉल | 1. ఇన్‌టేక్ కాల్ |  | pending |
 | `landing.how.intakeTitle` | DoctorNearMe talks to the parent before the first session | DoctorNearMe पहले सेशन से पहले माता-पिता से बात करता है | మొదటి సెషన్‌కు ముందు DoctorNearMe తల్లిదండ్రులతో మాట్లాడుతుంది |  | pending |
 | `landing.how.intakeText` | Send the parent a link. DoctorNearMe holds a calm, guided conversation in their language, right in the browser. You open the case to a pre-session brief instead of a blank page. | माता-पिता को एक लिंक भेजें। DoctorNearMe उनकी भाषा में, सीधे ब्राउज़र में, शांत और सधी हुई बातचीत करता है। आप खाली पन्ने की जगह सेशन से पहले के ब्रीफ़ के साथ केस खोलते हैं। | తల్లిదండ్రులకు ఒక లింక్ పంపండి. DoctorNearMe వారి భాషలో, నేరుగా బ్రౌజర్‌లో, ప్రశాంతంగా మార్గదర్శకంగా మాట్లాడుతుంది. ఖాళీ పేజీకి బదులుగా సెషన్ ముందు బ్రీఫ్‌తో మీరు కేసు తెరుస్తారు. |  | pending |
 | `landing.how.intakePoint1` | No app to install for parents | माता-पिता को कोई ऐप इंस्टॉल नहीं करना | తల్లిదండ్రులు ఏ యాప్ ఇన్‌స్టాల్ చేయనవసరం లేదు |  | pending |
 | `landing.how.intakePoint2` | Consent before anything is recorded | कुछ भी रिकॉर्ड होने से पहले सहमति | ఏదైనా రికార్డ్ చేసే ముందు అంగీకారం |  | pending |
-| `landing.how.intakePoint3` | English, Hindi and Telugu today, German coming soon | आज अंग्रेज़ी, हिंदी और तेलुगु, जर्मन जल्द | ఈరోజు ఇంగ్లీష్, హిందీ, తెలుగు; జర్మన్ త్వరలో |  | pending |
+| `landing.how.intakePoint3` | English, Hindi and Telugu | अंग्रेज़ी, हिंदी और तेलुगु | ఇంగ్లీష్, హిందీ, తెలుగు |  | pending |
 | `landing.how.briefTitle` | Pre-session brief | सेशन से पहले का ब्रीफ़ | సెషన్ ముందు బ్రీఫ్ |  | pending |
 | `landing.how.briefChild` | Ravi, 3 years | रवि, 3 साल | రవి, 3 ఏళ్ళు |  | pending |
 | `landing.how.briefConcernLabel` | Main concern: | मुख्य चिंता: | ముఖ్య ఆందోళన: |  | pending |
@@ -529,10 +556,10 @@ Rows: 2811. Not yet approved: 2811.
 | `landing.faq.q4` | Which assessments does it support? | यह कौन-से आकलन सपोर्ट करता है? | ఇది ఏ అసెస్‌మెంట్లకు సపోర్ట్ చేస్తుంది? |  | pending |
 | `landing.faq.a4` | The ISAA (Indian Scale for Assessment of Autism), all 40 items, with an evidence quote and timestamp for each suggestion. | ISAA (Indian Scale for Assessment of Autism), सभी 40 आइटम, हर सुझाव के लिए सबूत के उद्धरण और समय के साथ। | ISAA (Indian Scale for Assessment of Autism), మొత్తం 40 అంశాలు, ప్రతి సూచనకు ఆధారమైన మాట మరియు సమయంతో. |  | pending |
 | `landing.faq.q5` | Which languages can parents use? | माता-पिता कौन-सी भाषाएँ इस्तेमाल कर सकते हैं? | తల్లిదండ్రులు ఏ భాషలు ఉపయోగించవచ్చు? |  | pending |
-| `landing.faq.a5` | English, Hindi and Telugu today. German is coming soon. Reports are written in English. | आज अंग्रेज़ी, हिंदी और तेलुगु। जर्मन जल्द आ रही है। रिपोर्ट अंग्रेज़ी में लिखी जाती हैं। | ఈరోజు ఇంగ్లీష్, హిందీ మరియు తెలుగు. జర్మన్ త్వరలో వస్తోంది. రిపోర్టులు ఇంగ్లీష్‌లో రాయబడతాయి. |  | pending |
+| `landing.faq.a5` | English, Hindi and Telugu. Reports are written in English. | अंग्रेज़ी, हिंदी और तेलुगु। रिपोर्ट अंग्रेज़ी में लिखी जाती हैं। | ఇంగ్లీష్, హిందీ మరియు తెలుగు. రిపోర్టులు ఇంగ్లీష్‌లో రాయబడతాయి. |  | pending |
 | `landing.faq.q6` | How do I get access? | मुझे एक्सेस कैसे मिलेगा? | నాకు యాక్సెస్ ఎలా వస్తుంది? |  | pending |
 | `landing.faq.a6` | Book a demo. We walk you through DoctorNearMe on a sample case, then set up your centre's workspace and send your team their logins. | डेमो बुक करें। हम आपको एक सैंपल केस पर DoctorNearMe दिखाते हैं, फिर आपके सेंटर का वर्कस्पेस सेट करते हैं और आपकी टीम को लॉग-इन भेजते हैं। | డెమో బుక్ చేయండి. నమూనా కేసుపై DoctorNearMe ని చూపించి, మీ సెంటర్ వర్క్‌స్పేస్ సెటప్ చేసి, మీ బృందానికి లాగిన్‌లు పంపుతాము. |  | pending |
-| `landing.cta.eyebrow` | Now onboarding pilot centres in Germany and India | अब जर्मनी और भारत में पायलट सेंटर जोड़ रहे हैं | ఇప్పుడు జర్మనీ మరియు భారతదేశంలో పైలట్ సెంటర్లను చేర్చుకుంటున్నాం |  | pending |
+| `landing.cta.eyebrow` | Now onboarding pilot centres in Hyderabad | अब हैदराबाद में पायलट सेंटर जोड़ रहे हैं | ఇప్పుడు హైదరాబాద్‌లో పైలట్ సెంటర్లను చేర్చుకుంటున్నాం |  | pending |
 | `landing.cta.title` | Get kids into early intervention | बच्चों को अर्ली इंटरवेंशन तक पहुँचाएँ, | పిల్లలను ఎర్లీ ఇంటర్వెన్షన్‌కు |  | pending |
 | `landing.cta.titleEm` | sooner. | जल्दी। | త్వరగా చేర్చండి. |  | pending |
 | `landing.cta.text` | See DoctorNearMe on a sample case in a short call. If it fits, we set up your centre's workspace and send your team their logins. | एक छोटी कॉल में सैंपल केस पर DoctorNearMe देखें। अगर सही लगे, तो हम आपके सेंटर का वर्कस्पेस सेट करते हैं और आपकी टीम को लॉग-इन भेजते हैं। | ఒక చిన్న కాల్‌లో నమూనా కేసుపై DoctorNearMe ని చూడండి. సరిపోతే, మీ సెంటర్ వర్క్‌స్పేస్ సెటప్ చేసి, మీ బృందానికి లాగిన్‌లు పంపుతాము. |  | pending |
@@ -1055,6 +1082,7 @@ Rows: 2811. Not yet approved: 2811.
 | `caseTabs.messages` | Messages | संदेश | సందేశాలు |  | pending |
 | `caseTabs.homeProgram` | Home program | घर का कार्यक्रम | ఇంటి కార్యక్రమం |  | pending |
 | `caseTabs.prescriptions` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
+| `caseTabs.attendance` | Attendance | उपस्थिति | హాజరు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -2729,7 +2757,7 @@ Rows: 2811. Not yet approved: 2811.
 | `childImport.onlyManagers` | Only organisation owners and admins can import children. | केवल संगठन के मालिक और एडमिन बच्चों को इम्पोर्ट कर सकते हैं। | సంస్థ యజమానులు మరియు అడ్మిన్‌లు మాత్రమే పిల్లలను ఇంపోర్ట్ చేయగలరు. |  | pending |
 | `childImport.templateTitle` | 1. Download the template | 1. टेम्पलेट डाउनलोड करें | 1. టెంప్లేట్ డౌన్‌లోడ్ చేయండి |  | pending |
 | `childImport.templateLink` | Download the template (CSV) | टेम्पलेट डाउनलोड करें (CSV) | టెంప్లేట్ డౌన్‌లోడ్ చేయండి (CSV) |  | pending |
-| `childImport.templateHelp` | Required columns: child_first_name, date_of_birth (YYYY-MM-DD or DD/MM/YYYY) and guardian_name. Optional: child_last_name, guardian_phone (10-digit Indian mobile), preferred_language (en, hi or te), therapist_email, notes, and a timetable: weekdays (for example Mon;Wed;Fri), time and service_name. In Excel use Save As > CSV UTF-8. Telugu and Hindi names are fine. | ज़रूरी कॉलम: child_first_name, date_of_birth (YYYY-MM-DD या DD/MM/YYYY) और guardian_name। वैकल्पिक: child_last_name, guardian_phone (10 अंकों का भारतीय मोबाइल), preferred_language (en, hi या te), therapist_email, notes, और समय-सारणी: weekdays (जैसे Mon;Wed;Fri), time और service_name। Excel में Save As > CSV UTF-8 चुनें। तेलुगु और हिंदी नाम चलेंगे। | తప్పనిసరి కాలమ్‌లు: child_first_name, date_of_birth (YYYY-MM-DD లేదా DD/MM/YYYY) మరియు guardian_name. ఐచ్ఛికం: child_last_name, guardian_phone (10 అంకెల భారతీయ మొబైల్), preferred_language (en, hi లేదా te), therapist_email, notes, మరియు టైమ్‌టేబుల్: weekdays (ఉదా. Mon;Wed;Fri), time మరియు service_name. Excel లో Save As > CSV UTF-8 ఎంచుకోండి. తెలుగు, హిందీ పేర్లు సరే. |  | pending |
+| `childImport.templateHelp` | Required columns: child_first_name, date_of_birth (YYYY-MM-DD or DD/MM/YYYY) and guardian_name. Optional: child_last_name, guardian_phone (10-digit Indian mobile), preferred_language (en, hi or te), therapist_email, notes, and a timetable: weekdays (for example Mon;Wed;Fri), time, service_name and billing_mode (package, per_session or free; empty = per_session). In Excel use Save As > CSV UTF-8. Telugu and Hindi names are fine. | ज़रूरी कॉलम: child_first_name, date_of_birth (YYYY-MM-DD या DD/MM/YYYY) और guardian_name। वैकल्पिक: child_last_name, guardian_phone (10 अंकों का भारतीय मोबाइल), preferred_language (en, hi या te), therapist_email, notes, और समय-सारणी: weekdays (जैसे Mon;Wed;Fri), time, service_name और billing_mode (package, per_session या free; खाली = per_session)। Excel में Save As > CSV UTF-8 चुनें। तेलुगु और हिंदी नाम चलेंगे। | తప్పనిసరి కాలమ్‌లు: child_first_name, date_of_birth (YYYY-MM-DD లేదా DD/MM/YYYY) మరియు guardian_name. ఐచ్ఛికం: child_last_name, guardian_phone (10 అంకెల భారతీయ మొబైల్), preferred_language (en, hi లేదా te), therapist_email, notes, మరియు టైమ్‌టేబుల్: weekdays (ఉదా. Mon;Wed;Fri), time, service_name మరియు billing_mode (package, per_session లేదా free; ఖాళీ = per_session). Excel లో Save As > CSV UTF-8 ఎంచుకోండి. తెలుగు, హిందీ పేర్లు సరే. |  | pending |
 | `childImport.uploadTitle` | 2. Upload your CSV | 2. अपनी CSV अपलोड करें | 2. మీ CSV అప్‌లోడ్ చేయండి |  | pending |
 | `childImport.orgLabel` | Organisation | संगठन | సంస్థ |  | pending |
 | `childImport.fileLabel` | CSV file | CSV फ़ाइल | CSV ఫైల్ |  | pending |
@@ -2771,8 +2799,8 @@ Rows: 2811. Not yet approved: 2811.
 | `childImport.given` | Given | दी गई | ఇచ్చారు |  | pending |
 | `childImport.expires` | Expires {date} | {date} को समाप्त | {date} న ముగుస్తుంది |  | pending |
 | `childImport.openImport` | Open the import page | इम्पोर्ट पेज खोलें | ఇంపోర్ట్ పేజీ తెరవండి |  | pending |
-| `childImport.timetableSaved_one` | {count} timetable saved, waiting for weekly sessions. | {count} समय-सारणी सहेजी गई, साप्ताहिक सत्रों का इंतज़ार है। | {count} టైమ్‌టేబుల్ భద్రపరచబడింది, వారపు సెషన్‌ల కోసం వేచి ఉంది. |  | pending |
-| `childImport.timetableSaved_other` | {count} timetables saved, waiting for weekly sessions. | {count} समय-सारणियाँ सहेजी गईं, साप्ताहिक सत्रों का इंतज़ार है। | {count} టైమ్‌టేబుల్‌లు భద్రపరచబడ్డాయి, వారపు సెషన్‌ల కోసం వేచి ఉన్నాయి. |  | pending |
+| `childImport.timetableSaved_one` | {count} timetable saved but not scheduled yet. | {count} समय-सारणी सहेजी गई, अभी तय नहीं हुई। | {count} టైమ్‌టేబుల్ భద్రపరచబడింది, ఇంకా షెడ్యూల్ కాలేదు. |  | pending |
+| `childImport.timetableSaved_other` | {count} timetables saved but not scheduled yet. | {count} समय-सारणियाँ सहेजी गईं, अभी तय नहीं हुईं। | {count} టైమ్‌టేబుల్‌లు భద్రపరచబడ్డాయి, ఇంకా షెడ్యూల్ కాలేదు. |  | pending |
 | `childImport.historyTitle` | Recent imports | हाल के इम्पोर्ट | ఇటీవలి ఇంపోర్ట్‌లు |  | pending |
 | `childImport.historyNone` | No imports yet. | अभी कोई इम्पोर्ट नहीं। | ఇంకా ఇంపోర్ట్‌లు లేవు. |  | pending |
 | `childImport.historyRow` | {date}: {imported} imported, {skipped} skipped, {failed} failed | {date}: {imported} इम्पोर्ट, {skipped} छोड़े गए, {failed} असफल | {date}: {imported} ఇంపోర్ట్, {skipped} వదిలేసినవి, {failed} విఫలం |  | pending |
@@ -2821,8 +2849,97 @@ Rows: 2811. Not yet approved: 2811.
 | `childImport.issues.weekdays_invalid` | Row {row}: weekdays "{value}" not understood (for example Mon;Wed;Fri, at most 4 days) | पंक्ति {row}: weekdays "{value}" समझ नहीं आया (जैसे Mon;Wed;Fri, अधिकतम 4 दिन) | వరుస {row}: weekdays "{value}" అర్థం కాలేదు (ఉదా. Mon;Wed;Fri, గరిష్ఠంగా 4 రోజులు) |  | pending |
 | `childImport.issues.time_invalid` | Row {row}: time "{value}" not understood (for example 10:00 or 16:30) | पंक्ति {row}: time "{value}" समझ नहीं आया (जैसे 10:00 या 16:30) | వరుస {row}: time "{value}" అర్థం కాలేదు (ఉదా. 10:00 లేదా 16:30) |  | pending |
 | `childImport.issues.service_unknown` | Row {row}: no service called "{value}" in your organisation | पंक्ति {row}: आपके संगठन में "{value}" नाम की कोई सेवा नहीं है | వరుస {row}: మీ సంస్థలో "{value}" అనే సేవ లేదు |  | pending |
+| `childImport.issues.billing_mode_invalid` | Row {row}: billing_mode "{value}" must be package, per_session or free | पंक्ति {row}: billing_mode "{value}" package, per_session या free होना चाहिए | వరుస {row}: billing_mode "{value}" package, per_session లేదా free అయి ఉండాలి |  | pending |
 | `childImport.issues.age_over_8` | Row {row}: the child is {years} years old (above 8) | पंक्ति {row}: बच्चा {years} साल का है (8 से ऊपर) | వరుస {row}: పిల్ల వయస్సు {years} సంవత్సరాలు (8 కంటే ఎక్కువ) |  | pending |
 | `childImport.issues.phone_missing` | Row {row}: no guardian phone, so share the code in person | पंक्ति {row}: अभिभावक का फ़ोन नहीं है, इसलिए कोड आमने-सामने दें | వరుస {row}: సంరక్షకుల ఫోన్ లేదు, కాబట్టి కోడ్‌ను నేరుగా ఇవ్వండి |  | pending |
 | `childImport.issues.duplicate_existing` | Row {row}: looks like a child already in your organisation (same first name, date of birth and phone) | पंक्ति {row}: यह बच्चा शायद आपके संगठन में पहले से है (वही पहला नाम, जन्म तिथि और फ़ोन) | వరుస {row}: ఈ పిల్ల మీ సంస్థలో ఇప్పటికే ఉన్నట్లుంది (అదే మొదటి పేరు, పుట్టిన తేదీ, ఫోన్) |  | pending |
 | `childImport.issues.duplicate_in_file` | Row {row}: same child as row {other} of this file | पंक्ति {row}: इस फ़ाइल की पंक्ति {other} वाला ही बच्चा | వరుస {row}: ఈ ఫైల్‌లోని వరుస {other} లోని పిల్లే |  | pending |
 | `childImport.issues.timetable_pending` | Row {row}: timetable saved; it is scheduled once weekly sessions are switched on | पंक्ति {row}: समय-सारणी सहेजी गई; साप्ताहिक सत्र चालू होने पर तय होगी | వరుస {row}: టైమ్‌టేబుల్ భద్రపరచబడింది; వారపు సెషన్‌లు ప్రారంభమైనప్పుడు షెడ్యూల్ అవుతుంది |  | pending |
+| `childImport.schedulePending` | Schedule saved timetables | सहेजी गई समय-सारणियाँ तय करें | భద్రపరచిన టైమ్‌టేబుల్‌లను షెడ్యూల్ చేయండి |  | pending |
+| `childImport.schedulePendingHelp` | Creates the weekly series for the timetables that are still saved (for example from an import made before weekly sessions were switched on). Running it again does nothing twice. | जो समय-सारणियाँ अभी सिर्फ सहेजी हैं (जैसे साप्ताहिक सत्र शुरू होने से पहले के इम्पोर्ट से), उनके लिए साप्ताहिक सीरीज़ बनाता है। दोबारा चलाने पर कुछ दो बार नहीं बनता। | ఇంకా భద్రపరచి మాత్రమే ఉన్న టైమ్‌టేబుల్‌లకు (ఉదాహరణకు వారపు సెషన్‌లు ప్రారంభం కాకముందు చేసిన ఇంపోర్ట్ నుండి) వారపు సిరీస్‌ను సృష్టిస్తుంది. మళ్లీ నడిపినా ఏదీ రెండుసార్లు సృష్టించబడదు. |  | pending |
+| `childImport.schedulePendingDone` | Weekly series created: {scheduled}. Still saved: {pending}. | साप्ताहिक सीरीज़ बनीं: {scheduled}। अभी भी सहेजी: {pending}। | సృష్టించిన వారపు సిరీస్‌లు: {scheduled}. ఇంకా భద్రపరచినవి: {pending}. |  | pending |
+| `attendance.nav` | Register | रजिस्टर | రిజిస్టర్ |  | pending |
+| `attendance.values.present` | Present | उपस्थित | హాజరు |  | pending |
+| `attendance.values.absent` | Absent | अनुपस्थित | గైర్హాజరు |  | pending |
+| `attendance.values.late_cancel_family` | Late cancel | देर से रद्द | ఆలస్యంగా రద్దు |  | pending |
+| `attendance.values.cancelled_centre` | Centre cancelled | केंद्र ने रद्द किया | కేంద్రం రద్దు చేసింది |  | pending |
+| `attendance.register.title` | Attendance register | उपस्थिति रजिस्टर | హాజరు రిజిస్టర్ |  | pending |
+| `attendance.register.intro` | Mark each session with one tap. Present and absent can be marked from the start time; cancellations at any time. | हर सत्र को एक टैप से दर्ज करें। उपस्थित और अनुपस्थित शुरू होने के समय से दर्ज हो सकते हैं; रद्द करना कभी भी। | ప్రతి సెషన్‌ను ఒక్క ట్యాప్‌తో నమోదు చేయండి. హాజరు, గైర్హాజరు ప్రారంభ సమయం నుండి నమోదు చేయవచ్చు; రద్దు ఎప్పుడైనా. |  | pending |
+| `attendance.register.org` | Organisation | संगठन | సంస్థ |  | pending |
+| `attendance.register.date` | Date | तारीख | తేదీ |  | pending |
+| `attendance.register.show` | Show | दिखाएँ | చూపించు |  | pending |
+| `attendance.register.today` | Today | आज | ఈరోజు |  | pending |
+| `attendance.register.previousDay` | Previous day | पिछला दिन | ముందు రోజు |  | pending |
+| `attendance.register.allSessions` | All sessions of {org} | {org} के सभी सत्र | {org} యొక్క అన్ని సెషన్‌లు |  | pending |
+| `attendance.register.yourSessions` | Your sessions at {org} | {org} में आपके सत्र | {org}లో మీ సెషన్‌లు |  | pending |
+| `attendance.register.memberWindow` | You can mark and correct your sessions of the last 7 days. Older sessions need an owner or admin. | आप पिछले 7 दिनों के अपने सत्र दर्ज और ठीक कर सकते हैं। पुराने सत्रों के लिए मालिक या एडमिन चाहिए। | గత 7 రోజుల మీ సెషన్‌లను మీరు నమోదు చేసి సరిచేయవచ్చు. పాత సెషన్‌లకు యజమాని లేదా అడ్మిన్ కావాలి. |  | pending |
+| `attendance.register.none` | No sessions on this day. | इस दिन कोई सत्र नहीं। | ఈ రోజు సెషన్‌లు లేవు. |  | pending |
+| `attendance.register.noOrg` | You are not in an organisation yet. Create your practice or accept an invitation on the Team page. | आप अभी किसी संगठन में नहीं हैं। टीम पेज पर अपनी प्रैक्टिस बनाएँ या निमंत्रण स्वीकार करें। | మీరు ఇంకా ఏ సంస్థలోనూ లేరు. టీమ్ పేజీలో మీ ప్రాక్టీస్‌ను సృష్టించండి లేదా ఆహ్వానాన్ని అంగీకరించండి. |  | pending |
+| `attendance.register.counts` | Present: {present} · Absent: {absent} · Cancelled: {cancelled} · Not marked: {unmarked} | उपस्थित: {present} · अनुपस्थित: {absent} · रद्द: {cancelled} · दर्ज नहीं: {unmarked} | హాజరు: {present} · గైర్హాజరు: {absent} · రద్దు: {cancelled} · నమోదు కాలేదు: {unmarked} |  | pending |
+| `attendance.register.markAll` | Mark all remaining present | बाकी सभी को उपस्थित दर्ज करें | మిగిలినవన్నీ హాజరుగా నమోదు చేయండి |  | pending |
+| `attendance.register.markAllDone_one` | {count} session marked present. | {count} सत्र उपस्थित दर्ज हुआ। | {count} సెషన్ హాజరుగా నమోదైంది. |  | pending |
+| `attendance.register.markAllDone_other` | {count} sessions marked present. | {count} सत्र उपस्थित दर्ज हुए। | {count} సెషన్‌లు హాజరుగా నమోదయ్యాయి. |  | pending |
+| `attendance.register.markAllNone` | No started sessions are left to mark. | दर्ज करने के लिए कोई शुरू हुआ सत्र बाकी नहीं। | నమోదు చేయడానికి ప్రారంభమైన సెషన్‌లు ఏవీ మిగలలేదు. |  | pending |
+| `attendance.register.writeNote` | Write note | नोट लिखें | నోట్ రాయండి |  | pending |
+| `attendance.register.openCase` | Open case | केस खोलें | కేసు తెరవండి |  | pending |
+| `attendance.register.notStarted` | Starts at {time}. Present and absent can be marked from then. | {time} पर शुरू होगा। उपस्थित और अनुपस्थित तब से दर्ज हो सकते हैं। | {time}కి ప్రారంభం. హాజరు, గైర్హాజరు అప్పటి నుండి నమోదు చేయవచ్చు. |  | pending |
+| `attendance.register.marked` | Marked: {value} | दर्ज: {value} | నమోదు: {value} |  | pending |
+| `attendance.register.billable` | Billable | शुल्क लगेगा | రుసుము వర్తిస్తుంది |  | pending |
+| `attendance.register.notBillable` | Not billable | शुल्क नहीं | రుసుము లేదు |  | pending |
+| `attendance.register.weekly` | Weekly | साप्ताहिक | వారపు |  | pending |
+| `attendance.register.video` | Video | वीडियो | వీడియో |  | pending |
+| `attendance.register.noChild` | No child linked | कोई बच्चा जुड़ा नहीं | పిల్లలు ఎవరూ జోడించబడలేదు |  | pending |
+| `attendance.register.outsideWindow` | Older than 7 days: an owner or admin can change it. | 7 दिन से पुराना: मालिक या एडमिन इसे बदल सकते हैं। | 7 రోజుల కంటే పాతది: యజమాని లేదా అడ్మిన్ మార్చగలరు. |  | pending |
+| `attendance.register.correctTitle` | Change to {value} | {value} में बदलें | {value}గా మార్చండి |  | pending |
+| `attendance.register.reasonLabel` | Reason for the change | बदलाव का कारण | మార్పుకు కారణం |  | pending |
+| `attendance.register.reasonHint` | For example: marked the wrong child. | उदाहरण: गलत बच्चा दर्ज हो गया। | ఉదాహరణకు: తప్పు పిల్లవాడిని నమోదు చేశాను. |  | pending |
+| `attendance.register.saveCorrection` | Save change | बदलाव सहेजें | మార్పును భద్రపరచండి |  | pending |
+| `attendance.register.keep` | Keep as it is | जैसा है रहने दें | అలాగే ఉంచండి |  | pending |
+| `attendance.register.cancelQuestion` | Cancel this session? The family is told that it was cancelled. | यह सत्र रद्द करें? परिवार को बताया जाएगा कि यह रद्द हुआ। | ఈ సెషన్‌ను రద్దు చేయాలా? రద్దయిందని కుటుంబానికి తెలియజేయబడుతుంది. |  | pending |
+| `attendance.register.yesCancel` | Yes, cancel it | हाँ, रद्द करें | అవును, రద్దు చేయండి |  | pending |
+| `attendance.register.saved` | Saved. | सहेजा गया। | భద్రపరచబడింది. |  | pending |
+| `attendance.register.errors.not_started` | Present and absent can be marked from the start time. | उपस्थित और अनुपस्थित शुरू होने के समय से दर्ज हो सकते हैं। | హాజరు, గైర్హాజరు ప్రారంభ సమయం నుండి నమోదు చేయవచ్చు. |  | pending |
+| `attendance.register.errors.reason_required` | Give a reason for the change. | बदलाव का कारण लिखें। | మార్పుకు కారణం ఇవ్వండి. |  | pending |
+| `attendance.register.errors.correction_window` | Sessions older than 7 days can only be changed by an owner or admin. | 7 दिन से पुराने सत्र सिर्फ मालिक या एडमिन बदल सकते हैं। | 7 రోజుల కంటే పాత సెషన్‌లను యజమాని లేదా అడ్మిన్ మాత్రమే మార్చగలరు. |  | pending |
+| `attendance.register.errors.invalid_transition` | This session cannot be marked any more. | यह सत्र अब दर्ज नहीं हो सकता। | ఈ సెషన్‌ను ఇక నమోదు చేయలేరు. |  | pending |
+| `attendance.register.errors.not_found` | Session not found. | सत्र नहीं मिला। | సెషన్ కనబడలేదు. |  | pending |
+| `attendance.register.errors.generic` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | భద్రపరచలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `attendance.policy.title` | Billing rules for attendance | उपस्थिति के लिए शुल्क नियम | హాజరు కోసం రుసుము నియమాలు |  | pending |
+| `attendance.policy.intro` | Present sessions with a fee are always billable. Sessions the centre cancels never are. | शुल्क वाले उपस्थित सत्रों पर हमेशा शुल्क लगता है। केंद्र द्वारा रद्द सत्रों पर कभी नहीं। | రుసుము ఉన్న హాజరు సెషన్‌లకు ఎప్పుడూ రుసుము వర్తిస్తుంది. కేంద్రం రద్దు చేసిన సెషన్‌లకు ఎప్పుడూ వర్తించదు. |  | pending |
+| `attendance.policy.billAbsent` | Charge for absences (no-shows) | अनुपस्थिति (नहीं आए) पर शुल्क लें | గైర్హాజరుకు (రాలేదు) రుసుము వసూలు చేయండి |  | pending |
+| `attendance.policy.billLateCancel` | Charge for late cancellations by the family | परिवार के देर से रद्द करने पर शुल्क लें | కుటుంబం ఆలస్యంగా రద్దు చేస్తే రుసుము వసూలు చేయండి |  | pending |
+| `attendance.policy.lateCancelHours` | A family cancellation is late within this many hours of the start | शुरू होने से इतने घंटे के अंदर परिवार का रद्द करना देर माना जाए | ప్రారంభానికి ఇన్ని గంటల లోపు కుటుంబం రద్దు చేస్తే ఆలస్యంగా పరిగణించండి |  | pending |
+| `attendance.policy.save` | Save rules | नियम सहेजें | నియమాలను భద్రపరచండి |  | pending |
+| `attendance.policy.saved` | Rules saved. | नियम सहेजे गए। | నియమాలు భద్రపరచబడ్డాయి. |  | pending |
+| `attendance.policy.readOnly` | Only owners and admins can change these rules. | ये नियम सिर्फ मालिक और एडमिन बदल सकते हैं। | ఈ నియమాలను యజమానులు, అడ్మిన్‌లు మాత్రమే మార్చగలరు. |  | pending |
+| `attendance.policy.summary` | Absences: {absent}. Late cancellations (within {hours} hours of the start): {late}. | अनुपस्थिति: {absent}। देर से रद्द (शुरू से {hours} घंटे के अंदर): {late}। | గైర్హాజరు: {absent}. ఆలస్యపు రద్దు (ప్రారంభానికి {hours} గంటల లోపు): {late}. |  | pending |
+| `attendance.policy.charged` | charged | शुल्क लगेगा | రుసుము వర్తిస్తుంది |  | pending |
+| `attendance.policy.notCharged` | not charged | शुल्क नहीं | రుసుము లేదు |  | pending |
+| `attendance.policy.failed` | Could not save the rules. Please try again. | नियम सहेजे नहीं जा सके। कृपया फिर से कोशिश करें। | నియమాలను భద్రపరచలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `attendance.needsAttention.title` | Needs attention | ध्यान दें | శ్రద్ధ అవసరం |  | pending |
+| `attendance.needsAttention.intro` | These sessions started more than 24 hours ago and were never marked. | ये सत्र 24 घंटे से पहले शुरू हुए थे और कभी दर्ज नहीं हुए। | ఈ సెషన్‌లు 24 గంటల కంటే ముందు ప్రారంభమయ్యాయి, కానీ ఎప్పుడూ నమోదు కాలేదు. |  | pending |
+| `attendance.needsAttention.item` | {child} · {service} with {therapist} | {child} · {therapist} के साथ {service} | {child} · {therapist}తో {service} |  | pending |
+| `attendance.needsAttention.open` | Mark on the register | रजिस्टर में दर्ज करें | రిజిస్టర్‌లో నమోదు చేయండి |  | pending |
+| `attendance.needsAttention.askAdmin` | Older than 7 days: an owner or admin can mark it. | 7 दिन से पुराना: मालिक या एडमिन इसे दर्ज कर सकते हैं। | 7 రోజుల కంటే పాతది: యజమాని లేదా అడ్మిన్ నమోదు చేయగలరు. |  | pending |
+| `attendance.needsAttention.more_one` | {count} more session not shown. | {count} और सत्र नहीं दिखाया गया। | మరో {count} సెషన్ చూపబడలేదు. |  | pending |
+| `attendance.needsAttention.more_other` | {count} more sessions not shown. | {count} और सत्र नहीं दिखाए गए। | మరో {count} సెషన్‌లు చూపబడలేదు. |  | pending |
+| `attendance.needsAttention.noChild` | No child linked | कोई बच्चा जुड़ा नहीं | పిల్లలు ఎవరూ జోడించబడలేదు |  | pending |
+| `attendance.caseTab.title` | Attendance | उपस्थिति | హాజరు |  | pending |
+| `attendance.caseTab.intro` | Sessions of this child in the month, as marked on the attendance register. | महीने में इस बच्चे के सत्र, जैसे उपस्थिति रजिस्टर में दर्ज हैं। | హాజరు రిజిస్టర్‌లో నమోదైనట్లు, ఈ నెలలో ఈ పిల్లల సెషన్‌లు. |  | pending |
+| `attendance.caseTab.previous` | Previous month | पिछला महीना | ముందు నెల |  | pending |
+| `attendance.caseTab.next` | Next month | अगला महीना | తర్వాతి నెల |  | pending |
+| `attendance.caseTab.counts` | Attended: {attended} · Absent: {absent} · Cancelled: {cancelled} · Not marked: {unmarked} | आए: {attended} · अनुपस्थित: {absent} · रद्द: {cancelled} · दर्ज नहीं: {unmarked} | హాజరు: {attended} · గైర్హాజరు: {absent} · రద్దు: {cancelled} · నమోదు కాలేదు: {unmarked} |  | pending |
+| `attendance.caseTab.export` | Download CSV | CSV डाउनलोड करें | CSV డౌన్‌లోడ్ చేయండి |  | pending |
+| `attendance.caseTab.none` | No sessions this month. | इस महीने कोई सत्र नहीं। | ఈ నెల సెషన్‌లు లేవు. |  | pending |
+| `attendance.caseTab.calendar` | Attendance calendar for {month} | {month} का उपस्थिति कैलेंडर | {month} హాజరు క్యాలెండర్ |  | pending |
+| `attendance.caseTab.notMarked` | Not marked | दर्ज नहीं | నమోదు కాలేదు |  | pending |
+| `attendance.caseTab.upcoming` | Upcoming | आने वाला | రాబోయేది |  | pending |
+| `attendance.caseTab.sessions` | Sessions | सत्र | సెషన్‌లు |  | pending |
+| `attendance.family.attended` | Attended | आए | హాజరయ్యారు |  | pending |
+| `attendance.family.missed` | Missed | छूट गया | రాలేదు |  | pending |
+| `attendance.family.cancelledByCentre` | Cancelled by centre | केंद्र ने रद्द किया | కేంద్రం రద్దు చేసింది |  | pending |
+| `attendance.family.cancelledLate` | Cancelled late | देर से रद्द | ఆలస్యంగా రద్దు |  | pending |
+| `attendance.family.monthly_one` | {attended} of {count} session attended in {month} | {month} में {count} में से {attended} सत्र में आए | {month}లో {count} సెషన్‌లో {attended}కి హాజరయ్యారు |  | pending |
+| `attendance.family.monthly_other` | {attended} of {count} sessions attended in {month} | {month} में {count} में से {attended} सत्रों में आए | {month}లో {count} సెషన్‌లలో {attended}కి హాజరయ్యారు |  | pending |
+| `attendance.family.monthlyChild_one` | {child}: {attended} of {count} session attended in {month} | {child}: {month} में {count} में से {attended} सत्र में आए | {child}: {month}లో {count} సెషన్‌లో {attended}కి హాజరయ్యారు |  | pending |
+| `attendance.family.monthlyChild_other` | {child}: {attended} of {count} sessions attended in {month} | {child}: {month} में {count} में से {attended} सत्रों में आए | {child}: {month}లో {count} సెషన్‌లలో {attended}కి హాజరయ్యారు |  | pending |

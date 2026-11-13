@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NeedsAttention } from "@/components/attendance/NeedsAttention";
 import { StatusBadge } from "@/components/case/StatusBadge";
 import { ageLabel, formatDateTime, languageName } from "@/lib/cases/format";
 import { getActiveOrgIds, requireProviderPage } from "@/lib/authz";
@@ -28,6 +29,13 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* 044 FR-4: unmarked sessions older than 24 h (renders nothing when there are none). */}
+      {orgIds.length > 0 ? (
+        <div className="mb-6">
+          <NeedsAttention userId={user.id} />
+        </div>
+      ) : null}
 
       {orgIds.length === 0 ? (
         <p className="text-slate-600">

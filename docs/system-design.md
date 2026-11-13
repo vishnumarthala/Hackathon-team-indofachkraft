@@ -31,7 +31,7 @@ flowchart LR
     T[Therapist UI<br/>/dashboard /cases/*]
     P[Parent intake page<br/>/intake/token]
     S[Specialist page<br/>/specialist/token]
-    L[Landing /]
+    L[Parents' home /<br/>Centres /for-centres]
   end
   subgraph Next[Next.js app (local or Vercel)]
     API[API routes /api/*]
@@ -219,7 +219,8 @@ flowchart LR
 app/
   layout.tsx                      root layout: header + demo banner (001); fonts, <html lang>, I18nProvider (018)
   api/locale/route.ts             POST UI language / time zone preference (018)
-  page.tsx                        landing + pilot sign-up (014; placeholder from 001)
+  page.tsx                        parents' home: check-in, find, clinic code, Indian statistics (050)
+  for-centres/page.tsx            therapist / centre landing, Book a demo (014; moved from / in 050)
   dashboard/page.tsx              case list (004)
   dashboard/pilots/page.tsx       pilot sign-ups list (014)
   cases/new/page.tsx              new case form (004)
@@ -476,6 +477,20 @@ never booked: they become `series_conflicts` for `Pick another time` / `Skip thi
 `series_pause`, `series_end`) cancel through 030's `booking_cancel` and send one family message per change. Migration
 `20261113004300_appointment_series.sql`; details and extension points for 044/045/047/052 in `docs/booking.md`.
 
+### Attendance register (ticket 044)
+
+`appointments.attendance` (`present` / `absent` / `late_cancel_family` / `cancelled_centre`, null = not marked),
+`attendance_marked_by`, `attendance_marked_at` and `billable`, always in step with 030's status (check constraint:
+present = `completed`, absent = `no_show`, the cancel types = `cancelled` with reason `late_cancel_family` /
+`centre_cancelled`). `organizations.attendance_policy` (`{ bill_absent, bill_late_cancel, late_cancel_hours }`, default
+not billed / 24 h) decides `billable` when a session is marked; present with a fee is always billable, centre
+cancellations never. `attendance_mark()` calls 030's `booking_complete` / `booking_cancel` for first markings and records
+corrections (members: last 7 days; owner/admin: any time; reason required) in 030's state history; the caller writes the
+strict audit row (`appointment.attendance_marked` / `.attendance_corrected`) in the same transaction. A trigger fills
+the columns when 030's functions are called directly (the schedule's `Mark completed`). UI: `/dashboard/register`, the
+dashboard's `Needs attention` (`components/attendance/NeedsAttention.tsx`), the case `Attendance` tab, the family's
+Visits tab. Migration `20261113004400_attendance.sql`; details in `docs/booking.md` "Attendance register (044)".
+
 ### Google Meet (ticket 037)
 
 `provider_google_connections` (the provider's own Google grant; refresh token AES-256-GCM encrypted with
@@ -511,10 +526,13 @@ ratings) / `rating_count`. A trigger on `appointments` enqueues `appointment.rat
 `child_id` / `case_id`, therapist, optional provider `notes` and `timetable` with `timetable_status` `pending` |
 `scheduled`, 043 `series_id`). The file itself is never stored. `import_children_rows()` creates per row an unclaimed
 `provider` child, an org case, the therapist's `lead` assignment and a 020 claim code (72 h, hash only) - never a
-consent record and never an outbox message. `undo_child_import()` deletes them within 24 h only if no row in any
+consent record and never an outbox message. Undo deletes them within 24 h only if no row in any
 table with a foreign key to `cases`/`children` (other than the import's own assignments, unused codes and rows)
 references them and no intake link was issued. Migration `20261113004700_child_import.sql`; details in
-`docs/import-children.md`.
+`docs/import-children.md`. Since 044 the import's timetables become real 043 series (`createSeries`, `billing_mode`
+column), `undo_child_import_with_series()` (migration `20261113004401_import_series_undo.sql`) also removes the import's
+untouched series and their future sessions, and `Schedule saved timetables` / `npm run import:schedule-pending` books
+timetables that are still `pending`.
 
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
@@ -690,6 +708,10 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
 | `POST /api/provider/series`, `GET /api/provider/series/:id`, `POST /api/provider/series/:id/{change,pause,end}`, `POST /api/provider/series/conflicts/:id` | 043 | `{ case_id, provider_profile_id, service_id, weekdays, start_time, starts_on, ends_on?, billing_mode, notify_family? }` / `{ from, start_time?, weekdays?, provider_profile_id?, service_id?, ends_on?, billing_mode? }` / `{ from, to }` / `{ ends_on? }` / `{ action: "skip" }` or `{ action: "reschedule", start }` | 201 `{ series_id, created, conflicts }` / 200; 403 guardians; 404 other tenants and series the caller may not manage; 409 `slot_taken` / `pause_exists` / `already_resolved`; 422 `outside_hours` / `blocked_date` / `service_invalid` / `case_required` |
+| `POST /api/appointments/:id/attendance` | 044 | provider side: active member who is owner/admin or the session's therapist (others 404, guardians 403) | `{ attendance: present\|absent\|late_cancel_family\|cancelled_centre, reason? }` -> 200 `{ result: marked\|corrected\|unchanged, attendance, status, billable }`; 409 `not_started` (present/absent before the start); 422 `reason_required` (corrections); 403 `correction_window` (members, older than 7 days) |
+| `POST /api/attendance/mark-all` | 044 | provider | `{ appointment_ids: uuid[] (<= 200) }` -> 200 `{ marked: [{ appointment_id, billable }], skipped: [{ appointment_id, code }] }` (each id checked like a single tap) |
+| `GET\|PUT /api/orgs/:id/attendance-policy` | 044 | members read; owner/admin change (member 403, others 404) | `{ bill_absent, bill_late_cancel, late_cancel_hours: 0-168 }` -> 200 `{ policy }` (strict audit `org.attendance_policy_changed`) |
+| `GET /api/cases/:id/attendance?month=YYYY-MM[&format=csv]` | 044 | case access (022) | 200 `{ month, time_zone, counts: { attended, absent, cancelled, unmarked }, sessions }` or `text/csv` (UTF-8 BOM); 400 bad month; 404 |
 | `GET /api/integrations/google/{connect,callback,connection}`, `POST /api/integrations/google/disconnect`, `POST /api/appointments/:id/meet-link` | 037 | see `docs/google-meet.md` | 303 redirects (connect/callback, `?error=state` on a state mismatch); 404 other providers' profiles/appointments; 400 non-Meet link; 422 `Link your Google account to book a video consultation` on video holds/confirms |
 | `POST /api/appointments/:id/payment-order`, `POST /api/payments/verify`, `POST /api/payments/demo` (DEMO_MODE), `POST /api/webhooks/razorpay` (public, signed), `GET\|POST /api/cron/payments` | 031 | see `docs/payments.md` | 200 `{ key_id, order_id, amount_paise, currency, prefill }`; verify 400 signature mismatch; webhook 401 bad signature, 200 `{ received: true, duplicate: true }` on replay; 404 other owners; 409 nothing to pay / already paid; 410 hold expired |
 | `POST\|PATCH /api/appointments/:id/rating`, `POST /api/ratings/:id/report`, `POST /api/admin/ratings/:id` | 036 | see `docs/ratings.md` | 201 / 200; 403 `You can rate only your completed appointments`; 409 duplicate; 422 `Please remove names and contact details from your comment`; report: provider side only (404 otherwise); moderation: platform admin only (403) |
@@ -714,7 +736,8 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `POST /api/org/import/preview` | 047 | multipart `org_id`, `file` (CSV <= 1 MB, <= 500 rows); owner/admin of the org (member 403, others 404) | 200 `{ file_hash, file_errors, file_warnings, summary, has_timetable, series_available, already_imported, rows: [{ row, status: valid\|error\|duplicate, errors, warnings, duplicate_of, ... }] }` (issues: `{ code, params, message: "Row N: ..." }`); 413 over 1 MB |
 | `POST /api/org/import` | 047 | as preview + `import_duplicates` (JSON row numbers to `Import anyway`) | 201 `{ result: "imported", import, items: [{ row, case_id, child_id, child_name, guardian_name, guardian_phone, code, expires_at, message, whatsapp_url, paper_consent_path }], failed, skipped }`; 200 `{ result: "existing", import }` (same file again); 422 file errors / nothing to import; 503 nothing saved |
 | `GET /api/org/import/:id` | 047 | owner/admin of the import's org | 200 `{ import, children }` |
-| `POST /api/org/import/:id/undo` | 047 | owner/admin | 200 `{ result: "undone", cases, children }`; 409 `blocked` (`details.blocked_rows`), expired (> 24 h) or already undone |
+| `POST /api/org/import/:id/undo` | 047, 044 | owner/admin | 200 `{ result: "undone", cases, children, series, sessions }`; 409 `blocked` (`details.blocked_rows`), expired (> 24 h) or already undone |
+| `POST /api/org/import/:id/schedule` | 044 | owner/admin of the import's org (member 403, others 404) | 200 `{ scheduled, pending }`: 043 series for the import's `pending` timetables; idempotent |
 | `POST /api/org/import/:id/codes` | 047 | owner/admin | 201 `{ items }` new codes for children no family has linked yet (older codes stop working); 409 undone |
 
 `ResolvedCitation = { kind: "fact" | "segment", id, recording_id, session_number | null, start_sec, label }`
@@ -1041,6 +1064,27 @@ Details and the clinical review list: [screen-recommendations.md](screen-recomme
   leads, 1 per day. **Admin**: `/admin/ops` Voice usage card (minutes, cost USD/INR, top users, blocked starts) and the
   runtime cap override (`voice_settings`, audited `voice.caps_updated`). Alerts at 80% / 100% (`voice.budget_alert`).
 - Details, env vars and the checklist for new voice entry points: `docs/voice-cost-guard.md`.
+
+## 13e. Parent-first home page (ticket 050)
+
+- `/` is for parents (decision D-1): hero "Worried about your child's speech, play or development?", main action
+  **Start a free check-in** (`/screen`, tap, anonymous), second action **Find a therapist near you** (`/find`), and
+  the 051 voice link `Prefer to talk? Sign in to use voice (free)` → `/family/login?next=/screen?voice=1`. Then the
+  How it works strip (Check-in → Find → Visit → Practise at home), Indian statistics, a trust row, the clinic-code
+  card (`/family/children/claim`) and a one-line link to `/for-centres`. Links live in `components/landing/links.ts`.
+- `/for-centres` is the former landing (same components, `Book a demo`, title `landing.meta.title`). Its live voice
+  demo follows 051 (recorded sample for visitors).
+- `SiteNav` takes `variant="parents" | "centres"`: the parents' bar has How it works, Find, For centres and the CTA
+  **Start free check-in**, Log in → `/family/login`; the centres' bar keeps its section links (now
+  `/for-centres#...`), For centres (current) and For parents, CTA **Book a demo**, Log in → `/login`. The desktop
+  bar must fit one line in en/hi/te at 1280 px; the mobile menu lists every link. The footer has For parents /
+  For centres / Find care columns.
+- Statistics (decision D-2, Indian sources only): `components/landing/IndianStats.tsx` renders the four figures
+  (`landing.stats.*`) with linked "Sources:" (`INDIAN_STAT_SOURCES`, URLs from `specs/grill/doctornearme-pmf-check.md`).
+  Use it for any new page that quotes prevalence or workforce numbers; do not add US or German figures.
+- No new third-party scripts: `tests/no-tracking.test.ts` scans the module graph of `/` and `/for-centres`.
+- No `hreflang` alternates: the UI language is a cookie (018), so every language shares one URL; both pages set a
+  canonical URL instead.
 
 ## 14. Human setup checklist (not tickets)
 

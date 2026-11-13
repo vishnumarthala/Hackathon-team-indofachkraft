@@ -22,7 +22,8 @@
     "org:grant": "tsx scripts/org-grant.ts",
     "outbox:run": "tsx scripts/outbox-run.ts",
     "seed:hyderabad": "tsx scripts/seed-hyderabad.ts",
-    "import:providers": "tsx scripts/import-providers.ts"
+    "import:providers": "tsx scripts/import-providers.ts",
+    "import:schedule-pending": "tsx scripts/import-schedule-pending.ts"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.77.0",

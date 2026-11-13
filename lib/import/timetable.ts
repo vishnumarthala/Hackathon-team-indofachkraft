@@ -1,10 +1,30 @@
-// Ticket 047 FR-1: optional timetable columns (`weekdays`, `time`, `service_name`). Parsing is pure. Creating the
-// weekly series needs ticket 043 (`appointment_series` + `series_materialize`); until that is deployed the
-// validated timetable is kept on the import row as `pending` and the screen says so (degrades gracefully).
+// Ticket 047 FR-1: optional timetable columns (`weekdays`, `time`, `service_name`, and since 044 `billing_mode`).
+// Parsing is pure. The weekly series is created with 043's `createSeries` (044 extra scope); a timetable that cannot be
+// scheduled (no provider profile, a demo profile, a service of another therapist, 043 not deployed) is kept on the
+// import row as `pending` and can be scheduled later. Client-safe: the database side is in lib/import/schedule.ts.
 import type { Queryable, Tx } from "@/lib/pg";
 
-/** 0 = Sunday ... 6 = Saturday (043 FR-1), 1-4 days, time as HH:MM (24 h, the centre's local time). */
+/** 043's `appointment_series.billing_mode` values (kept here so this file stays client-safe). */
+export const IMPORT_BILLING_MODES = ["package", "per_session", "free"] as const;
+export type ImportBillingMode = (typeof IMPORT_BILLING_MODES)[number];
+
+/**
+ * 0 = Sunday ... 6 = Saturday as stored on 047's import rows (043's spec draft), 1-4 days, time as HH:MM (24 h, the
+ * centre's local time). 043 itself counts 0 = Monday: convert with `toSeriesWeekdays`.
+ */
 export type Timetable = { weekdays: number[]; time: string };
+
+/** 047's Sunday-first day numbers -> 043's Monday-first ones (sorted). */
+export function toSeriesWeekdays(days: number[]): number[] {
+  return [...new Set(days.map((d) => (d + 6) % 7))].sort((a, b) => a - b);
+}
+
+/** `billing_mode` column: empty = per_session (043's default for the import); also "per session" / "per-session". */
+export function parseBillingMode(value: string): ImportBillingMode | null {
+  const v = value.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  if (v === "") return "per_session";
+  return (IMPORT_BILLING_MODES as readonly string[]).includes(v) ? (v as ImportBillingMode) : null;
+}
 
 export const MAX_WEEKDAYS = 4;
 
@@ -64,8 +84,10 @@ export type SeriesRequest = {
   caseId: string;
   therapistUserId: string;
   serviceId: string;
+  /** 047 numbering (0 = Sunday). */
   weekdays: number[];
   time: string;
+  billingMode: ImportBillingMode;
   createdBy: string;
 };
 
@@ -73,43 +95,4 @@ export type SeriesRequest = {
 export type SeriesScheduler = {
   available(tx: Queryable): Promise<boolean>;
   create(tx: Tx, request: SeriesRequest): Promise<string | null>;
-};
-
-/** True when 043's table and materialiser exist in this database. */
-export async function seriesTablesExist(tx: Queryable): Promise<boolean> {
-  const [row] = await tx<{ ok: boolean }[]>`
-    select to_regclass('public.appointment_series') is not null
-       and exists (select 1 from pg_catalog.pg_proc p join pg_catalog.pg_namespace n on n.oid = p.pronamespace
-                   where n.nspname = 'public' and p.proname = 'series_materialize') as ok`;
-  return Boolean(row?.ok);
-}
-
-/**
- * Default scheduler: follows 043 FR-1/FR-3/FR-4 (insert an `active` series starting today, then materialise
- * 8 weeks). Written against 043's spec, before 043 was merged; any failure (schema drift, a provider without a
- * profile, a clash) rolls back to a savepoint and leaves the timetable `pending`, so the import itself never fails.
- */
-export const defaultSeriesScheduler: SeriesScheduler = {
-  available: seriesTablesExist,
-  async create(tx, req) {
-    try {
-      return await tx.savepoint(async (sp) => {
-        const [profile] = await sp<{ id: string; time_zone: string }[]>`
-          select id, time_zone from public.provider_profiles where user_id = ${req.therapistUserId}`;
-        if (!profile) return null;
-        const [series] = await sp<{ id: string }[]>`
-          insert into public.appointment_series
-            (org_id, provider_profile_id, service_id, child_id, case_id, weekdays, start_time, time_zone, starts_on,
-             status, billing_mode, created_by)
-          values (${req.orgId}, ${profile.id}, ${req.serviceId}, ${req.childId}, ${req.caseId},
-                  ${req.weekdays}::smallint[], ${req.time}::time, ${profile.time_zone}, current_date,
-                  'active', 'per_session', ${req.createdBy})
-          returning id`;
-        await sp`select public.series_materialize(${series.id}::uuid, (current_date + 56)::date)`;
-        return series.id;
-      });
-    } catch {
-      return null;
-    }
-  },
 };

@@ -1,7 +1,9 @@
 // Ticket 047: import existing children from a CSV. Pure checks (CSV reader, dates, phones, timetable columns, row
 // messages) always run; the routes run against the local Supabase stack (DATABASE_URL): preview, import, duplicates,
 // idempotency, no consent and no outbox messages, therapist assignments, claim codes, undo, roles, 500 rows < 30 s
-// and the timetable fallback while 043 (weekly series) is not deployed. Synthetic data only.
+// and the timetable fallback. 044 extra scope: the import creates real 043 series (billing_mode column), undo removes
+// the import's untouched series and their future sessions (and refuses touched ones), and pending timetables of earlier
+// imports are scheduled once (button route + script function). Synthetic data only.
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { loadEnvConfig } from "@next/env";
@@ -157,7 +159,7 @@ describe.skipIf(!enabled)("import routes (database)", { timeout: 120_000 }, () =
   let world: ReturnType<typeof createWorld>;
   let owner: TestUser, admin: TestUser, therapistA: TestUser, therapistB: TestUser, member: TestUser, outsider: TestUser;
   let guardian: TestUser;
-  let orgId: string, otherOrg: string, profileA: string;
+  let orgId: string, otherOrg: string, profileA: string, profileB: string;
   const childIds = new Set<string>();
   const as = (u: TestUser | null) => {
     session.user = u;
@@ -227,6 +229,25 @@ describe.skipIf(!enabled)("import routes (database)", { timeout: 120_000 }, () =
     await sql`
       insert into services (provider_profile_id, org_id, name, mode, duration_min, fee_inr, payment_mode)
       values (${profileA}, ${orgId}, 'Speech therapy (synthetic)', 'video', 45, 0, 'free')`;
+    // 044: therapist B has a real (not demo) profile, a clinic open all week and an in-clinic service, so the import
+    // can create 043 weekly series for B's timetables.
+    const [loc] = await sql<{ id: string }[]>`
+      insert into practice_locations (org_id, name, address_line1, locality, pincode, lat, lng)
+      values (${orgId}, 'Centre (synthetic)', 'Road 2 (synthetic)', 'Kukatpally', '500072', 17.49, 78.40) returning id`;
+    const [pb] = await sql<{ id: string }[]>`
+      insert into provider_profiles (user_id, slug, display_name, provider_type, verification_status, verified_at, listed, claimed, is_synthetic)
+      values (${therapistB.id}, ${`t047-ther-b-${world.tag}`}, 'Therapist B (synthetic)', 'occupational_therapist', 'verified', now(), true, true, false)
+      returning id`;
+    profileB = pb.id;
+    await sql`insert into provider_locations (provider_profile_id, location_id, org_id) values (${profileB}, ${loc.id}, ${orgId})`;
+    for (const weekday of [0, 1, 2, 3, 4, 5, 6]) {
+      await sql`
+        insert into availability_rules (provider_profile_id, org_id, location_id, weekday, start_time, end_time, mode, valid_from)
+        values (${profileB}, ${orgId}, ${loc.id}, ${weekday}, '00:00', '24:00', 'both', current_date - 2)`;
+    }
+    await sql`
+      insert into services (provider_profile_id, org_id, location_id, name, mode, duration_min, fee_inr, payment_mode)
+      values (${profileB}, ${orgId}, ${loc.id}, 'OT in clinic (synthetic)', 'in_clinic', 45, 700, 'at_clinic')`;
   });
 
   afterAll(async () => {
@@ -243,6 +264,16 @@ describe.skipIf(!enabled)("import routes (database)", { timeout: 120_000 }, () =
         await sql`delete from services where provider_profile_id = ${profileA}`;
         await sql`delete from provider_profiles where id = ${profileA}`;
       }
+      if (profileB) {
+        const series = (await sql<{ id: string }[]>`select id from appointment_series where provider_profile_id = ${profileB}`).map((r) => r.id);
+        const appts = (await sql<{ id: string }[]>`select id from appointments where provider_profile_id = ${profileB}`).map((r) => r.id);
+        if (series.length) await sql`delete from outbox_events where aggregate_type = 'appointment_series' and aggregate_id in ${sql(series)}`;
+        if (appts.length) await sql`delete from outbox_events where aggregate_type in ('appointment', 'meet') and aggregate_id in ${sql(appts)}`;
+        await sql`delete from appointments where provider_profile_id = ${profileB}`;
+        await sql`delete from appointment_series where provider_profile_id = ${profileB}`;
+        await sql`delete from services where provider_profile_id = ${profileB}`;
+        await sql`delete from provider_profiles where id = ${profileB}`;
+      }
     }
     await world?.cleanup();
     await sql?.end({ timeout: 5 });
@@ -257,7 +288,7 @@ describe.skipIf(!enabled)("import routes (database)", { timeout: 120_000 }, () =
     expect(res.headers.get("content-type")).toContain("text/csv");
     const text = await res.text();
     expect(text.replace(/^\uFEFF/, "").trim()).toBe(
-      "child_first_name,child_last_name,date_of_birth,guardian_name,guardian_phone,preferred_language,therapist_email,notes,weekdays,time,service_name",
+      "child_first_name,child_last_name,date_of_birth,guardian_name,guardian_phone,preferred_language,therapist_email,notes,weekdays,time,service_name,billing_mode",
     );
   });
 
@@ -435,7 +466,7 @@ describe.skipIf(!enabled)("import routes (database)", { timeout: 120_000 }, () =
     as(admin);
     const undo = await (await routes()).undo.POST(new Request("http://localhost/x", { method: "POST" }), ctx({ id: first.import.id }));
     expect(undo.status).toBe(200);
-    expect(await undo.json()).toEqual({ result: "undone", cases: 2, children: 2 });
+    expect(await undo.json()).toEqual({ result: "undone", cases: 2, children: 2, series: 0, sessions: 0 });
     expect(await sql`select 1 from cases where id in ${sql(caseIds)}`).toHaveLength(0);
     expect(await sql`select 1 from children where id in ${sql(kids)}`).toHaveLength(0);
     expect(await sql`select 1 from child_claim_codes where case_id in ${sql(caseIds)}`).toHaveLength(0);
@@ -494,7 +525,7 @@ describe.skipIf(!enabled)("import routes (database)", { timeout: 120_000 }, () =
     expect((await r.detail.GET(new Request("http://localhost/x"), ctx({ id: "00000000-0000-4000-8000-000000000000" }))).status).toBe(404);
   });
 
-  it("timetable columns without 043: valid timetables are stored as pending, bad ones are row errors", async () => {
+  it("timetables that cannot be scheduled (a demo profile) are stored as pending, bad ones are row errors", async () => {
     const res = await importAs(owner, withMembers(fixture("timetable.csv")));
     expect(res.status).toBe(201);
     const body = (await res.json()) as ImportJson & { failed: { row: number }[] };
@@ -540,6 +571,125 @@ describe.skipIf(!enabled)("import routes (database)", { timeout: 120_000 }, () =
       { row_number: 2, timetable_status: "scheduled", series_id: "00000000-0000-4000-8000-0000000005e1" },
       { row_number: 3, timetable_status: "pending", series_id: null },
     ]);
+  });
+
+  // ---------- 044 extra scope: 043 series from the import ----------
+
+  const seriesCsv = (name: string, weekdays: string, time: string, billing = "") =>
+    withMembers(
+      "child_first_name,date_of_birth,guardian_name,therapist_email,weekdays,time,service_name,billing_mode\n" +
+        `${name},2021-02-02,Parent (synthetic),therapist.b@clinic.example,${weekdays},${time},OT in clinic (synthetic),${billing}\n`,
+    );
+  const seriesOfImport = async (importId: string) =>
+    sql<{ series_id: string; timetable_status: string; weekdays: number[]; billing_mode: string; guardian_user_id: string | null; start_time: string }[]>`
+      select ir.series_id, ir.timetable_status, s.weekdays::int[] as weekdays, s.billing_mode, s.guardian_user_id,
+             to_char(s.start_time, 'HH24:MI') as start_time
+      from child_import_rows ir join appointment_series s on s.id = ir.series_id where ir.import_id = ${importId}`;
+  const undoAs = async (user: TestUser, importId: string) => {
+    as(user);
+    const res = await (await routes()).undo.POST(new Request("http://localhost/x", { method: "POST" }), ctx({ id: importId }));
+    return { status: res.status, json: (await res.json()) as Record<string, unknown> };
+  };
+
+  it("044: the import creates a 043 weekly series (Mon/Wed/Fri -> 043 numbering, billing_mode) and messages nobody", async () => {
+    const res = await importAs(owner, seriesCsv("Seriesreal", "Mon;Wed;Fri", "10:00", "package"));
+    expect(res.status).toBe(201);
+    const body = (await res.json()) as ImportJson & { import: { series_created_count: number } };
+    expect(body.import).toMatchObject({ timetable_pending_count: 0, series_created_count: 1 });
+    const [s] = await seriesOfImport(body.import.id);
+    expect(s).toMatchObject({ timetable_status: "scheduled", weekdays: [0, 2, 4], billing_mode: "package", guardian_user_id: null, start_time: "10:00" });
+    const sessions = await sql<{ id: string; local: string; dow: number; status: string }[]>`
+      select id, to_char(lower(slot) at time zone 'Asia/Kolkata', 'HH24:MI') as local,
+             extract(isodow from lower(slot) at time zone 'Asia/Kolkata')::int as dow, status
+      from appointments where series_id = ${s.series_id}`;
+    expect(sessions.length).toBeGreaterThanOrEqual(23); // 8 weeks of Mon/Wed/Fri from today (today's may be over)
+    expect(sessions.every((a) => a.local === "10:00" && [1, 3, 5].includes(a.dow) && a.status === "confirmed")).toBe(true);
+    // 047 NFR-2 still holds: no family account, so no series summary, reminders or per-session messages.
+    expect(await sql`select 1 from outbox_events where aggregate_type = 'appointment_series' and aggregate_id = ${s.series_id}`).toHaveLength(0);
+    expect(await sql`select 1 from outbox_events where aggregate_id in ${sql(sessions.map((a) => a.id))}`).toHaveLength(0);
+
+    // Undo removes the untouched series and its future sessions with the children and cases.
+    const undo = await undoAs(owner, body.import.id);
+    expect(undo.status, JSON.stringify(undo.json)).toBe(200);
+    expect(undo.json).toEqual({ result: "undone", cases: 1, children: 1, series: 1, sessions: sessions.length });
+    expect(await sql`select 1 from appointment_series where id = ${s.series_id}`).toHaveLength(0);
+    expect(await sql`select 1 from appointments where id in ${sql(sessions.map((a) => a.id))}`).toHaveLength(0);
+    const [audit] = await sql<{ details: Record<string, unknown> }[]>`
+      select details from audit_events where action = 'children.import_undone' and entity_id = ${body.import.id}`;
+    expect(audit.details).toMatchObject({ series: 1, sessions: sessions.length });
+  });
+
+  it("044: undo is refused once the import's series was touched (a session cancelled, the series paused)", async () => {
+    const cancelled = (await (await importAs(owner, seriesCsv("Seriestouched", "Tue;Thu", "11:00"))).json()) as ImportJson;
+    const [s1] = await seriesOfImport(cancelled.import.id);
+    expect(s1.billing_mode).toBe("per_session"); // empty billing_mode
+    const [first] = await sql<{ id: string }[]>`select id from appointments where series_id = ${s1.series_id} order by lower(slot) limit 1`;
+    await sql`select public.booking_cancel(${first.id}::uuid, ${owner.id}::uuid, 'provider', 'family away')`;
+    const blocked = await undoAs(owner, cancelled.import.id);
+    expect(blocked.status).toBe(409);
+    expect((blocked.json.details as { blocked_rows: number[] }).blocked_rows).toEqual([2]);
+    expect(await sql`select 1 from appointment_series where id = ${s1.series_id}`).toHaveLength(1);
+    expect(await sql`select 1 from cases where id = ${cancelled.items[0].case_id}`).toHaveLength(1);
+
+    const paused = (await (await importAs(owner, seriesCsv("Seriespaused", "Sat", "12:00", "free"))).json()) as ImportJson;
+    const [s2] = await seriesOfImport(paused.import.id);
+    expect(s2.billing_mode).toBe("free");
+    const today = new Date().toISOString().slice(0, 10);
+    await sql`select public.series_pause(${s2.series_id}::uuid, ${owner.id}::uuid, (${today}::date + 14), (${today}::date + 20))`;
+    expect((await undoAs(owner, paused.import.id)).status).toBe(409);
+    expect(await sql`select 1 from appointment_series where id = ${s2.series_id}`).toHaveLength(1);
+  });
+
+  it("044: pending timetables of an earlier import are scheduled once (button: owner/admin only; script: all imports)", async () => {
+    const { runImport } = await import("@/lib/import/store");
+    const { schedulePendingTimetables } = await import("@/lib/import/schedule");
+    const { auditActorOf } = await import("@/lib/audit");
+    // As if imported before 043 existed: the timetable is validated and kept `pending`.
+    const before043 = { available: async () => false, create: async () => null };
+    const importPending = async (name: string, time: string) => {
+      const outcome = await runImport({
+        orgId,
+        actor: { ...auditActorOf(owner, "provider"), actorUserId: owner.id },
+        bytes: new TextEncoder().encode(seriesCsv(name, "Sun", time)),
+        importDuplicates: new Set(),
+        scheduler: before043,
+      });
+      if (outcome.result !== "imported") throw new Error(outcome.result);
+      for (const item of outcome.items) childIds.add(item.child_id);
+      expect(outcome.import).toMatchObject({ timetable_pending_count: 1, series_created_count: 0 });
+      return outcome.import.id;
+    };
+    const importId = await importPending("Pendingone", "14:00");
+    const r = await routes();
+    const schedule = async (user: TestUser | null, id: string) => {
+      as(user);
+      const res = await (await import("@/app/api/org/import/[id]/schedule/route")).POST(new Request("http://localhost/x", { method: "POST" }), ctx({ id }));
+      return { status: res.status, json: (await res.json()) as Record<string, unknown> };
+    };
+    expect((await schedule(member, importId)).status).toBe(403);
+    expect((await schedule(outsider, importId)).status).toBe(404);
+    expect((await schedule(null, importId)).status).toBe(401);
+    const first = await schedule(owner, importId);
+    expect(first).toEqual({ status: 200, json: { scheduled: 1, pending: 0 } });
+    const [s] = await seriesOfImport(importId);
+    expect(s).toMatchObject({ timetable_status: "scheduled", weekdays: [6], billing_mode: "per_session" }); // Sun = 6 in 043
+    expect(await sql`select 1 from appointments where series_id = ${s.series_id}`).not.toHaveLength(0);
+    expect((await schedule(owner, importId)).json).toEqual({ scheduled: 0, pending: 0 }); // idempotent
+    expect(await sql`select 1 from appointment_series where id in (select series_id from child_import_rows where import_id = ${importId})`).toHaveLength(1);
+    const [counts] = await sql`select timetable_pending_count, series_created_count from child_imports where id = ${importId}`;
+    expect(counts).toEqual({ timetable_pending_count: 0, series_created_count: 1 });
+    expect(await sql`select 1 from audit_events where action = 'children.import_timetables_scheduled' and entity_id = ${importId}`).toHaveLength(1);
+    as(owner);
+    const detail = await r.detail.GET(new Request("http://localhost/x"), ctx({ id: importId }));
+    expect(detail.status).toBe(200);
+
+    // `npm run import:schedule-pending`: every import of the organisation, as the owner/admin who made it.
+    const second = await importPending("Pendingtwo", "15:00");
+    // Earlier tests of this suite left timetables that can never be scheduled (therapist A's demo profile): they stay
+    // pending and are retried harmlessly.
+    expect(await schedulePendingTimetables({ orgId })).toMatchObject({ scheduled: 1 });
+    expect((await schedulePendingTimetables({ orgId })).scheduled).toBe(0);
+    expect((await seriesOfImport(second))[0].timetable_status).toBe("scheduled");
   });
 
   it("NFR-1: 500 rows import in under 30 s", async () => {

@@ -1,6 +1,6 @@
 # 050: Parent-first home page and Indian statistics
 
-**Status:** ready (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
+**Status:** done (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
 **Mode:** solo
 **Runs:** waits for 051: the hero follows its voice rules
 

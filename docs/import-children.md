@@ -33,6 +33,7 @@ anyone outside the organisation.
 | `therapist_email` | optional; must be an **active member** of the organisation -> the therapist becomes the case `lead` (022). Without one the importing owner/admin is the lead |
 | `notes` | optional, <= 500; kept on the import row (provider-only, shown on the import page) |
 | `weekdays`, `time`, `service_name` | optional timetable, all three together plus `therapist_email`; `Mon;Wed;Fri` (1-4 days), `10:00` / `4:30 pm`; the service must be an active `in_clinic`/`video` service of the organisation |
+| `billing_mode` | optional with a timetable (044): 043's `package` / `per_session` / `free` (`per session`, `per-session` accepted); empty = `per_session` |
 
 Row numbers are spreadsheet row numbers (the header is row 1). Messages look like `Row 12: date of birth is in the
 future`; the API returns `{ code, params, message }` and the UI translates `code` (`childImport.issues.*` in
@@ -57,26 +58,40 @@ and the preview shows `already_imported`. After an undo the same file can be imp
 
 ## Undo (FR-5)
 
-`POST /api/org/import/:id/undo` -> `undo_child_import()`: allowed for 24 h. It is refused (409, `blocked_rows`) when
-anything was added to an imported child or case since: any row in any table with a foreign key to `cases(id)` or
-`children(id)` (session notes, recordings, reports, documents, appointments, guardian links, consent records, another
-case, sharing grants, ...), a used claim code, or an issued intake link. Care-team assignments, unused claim codes
-and the import rows do not count (audit rows have no foreign key and stay). The check reads the foreign keys from the catalogue, so tables added later are covered.
-On success the cases (and their assignments, codes and import rows) and the children are deleted, the import keeps its
-hash and counts with `undone_at`, and a strict `children.import_undone` audit row is written.
+`POST /api/org/import/:id/undo` -> `undo_child_import_with_series()` (044; 047's `undo_child_import()` is kept but
+unused): allowed for 24 h. It is refused (409, `blocked_rows`) when anything was added to an imported child or case
+since: any row in any table with a foreign key to `cases(id)` or `children(id)` (session notes, recordings, reports,
+documents, appointments, guardian links, consent records, another case, sharing grants, ...), a used claim code, or an
+issued intake link. Care-team assignments, unused claim codes, the import rows and (044) the **import's own untouched
+weekly series** do not count. The check reads the foreign keys from the catalogue, so tables added later are covered.
 
-## Timetable columns and ticket 043
+A series created by the import counts as untouched while it is still `active`, was never paused, is not continued by a
+"this and future" change, has no resolved conflict, every session is `confirmed`, unmarked (044), in the future and at
+the series time on its date, and nothing else references the series or its sessions (payments, recordings, reports,
+ratings, intake links, prescriptions, ... - again read from the catalogue). A past session counts as touched: it may
+have taken place.
 
-Weekly series (043) were built in parallel and are not on this branch. The timetable is validated; then:
+On success the series' future sessions (their unsent jobs withdrawn) and the series are deleted, then the cases (and
+their assignments, codes and import rows) and the children; the import keeps its hash and counts with `undone_at`, and a
+strict `children.import_undone` audit row is written (`cases`, `children`, `series`, `sessions`). The undo takes the
+same per-organisation lock as the import, then the series and provider locks in 043's order.
 
-* **043 not deployed** (`appointment_series` / `series_materialize` missing): the timetable is stored on the import row
-  as `pending` and the preview, result and import page say "saved, scheduled once weekly sessions are switched on".
-* **043 deployed**: `defaultSeriesScheduler` (`lib/import/timetable.ts`) inserts an `active` series starting today
-  (provider profile of the therapist, the matched service, the profile's time zone, `billing_mode = per_session`) and
-  calls `series_materialize(id, today + 56)`, inside a savepoint. Any failure leaves the row `pending`; the import never
-  fails because of it. This path is written against 043's spec and tested with a mock scheduler only: after 043 merges,
-  check the column names/billing mode, add a "schedule pending timetables" action for imports made before 043, and
-  make undo remove series created by the import (today their appointments would block the undo).
+## Timetable columns and weekly series (043, wired by 044)
+
+* **Import**: `defaultSeriesScheduler` (`lib/import/schedule.ts`) calls 043's `createSeries` inside the import's
+  transaction (savepoint): the therapist's own provider profile, the matched service (must be that profile's service),
+  047's weekdays converted to 043's numbering (047 stores 0 = Sunday, 043 uses 0 = Monday: `toSeriesWeekdays`), the
+  row's `billing_mode`, `starts_on` = today in the clinic's zone, no family account (`guardian: null`, so nothing is
+  messaged - 047 NFR-2) and 8 weeks materialized; clashes become 043 conflicts on `/dashboard/schedule`. The row becomes
+  `scheduled` with its `series_id`.
+* **Pending**: a refusal (no provider profile, a demo profile, a service of another therapist, ...) rolls back to the
+  savepoint and leaves the row `pending`; the import never fails because of it. Imports made before 043 have only
+  `pending` rows.
+* **Schedule saved timetables** (044): the import page shows the button while `timetable_pending_count > 0`;
+  `POST /api/org/import/:id/schedule` (owner/admin) or `npm run import:schedule-pending [-- --org <id>]` (every import,
+  acting as the owner/admin who made it) creates the missing series under the import lock. Idempotent: scheduled rows
+  are never touched again; counts on `child_imports` and a strict `children.import_timetables_scheduled` audit row
+  (counts only).
 
 ## Limits and performance
 

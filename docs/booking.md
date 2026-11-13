@@ -283,11 +283,73 @@ actions, conflicts, new-series form); `/dashboard/schedule` agenda `Repeats` lab
 `/family/appointments` shows a `Weekly timetable` section ("Every Mon, Wed at 10:00 am IST with <therapist>", sessions
 grouped by week, `Cancel` within 030's 2-hour window, no reschedule).
 
-**For later tickets.** 044 attendance: series sessions are ordinary `appointments` (`series_id` not null); use 030's
-complete/cancel functions. 045 packages: `appointment_series.billing_mode` + `service_snapshot.billing_mode` say how a
+**For later tickets.** 044 attendance (done, see below): series sessions are ordinary `appointments` (`series_id` not
+null) marked through 030's complete/cancel functions. 045 packages: `appointment_series.billing_mode` + `service_snapshot.billing_mode` say how a
 session is paid; the open question "auto-end when a package runs out" defaults to no (show staff a warning). 047 import:
 call `createSeries({ actorUserId, orgId, caseId, childId, profileId, serviceId, weekdays, startTime, startsOn, endsOn,
 billingMode, guardian: "auto" | null })`. 052: `listManageableConflicts(userId)` and `listGuardianSeries(userId)`.
+
+## Attendance register (044)
+
+Centres mark every session; the outcome drives what the family is charged (045), the platform fee (046) and the
+progress record. Migration `20261113004400_attendance.sql`; server code `lib/booking/attendance.ts`, pure helpers
+`lib/booking/attendance-display.ts`; UI `app/dashboard/register`, `components/attendance/*`, the case `Attendance` tab
+(`app/cases/[id]/attendance`), `/family/appointments`.
+
+**Data (D-1).** `appointments.attendance` (`present` | `absent` | `late_cancel_family` | `cancelled_centre`, null = not
+marked), `attendance_marked_by`, `attendance_marked_at`, `billable`. A check constraint keeps it in step with 030's
+status: present = `completed`, absent = `no_show`, the cancel types = `cancelled` (`cancel_reason` `late_cancel_family` /
+`centre_cancelled`, `cancelled_by` `provider`). Rows completed / marked no-show before 044 were backfilled (present /
+absent, `billable` by the default policy). The trigger `appointments_attendance_sync` fills the columns whenever 030's
+functions move a `confirmed` row to `completed` / `no_show`, or cancel it with one of the two reasons (the schedule's
+`Mark completed` / `No-show` stay 030's route and stamp `attendance_marked_by`).
+
+**Billing (FR-2, D-2).** `organizations.attendance_policy` = `{ bill_absent, bill_late_cancel, late_cancel_hours }`
+(check-constrained; default `false`, `false`, `24`). `attendance_billable(policy, attendance, fee, start, at)`: fee 0 ->
+never; present -> always; absent -> `bill_absent`; late family cancellation -> `bill_late_cancel` and recorded less than
+`late_cancel_hours` before the start (or after it); centre cancellation -> never. Computed when the session is marked or
+corrected (later policy changes do not rewrite earlier sessions). Fee = `service_snapshot.fee_inr` (043 `free` series ->
+0). 031's refund trigger now treats `late_cancel_family` like a family cancellation: an online prepayment is kept when the
+cancellation is billable, refunded (`guardian_cancelled`) otherwise; centre cancellations still refund in full.
+
+**Marking (FR-1, FR-3, FR-4, NFR-2).** `attendance_mark(appointment, actor, attendance, reason)` (one transaction, row
+lock): actor = 043's `series_can_manage` (active member who is owner/admin, or the session's therapist), else
+`not_found`. First marking (status `confirmed`): present / absent -> `booking_complete` (409 `not_started` before the
+start); cancel types before the start -> `booking_cancel(..., 'provider', reason)` (030's history, outbox clean-up, one
+`appointment.cancelled` message, refunds); cancel types after the start (030 refuses `too_late`) -> recorded directly
+with a history row, reminders withdrawn, no message. Corrections between outcomes need a reason (422
+`reason_required`), are written to `appointment_events` (`attendance_corrected:<from>-><to>: <reason>`) and audited.
+Members may mark / correct only sessions that started in the last 7 days (403 `correction_window`); owner/admin any
+time (D-3). The same value again returns `unchanged` and writes nothing (a double tap waits on the row lock and then sees
+the first tap). `markAttendance()` wraps it with the strict audit row `appointment.attendance_marked` /
+`appointment.attendance_corrected` (`from`, `to`, `from_status`, `to_status`, `billable`, `reason` for corrections).
+
+**Register (`/dashboard/register?org=&date=`).** The day's sessions of one organisation in the viewer's time zone
+(`confirmed`, `completed`, `no_show`, and cancellations marked through the register), grouped by therapist and time.
+Owner/admin see every session; members only those of the provider profile bound to them, and dates back to 7 days.
+One tap per outcome (2 x 2 grid of 44 px buttons at 375 px), an inline reason form for corrections, a confirmation for
+cancelling a session that has not started, `Mark all remaining present` (`POST /api/attendance/mark-all`, started
+unmarked sessions only), counts, `Write note` on present in-clinic rows (`/cases/<case>/sessions/new?appointment=<id>`
+preselects the appointment in 038's upload form), and the organisation's billing rules (owner/admin can change them).
+60 sessions load in well under 1 s (`tests/attendance-register.test.ts`, NFR-1).
+
+**Needs attention (FR-4).** `listNeedsAttention(userId)` / `<NeedsAttention userId />` (server component, renders
+nothing when empty; reusable by 052's "Today" panel): `confirmed`, unmarked sessions that started more than 24 h ago, in
+every organisation of the user (owner/admin all, members their own), linking to the register on that day.
+
+**Case month (FR-6).** `Attendance` tab: Monday-first calendar of the month with a dot per session, counts
+(attended / absent / cancelled / not marked), the session list and `Download CSV`
+(`GET /api/cases/:id/attendance?month=YYYY-MM&format=csv`; UTF-8 BOM, formula cells neutralised). Case access (022).
+
+**Family (FR-7).** Past visits show `Attended` / `Missed` / `Cancelled by centre` (`Cancelled late` for a late family
+cancellation); above the list, per child, "8 of 10 sessions attended in November" for this and last month (centre
+cancellations do not count, late family cancellations count as not attended).
+
+**For 045 / 046.** `billable` is the only input they need: `true` = charge the family (or use a package session) and
+pay the centre minus the platform fee; `false` = nothing. Use `attendance_marked_at` as the event time and
+`appointment_events` for the history. Corrections can flip `billable` after a charge exists (handle refunds/credits
+there). Online one-offs marked `absent` keep their captured payment whatever `bill_absent` says (031 unchanged): 045
+should reconcile when it moves payments to the family-pays model.
 
 ## Open questions (product / legal)
 

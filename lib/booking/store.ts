@@ -70,6 +70,9 @@ export type AppointmentView = {
   /** 043: a session of a weekly series (null for one-off bookings), and the series date it stands for. */
   series_id: string | null;
   series_occurrence_date: string | null;
+  /** 044: the register's outcome (null = not marked) and whether it is charged (045/046). */
+  attendance: "present" | "absent" | "late_cancel_family" | "cancelled_centre" | null;
+  billable: boolean | null;
 };
 
 export type BookableProfile = {
@@ -101,7 +104,7 @@ const APPOINTMENT_SELECT = (sql: Queryable) => sql`
          c.display_name as child_name, c.date_of_birth::text as child_date_of_birth, a.guardian_user_id,
          a.cancelled_by, a.cancel_reason, a.rescheduled_from, a.origin_appointment_id,
          p.display_name as provider_name, p.slug as provider_slug, p.time_zone as provider_time_zone, a.created_at,
-         a.is_demo, a.series_id, a.series_occurrence_date::text as series_occurrence_date
+         a.is_demo, a.series_id, a.series_occurrence_date::text as series_occurrence_date, a.attendance, a.billable
   from public.appointments a
   join public.provider_profiles p on p.id = a.provider_profile_id
   left join public.children c on c.id = a.child_id and c.deleted_at is null`;
@@ -233,9 +236,13 @@ export async function rescheduleAppointment(id: string, start: string, actor: st
 
 export async function completeAppointment(id: string, provider: string, status: "completed" | "no_show") {
   const sql = await pg();
-  const [row] = await sql<{ r: { appointment_id: string; status: AppointmentStatus } }[]>`
-    select public.booking_complete(${id}::uuid, ${provider}::uuid, ${status}) as r`;
-  return row.r;
+  return sql.begin(async (tx) => {
+    const [row] = await tx<{ r: { appointment_id: string; status: AppointmentStatus } }[]>`
+      select public.booking_complete(${id}::uuid, ${provider}::uuid, ${status}) as r`;
+    // 044: the trigger `appointments_attendance_sync` filled attendance + billable in the same update; record who.
+    await tx`update public.appointments set attendance_marked_by = ${provider}::uuid where id = ${id}::uuid and attendance_marked_by is null`;
+    return row.r;
+  }) as Promise<{ appointment_id: string; status: AppointmentStatus }>;
 }
 
 /** FR-5 worker: expire held / pending_payment rows whose hold passed. */
