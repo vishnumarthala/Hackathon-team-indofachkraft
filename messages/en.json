@@ -1996,7 +1996,8 @@
       "invalid_transition": "This appointment cannot be changed now.",
       "rate_limited": "Too many tries. Please wait a few minutes.",
       "generic": "Something went wrong. Please try again.",
-      "google_account_required": "Link your Google account to book a video consultation"
+      "google_account_required": "Link your Google account to book a video consultation",
+      "demo_ack_required": "This is a demo profile. No real consultation will take place. Tick “I understand this is a demo” to continue."
     },
     "flow": {
       "metaTitle": "Book with {name}",
@@ -2032,7 +2033,11 @@
       "viewAppointments": "My appointments",
       "googleRequired": "Link your Google account to book a video consultation",
       "googleRequiredHint": "You join video calls signed in to your Google account, and the provider admits you from the waiting room. Your email is never added to the provider's calendar.",
-      "connectGoogle": "Connect Google"
+      "connectGoogle": "Connect Google",
+      "demoNotice": "This is a demo profile. No real consultation will take place.",
+      "demoAck": "I understand this is a demo",
+      "demoFee": "Demo booking: no payment",
+      "demoBookedDetail": "Demo booking saved. No real consultation will take place, and nothing is sent outside the app."
     },
     "list": {
       "title": "Appointments",
@@ -2059,7 +2064,8 @@
       "moveHere": "Move to this time",
       "rescheduled": "Your appointment was moved.",
       "back": "Back to appointments",
-      "cancelledDone": "The appointment was cancelled."
+      "cancelledDone": "The appointment was cancelled.",
+      "demo": "Demo booking"
     },
     "schedule": {
       "nav": "Schedule",

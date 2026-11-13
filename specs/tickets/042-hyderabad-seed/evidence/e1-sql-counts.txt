@@ -1,0 +1,8 @@
+-- localities / types / synthetic after --count 1000
+[{"localities":"14","types":"9","synthetic":"1000","total":"1000"}]
+-- per type
+[{"provider_type":"speech_language_pathologist","count":"174"},{"provider_type":"occupational_therapist","count":"171"},{"provider_type":"pediatrician","count":"126"},{"provider_type":"special_educator","count":"118"},{"provider_type":"child_psychologist","count":"115"},{"provider_type":"aba_therapist","count":"91"},{"provider_type":"physiotherapist","count":"89"},{"provider_type":"developmental_pediatrician","count":"68"},{"provider_type":"child_psychiatrist","count":"48"}]
+-- per locality
+[{"locality":"Kukatpally","count":"113"},{"locality":"Ameerpet","count":"90"},{"locality":"Dilsukhnagar","count":"87"},{"locality":"Jubilee Hills","count":"85"},{"locality":"Gachibowli","count":"82"},{"locality":"Mehdipatnam","count":"74"},{"locality":"Banjara Hills","count":"74"},{"locality":"Madhapur","count":"68"},{"locality":"Secunderabad","count":"60"},{"locality":"HITEC City","count":"57"},{"locality":"Begumpet","count":"57"},{"locality":"Kondapur","count":"54"},{"locality":"Miyapur","count":"51"},{"locality":"LB Nagar","count":"48"}]
+-- centres
+[{"centres":"133","min_providers":"2","max_providers":"5"}]

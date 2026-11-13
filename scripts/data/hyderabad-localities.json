@@ -1,0 +1,23 @@
+{
+  "_comment": "Ticket 042: localities used by scripts/seed-hyderabad.ts. Coordinates and PIN codes are NOT repeated here: they come from 029's bundled table demo/fixtures/geocode/hyderabad.json (the `table_name` entry), so seeded locations geocode exactly like real ones. `weight` = relative share of synthetic profiles. Street names are invented placeholders, not real addresses.",
+  "localities": [
+    { "name": "Banjara Hills", "table_name": "Banjara Hills", "weight": 9 },
+    { "name": "Jubilee Hills", "table_name": "Jubilee Hills", "weight": 8 },
+    { "name": "Gachibowli", "table_name": "Gachibowli", "weight": 9 },
+    { "name": "Madhapur", "table_name": "Madhapur", "weight": 8 },
+    { "name": "HITEC City", "table_name": "Hitech City", "weight": 7 },
+    { "name": "Kondapur", "table_name": "Kondapur", "weight": 7 },
+    { "name": "Kukatpally", "table_name": "Kukatpally", "weight": 8 },
+    { "name": "Miyapur", "table_name": "Miyapur", "weight": 6 },
+    { "name": "Ameerpet", "table_name": "Ameerpet", "weight": 6 },
+    { "name": "Begumpet", "table_name": "Begumpet", "weight": 5 },
+    { "name": "Secunderabad", "table_name": "Secunderabad", "weight": 7 },
+    { "name": "Dilsukhnagar", "table_name": "Dilsukhnagar", "weight": 7 },
+    { "name": "LB Nagar", "table_name": "LB Nagar", "weight": 6 },
+    { "name": "Mehdipatnam", "table_name": "Mehdipatnam", "weight": 6 }
+  ],
+  "streets": [
+    "Sample Street", "Demo Lane", "Placeholder Road", "Example Avenue", "Synthetic Cross Road", "Test Colony Road",
+    "Mock Street", "Prototype Lane"
+  ]
+}

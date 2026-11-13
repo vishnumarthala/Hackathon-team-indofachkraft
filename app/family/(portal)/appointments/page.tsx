@@ -68,6 +68,11 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
                   ? t(`list.cancelledBy.${a.cancelled_by}`)
                   : t(`status.${a.status}`)}
             </span>
+            {a.is_demo ? (
+              <span data-testid="demo-label" className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-900">
+                {t("list.demo")}
+              </span>
+            ) : null}
             {pay ? (
               <span data-testid="payment-label" className={`rounded-full px-3 py-1 text-xs font-semibold ${PAYMENT_LABEL_STYLE[pay]}`}>
                 {tp(`labels.${pay}`)}

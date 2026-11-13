@@ -270,3 +270,11 @@ claims, lease expiry, retry schedule, 200 notifications with two concurrent work
 triggers), `tests/notify-adapters.test.ts` (WhatsApp request/skip/error classes, email `.ics` + Resend
 `Idempotency-Key` through the real SDK with `fetch` mocked, retry policy), `tests/notify-templates.test.ts`
 (every template x locale x role, content rule).
+
+## Demo bookings (ticket 042)
+
+Events about a demo appointment (`appointments.is_demo`, booked on an `is_synthetic` profile) fan out to `in_app`
+only: the worker asks `outbox_event_is_demo(aggregate_type, aggregate_id, payload)` (appointment aggregate, or a
+`payload.appointment_id`) and the `notifications_demo_in_app_only` trigger drops email/WhatsApp rows from any writer.
+New topics about appointments should carry `appointment_id` in the payload so the rule applies. See
+`docs/pilot-seeding.md`.

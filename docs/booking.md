@@ -85,7 +85,7 @@ generated slot is accepted by the SQL check.
 | Method + path | Who | Body / query | Success / errors |
 |---|---|---|---|
 | `GET /api/public/providers/:profileId/slots?service_id=&from=YYYY-MM-DD&days=7` | public (120/min per IP) | `from` = local date in the service's zone (default today), `days` 1-14 | 200 `{ slots: [{ start, end }], from, days, time_zone, duration_min }` (UTC ISO); 404 unknown/unlisted profile or inactive service; 400 |
-| `POST /api/appointments/hold` | guardian or anonymous (30 per 10 min per IP) | `{ service_id, start, idempotency_key }` | 201 `{ appointment_id, hold_expires_at, status }`; 200 replay; 409 taken; 403 signed-in non-guardian; 422 (037: video without a linked Google account) |
+| `POST /api/appointments/hold` | guardian or anonymous (30 per 10 min per IP) | `{ service_id, start, idempotency_key, demo_ack? }` | 201 `{ appointment_id, hold_expires_at, status }`; 200 replay; 409 taken; 403 signed-in non-guardian; 422 (037: video without a linked Google account; 042: demo profile without `demo_ack: true`) |
 | `POST /api/appointments/:id/confirm` | guardian | `{ child_id }` | 200 `{ appointment }` (`confirmed` or `pending_payment`); 401; 404; 410; 422 (037: video without Google) |
 | `POST /api/appointments/:id/meet-link` (037) | provider side | `{ url }` (`https://meet.google.com/...`) | 200 `{ meet_url, meet_status: "manual" }`; 400 not a Meet link; 404; 409 (see `docs/google-meet.md`) |
 | `POST /api/appointments/:id/cancel` | booking guardian or provider side | `{ reason? }` | 200 `{ appointment }`; 409 |
@@ -150,7 +150,11 @@ same calendar entry across reschedules.
   `checkConfirmPreconditions()` before confirming an owned hold. 037: a `video` service needs a signed-in guardian with a
   linked Google identity, else 422 `{ error: "Link your Google account to book a video consultation", code:
   "google_account_required" }` (anonymous video holds too); the booking page shows that text with `Connect Google` /
-  `Sign in` before slot selection. 042: `demo_ack` for `is_synthetic` profiles, plus an `is_demo` column. Meet links
+  `Sign in` before slot selection. 042 (done): a hold on an `is_synthetic` profile needs `demo_ack: true`, else 422
+  `{ error: "This is a demo profile. No real consultation will take place.", code: "demo_ack_required" }` (no Google
+  check for demo bookings); `appointments.is_demo` is set by a trigger from the profile, and demo bookings are free
+  (snapshot `free`/0, so they confirm without payment), get `meet_status = 'not_needed'` and only in-app notifications
+  (`docs/pilot-seeding.md`). `checkConfirmPreconditions()` takes `isDemo`; `AppointmentView.is_demo`. Meet links
   themselves are created from the state machine's own outbox events (no change to the SQL functions): see
   `docs/google-meet.md`.
 

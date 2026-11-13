@@ -71,6 +71,10 @@ export const env = {
   get SHOW_SYNTHETIC_LISTINGS() {
     return process.env.SHOW_SYNTHETIC_LISTINGS !== "false";
   },
+  // 042: scripts/seed-hyderabad.ts writes synthetic profiles only to a local database unless this is "true".
+  get ALLOW_SYNTHETIC_SEED() {
+    return process.env.ALLOW_SYNTHETIC_SEED === "true";
+  },
   // 029: Google Maps. Server key (Geocoding API) is server-only; the browser key (Maps JavaScript, Places,
   // Static Maps) is HTTP-referrer restricted and passed to client components as a prop. Both optional:
   // without them geocoding uses the bundled Hyderabad table and /find shows the list without a map.

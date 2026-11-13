@@ -77,7 +77,8 @@ organisations' locations. The server uses the service-role client and gates ever
   DoctorNearMe` with the date, and the council name with the registration number masked to its last 4
   characters (nothing for `OTHER`). No email, user id, full registration number or verification note is
   ever selected. Demo profiles (`is_synthetic`) show a `Demo profile` badge and are `noindex`;
-  `SHOW_SYNTHETIC_LISTINGS=false` hides them. Consultation modes come from active services once the provider has any
+  `SHOW_SYNTHETIC_LISTINGS=false` hides them. Seeding demo profiles, the demo-booking safeguard and the CSV import of
+  real providers (claim links printed by the script): `docs/pilot-seeding.md` (042). Consultation modes come from active services once the provider has any
 (030); `Book` links to `/book/<profileId>` when an active service exists (`docs/booking.md`).
   Metadata title `<name> - <type> in <locality>, Hyderabad | DoctorNearMe`; JSON-LD `Physician`
   (prescriber types) or `MedicalBusiness`.
