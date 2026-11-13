@@ -387,4 +387,17 @@ describe.skipIf(!enabled)("clinical contracts (database)", { timeout: 90_000 }, 
     await sql`delete from cases where id = ${extra.caseId}`;
     expect(await versions(extra.reportId)).toHaveLength(0);
   });
+
+  it("a case re-pointed to the guardian's child (020 placeholder merge) takes its published versions along", async () => {
+    const extra = await world.kase(orgId);
+    const childOf = async () => (await sql<{ child_id: string }[]>`select child_id from published_versions where entity_id = ${extra.reportId}`)[0].child_id;
+    expect(await childOf()).toBe(extra.childId);
+    // claim_child does exactly this update when the guardian picks `Is this one of your children?`.
+    await sql`update cases set child_id = ${kase.childId} where id = ${extra.caseId}`;
+    expect(await childOf()).toBe(kase.childId);
+    await expect(sql`update published_versions set child_id = ${extra.childId} where entity_id = ${extra.reportId}`).rejects.toThrow(/append-only/);
+    const { listGuardianVisible } = await import("@/lib/clinical/publish");
+    expect((await listGuardianVisible(sql, kase.childId)).every((v) => v.child_id === kase.childId)).toBe(true);
+    await sql`delete from cases where id = ${extra.caseId}`;
+  });
 });

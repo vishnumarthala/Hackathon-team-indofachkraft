@@ -93,6 +93,14 @@ begin
      and not exists (select 1 from public.cases where id = old.case_id) then
     return old;
   end if;
+  -- The one allowed update: child_id follows its case when a guardian merges a placeholder child into their
+  -- own child (020 claim_child re-points cases.child_id; trigger cases_child_follow). Nothing else may change.
+  if tg_op = 'UPDATE' and old.case_id is not null
+     and new.child_id is distinct from old.child_id
+     and new.child_id = (select c.child_id from public.cases c where c.id = old.case_id)
+     and (to_jsonb(new) - 'child_id') = (to_jsonb(old) - 'child_id') then
+    return new;
+  end if;
   raise exception 'published_versions is append-only' using errcode = '42501';
 end;
 $$;
@@ -165,6 +173,26 @@ $$;
 
 revoke all on function public.publish_version(jsonb) from public, anon, authenticated;
 grant execute on function public.publish_version(jsonb) to service_role;
+
+-- Case-bound rows follow their case's current child (see the append-only trigger). 024's assessments
+-- migration extends this function to assessments.
+create or replace function public.cases_child_follow()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.published_versions set child_id = new.child_id
+  where case_id = new.id and child_id is distinct from new.child_id;
+  return null;
+end;
+$$;
+revoke all on function public.cases_child_follow() from public, anon, authenticated;
+
+drop trigger if exists cases_child_follow on public.cases;
+create trigger cases_child_follow after update of child_id on public.cases
+for each row when (old.child_id is distinct from new.child_id) execute function public.cases_child_follow();
 
 -- ---------------------------------------------------------------------------------------------------------
 -- 3. Reports publish when they become final (same transaction as the status change)

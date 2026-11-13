@@ -72,6 +72,23 @@ drop trigger if exists assessments_match_case on public.assessments;
 create trigger assessments_match_case before insert or update of case_id on public.assessments
 for each row execute function public.assessments_match_case();
 
+-- A case re-pointed to another child (020 claim_child merge) takes its published versions and assessments along.
+create or replace function public.cases_child_follow()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.published_versions set child_id = new.child_id
+  where case_id = new.id and child_id is distinct from new.child_id;
+  update public.assessments set child_id = new.child_id
+  where case_id = new.id and child_id is distinct from new.child_id;
+  return null;
+end;
+$$;
+revoke all on function public.cases_child_follow() from public, anon, authenticated;
+
 create table if not exists public.assessment_responses (
   assessment_id uuid not null references public.assessments(id) on delete cascade,
   item_id text not null check (char_length(item_id) between 1 and 40),

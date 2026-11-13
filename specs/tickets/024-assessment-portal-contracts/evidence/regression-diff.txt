@@ -1,0 +1,15 @@
+# NFR-1 regression: Child Development pipeline on the demo fixtures, before vs after 024.
+# Baseline captured on the pre-024 code (commit 099bd80, base 87571ad + the test only):
+#   UPDATE_REGRESSION_BASELINE=1 npx vitest run tests/regression-child-dev.test.ts
+#   -> tests/fixtures/regression-child-dev/baseline.json (7492 lines, 272 KB; copied to .tmp/baseline-3040/)
+# Contents (ids/timestamps normalised): intake recording + case-sheet facts + pre-session brief (content and
+# markdown) + case status; Scribe transcription (segments, speaker_map); extraction response + 40 ISAA facts;
+# speaker swap -> facts reset -> re-extraction with swapped roles -> swap back -> re-extraction (equal to the
+# first); bulk confirm + rate; ISAA score, band, red flags, recommendation and text; report draft and final
+# markdown; referral packet; parent voice note (summary, email status); final case status; every Gemini request
+# (task, system prompt, prompt).
+# After 024 (all migrations, published_versions trigger, speaker contract, report PATCH via requireReportActor):
+$ npx vitest run tests/regression-child-dev.test.ts   -> 1 passed (deep-equal to the baseline)
+$ diff .tmp/baseline-3040/baseline.json .tmp/regression-child-dev/actual.json
+(no output)
+REGRESSION DIFF EMPTY

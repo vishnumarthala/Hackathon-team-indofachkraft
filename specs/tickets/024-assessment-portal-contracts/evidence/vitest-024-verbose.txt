@@ -1,0 +1,64 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/024
+
+ ✓ tests/clinical-contracts.test.ts > instrument registry (FR-1) > loads ISAA, CASE_SHEET and ISAA_PARENT_CHECKIN with typed items 2ms
+ ✓ tests/clinical-contracts.test.ts > instrument registry (FR-1) > ISAA scoring delegates to the unchanged lib/scoring.ts 2ms
+ ✓ tests/clinical-contracts.test.ts > report kinds (FR-2) > lists the kinds in use plus the reserved ones, with audiences 0ms
+ ✓ tests/clinical-contracts.test.ts > speaker roles (FR-5) > keeps the stored values and adds child / other_adult with labels 0ms
+ ✓ tests/clinical-contracts.test.ts > speaker roles (FR-5) > swap exchanges therapist <-> parent only and leaves child / other_adult / agent / unknown untouched 1ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > has 15 parent questions over the six ISAA domains, the red-flag questions and fixed copy 1ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > total 0 -> no_strong_signs 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > total 9 -> no_strong_signs 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > total 10 -> discuss_with_professional 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > total 19 -> discuss_with_professional 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > total 20 -> see_professional_soon 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > total 45 -> see_professional_soon 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > reverse-worded questions score 'never' as the concern 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > red flag skill_regression answered yes -> see_professional_soon whatever the total 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > red flag self_injury answered yes -> see_professional_soon whatever the total 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > red flag seizure answered yes -> see_professional_soon whatever the total 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > red flag breathing answered yes -> see_professional_soon whatever the total 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > red flag not_eating_drinking answered yes -> see_professional_soon whatever the total 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > red flag safety_concern answered yes -> see_professional_soon whatever the total 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > partial answers: no band, missing items in form order 0ms
+ ✓ tests/clinical-contracts.test.ts > ISAA parent check-in (FR-4) > content hash is sha256 of the UTF-8 markdown 0ms
+ ✓ tests/assessments.test.ts > request validation (FR-8, FR-9) > due date: optional, not in the past (India), within a year 11ms
+ ✓ tests/assessments.test.ts > request validation (FR-8, FR-9) > responses need a version 1ms
+ ✓ tests/assessments.test.ts > request validation (FR-8, FR-9) > maps API errors to translated message keys 0ms
+ ✓ tests/assessments.test.ts > published summary (FR-8) > states the band copy and disclaimer, lists red-flag questions answered yes, never the reviewer note 1ms
+ ✓ tests/assessments.test.ts > guardian form (FR-9, NFR-3) > shows one question per screen, starting at the first unanswered one, question text in English 5ms
+ ✓ tests/assessments.test.ts > guardian form (FR-9, NFR-3) > a red-flag yes shows the 108/112 advice at once; chrome is translated 2ms
+ ✓ tests/assessments.test.ts > guardian form (FR-9, NFR-3) > client helpers send the version and map 409/422 10ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > clinical_instruments mirrors schemas/*.json 2ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > facts.instrument is a foreign key to the registry (unknown instrument fails) 8ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > a final report has exactly one published version (inserted final -> v1, provider only) 6ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > published_versions is append-only: update, delete and truncate raise 13ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > the service role cannot write published_versions directly; publish_version() is the only writer 11ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > publishVersion: versions 1, 2, ...; case decides child/org; mismatches are rejected 16ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > E-1: PATCH final publishes v1 in the same transaction; a second PATCH -> 409 and no new version 192ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > parent summaries publish visible to the guardian; a regenerated summary is a new version 10ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > backfill: a pre-existing final report without a version gets exactly one; re-running publishes nothing 12ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > RLS: guardians read only visible versions of their children; the care team reads its cases; others nothing 35ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > deleting a case removes its published versions (the only allowed delete) 18ms
+ ✓ tests/clinical-contracts.test.ts > clinical contracts (database) > a case re-pointed to the guardian's child (020 placeholder merge) takes its published versions along 28ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > E-2.1: provider sends `Parent developmental check-in` to guardian_a, due in 7 days 142ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > E-4.3: not linked guardian -> 422; duplicate open questionnaire -> 409; other org / unassigned member -> 404; guardian -> 403 69ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > E-2.2: answer 5, save and continue later, reload keeps them; submit with missing -> 422 listing them 24ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > E-4.1: two tabs save with the same version -> the second gets 409 10ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > rejects unknown items and invalid values (400) without saving 12ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > E-3: a red-flag yes is saved at once, notifies the care team once, audits, and the provider sees it 22ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > E-4.2: other guardian and other org -> 404; guardians on provider APIs -> 403; providers on family APIs -> 403 48ms
+ ✓ tests/regression-child-dev.test.ts > Child Development pipeline regression (DEMO fixtures, database) > runs the whole pipeline and matches the pre-024 baseline 853ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > E-2.2 / E-4.3: answer everything and submit; submitting twice -> 409; saving after submit -> 409 44ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > E-2.3: provider reviews with `Share result with parent` -> published summary visible to the guardian 30ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > a review without sharing publishes a provider-only version; the guardian sees no result 36ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > cancel: only open questionnaires; the guardian can no longer answer 26ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > FR-10: the `assessments` share loader lists reviewed questionnaires of the source orgs only 21ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > NFR-2: a revoked guardian link ends access on the next request 10ms
+ ✓ tests/assessments.test.ts > assessment portal (database) > RLS: the assigned guardian and the care team read; other guardians and orgs read nothing; no client writes 134ms
+
+ Test Files  3 passed (3)
+      Tests  55 passed (55)
+   Start at  02:11:07
+   Duration  1.51s (transform 563ms, setup 0ms, import 428ms, tests 3.06s, environment 0ms)
+
