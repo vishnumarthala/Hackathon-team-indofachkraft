@@ -5,7 +5,9 @@ import { requireChildGuardianPage, requireGuardianPage } from "@/lib/authz";
 import { ageLabel } from "@/lib/children/age";
 import { CONSENT_FEATURES, getConsentState } from "@/lib/consent";
 import { currentDocuments } from "@/lib/consent/records";
-import { getLocale, getT } from "@/lib/i18n/server";
+import { getFormatter, getLocale, getT } from "@/lib/i18n/server";
+import { AGE_BAND_KEYS, HEADLINE_KEYS } from "@/components/screen/view";
+import { listChildCheckins } from "@/lib/screen/store";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +24,13 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
     await getLocale(),
   ];
   const ti = await getT("iep.family");
-  const [state, docs] = await Promise.all([getConsentState(child.id), currentDocuments(locale)]);
+  const [state, docs, checkins] = await Promise.all([
+    getConsentState(child.id),
+    currentDocuments(locale),
+    listChildCheckins(child.id),
+  ]);
+  const ts = await getT("screen");
+  const format = await getFormatter();
 
   const views: PermissionView[] = CONSENT_FEATURES.map((feature) => {
     const doc = docs.find((d) => d.feature === feature) ?? null;
@@ -81,6 +89,31 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
           {(await getT("privacy.family"))("link")}
         </Link>
       </div>
+      {/* 033 FR-8: public check-ins the guardian saved to this child (date, age band, band headline). */}
+      <section aria-labelledby="checkins-heading" className="space-y-3" data-testid="child-checkins">
+        <h2 id="checkins-heading" className="text-xl font-semibold text-slate-900">
+          {ts("checkins.title")}
+        </h2>
+        <p className="text-slate-700">{ts("checkins.intro")}</p>
+        {checkins.length === 0 ? (
+          <p className="text-slate-600">{ts("checkins.empty")}</p>
+        ) : (
+          <ul className="space-y-2">
+            {checkins.map((c) => (
+              <li key={c.id} className="rounded-2xl border border-slate-200 bg-white p-4" data-band={c.result_band}>
+                <p className="font-semibold text-slate-900">{ts(`result.headlines.${HEADLINE_KEYS[c.result_band]}`)}</p>
+                <p className="text-sm text-slate-600">
+                  {format.date(c.created_at, "long")} ·{" "}
+                  {ts("checkins.age", { age: ts(`ageBands.${AGE_BAND_KEYS[c.age_band]}`) })}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+        <Link href="/screen" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
+          {ts("checkins.take")}
+        </Link>
+      </section>
       <section aria-labelledby="permissions-heading" className="space-y-3">
         <h2 id="permissions-heading" className="text-xl font-semibold text-slate-900">
           {t("overview.permissions")}

@@ -1,0 +1,251 @@
+// Ticket 033: browser side of the check-in, free of React so it can be tested with mocks (E-3). The page component
+// (components/screen/ScreenFlow.tsx) passes `fetch`, the microphone prompt and the ElevenLabs SDK's startSession.
+import type { RedFlagCode } from "@/lib/clinical/checkin";
+import type { ScreenAgeBand, ScreenMode, ScreenQuestion, ScreenResult } from "./questions";
+
+export const SESSION_STORAGE_KEY = "dnm.screen.session";
+
+export type StartedSession = { session_id: string; expires_at: string; questions: ScreenQuestion[] };
+
+type VoiceTarget = { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
+
+export type StartError = "busy" | "voiceUnavailable" | "mic" | "failed";
+
+export type StartOutcome =
+  | { kind: "form"; session: StartedSession }
+  /** DEMO_MODE: no live call; the page continues with the tap-through form on the same session. */
+  | { kind: "demo"; session: StartedSession }
+  | { kind: "voice"; session: StartedSession; target: VoiceTarget; dynamicVariables: Record<string, string> }
+  /** The session exists but the microphone was refused: continue by tapping. */
+  | { kind: "micDenied"; session: StartedSession }
+  | { kind: "error"; error: StartError };
+
+export type StartDeps = {
+  fetchFn: typeof fetch;
+  getMicrophone?: () => Promise<{ getTracks?: () => Array<{ stop: () => void }> }>;
+};
+
+/** POST /api/screen/sessions, then (voice only) the microphone prompt. */
+export async function startScreen(ageBand: ScreenAgeBand, mode: ScreenMode, deps: StartDeps): Promise<StartOutcome> {
+  let res: Response;
+  try {
+    res = await deps.fetchFn("/api/screen/sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ age_band: ageBand, mode }),
+    });
+  } catch {
+    return { kind: "error", error: "failed" };
+  }
+  if (res.status === 429) return { kind: "error", error: "busy" };
+  if (mode === "voice" && (res.status === 502 || res.status === 503)) return { kind: "error", error: "voiceUnavailable" };
+  if (!res.ok) return { kind: "error", error: "failed" };
+  const body = (await res.json().catch(() => ({}))) as Partial<StartedSession> & {
+    demo?: boolean;
+    conversation_token?: string | null;
+    agent_id?: string;
+    dynamic_variables?: Record<string, string>;
+  };
+  if (!body.session_id || !Array.isArray(body.questions)) return { kind: "error", error: "failed" };
+  const session: StartedSession = { session_id: body.session_id, expires_at: body.expires_at ?? "", questions: body.questions };
+  if (mode === "form") return { kind: "form", session };
+  if (body.demo === true) return { kind: "demo", session };
+
+  const target: VoiceTarget | null = body.conversation_token
+    ? { conversationToken: body.conversation_token }
+    : body.agent_id
+      ? { agentId: body.agent_id, connectionType: "webrtc" }
+      : null;
+  if (!target) return { kind: "error", error: "voiceUnavailable" };
+  try {
+    const stream = await deps.getMicrophone?.();
+    // Only needed for the permission prompt; the SDK opens its own stream.
+    stream?.getTracks?.().forEach((t) => t.stop());
+  } catch {
+    return { kind: "micDenied", session };
+  }
+  return { kind: "voice", session, target, dynamicVariables: body.dynamic_variables ?? {} };
+}
+
+export type AnswerResponse =
+  | { ok: true; missing: string[]; stop: boolean }
+  | { ok: false; status: number; error: string };
+
+export async function postAnswers(
+  fetchFn: typeof fetch,
+  sessionId: string,
+  answers: { item_id: string; answer: string }[],
+  conversationId?: string,
+): Promise<AnswerResponse> {
+  try {
+    const res = await fetchFn(`/api/screen/sessions/${encodeURIComponent(sessionId)}/answers`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers, ...(conversationId ? { conversation_id: conversationId } : {}) }),
+    });
+    const json = (await res.json().catch(() => ({}))) as { missing?: string[]; stop?: boolean; error?: string };
+    if (!res.ok) return { ok: false, status: res.status, error: json.error ?? "failed" };
+    return { ok: true, missing: json.missing ?? [], stop: json.stop === true };
+  } catch {
+    return { ok: false, status: 0, error: "failed" };
+  }
+}
+
+export async function postRedFlag(
+  fetchFn: typeof fetch,
+  sessionId: string,
+  code: RedFlagCode,
+  conversationId?: string,
+): Promise<{ ok: boolean; status: number }> {
+  try {
+    const res = await fetchFn(`/api/screen/sessions/${encodeURIComponent(sessionId)}/red-flag`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, ...(conversationId ? { conversation_id: conversationId } : {}) }),
+    });
+    return { ok: res.ok, status: res.status };
+  } catch {
+    return { ok: false, status: 0 };
+  }
+}
+
+export type FinishOutcome =
+  | { ok: true; result: ScreenResult }
+  | { ok: false; status: number; missing: string[] };
+
+export async function finishScreen(fetchFn: typeof fetch, sessionId: string, conversationId?: string): Promise<FinishOutcome> {
+  try {
+    const res = await fetchFn(`/api/screen/sessions/${encodeURIComponent(sessionId)}/finish`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(conversationId ? { conversation_id: conversationId } : {}),
+    });
+    const json = (await res.json().catch(() => ({}))) as ScreenResult & { details?: { missing?: string[] } };
+    if (!res.ok) return { ok: false, status: res.status, missing: json.details?.missing ?? [] };
+    return { ok: true, result: json };
+  } catch {
+    return { ok: false, status: 0, missing: [] };
+  }
+}
+
+// ---------- voice client tools (FR-3) ----------
+
+/** What the agent hears back from a tool call (English: the agent speaks English only). */
+export const TOOL_REPLIES = {
+  saved: (remaining: number) => `Saved. ${remaining} question${remaining === 1 ? "" : "s"} left. Ask the next one.`,
+  complete:
+    "All questions are answered. Thank the parent, tell them the result is now on their screen with nearby specialists, and end the call.",
+  stop: "Red flag recorded. Say the fixed safety message now and end the call. Do not ask any more questions.",
+  invalid:
+    "That answer was not saved. Use an item id from the list and never, sometimes, often or always (yes or no for the safety questions).",
+  closed: "The check-in is closed. End the call politely.",
+  failed: "Saving failed. Ask the same question again.",
+} as const;
+
+export type ToolEvents = {
+  onAnswer?: (itemId: string, answer: string, missing: string[]) => void;
+  /** A red flag: the page shows only the 108/112 message (FR-7). */
+  onStop: () => void;
+  /** Every question answered: the page finishes the check-in when the call ends. */
+  onComplete: () => void;
+};
+
+const normalise = (value: unknown) => (typeof value === "string" ? value.trim().toLowerCase() : "");
+
+/** `record_answer({ item_id, answer })` and `record_red_flag({ code })` for `startSession({ clientTools })`. */
+export function screenClientTools(
+  sessionId: string,
+  deps: { fetchFn: typeof fetch; conversationId?: () => string | undefined },
+  events: ToolEvents,
+) {
+  const cid = () => {
+    try {
+      return deps.conversationId?.() || undefined;
+    } catch {
+      return undefined;
+    }
+  };
+  return {
+    record_answer: async (params: { item_id?: unknown; answer?: unknown }): Promise<string> => {
+      const itemId = typeof params?.item_id === "string" ? params.item_id.trim() : "";
+      const answer = normalise(params?.answer);
+      const saved = await postAnswers(deps.fetchFn, sessionId, [{ item_id: itemId, answer }], cid());
+      if (!saved.ok) {
+        if (saved.status === 400) return TOOL_REPLIES.invalid;
+        if (saved.status === 409 && saved.error === "This check-in was stopped") {
+          events.onStop();
+          return TOOL_REPLIES.stop;
+        }
+        if (saved.status === 404 || saved.status === 409 || saved.status === 410) return TOOL_REPLIES.closed;
+        return TOOL_REPLIES.failed;
+      }
+      events.onAnswer?.(itemId, answer, saved.missing);
+      if (saved.stop) {
+        events.onStop();
+        return TOOL_REPLIES.stop;
+      }
+      if (saved.missing.length === 0) {
+        events.onComplete();
+        return TOOL_REPLIES.complete;
+      }
+      return TOOL_REPLIES.saved(saved.missing.length);
+    },
+    record_red_flag: async (params: { code?: unknown }): Promise<string> => {
+      const code = normalise(params?.code) as RedFlagCode;
+      // Stop on screen first: safety does not wait for the network.
+      events.onStop();
+      const saved = await postRedFlag(deps.fetchFn, sessionId, code, cid());
+      if (!saved.ok && saved.status === 400) {
+        // Unknown code: still a safety stop; store it under the general safety concern.
+        await postRedFlag(deps.fetchFn, sessionId, "safety_concern", cid());
+      }
+      return TOOL_REPLIES.stop;
+    },
+  };
+}
+
+// ---------- saving to a child (FR-8) ----------
+
+export type SaveOutcome =
+  | { kind: "saved" }
+  | { kind: "consent" }
+  | { kind: "signIn" }
+  | { kind: "error"; error: "expired" | "notSavable" | "failed" };
+
+export async function saveToChild(fetchFn: typeof fetch, sessionId: string, childId: string): Promise<SaveOutcome> {
+  try {
+    const res = await fetchFn("/api/family/screen-results", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sessionId, child_id: childId }),
+    });
+    if (res.ok) return { kind: "saved" };
+    const json = (await res.json().catch(() => ({}))) as { error?: string };
+    if (res.status === 422 && json.error === "Guardian consent required") return { kind: "consent" };
+    if (res.status === 401) return { kind: "signIn" };
+    if (res.status === 410) return { kind: "error", error: "expired" };
+    if (res.status === 409) return { kind: "error", error: "notSavable" };
+    return { kind: "error", error: "failed" };
+  } catch {
+    return { kind: "error", error: "failed" };
+  }
+}
+
+export type AllowOutcome = "allowed" | "verifyPhone" | "outdated" | "failed";
+
+/** 020 digital consent for `screen_result_save` (the exact text shown in the dialog). */
+export async function allowScreenSave(fetchFn: typeof fetch, childId: string, documentId: string): Promise<AllowOutcome> {
+  try {
+    const res = await fetchFn(`/api/family/children/${encodeURIComponent(childId)}/consents`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ feature: "screen_result_save", consent_document_id: documentId, agree: true }),
+    });
+    if (res.ok) return "allowed";
+    if (res.status === 422) return "verifyPhone";
+    if (res.status === 409) return "outdated";
+    return "failed";
+  } catch {
+    return "failed";
+  }
+}

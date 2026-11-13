@@ -49,7 +49,7 @@ Current gates (FR-7):
 | `ai_extraction` | `POST /api/sessions/:id/extract`, `POST /api/sessions/:id/report` | before each Gemini call (`runExtraction`, report route) |
 | `ai_voice_note` | `POST /api/reports/:id/parent-voice-note` | before TTS |
 | `referral_share` | `POST /api/cases/:id/refer` | every `/specialist/<token>` load and `POST /api/cases/:id/ask` (410 when unavailable) |
-| `screen_result_save` | ticket 033 must call `requireConsent` before saving a screen result to a child | - |
+| `screen_result_save` | `POST /api/family/screen-results` (033: guardian link, then `requireConsent`; 422 -> inline Allow dialog on `/screen`) | - (the save is synchronous) |
 | `ai_follow_up` | ticket 040 must call `requireConsent` before the agent starts | `assertConsentOrAbort` before each question |
 
 Withdrawing `ai_intake_call` revokes the child's open intake links; withdrawing `referral_share` revokes

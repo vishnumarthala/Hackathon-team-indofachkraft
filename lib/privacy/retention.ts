@@ -6,6 +6,7 @@ import { auditStrict } from "@/lib/audit";
 import { supabaseAdmin } from "@/lib/db";
 import { logger } from "@/lib/log";
 import { pg, type Sql } from "@/lib/pg";
+import { UNSAVED_RETENTION_DAYS } from "@/lib/screen/questions";
 
 const log = logger("retention");
 
@@ -226,6 +227,13 @@ export async function runRetention(opts: RetentionOptions = {}): Promise<Retenti
       where channel in ('email', 'whatsapp') and (title is not null or body is not null)
         and status in ('sent', 'skipped', 'dead', 'cancelled')
         and created_at < ${now}::timestamptz - ${days(p.deliveryContentDays)}::interval`
+  ).count;
+
+  // 033 FR-5: public check-ins that were never saved to a child, 30 days after they started (registry `screen_results`).
+  counts.unsaved_screen_sessions = (
+    await sql`
+      delete from public.screen_sessions
+      where saved_child_id is null and created_at < ${now}::timestamptz - ${days(UNSAVED_RETENTION_DAYS)}::interval`
   ).count;
 
   // FR-6: website sign-ups after 24 months; audit events after 7 years (maintenance function).

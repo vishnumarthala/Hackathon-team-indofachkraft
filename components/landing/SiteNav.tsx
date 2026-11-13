@@ -19,6 +19,7 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
   const [open, setOpen] = useState(false);
   const t = useT("nav");
   const td = useT("directory.landing");
+  const ts = useT("screen.landing");
 
   // Solid background once the page scrolls (class toggle, no re-render on scroll).
   useEffect(() => {
@@ -55,6 +56,11 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
           <li>
             <Link href="/find" className="lp-underline text-[0.92rem] font-medium opacity-80 transition-opacity hover:opacity-100">
               {td("find")}
+            </Link>
+          </li>
+          <li>
+            <Link href="/screen" className="lp-underline text-[0.92rem] font-medium opacity-80 transition-opacity hover:opacity-100">
+              {ts("navLink")}
             </Link>
           </li>
         </ul>
@@ -107,6 +113,11 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
           <li>
             <Link href="/find" onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base font-medium text-[#0b1f1d]">
               {td("find")}
+            </Link>
+          </li>
+          <li>
+            <Link href="/screen" onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base font-medium text-[#0b1f1d]">
+              {ts("navLink")}
             </Link>
           </li>
         </ul>

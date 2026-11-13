@@ -1709,7 +1709,8 @@
         "assessments": "Questionnaires your care team sends you (for example the developmental check-in): your answers and the summary the team publishes.",
         "plans": "Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you.",
         "notifications": "Notifications we send you in the app, by email or WhatsApp.",
-        "website": "If you ask for a demo on our website: name, email, role and centre."
+        "website": "If you ask for a demo on our website: name, email, role and centre.",
+        "screen": "Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs."
       },
       "purposesTitle": "Why we use it",
       "purposes": "To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising.",
@@ -1784,6 +1785,10 @@
         "audit": {
           "what": "Security audit log",
           "how": "{years} years"
+        },
+        "screen": {
+          "what": "Check-ins from the public check-in page that you did not save",
+          "how": "{days} days"
         }
       },
       "rightsTitle": "Your rights",
@@ -1925,6 +1930,138 @@
         "none": "None.",
         "minutes": "{count} min"
       }
+    }
+  },
+  "screen": {
+    "metaTitle": "Developmental check-in for parents",
+    "metaDescription": "A free 5-minute developmental check-in for parents in Hyderabad, by voice or by tapping. This is a developmental check-in, not a diagnosis.",
+    "title": "Developmental check-in",
+    "intro": "About 5 minutes. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child.",
+    "aiDisclosure": "You will talk to an AI assistant. It speaks English. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
+    "noPersonal": "Please do not say or type your child's name, your name or contact details. We keep only your answers, without any name, and delete them after 30 days unless you save them to your child's profile.",
+    "ageLabel": "Child's age",
+    "ageBands": {
+      "m18to36": "18-36 months",
+      "y3to5": "3-5 years",
+      "y6to9": "6-9 years",
+      "y10plus": "10+ years"
+    },
+    "agree": "I understand this is not a diagnosis and agree to talk to an AI assistant.",
+    "startVoice": "Start voice check-in",
+    "startForm": "Answer by tapping instead",
+    "startHint": "Choose your child's age and tick the box to start.",
+    "starting": "Starting...",
+    "englishOnly": "The questions are in English for now.",
+    "demo": "Demo mode: no live voice call. Please answer by tapping.",
+    "errors": {
+      "busy": "Too many check-ins were started from this connection. Please try again in an hour.",
+      "voiceUnavailable": "Voice check-in is not available right now. Please answer by tapping instead.",
+      "mic": "Microphone access was not allowed. You can answer by tapping instead.",
+      "failed": "Something went wrong. Please try again.",
+      "expired": "This check-in has expired. Please start a new one.",
+      "voiceFailed": "The voice call stopped. You can continue by tapping."
+    },
+    "voice": {
+      "connecting": "Connecting...",
+      "listening": "Listening... answer in your own words",
+      "speaking": "Assistant is speaking",
+      "end": "End call",
+      "switchToForm": "Continue by tapping",
+      "progress": "{answered} of {total} questions answered",
+      "transcript": "Conversation",
+      "speakerAi": "AI assistant",
+      "speakerYou": "You",
+      "finishing": "Getting your result..."
+    },
+    "form": {
+      "safetyQuestion": "Safety question {n} of {total}",
+      "questionOf": "Question {n} of {total}",
+      "back": "Back",
+      "next": "Next",
+      "finish": "See my result",
+      "missing": "Please answer every question.",
+      "saving": "Saving..."
+    },
+    "urgent": "Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today.",
+    "result": {
+      "label": "Your check-in result",
+      "headlines": {
+        "noStrongSigns": "No strong signs from this check-in",
+        "discussWithProfessional": "Some areas are worth discussing with a professional",
+        "seeProfessionalSoon": "Please see a professional soon"
+      },
+      "notDiagnosis": "This is a developmental check-in, not a diagnosis.",
+      "domainsTitle": "What your answers show",
+      "domains": {
+        "social": "Social connection",
+        "emotional": "Feelings and safety awareness",
+        "speech": "Speech and communication",
+        "behaviour": "Behaviour and routines",
+        "sensory": "Senses (sounds, lights, touch)",
+        "cognitive": "Attention"
+      },
+      "levels": {
+        "fewSigns": "Few signs in your answers.",
+        "someSigns": "Some signs worth mentioning to a professional.",
+        "moreSigns": "Several signs worth discussing with a professional."
+      },
+      "startAgain": "Start a new check-in"
+    },
+    "find": {
+      "title": "Find a specialist near you",
+      "intro": "Specialists who can assess your child's development: developmental paediatricians, child psychologists, speech-language therapists and occupational therapists.",
+      "locality": "Your locality",
+      "chooseLocality": "Choose a locality",
+      "useMyLocation": "Use my location",
+      "locating": "Finding your location...",
+      "locationDenied": "We could not get your location. Choose a locality instead.",
+      "search": "Show specialists",
+      "searching": "Searching...",
+      "resultsLabel": "Specialists near you",
+      "empty": "No specialists listed near you yet. Try the full directory.",
+      "error": "Could not load specialists. Please try the full directory.",
+      "kmAway": "{distance} km away",
+      "videoAnywhere": "Video consultation",
+      "seeAll": "See all near you: {type}",
+      "openDirectory": "Open the full directory"
+    },
+    "save": {
+      "title": "Save this result",
+      "intro": "Keep this result in your child's profile so you can show it to a professional later. We save it only after you allow it for that child.",
+      "signIn": "Sign in to save",
+      "notGuardian": "Only a parent account can save check-ins.",
+      "child": "Child",
+      "saveTo": "Save this result to {child}",
+      "saving": "Saving...",
+      "saved": "Saved to {child}'s profile.",
+      "viewChild": "Open {child}'s profile",
+      "noChildren": "Add your child in your DoctorNearMe account first, then come back to this page.",
+      "addChild": "Add a child",
+      "consentTitle": "Allow saving check-ins for {child}",
+      "consentAgree": "I have read this and allow it.",
+      "allow": "Allow and save",
+      "cancel": "Cancel",
+      "readFull": "Read the full text",
+      "verifyPhone": "Verify your mobile number before giving permission.",
+      "verifyLink": "Verify now",
+      "outdated": "The permission text was updated. Please reload the page.",
+      "expired": "This check-in has expired and can no longer be saved.",
+      "notSavable": "This check-in cannot be saved.",
+      "failed": "Could not save. Please try again."
+    },
+    "checkins": {
+      "title": "Check-ins",
+      "intro": "Developmental check-ins you saved from the check-in page. This is a developmental check-in, not a diagnosis.",
+      "empty": "No saved check-ins yet.",
+      "take": "Take a developmental check-in",
+      "age": "Age {age}"
+    },
+    "landing": {
+      "navLink": "Developmental check-in",
+      "eyebrow": "For parents",
+      "title": "Worried about your child's development?",
+      "text": "Answer a few short questions by voice or by tapping. About 5 minutes and free. A developmental check-in, not a diagnosis, with specialists near you.",
+      "cta": "Start the developmental check-in"
     }
   }
 }

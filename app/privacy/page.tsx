@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { env } from "@/lib/env";
 import { getT } from "@/lib/i18n/server";
 import { retentionPolicy } from "@/lib/privacy/retention";
+import { UNSAVED_RETENTION_DAYS } from "@/lib/screen/questions";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: `${t("metaTitle")} | DoctorNearMe` };
 }
 
-const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "assessments", "plans", "notifications", "website"] as const;
+const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "assessments", "plans", "screen", "notifications", "website"] as const;
 const PROCESSORS = ["elevenlabs", "gemini", "resend", "whatsapp", "supabase"] as const;
 const RIGHTS = ["access", "correction", "erasure", "withdraw", "grievance", "nominate"] as const;
 
@@ -27,6 +28,7 @@ export default async function PrivacyNoticePage() {
     { key: "inApp", what: t("retention.inApp.what"), how: t("retention.inApp.how", { days: policy.inAppNotificationDays }) },
     { key: "delivery", what: t("retention.delivery.what"), how: t("retention.delivery.how", { days: policy.deliveryContentDays }) },
     { key: "exports", what: t("retention.exports.what"), how: t("retention.exports.how", { days: policy.exportDays }) },
+    { key: "screen", what: t("retention.screen.what"), how: t("retention.screen.how", { days: UNSAVED_RETENTION_DAYS }) },
     { key: "signups", what: t("retention.signups.what"), how: t("retention.signups.how", { months: policy.pilotSignupMonths }) },
     { key: "clinical", what: t("retention.clinical.what"), how: t("retention.clinical.how") },
     { key: "consent", what: t("retention.consent.what"), how: t("retention.consent.how") },

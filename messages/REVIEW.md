@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1610. Not yet approved: 1610.
+Rows: 1719. Not yet approved: 1719.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1467,6 +1467,7 @@ Rows: 1610. Not yet approved: 1610.
 | `privacy.notice.collect.plans` | Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you. | थेरेपी योजनाएँ (IEP): लक्ष्य, देखभाल टीम द्वारा दर्ज की गई प्रगति, और आपके लिए प्रकाशित योजना के संस्करण। | థెరపీ ప్రణాళికలు (IEP): లక్ష్యాలు, సంరక్షణ బృందం నమోదు చేసే పురోగతి, మరియు మీకు ప్రచురించిన ప్రణాళిక వెర్షన్లు. |  | pending |
 | `privacy.notice.collect.notifications` | Notifications we send you in the app, by email or WhatsApp. | ऐप में, ईमेल या WhatsApp पर हमारी भेजी सूचनाएँ। | యాప్‌లో, ఇమెయిల్ లేదా WhatsApp ద్వారా మేము పంపే నోటిఫికేషన్లు. |  | pending |
 | `privacy.notice.collect.website` | If you ask for a demo on our website: name, email, role and centre. | अगर आप हमारी वेबसाइट पर डेमो माँगते हैं: नाम, ईमेल, भूमिका और केंद्र। | మీరు మా వెబ్‌సైట్‌లో డెమో అడిగితే: పేరు, ఇమెయిల్, పాత్ర మరియు కేంద్రం. |  | pending |
+| `privacy.notice.collect.screen` | Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs. | हमारे सार्वजनिक जाँच पेज से विकास जाँच: आपके बच्चे की उम्र का दायरा और आपके जवाब, बिना किसी नाम के। अगर आप आवाज़ इस्तेमाल करते हैं, तो कॉल ElevenLabs द्वारा प्रोसेस की जाती है। | మా పబ్లిక్ పరిశీలన పేజీ నుండి అభివృద్ధి పరిశీలన: మీ బిడ్డ వయస్సు శ్రేణి, మీ సమాధానాలు, ఏ పేరూ లేకుండా. మీరు వాయిస్ ఉపయోగిస్తే, కాల్‌ను ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
 | `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
 | `privacy.notice.purposes` | To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising. | आपका पारिवारिक खाता और आपके चुने विशेषज्ञों के साथ बच्चे की देखभाल चलाने के लिए; इनटेक सारांश, लिखित रूप और मसौदा रिपोर्ट तैयार करने के लिए जिन्हें एक विशेषज्ञ जाँचता है; आपको रिमाइंडर और अपडेट भेजने के लिए; कानून द्वारा ज़रूरी रिकॉर्ड रखने के लिए; और सेवा को सुरक्षित रखने के लिए। हम डेटा कभी नहीं बेचते और विज्ञापन के लिए कभी उपयोग नहीं करते। | మీ కుటుంబ ఖాతాను మరియు మీరు ఎంచుకున్న నిపుణులతో మీ పిల్లల సంరక్షణను నడపడానికి; ఒక నిపుణుడు తనిఖీ చేసే ఇన్‌టేక్ సారాంశాలు, లిఖిత రూపాలు మరియు ముసాయిదా రిపోర్టులు సిద్ధం చేయడానికి; మీకు రిమైండర్లు మరియు అప్‌డేట్లు పంపడానికి; చట్టం కోరే రికార్డులను ఉంచడానికి; మరియు సేవను సురక్షితంగా ఉంచడానికి. మేము డేటాను ఎప్పుడూ అమ్మము, ప్రకటనల కోసం ఎప్పుడూ ఉపయోగించము. |  | pending |
 | `privacy.notice.processorsTitle` | Who processes it for us, and where | हमारे लिए इसे कौन प्रोसेस करता है, और कहाँ | మా కోసం దీన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎక్కడ |  | pending |
@@ -1510,6 +1511,8 @@ Rows: 1610. Not yet approved: 1610.
 | `privacy.notice.retention.consent.how` | Kept as proof of consent, also after deletion (without free text) | सहमति के प्रमाण के रूप में रखे जाते हैं, हटाने के बाद भी (बिना मुक्त पाठ के) | సమ్మతికి రుజువుగా ఉంచబడతాయి, తొలగించిన తర్వాత కూడా (స్వేచ్ఛా పాఠం లేకుండా) |  | pending |
 | `privacy.notice.retention.audit.what` | Security audit log | सुरक्षा ऑडिट लॉग | భద్రతా ఆడిట్ లాగ్ |  | pending |
 | `privacy.notice.retention.audit.how` | {years} years | {years} साल | {years} సంవత్సరాలు |  | pending |
+| `privacy.notice.retention.screen.what` | Check-ins from the public check-in page that you did not save | सार्वजनिक जाँच पेज की वे जाँचें जिन्हें आपने सेव नहीं किया | మీరు సేవ్ చేయని పబ్లిక్ పరిశీలన పేజీ పరిశీలనలు |  | pending |
+| `privacy.notice.retention.screen.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
 | `privacy.notice.rightsTitle` | Your rights | आपके अधिकार | మీ హక్కులు |  | pending |
 | `privacy.notice.rights.access` | Access: download a copy of your child's data from the child's Privacy page in the app. | पहुँच: ऐप में बच्चे के गोपनीयता पेज से बच्चे के डेटा की कॉपी डाउनलोड करें। | యాక్సెస్: యాప్‌లో పిల్లల గోప్యతా పేజీ నుండి పిల్లల డేటా కాపీని డౌన్‌లోడ్ చేయండి. |  | pending |
 | `privacy.notice.rights.correction` | Correction: change details in the app, or ask the clinic to correct a record. | सुधार: ऐप में विवरण बदलें, या क्लिनिक से रिकॉर्ड ठीक करने को कहें। | సవరణ: యాప్‌లో వివరాలు మార్చండి, లేదా రికార్డును సరిచేయమని క్లినిక్‌ను అడగండి. |  | pending |
@@ -1625,3 +1628,109 @@ Rows: 1610. Not yet approved: 1610.
 | `privacy.admin.ops.stuck` | Recordings stuck for more than 30 minutes | 30 मिनट से ज़्यादा अटकी रिकॉर्डिंग | 30 నిమిషాలకు పైగా నిలిచిపోయిన రికార్డింగ్‌లు |  | pending |
 | `privacy.admin.ops.none` | None. | कोई नहीं। | ఏవీ లేవు. |  | pending |
 | `privacy.admin.ops.minutes` | {count} min | {count} मिनट | {count} ని. |  | pending |
+| `screen.metaTitle` | Developmental check-in for parents | माता-पिता के लिए विकास जाँच | తల్లిదండ్రుల కోసం అభివృద్ధి పరిశీలన |  | pending |
+| `screen.metaDescription` | A free 5-minute developmental check-in for parents in Hyderabad, by voice or by tapping. This is a developmental check-in, not a diagnosis. | हैदराबाद के माता-पिता के लिए 5 मिनट की मुफ़्त विकास जाँच, आवाज़ से या टैप करके। यह विकास की एक जाँच है, निदान नहीं। | హైదరాబాద్ తల్లిదండ్రుల కోసం 5 నిమిషాల ఉచిత అభివృద్ధి పరిశీలన, మాట ద్వారా లేదా ట్యాప్ చేసి. ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. |  | pending |
+| `screen.title` | Developmental check-in | विकास जाँच | అభివృద్ధి పరిశీలన |  | pending |
+| `screen.intro` | About 5 minutes. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child. | लगभग 5 मिनट। यह विकास की एक जाँच है, निदान नहीं। केवल एक योग्य विशेषज्ञ ही आपके बच्चे का आकलन कर सकते हैं। | సుమారు 5 నిమిషాలు. ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. అర్హత ఉన్న నిపుణులు మాత్రమే మీ బిడ్డను అంచనా వేయగలరు. |  | pending |
+| `screen.aiDisclosure` | You will talk to an AI assistant. It speaks English. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe. | आप एक AI सहायक से बात करेंगे। वह अंग्रेज़ी बोलता है। आपकी आवाज़ ElevenLabs (USA) द्वारा प्रोसेस की जाती है और DoctorNearMe उसे नहीं रखता। | మీరు ఒక AI సహాయకుడితో మాట్లాడతారు. అది ఇంగ్లీష్‌లో మాట్లాడుతుంది. మీ గొంతును ElevenLabs (USA) ప్రాసెస్ చేస్తుంది, DoctorNearMe దాన్ని నిల్వ చేయదు. |  | pending |
+| `screen.noPersonal` | Please do not say or type your child's name, your name or contact details. We keep only your answers, without any name, and delete them after 30 days unless you save them to your child's profile. | कृपया अपने बच्चे का नाम, अपना नाम या संपर्क जानकारी न बोलें और न लिखें। हम बिना किसी नाम के सिर्फ़ आपके जवाब रखते हैं और 30 दिन बाद हटा देते हैं, जब तक आप उन्हें अपने बच्चे की प्रोफ़ाइल में सेव न करें। | దయచేసి మీ బిడ్డ పేరు, మీ పేరు లేదా సంప్రదింపు వివరాలు చెప్పకండి, టైప్ చేయకండి. మేము ఏ పేరూ లేకుండా మీ సమాధానాలను మాత్రమే ఉంచుతాము, మీరు వాటిని మీ బిడ్డ ప్రొఫైల్‌లో సేవ్ చేయకపోతే 30 రోజుల తర్వాత తొలగిస్తాము. |  | pending |
+| `screen.ageLabel` | Child's age | बच्चे की उम्र | బిడ్డ వయస్సు |  | pending |
+| `screen.ageBands.m18to36` | 18-36 months | 18-36 महीने | 18-36 నెలలు |  | pending |
+| `screen.ageBands.y3to5` | 3-5 years | 3-5 साल | 3-5 సంవత్సరాలు |  | pending |
+| `screen.ageBands.y6to9` | 6-9 years | 6-9 साल | 6-9 సంవత్సరాలు |  | pending |
+| `screen.ageBands.y10plus` | 10+ years | 10+ साल | 10+ సంవత్సరాలు |  | pending |
+| `screen.agree` | I understand this is not a diagnosis and agree to talk to an AI assistant. | मैं समझता/समझती हूँ कि यह निदान नहीं है और AI सहायक से बात करने के लिए सहमत हूँ। | ఇది నిర్ధారణ కాదు అని నేను అర్థం చేసుకున్నాను, AI సహాయకుడితో మాట్లాడటానికి అంగీకరిస్తున్నాను. |  | pending |
+| `screen.startVoice` | Start voice check-in | आवाज़ से जाँच शुरू करें | మాట ద్వారా పరిశీలన ప్రారంభించండి |  | pending |
+| `screen.startForm` | Answer by tapping instead | इसके बजाय टैप करके जवाब दें | బదులుగా ట్యాప్ చేసి సమాధానం ఇవ్వండి |  | pending |
+| `screen.startHint` | Choose your child's age and tick the box to start. | शुरू करने के लिए बच्चे की उम्र चुनें और बॉक्स पर टिक करें। | ప్రారంభించడానికి బిడ్డ వయస్సు ఎంచుకుని బాక్స్‌ను టిక్ చేయండి. |  | pending |
+| `screen.starting` | Starting... | शुरू हो रहा है... | ప్రారంభమవుతోంది... |  | pending |
+| `screen.englishOnly` | The questions are in English for now. | अभी सवाल अंग्रेज़ी में हैं। | ప్రస్తుతం ప్రశ్నలు ఇంగ్లీష్‌లో ఉన్నాయి. |  | pending |
+| `screen.demo` | Demo mode: no live voice call. Please answer by tapping. | डेमो मोड: कोई लाइव वॉइस कॉल नहीं। कृपया टैप करके जवाब दें। | డెమో మోడ్: లైవ్ వాయిస్ కాల్ లేదు. దయచేసి ట్యాప్ చేసి సమాధానం ఇవ్వండి. |  | pending |
+| `screen.errors.busy` | Too many check-ins were started from this connection. Please try again in an hour. | इस कनेक्शन से बहुत सारी जाँचें शुरू की गई हैं। कृपया एक घंटे बाद फिर कोशिश करें। | ఈ కనెక్షన్ నుండి చాలా పరిశీలనలు ప్రారంభించబడ్డాయి. దయచేసి ఒక గంట తర్వాత మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `screen.errors.voiceUnavailable` | Voice check-in is not available right now. Please answer by tapping instead. | आवाज़ से जाँच अभी उपलब्ध नहीं है। कृपया इसके बजाय टैप करके जवाब दें। | మాట ద్వారా పరిశీలన ప్రస్తుతం అందుబాటులో లేదు. దయచేసి బదులుగా ట్యాప్ చేసి సమాధానం ఇవ్వండి. |  | pending |
+| `screen.errors.mic` | Microphone access was not allowed. You can answer by tapping instead. | माइक्रोफ़ोन की अनुमति नहीं मिली। आप इसके बजाय टैप करके जवाब दे सकते हैं। | మైక్రోఫోన్ అనుమతి ఇవ్వలేదు. మీరు బదులుగా ట్యాప్ చేసి సమాధానం ఇవ్వవచ్చు. |  | pending |
+| `screen.errors.failed` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `screen.errors.expired` | This check-in has expired. Please start a new one. | इस जाँच का समय खत्म हो गया है। कृपया नई जाँच शुरू करें। | ఈ పరిశీలన గడువు ముగిసింది. దయచేసి కొత్తది ప్రారంభించండి. |  | pending |
+| `screen.errors.voiceFailed` | The voice call stopped. You can continue by tapping. | वॉइस कॉल रुक गई। आप टैप करके जारी रख सकते हैं। | వాయిస్ కాల్ ఆగిపోయింది. మీరు ట్యాప్ చేసి కొనసాగించవచ్చు. |  | pending |
+| `screen.voice.connecting` | Connecting... | कनेक्ट हो रहा है... | కనెక్ట్ అవుతోంది... |  | pending |
+| `screen.voice.listening` | Listening... answer in your own words | सुन रहा है... अपने शब्दों में जवाब दें | వింటోంది... మీ మాటల్లో సమాధానం ఇవ్వండి |  | pending |
+| `screen.voice.speaking` | Assistant is speaking | सहायक बोल रहा है | సహాయకుడు మాట్లాడుతున్నారు |  | pending |
+| `screen.voice.end` | End call | कॉल समाप्त करें | కాల్ ముగించండి |  | pending |
+| `screen.voice.switchToForm` | Continue by tapping | टैप करके जारी रखें | ట్యాప్ చేసి కొనసాగించండి |  | pending |
+| `screen.voice.progress` | {answered} of {total} questions answered | {total} में से {answered} सवालों के जवाब दिए गए | {total} లో {answered} ప్రశ్నలకు సమాధానం ఇచ్చారు |  | pending |
+| `screen.voice.transcript` | Conversation | बातचीत | సంభాషణ |  | pending |
+| `screen.voice.speakerAi` | AI assistant | AI सहायक | AI సహాయకుడు |  | pending |
+| `screen.voice.speakerYou` | You | आप | మీరు |  | pending |
+| `screen.voice.finishing` | Getting your result... | आपका परिणाम तैयार हो रहा है... | మీ ఫలితం సిద్ధమవుతోంది... |  | pending |
+| `screen.form.safetyQuestion` | Safety question {n} of {total} | सुरक्षा सवाल {n} / {total} | భద్రతా ప్రశ్న {n} / {total} |  | pending |
+| `screen.form.questionOf` | Question {n} of {total} | सवाल {n} / {total} | ప్రశ్న {n} / {total} |  | pending |
+| `screen.form.back` | Back | पीछे | వెనుకకు |  | pending |
+| `screen.form.next` | Next | आगे | తర్వాత |  | pending |
+| `screen.form.finish` | See my result | मेरा परिणाम देखें | నా ఫలితం చూడండి |  | pending |
+| `screen.form.missing` | Please answer every question. | कृपया हर सवाल का जवाब दें। | దయచేసి ప్రతి ప్రశ్నకు సమాధానం ఇవ్వండి. |  | pending |
+| `screen.form.saving` | Saving... | सेव हो रहा है... | సేవ్ అవుతోంది... |  | pending |
+| `screen.urgent` | Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today. | कृपया अभी मदद लें। एम्बुलेंस के लिए 108 या आपात स्थिति के लिए 112 पर कॉल करें। अगर आपका बच्चा तुरंत खतरे में नहीं है, तो आज ही अपने बच्चे के डॉक्टर से संपर्क करें। | దయచేసి ఇప్పుడే సహాయం పొందండి. అంబులెన్స్ కోసం 108 లేదా అత్యవసర పరిస్థితుల కోసం 112 కు కాల్ చేయండి. మీ బిడ్డ వెంటనే ప్రమాదంలో లేకపోతే, ఈ రోజే మీ బిడ్డ డాక్టర్‌ను సంప్రదించండి. |  | pending |
+| `screen.result.label` | Your check-in result | आपकी जाँच का परिणाम | మీ పరిశీలన ఫలితం |  | pending |
+| `screen.result.headlines.noStrongSigns` | No strong signs from this check-in | इस जाँच में कोई मज़बूत संकेत नहीं | ఈ పరిశీలనలో బలమైన సంకేతాలు లేవు |  | pending |
+| `screen.result.headlines.discussWithProfessional` | Some areas are worth discussing with a professional | कुछ बातों पर किसी विशेषज्ञ से चर्चा करना अच्छा रहेगा | కొన్ని విషయాలను నిపుణులతో చర్చించడం మంచిది |  | pending |
+| `screen.result.headlines.seeProfessionalSoon` | Please see a professional soon | कृपया जल्द किसी विशेषज्ञ से मिलें | దయచేసి త్వరలో నిపుణులను కలవండి |  | pending |
+| `screen.result.notDiagnosis` | This is a developmental check-in, not a diagnosis. | यह विकास की एक जाँच है, निदान नहीं। | ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. |  | pending |
+| `screen.result.domainsTitle` | What your answers show | आपके जवाब क्या दिखाते हैं | మీ సమాధానాలు ఏమి చూపిస్తున్నాయి |  | pending |
+| `screen.result.domains.social` | Social connection | सामाजिक जुड़ाव | సామాజిక అనుబంధం |  | pending |
+| `screen.result.domains.emotional` | Feelings and safety awareness | भावनाएँ और खतरे की समझ | భావాలు, ప్రమాదం గురించి అవగాహన |  | pending |
+| `screen.result.domains.speech` | Speech and communication | बोलना और बातचीत | మాట్లాడటం, సంభాషణ |  | pending |
+| `screen.result.domains.behaviour` | Behaviour and routines | व्यवहार और दिनचर्या | ప్రవర్తన, దినచర్య |  | pending |
+| `screen.result.domains.sensory` | Senses (sounds, lights, touch) | इंद्रियाँ (आवाज़, रोशनी, छूना) | ఇంద్రియాలు (శబ్దాలు, వెలుతురు, స్పర్శ) |  | pending |
+| `screen.result.domains.cognitive` | Attention | ध्यान | శ్రద్ధ |  | pending |
+| `screen.result.levels.fewSigns` | Few signs in your answers. | आपके जवाबों में कम संकेत। | మీ సమాధానాల్లో తక్కువ సంకేతాలు. |  | pending |
+| `screen.result.levels.someSigns` | Some signs worth mentioning to a professional. | कुछ संकेत, जिनके बारे में किसी विशेषज्ञ को बताना अच्छा रहेगा। | నిపుణులకు చెప్పదగిన కొన్ని సంకేతాలు. |  | pending |
+| `screen.result.levels.moreSigns` | Several signs worth discussing with a professional. | कई संकेत, जिन पर किसी विशेषज्ञ से चर्चा करनी चाहिए। | నిపుణులతో చర్చించాల్సిన అనేక సంకేతాలు. |  | pending |
+| `screen.result.startAgain` | Start a new check-in | नई जाँच शुरू करें | కొత్త పరిశీలన ప్రారంభించండి |  | pending |
+| `screen.find.title` | Find a specialist near you | अपने पास विशेषज्ञ खोजें | మీ దగ్గర నిపుణులను కనుగొనండి |  | pending |
+| `screen.find.intro` | Specialists who can assess your child's development: developmental paediatricians, child psychologists, speech-language therapists and occupational therapists. | ऐसे विशेषज्ञ जो आपके बच्चे के विकास का आकलन कर सकते हैं: विकास बाल रोग विशेषज्ञ, बाल मनोवैज्ञानिक, स्पीच-लैंग्वेज थेरेपिस्ट और ऑक्यूपेशनल थेरेपिस्ट। | మీ బిడ్డ అభివృద్ధిని అంచనా వేయగల నిపుణులు: డెవలప్‌మెంటల్ పీడియాట్రీషియన్లు, చైల్డ్ సైకాలజిస్టులు, స్పీచ్-లాంగ్వేజ్ థెరపిస్టులు, ఆక్యుపేషనల్ థెరపిస్టులు. |  | pending |
+| `screen.find.locality` | Your locality | आपका इलाका | మీ ప్రాంతం |  | pending |
+| `screen.find.chooseLocality` | Choose a locality | इलाका चुनें | ప్రాంతాన్ని ఎంచుకోండి |  | pending |
+| `screen.find.useMyLocation` | Use my location | मेरी लोकेशन इस्तेमाल करें | నా లొకేషన్ ఉపయోగించండి |  | pending |
+| `screen.find.locating` | Finding your location... | आपकी लोकेशन खोजी जा रही है... | మీ లొకేషన్ కనుగొంటోంది... |  | pending |
+| `screen.find.locationDenied` | We could not get your location. Choose a locality instead. | हमें आपकी लोकेशन नहीं मिल सकी। इसके बजाय इलाका चुनें। | మీ లొకేషన్ లభించలేదు. బదులుగా ప్రాంతాన్ని ఎంచుకోండి. |  | pending |
+| `screen.find.search` | Show specialists | विशेषज्ञ दिखाएँ | నిపుణులను చూపించండి |  | pending |
+| `screen.find.searching` | Searching... | खोज रहे हैं... | వెతుకుతోంది... |  | pending |
+| `screen.find.resultsLabel` | Specialists near you | आपके पास के विशेषज्ञ | మీ దగ్గరి నిపుణులు |  | pending |
+| `screen.find.empty` | No specialists listed near you yet. Try the full directory. | आपके पास अभी कोई विशेषज्ञ सूचीबद्ध नहीं है। पूरी डायरेक्टरी देखें। | మీ దగ్గర ఇంకా నిపుణులు జాబితాలో లేరు. పూర్తి డైరెక్టరీ చూడండి. |  | pending |
+| `screen.find.error` | Could not load specialists. Please try the full directory. | विशेषज्ञ लोड नहीं हो सके। कृपया पूरी डायरेक्टरी देखें। | నిపుణులను లోడ్ చేయలేకపోయాము. దయచేసి పూర్తి డైరెక్టరీ చూడండి. |  | pending |
+| `screen.find.kmAway` | {distance} km away | {distance} किमी दूर | {distance} కి.మీ. దూరం |  | pending |
+| `screen.find.videoAnywhere` | Video consultation | वीडियो परामर्श | వీడియో సంప్రదింపు |  | pending |
+| `screen.find.seeAll` | See all near you: {type} | अपने पास सभी देखें: {type} | మీ దగ్గర అందరినీ చూడండి: {type} |  | pending |
+| `screen.find.openDirectory` | Open the full directory | पूरी डायरेक्टरी खोलें | పూర్తి డైరెక్టరీ తెరవండి |  | pending |
+| `screen.save.title` | Save this result | यह परिणाम सेव करें | ఈ ఫలితాన్ని సేవ్ చేయండి |  | pending |
+| `screen.save.intro` | Keep this result in your child's profile so you can show it to a professional later. We save it only after you allow it for that child. | इस परिणाम को अपने बच्चे की प्रोफ़ाइल में रखें ताकि बाद में किसी विशेषज्ञ को दिखा सकें। हम इसे तभी सेव करते हैं जब आप उस बच्चे के लिए इसकी अनुमति दें। | తర్వాత నిపుణులకు చూపించడానికి ఈ ఫలితాన్ని మీ బిడ్డ ప్రొఫైల్‌లో ఉంచండి. ఆ బిడ్డ కోసం మీరు అనుమతి ఇచ్చిన తర్వాత మాత్రమే మేము దీన్ని సేవ్ చేస్తాము. |  | pending |
+| `screen.save.signIn` | Sign in to save | सेव करने के लिए साइन इन करें | సేవ్ చేయడానికి సైన్ ఇన్ చేయండి |  | pending |
+| `screen.save.notGuardian` | Only a parent account can save check-ins. | केवल माता-पिता का खाता ही जाँच सेव कर सकता है। | తల్లిదండ్రుల ఖాతా మాత్రమే పరిశీలనలను సేవ్ చేయగలదు. |  | pending |
+| `screen.save.child` | Child | बच्चा | బిడ్డ |  | pending |
+| `screen.save.saveTo` | Save this result to {child} | यह परिणाम {child} के लिए सेव करें | ఈ ఫలితాన్ని {child} కోసం సేవ్ చేయండి |  | pending |
+| `screen.save.saving` | Saving... | सेव हो रहा है... | సేవ్ అవుతోంది... |  | pending |
+| `screen.save.saved` | Saved to {child}'s profile. | {child} की प्रोफ़ाइल में सेव किया गया। | {child} ప్రొఫైల్‌లో సేవ్ చేయబడింది. |  | pending |
+| `screen.save.viewChild` | Open {child}'s profile | {child} की प्रोफ़ाइल खोलें | {child} ప్రొఫైల్ తెరవండి |  | pending |
+| `screen.save.noChildren` | Add your child in your DoctorNearMe account first, then come back to this page. | पहले अपने DoctorNearMe खाते में अपने बच्चे को जोड़ें, फिर इस पेज पर वापस आएँ। | ముందుగా మీ DoctorNearMe ఖాతాలో మీ బిడ్డను జోడించి, తర్వాత ఈ పేజీకి తిరిగి రండి. |  | pending |
+| `screen.save.addChild` | Add a child | बच्चा जोड़ें | బిడ్డను జోడించండి |  | pending |
+| `screen.save.consentTitle` | Allow saving check-ins for {child} | {child} के लिए जाँच सेव करने की अनुमति दें | {child} కోసం పరిశీలనలను సేవ్ చేయడానికి అనుమతించండి |  | pending |
+| `screen.save.consentAgree` | I have read this and allow it. | मैंने इसे पढ़ लिया है और अनुमति देता/देती हूँ। | నేను ఇది చదివాను, అనుమతిస్తున్నాను. |  | pending |
+| `screen.save.allow` | Allow and save | अनुमति दें और सेव करें | అనుమతించి సేవ్ చేయండి |  | pending |
+| `screen.save.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `screen.save.readFull` | Read the full text | पूरा पाठ पढ़ें | పూర్తి పాఠం చదవండి |  | pending |
+| `screen.save.verifyPhone` | Verify your mobile number before giving permission. | अनुमति देने से पहले अपना मोबाइल नंबर सत्यापित करें। | అనుమతి ఇచ్చే ముందు మీ మొబైల్ నంబర్‌ను ధృవీకరించండి. |  | pending |
+| `screen.save.verifyLink` | Verify now | अभी सत्यापित करें | ఇప్పుడు ధృవీకరించండి |  | pending |
+| `screen.save.outdated` | The permission text was updated. Please reload the page. | अनुमति का पाठ बदल गया है। कृपया पेज फिर से लोड करें। | అనుమతి పాఠం మారింది. దయచేసి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `screen.save.expired` | This check-in has expired and can no longer be saved. | इस जाँच का समय खत्म हो गया है और इसे अब सेव नहीं किया जा सकता। | ఈ పరిశీలన గడువు ముగిసింది, ఇక సేవ్ చేయలేరు. |  | pending |
+| `screen.save.notSavable` | This check-in cannot be saved. | यह जाँच सेव नहीं की जा सकती। | ఈ పరిశీలనను సేవ్ చేయలేరు. |  | pending |
+| `screen.save.failed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर कोशिश करें। | సేవ్ చేయలేకపోయాము. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `screen.checkins.title` | Check-ins | जाँचें | పరిశీలనలు |  | pending |
+| `screen.checkins.intro` | Developmental check-ins you saved from the check-in page. This is a developmental check-in, not a diagnosis. | विकास जाँचें जो आपने जाँच पेज से सेव की हैं। यह विकास की एक जाँच है, निदान नहीं। | పరిశీలన పేజీ నుండి మీరు సేవ్ చేసిన అభివృద్ధి పరిశీలనలు. ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. |  | pending |
+| `screen.checkins.empty` | No saved check-ins yet. | अभी कोई सेव की गई जाँच नहीं। | ఇంకా సేవ్ చేసిన పరిశీలనలు లేవు. |  | pending |
+| `screen.checkins.take` | Take a developmental check-in | विकास जाँच करें | అభివృద్ధి పరిశీలన చేయండి |  | pending |
+| `screen.checkins.age` | Age {age} | उम्र {age} | వయస్సు {age} |  | pending |
+| `screen.landing.navLink` | Developmental check-in | विकास जाँच | అభివృద్ధి పరిశీలన |  | pending |
+| `screen.landing.eyebrow` | For parents | माता-पिता के लिए | తల్లిదండ్రుల కోసం |  | pending |
+| `screen.landing.title` | Worried about your child's development? | अपने बच्चे के विकास को लेकर चिंतित हैं? | మీ బిడ్డ అభివృద్ధి గురించి ఆందోళనగా ఉందా? |  | pending |
+| `screen.landing.text` | Answer a few short questions by voice or by tapping. About 5 minutes and free. A developmental check-in, not a diagnosis, with specialists near you. | आवाज़ से या टैप करके कुछ छोटे सवालों के जवाब दें। लगभग 5 मिनट, मुफ़्त: विकास की एक जाँच, निदान नहीं, और आपके पास के विशेषज्ञ। | మాట ద్వారా లేదా ట్యాప్ చేసి కొన్ని చిన్న ప్రశ్నలకు సమాధానం ఇవ్వండి. సుమారు 5 నిమిషాలు, ఉచితం: అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు, మీ దగ్గరి నిపుణులతో. |  | pending |
+| `screen.landing.cta` | Start the developmental check-in | विकास जाँच शुरू करें | అభివృద్ధి పరిశీలన ప్రారంభించండి |  | pending |
