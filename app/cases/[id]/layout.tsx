@@ -6,6 +6,7 @@ import { SevereAllergyBanner } from "@/components/health/SevereAllergyBanner";
 import { languageName } from "@/lib/cases/format";
 import { getCase } from "@/lib/queries/cases";
 import { requireCasePage } from "@/lib/authz";
+import { userCanPrescribe } from "@/lib/rx";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export default async function CaseLayout({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  await requireCasePage(id);
+  const actor = await requireCasePage(id);
   const caseRow = await getCase(id);
   if (!caseRow) notFound();
 
@@ -33,7 +34,7 @@ export default async function CaseLayout({
         </p>
       </header>
       <div className="print:hidden">
-        <CaseTabs caseId={caseRow.id} />
+        <CaseTabs caseId={caseRow.id} showPrescriptions={await userCanPrescribe(actor.user.id)} />
       </div>
       <section className="pt-5">{children}</section>
     </div>

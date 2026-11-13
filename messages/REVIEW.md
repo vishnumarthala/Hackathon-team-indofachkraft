@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2244. Not yet approved: 2244.
+Rows: 2329. Not yet approved: 2329.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1030,6 +1030,7 @@ Rows: 2244. Not yet approved: 2244.
 | `caseTabs.goals` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
 | `caseTabs.messages` | Messages | संदेश | సందేశాలు |  | pending |
 | `caseTabs.homeProgram` | Home program | घर का कार्यक्रम | ఇంటి కార్యక్రమం |  | pending |
+| `caseTabs.prescriptions` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -2259,3 +2260,87 @@ Rows: 2244. Not yet approved: 2244.
 | `voiceBooking.errors.busy` | Too many voice bookings were started from this connection. Please try again in an hour. | इस कनेक्शन से बहुत सारी वॉइस बुकिंग शुरू की गईं। कृपया एक घंटे बाद फिर कोशिश करें। | ఈ కనెక్షన్ నుండి చాలా వాయిస్ బుకింగ్‌లు ప్రారంభించబడ్డాయి. దయచేసి ఒక గంట తర్వాత మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `voiceBooking.errors.unavailable` | Voice booking is not available right now. Please use the search below. | आवाज़ से बुकिंग अभी उपलब्ध नहीं है। कृपया नीचे खोज का उपयोग करें। | వాయిస్ బుకింగ్ ఇప్పుడు అందుబాటులో లేదు. దయచేసి కింద ఉన్న శోధనను ఉపయోగించండి. |  | pending |
 | `voiceBooking.errors.connect` | The call could not connect. Please use the search below. | कॉल कनेक्ट नहीं हो सकी। कृपया नीचे खोज का उपयोग करें। | కాల్ కనెక్ట్ కాలేదు. దయచేసి కింద ఉన్న శోధనను ఉపయోగించండి. |  | pending |
+| `rx.title` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
+| `rx.intro` | Only verified prescribers see this tab. AI drafts are suggestions: review every item before you sign. | यह टैब केवल सत्यापित पर्चा लिखने वाले डॉक्टर देखते हैं। AI ड्राफ़्ट केवल सुझाव हैं: साइन करने से पहले हर दवा जाँचें। | ఈ ట్యాబ్ ధృవీకరించబడిన ప్రిస్క్రైబర్లకు మాత్రమే కనిపిస్తుంది. AI డ్రాఫ్ట్‌లు సూచనలు మాత్రమే: సంతకం చేసే ముందు ప్రతి మందును తనిఖీ చేయండి. |  | pending |
+| `rx.aiLabel` | Suggested by DoctorNearMe - the clinician decides | DoctorNearMe का सुझाव - फ़ैसला क्लिनिशियन करते हैं | DoctorNearMe సూచన - నిర్ణయం క్లినీషియన్‌దే |  | pending |
+| `rx.new` | New prescription | नया पर्चा | కొత్త ప్రిస్క్రిప్షన్ |  | pending |
+| `rx.creating` | Starting… | शुरू हो रहा है… | ప్రారంభిస్తోంది… |  | pending |
+| `rx.fromDraft.title` | AI prescription draft | AI पर्चा ड्राफ़्ट | AI ప్రిస్క్రిప్షన్ డ్రాఫ్ట్ |  | pending |
+| `rx.fromDraft.intro` | Start a prescription from this draft, then review and edit every medicine before signing. | इस ड्राफ़्ट से पर्चा शुरू करें, फिर साइन करने से पहले हर दवा जाँचें और बदलें। | ఈ డ్రాఫ్ట్ నుండి ప్రిస్క్రిప్షన్ ప్రారంభించండి, తర్వాత సంతకం చేసే ముందు ప్రతి మందును తనిఖీ చేసి సవరించండి. |  | pending |
+| `rx.fromDraft.start` | Start from this draft | इस ड्राफ़्ट से शुरू करें | ఈ డ్రాఫ్ట్ నుండి ప్రారంభించండి |  | pending |
+| `rx.fromDraft.open` | Open the prescription started from this draft | इस ड्राफ़्ट से शुरू किया गया पर्चा खोलें | ఈ డ్రాఫ్ట్ నుండి ప్రారంభించిన ప్రిస్క్రిప్షన్‌ను తెరవండి |  | pending |
+| `rx.fromDraft.none` | The draft has no medicines. | इस ड्राफ़्ट में कोई दवा नहीं है। | ఈ డ్రాఫ్ట్‌లో మందులు లేవు. |  | pending |
+| `rx.list.heading` | All prescriptions | सभी पर्चे | అన్ని ప్రిస్క్రిప్షన్లు |  | pending |
+| `rx.list.empty` | No prescriptions yet. | अभी कोई पर्चा नहीं है। | ఇంకా ప్రిస్క్రిప్షన్లు లేవు. |  | pending |
+| `rx.list.items_one` | {count} medicine | {count} दवा | {count} మందు |  | pending |
+| `rx.list.items_other` | {count} medicines | {count} दवाएँ | {count} మందులు |  | pending |
+| `rx.list.signedOn` | Signed {date} by {name} | {date} को {name} ने साइन किया | {date}న {name} సంతకం చేశారు |  | pending |
+| `rx.list.startedOn` | Started {date} by {name} | {date} को {name} ने शुरू किया | {date}న {name} ప్రారంభించారు |  | pending |
+| `rx.list.fromAi` | From an AI draft | AI ड्राफ़्ट से | AI డ్రాఫ్ట్ నుండి |  | pending |
+| `rx.list.open` | Open | खोलें | తెరవండి |  | pending |
+| `rx.status.draft` | Draft | ड्राफ़्ट | డ్రాఫ్ట్ |  | pending |
+| `rx.status.signed` | Signed | साइन किया गया | సంతకం చేయబడింది |  | pending |
+| `rx.status.void` | Cancelled | रद्द | రద్దు |  | pending |
+| `rx.editor.heading` | Draft prescription | पर्चे का ड्राफ़्ट | ప్రిస్క్రిప్షన్ డ్రాఫ్ట్ |  | pending |
+| `rx.editor.signedHeading` | Signed prescription | साइन किया गया पर्चा | సంతకం చేసిన ప్రిస్క్రిప్షన్ |  | pending |
+| `rx.editor.medicines` | Medicines | दवाएँ | మందులు |  | pending |
+| `rx.editor.medicine` | Medicine {n} | दवा {n} | మందు {n} |  | pending |
+| `rx.editor.drug` | Medicine (generic name) | दवा (जेनेरिक नाम) | మందు (జెనెరిక్ పేరు) |  | pending |
+| `rx.editor.strength` | Strength | ताक़त | బలం |  | pending |
+| `rx.editor.form` | Form | रूप | రూపం |  | pending |
+| `rx.editor.dose` | Dose | खुराक | మోతాదు |  | pending |
+| `rx.editor.frequency` | How often | कितनी बार | ఎన్నిసార్లు |  | pending |
+| `rx.editor.duration` | Days | दिन | రోజులు |  | pending |
+| `rx.editor.route` | Route | कैसे लें | ఎలా తీసుకోవాలి |  | pending |
+| `rx.editor.instructions` | Instructions (optional) | निर्देश (वैकल्पिक) | సూచనలు (ఐచ్ఛికం) |  | pending |
+| `rx.editor.add` | Add medicine | दवा जोड़ें | మందు జోడించండి |  | pending |
+| `rx.editor.remove` | Remove medicine {n} | दवा {n} हटाएँ | మందు {n} తీసివేయండి |  | pending |
+| `rx.editor.maxItems` | A prescription can have at most 15 medicines. | एक पर्चे में अधिकतम 15 दवाएँ हो सकती हैं। | ఒక ప్రిస్క్రిప్షన్‌లో గరిష్ఠంగా 15 మందులు ఉండవచ్చు. |  | pending |
+| `rx.editor.advice` | Advice | सलाह | సలహా |  | pending |
+| `rx.editor.followUp` | Follow-up | फ़ॉलो-अप | ఫాలో-అప్ |  | pending |
+| `rx.editor.save` | Save draft | ड्राफ़्ट सेव करें | డ్రాఫ్ట్ సేవ్ చేయండి |  | pending |
+| `rx.editor.saving` | Saving… | सेव हो रहा है… | సేవ్ అవుతోంది… |  | pending |
+| `rx.editor.saved` | Draft saved | ड्राफ़्ट सेव हो गया | డ్రాఫ్ట్ సేవ్ అయింది |  | pending |
+| `rx.editor.unsaved` | Unsaved changes | बदलाव सेव नहीं हुए | మార్పులు సేవ్ కాలేదు |  | pending |
+| `rx.editor.sign` | Sign and generate PDF | साइन करें और PDF बनाएँ | సంతకం చేసి PDF రూపొందించండి |  | pending |
+| `rx.editor.readOnly` | Signed prescriptions cannot be changed. Void it and write a new one if something is wrong. | साइन किए गए पर्चे बदले नहीं जा सकते। कुछ गलत हो तो इसे रद्द करें और नया लिखें। | సంతకం చేసిన ప్రిస్క్రిప్షన్లను మార్చలేరు. ఏదైనా తప్పు ఉంటే దాన్ని రద్దు చేసి కొత్తది రాయండి. |  | pending |
+| `rx.editor.allergyMatch` | Matches a recorded allergy: {substance} | दर्ज एलर्जी से मेल खाती है: {substance} | నమోదైన అలర్జీతో సరిపోలుతోంది: {substance} |  | pending |
+| `rx.forms.tablet` | Tablet | गोली | టాబ్లెట్ |  | pending |
+| `rx.forms.syrup` | Syrup | सिरप | సిరప్ |  | pending |
+| `rx.forms.drops` | Drops | ड्रॉप्स | డ్రాప్స్ |  | pending |
+| `rx.forms.capsule` | Capsule | कैप्सूल | క్యాప్సూల్ |  | pending |
+| `rx.forms.other` | Other | अन्य | ఇతర |  | pending |
+| `rx.allergies.listed` | Allergies recorded by the family: {list} | परिवार द्वारा दर्ज एलर्जी: {list} | కుటుంబం నమోదు చేసిన అలర్జీలు: {list} |  | pending |
+| `rx.allergies.none` | The family recorded no known allergies. | परिवार ने दर्ज किया है कि कोई ज्ञात एलर्जी नहीं है। | తెలిసిన అలర్జీలు లేవని కుటుంబం నమోదు చేసింది. |  | pending |
+| `rx.allergies.unknown` | Allergies are not recorded. Ask the family before prescribing: the prescription will say the allergy status is unknown. | एलर्जी दर्ज नहीं है। पर्चा लिखने से पहले परिवार से पूछें: पर्चे पर लिखा होगा कि एलर्जी की स्थिति अज्ञात है। | అలర్జీలు నమోదు కాలేదు. ప్రిస్క్రైబ్ చేసే ముందు కుటుంబాన్ని అడగండి: అలర్జీ స్థితి తెలియదని ప్రిస్క్రిప్షన్‌లో ఉంటుంది. |  | pending |
+| `rx.allergies.medicines` | Current medicines (from the family): {list} | अभी चल रही दवाएँ (परिवार से): {list} | ప్రస్తుత మందులు (కుటుంబం నుండి): {list} |  | pending |
+| `rx.confirm.title` | Sign this prescription? | यह पर्चा साइन करें? | ఈ ప్రిస్క్రిప్షన్‌పై సంతకం చేయాలా? |  | pending |
+| `rx.confirm.text` | I have reviewed every item and take responsibility for this prescription. | मैंने हर दवा जाँच ली है और इस पर्चे की ज़िम्मेदारी लेता/लेती हूँ। | నేను ప్రతి అంశాన్ని సమీక్షించాను మరియు ఈ ప్రిస్క్రిప్షన్‌కు బాధ్యత తీసుకుంటున్నాను. |  | pending |
+| `rx.confirm.matches` | These medicines match a recorded allergy: {list} | ये दवाएँ दर्ज एलर्जी से मेल खाती हैं: {list} | ఈ మందులు నమోదైన అలర్జీతో సరిపోలుతున్నాయి: {list} |  | pending |
+| `rx.confirm.overrideLabel` | Reason to prescribe despite the allergy | एलर्जी के बावजूद यह दवा लिखने का कारण | అలర్జీ ఉన్నా ఈ మందు రాయడానికి కారణం |  | pending |
+| `rx.confirm.sign` | Sign | साइन करें | సంతకం చేయండి |  | pending |
+| `rx.confirm.signing` | Signing… | साइन हो रहा है… | సంతకం అవుతోంది… |  | pending |
+| `rx.confirm.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `rx.signed.by` | Signed by {name} on {date} | {name} ने {date} को साइन किया | {date}న {name} సంతకం చేశారు |  | pending |
+| `rx.signed.download` | Download PDF | PDF डाउनलोड करें | PDF డౌన్‌లోడ్ చేయండి |  | pending |
+| `rx.signed.hash` | Content hash (SHA-256): {hash} | कंटेंट हैश (SHA-256): {hash} | కంటెంట్ హాష్ (SHA-256): {hash} |  | pending |
+| `rx.signed.void` | Void | रद्द करें | రద్దు చేయండి |  | pending |
+| `rx.signed.voidTitle` | Void this prescription? | यह पर्चा रद्द करें? | ఈ ప్రిస్క్రిప్షన్‌ను రద్దు చేయాలా? |  | pending |
+| `rx.signed.voidIntro` | The family will see it as cancelled by the prescriber. This cannot be undone. | परिवार इसे डॉक्टर द्वारा रद्द किया गया देखेगा। यह वापस नहीं हो सकता। | ప్రిస్క్రైబర్ రద్దు చేసినట్లు కుటుంబానికి కనిపిస్తుంది. దీన్ని వెనక్కి తీసుకోలేరు. |  | pending |
+| `rx.signed.voidReason` | Reason | कारण | కారణం |  | pending |
+| `rx.signed.voidConfirm` | Void prescription | पर्चा रद्द करें | ప్రిస్క్రిప్షన్ రద్దు చేయండి |  | pending |
+| `rx.signed.voiding` | Voiding… | रद्द हो रहा है… | రద్దు చేస్తోంది… |  | pending |
+| `rx.signed.voided` | Cancelled on {date}. Reason: {reason} | {date} को रद्द किया गया। कारण: {reason} | {date}న రద్దు చేయబడింది. కారణం: {reason} |  | pending |
+| `rx.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर से कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `rx.errors.reasonRequired` | Give a reason. | कारण लिखें। | కారణం రాయండి. |  | pending |
+| `rx.errors.confirmRequired` | Tick the box to confirm. | पुष्टि के लिए बॉक्स पर टिक करें। | ధృవీకరించడానికి బాక్స్‌ను టిక్ చేయండి. |  | pending |
+| `rx.family.link` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
+| `rx.family.back` | Back to {name} | {name} पर वापस जाएँ | {name} వద్దకు తిరిగి వెళ్ళండి |  | pending |
+| `rx.family.title` | {name}'s prescriptions | {name} के पर्चे | {name} ప్రిస్క్రిప్షన్లు |  | pending |
+| `rx.family.intro` | Prescriptions your child's doctors signed and shared with you. | आपके बच्चे के डॉक्टरों द्वारा साइन किए और आपके साथ साझा किए गए पर्चे। | మీ పిల్లల డాక్టర్లు సంతకం చేసి మీతో పంచుకున్న ప్రిస్క్రిప్షన్లు. |  | pending |
+| `rx.family.empty` | No prescriptions have been shared with you yet. | अभी तक आपके साथ कोई पर्चा साझा नहीं किया गया है। | ఇంకా మీతో ఏ ప్రిస్క్రిప్షన్ పంచుకోలేదు. |  | pending |
+| `rx.family.from` | From {org} | {org} से | {org} నుండి |  | pending |
+| `rx.family.signedBy` | Signed by {name} on {date} | {name} ने {date} को साइन किया | {date}న {name} సంతకం చేశారు |  | pending |
+| `rx.family.cancelled` | Cancelled by prescriber | डॉक्टर ने रद्द किया | ప్రిస్క్రైబర్ రద్దు చేశారు |  | pending |
+| `rx.family.cancelledNote` | Do not use this prescription. Contact your child's doctor if you have questions. | इस पर्चे का उपयोग न करें। सवाल हों तो अपने बच्चे के डॉक्टर से संपर्क करें। | ఈ ప్రిస్క్రిప్షన్‌ను ఉపయోగించవద్దు. ప్రశ్నలు ఉంటే మీ పిల్లల డాక్టర్‌ను సంప్రదించండి. |  | pending |
+| `rx.family.download` | Download PDF | PDF डाउनलोड करें | PDF డౌన్‌లోడ్ చేయండి |  | pending |

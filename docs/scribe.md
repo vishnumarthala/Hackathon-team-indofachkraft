@@ -61,7 +61,7 @@ Prompts: `prompts/session-note-therapy.md`, `prompts/session-note-medical.md`, `
      session date, IST) and links `progress_id`; `{ status: "rejected" }` records nothing. One decision per suggestion
      (409 after). Gate: 025 `requireIepGoalActor` + the suggestion's case; other orgs -> 404.
    - **Rx draft** card (only for viewers who can prescribe): items + `Review in prescriptions` ->
-     `/cases/:id/prescriptions?from_report_id=<rx_draft id>` (ticket 039 builds that page; until then the link 404s).
+     `/cases/:id/prescriptions?from_report_id=<rx_draft id>` (ticket 039, `docs/prescriptions.md`).
 5. Guardian: `/family/children/:id/notes` lists the latest published version of each finalized session note when it is
    `visible_to_guardian` (`listGuardianSessionNotes`). Drafts, suggestions and Rx drafts are never shown.
    `GET /api/sessions/:id/scribe` is provider-only (guardians 403).

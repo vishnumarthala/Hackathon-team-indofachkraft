@@ -14,6 +14,7 @@ import {
   existingUser,
   profileOwner,
   platformAdmins,
+  prescriptionGuardians,
   threadMessageRecipients,
   visibleDocumentGuardians,
 } from "./recipients";
@@ -101,6 +102,20 @@ export const TOPICS = {
     channels: GUARDIAN_CHANNELS,
     template: "home_program_published",
     recipients: (p, { sql }) => activeGuardians(sql, p.child_id),
+  }),
+  // 039: enqueued by signPrescription() / voidPrescription() in the signing / voiding transaction (dedup
+  // `prescription:<id>:signed` / `:void`). In-app + email only (no WhatsApp template); generic text, never drug names.
+  "prescription.signed": topic({
+    payload: z.object({ prescription_id: uuid, child_id: uuid, case_id: uuid.optional() }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "prescription_signed",
+    recipients: (p, { sql }) => prescriptionGuardians(sql, p.prescription_id, p.child_id, "signed"),
+  }),
+  "prescription.voided": topic({
+    payload: z.object({ prescription_id: uuid, child_id: uuid, case_id: uuid.optional() }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "prescription_voided",
+    recipients: (p, { sql }) => prescriptionGuardians(sql, p.prescription_id, p.child_id, "void"),
   }),
   // 024: enqueued by createAssessment() in the assigning transaction. Only the assigned guardian, and only while the
   // questionnaire is still open and their link to the child is active.
@@ -291,6 +306,12 @@ export const ASSESSMENT_TOPICS = {
 // 023 FR-9: enqueued by `complete_document` / `set_document_visibility` (migration 20261113002300).
 export const DOCUMENT_TOPICS = {
   sharedWithGuardian: "document.shared_with_guardian",
+} as const satisfies Record<string, Topic>;
+
+// 039: e-prescriptions (enqueued in lib/rx).
+export const PRESCRIPTION_TOPICS = {
+  signed: "prescription.signed",
+  voided: "prescription.voided",
 } as const satisfies Record<string, Topic>;
 
 // 041: privacy export / deletion notifications.
