@@ -60,8 +60,9 @@ export function createTranslator<N extends Namespace | undefined = undefined>(
   messages: MessageTree,
   namespace?: N,
 ): TFunction<N> {
-  return (key, values) => {
-    const fullKey = namespace ? `${namespace}.${key}` : String(key);
+  // Typed loosely inside: resolving KeyIn<N> for the generic N is too deep for TypeScript with the full catalogue.
+  const translate = (key: string, values?: TranslationValues): string => {
+    const fullKey = namespace ? `${namespace as string}.${key}` : key;
     let template: string | undefined;
     const count = values?.count;
     if (typeof count === "number") {
@@ -74,6 +75,7 @@ export function createTranslator<N extends Namespace | undefined = undefined>(
     }
     return interpolate(template, values, locale, fullKey);
   };
+  return translate as unknown as TFunction<N>;
 }
 
 export type { KeyIn, Namespace, TFunction, TranslationValues };

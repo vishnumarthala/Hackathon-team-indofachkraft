@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2157. Not yet approved: 2157.
+Rows: 2234. Not yet approved: 2234.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -873,6 +873,8 @@ Rows: 2157. Not yet approved: 2157.
 | `directory.results.mapLabel` | Map of search results | खोज परिणामों का नक्शा | వెతుకు ఫలితాల మ్యాప్ |  | pending |
 | `directory.results.mapUnavailable` | The map could not be loaded. The list shows all results. | नक्शा लोड नहीं हो सका। सूची में सभी परिणाम हैं। | మ్యాప్ లోడ్ కాలేదు. జాబితాలో అన్ని ఫలితాలు ఉన్నాయి. |  | pending |
 | `directory.results.clusterLabel` | {count} providers here. Zoom in. | यहाँ {count} विशेषज्ञ हैं। ज़ूम इन करें। | ఇక్కడ {count} మంది నిపుణులు ఉన్నారు. జూమ్ ఇన్ చేయండి. |  | pending |
+| `directory.results.rating_one` | {average} ★ ({count} rating) | {average} ★ ({count} रेटिंग) | {average} ★ ({count} రేటింగ్) |  | pending |
+| `directory.results.rating_other` | {average} ★ ({count} ratings) | {average} ★ ({count} रेटिंग) | {average} ★ ({count} రేటింగ్‌లు) |  | pending |
 | `directory.browse.title` | Browse by specialty in Hyderabad | हैदराबाद में विशेषज्ञता के अनुसार देखें | హైదరాబాద్‌లో నైపుణ్యం ప్రకారం చూడండి |  | pending |
 | `directory.seo.title` | {type} in Hyderabad | हैदराबाद में {type} | హైదరాబాద్‌లో {type} |  | pending |
 | `directory.seo.metaTitle` | {type} in Hyderabad \| DoctorNearMe | हैदराबाद में {type} \| DoctorNearMe | హైదరాబాద్‌లో {type} \| DoctorNearMe |  | pending |
@@ -1475,6 +1477,7 @@ Rows: 2157. Not yet approved: 2157.
 | `privacy.notice.collect.messages` | Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them. | देखभाल टीम के साथ संदेश: DoctorNearMe बातचीत में आप और देखभाल टीम जो लिखते हैं, जोड़े गए दस्तावेज़ों के लिंक, और आपने उन्हें आखिरी बार कब पढ़ा। | సంరక్షణ బృందంతో సందేశాలు: DoctorNearMe సంభాషణల్లో మీరు మరియు సంరక్షణ బృందం రాసేవి, జోడించిన పత్రాల లింకులు, మరియు మీరు వాటిని చివరిసారి ఎప్పుడు చదివారు. |  | pending |
 | `privacy.notice.collect.screen` | Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs. | हमारे सार्वजनिक जाँच पेज से विकास जाँच: आपके बच्चे की उम्र का दायरा और आपके जवाब, बिना किसी नाम के। अगर आप आवाज़ इस्तेमाल करते हैं, तो कॉल ElevenLabs द्वारा प्रोसेस की जाती है। | మా పబ్లిక్ పరిశీలన పేజీ నుండి అభివృద్ధి పరిశీలన: మీ బిడ్డ వయస్సు శ్రేణి, మీ సమాధానాలు, ఏ పేరూ లేకుండా. మీరు వాయిస్ ఉపయోగిస్తే, కాల్‌ను ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
 | `privacy.notice.collect.payments` | Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them. | जिन अपॉइंटमेंट का आप ऑनलाइन भुगतान करते हैं उनके भुगतान: राशि, स्थिति, रिफ़ंड और Razorpay संदर्भ संख्या। आपके कार्ड या UPI विवरण Razorpay संभालता है; हम उन्हें कभी नहीं देखते या रखते। | మీరు ఆన్‌లైన్‌లో చెల్లించే అపాయింట్‌మెంట్ల చెల్లింపులు: మొత్తం, స్థితి, రీఫండ్‌లు, Razorpay రిఫరెన్స్ నంబర్లు. మీ కార్డ్ లేదా UPI వివరాలను Razorpay నిర్వహిస్తుంది; మేము వాటిని ఎప్పుడూ చూడము, నిల్వ చేయము. |  | pending |
+| `privacy.notice.collect.ratings` | Ratings you give after a completed visit: stars and an optional comment. They are shown without your name; only DoctorNearMe admins can see who wrote them. | पूरी हुई विज़िट के बाद आपकी दी गई रेटिंग: स्टार और एक वैकल्पिक टिप्पणी। ये आपके नाम के बिना दिखाई जाती हैं; केवल DoctorNearMe एडमिन देख सकते हैं कि इन्हें किसने लिखा। | పూర్తయిన సందర్శన తర్వాత మీరు ఇచ్చే రేటింగ్‌లు: స్టార్‌లు మరియు ఐచ్ఛిక వ్యాఖ్య. ఇవి మీ పేరు లేకుండా చూపబడతాయి; వాటిని ఎవరు రాశారో DoctorNearMe అడ్మిన్‌లు మాత్రమే చూడగలరు. |  | pending |
 | `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
 | `privacy.notice.purposes` | To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising. | आपका पारिवारिक खाता और आपके चुने विशेषज्ञों के साथ बच्चे की देखभाल चलाने के लिए; इनटेक सारांश, लिखित रूप और मसौदा रिपोर्ट तैयार करने के लिए जिन्हें एक विशेषज्ञ जाँचता है; आपको रिमाइंडर और अपडेट भेजने के लिए; कानून द्वारा ज़रूरी रिकॉर्ड रखने के लिए; और सेवा को सुरक्षित रखने के लिए। हम डेटा कभी नहीं बेचते और विज्ञापन के लिए कभी उपयोग नहीं करते। | మీ కుటుంబ ఖాతాను మరియు మీరు ఎంచుకున్న నిపుణులతో మీ పిల్లల సంరక్షణను నడపడానికి; ఒక నిపుణుడు తనిఖీ చేసే ఇన్‌టేక్ సారాంశాలు, లిఖిత రూపాలు మరియు ముసాయిదా రిపోర్టులు సిద్ధం చేయడానికి; మీకు రిమైండర్లు మరియు అప్‌డేట్లు పంపడానికి; చట్టం కోరే రికార్డులను ఉంచడానికి; మరియు సేవను సురక్షితంగా ఉంచడానికి. మేము డేటాను ఎప్పుడూ అమ్మము, ప్రకటనల కోసం ఎప్పుడూ ఉపయోగించము. |  | pending |
 | `privacy.notice.processorsTitle` | Who processes it for us, and where | हमारे लिए इसे कौन प्रोसेस करता है, और कहाँ | మా కోసం దీన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎక్కడ |  | pending |
@@ -1529,6 +1532,8 @@ Rows: 2157. Not yet approved: 2157.
 | `privacy.notice.retention.screen.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
 | `privacy.notice.retention.payments.what` | Payments (amount, status, refunds) | भुगतान (राशि, स्थिति, रिफ़ंड) | చెల్లింపులు (మొత్తం, స్థితి, రీఫండ్‌లు) |  | pending |
 | `privacy.notice.retention.payments.how` | Kept as a financial record (period pending legal review), also after deletion; no card or UPI details | वित्तीय रिकॉर्ड के रूप में रखा जाता है (अवधि कानूनी समीक्षा के अधीन), हटाने के बाद भी; कोई कार्ड या UPI विवरण नहीं | ఆర్థిక రికార్డుగా ఉంచబడుతుంది (కాలం న్యాయ సమీక్షలో ఉంది), తొలగించిన తర్వాత కూడా; కార్డ్ లేదా UPI వివరాలు ఉండవు |  | pending |
+| `privacy.notice.retention.ratings.what` | Ratings and comments | रेटिंग और टिप्पणियाँ | రేటింగ్‌లు మరియు వ్యాఖ్యలు |  | pending |
+| `privacy.notice.retention.ratings.how` | While your account is active; deleted with your account, or with your child's data when you ask us to delete everything | जब तक आपका खाता सक्रिय है; आपके खाते के साथ, या सब कुछ हटाने के अनुरोध पर आपके बच्चे के डेटा के साथ हटा दी जाती हैं | మీ ఖాతా సక్రియంగా ఉన్నంత వరకు; మీ ఖాతాతో పాటు, లేదా అన్నీ తొలగించమని మీరు అడిగినప్పుడు మీ పిల్లల డేటాతో పాటు తొలగించబడతాయి |  | pending |
 | `privacy.notice.rightsTitle` | Your rights | आपके अधिकार | మీ హక్కులు |  | pending |
 | `privacy.notice.rights.access` | Access: download a copy of your child's data from the child's Privacy page in the app. | पहुँच: ऐप में बच्चे के गोपनीयता पेज से बच्चे के डेटा की कॉपी डाउनलोड करें। | యాక్సెస్: యాప్‌లో పిల్లల గోప్యతా పేజీ నుండి పిల్లల డేటా కాపీని డౌన్‌లోడ్ చేయండి. |  | pending |
 | `privacy.notice.rights.correction` | Correction: change details in the app, or ask the clinic to correct a record. | सुधार: ऐप में विवरण बदलें, या क्लिनिक से रिकॉर्ड ठीक करने को कहें। | సవరణ: యాప్‌లో వివరాలు మార్చండి, లేదా రికార్డును సరిచేయమని క్లినిక్‌ను అడగండి. |  | pending |
@@ -1591,6 +1596,7 @@ Rows: 2157. Not yet approved: 2157.
 | `privacy.admin.nav.requests` | Deletion requests | हटाने के अनुरोध | తొలగింపు అభ్యర్థనలు |  | pending |
 | `privacy.admin.nav.ops` | Operations | संचालन | కార్యకలాపాలు |  | pending |
 | `privacy.admin.nav.notifications` | Notifications | सूचनाएँ | నోటిఫికేషన్లు |  | pending |
+| `privacy.admin.nav.ratings` | Ratings | रेटिंग | రేటింగ్‌లు |  | pending |
 | `privacy.admin.audit.title` | Audit log | ऑडिट लॉग | ఆడిట్ లాగ్ |  | pending |
 | `privacy.admin.audit.intro` | Who did what, newest first. Details of health and consent content are not shown. Viewing this page is itself audited. | किसने क्या किया, नवीनतम पहले। स्वास्थ्य और सहमति सामग्री का विवरण नहीं दिखाया जाता। इस पेज को देखना भी ऑडिट होता है। | ఎవరు ఏమి చేశారు, తాజావి ముందు. ఆరోగ్య మరియు సమ్మతి విషయాల వివరాలు చూపబడవు. ఈ పేజీని చూడటం కూడా ఆడిట్ అవుతుంది. |  | pending |
 | `privacy.admin.audit.action` | Action | कार्य | చర్య |  | pending |
@@ -2172,3 +2178,74 @@ Rows: 2157. Not yet approved: 2157.
 | `payments.pay.errors.hold_expired` | The time to pay has run out. Please pick the time again. | भुगतान का समय खत्म हो गया। कृपया फिर से समय चुनें। | చెల్లించే సమయం ముగిసింది. దయచేసి మళ్లీ సమయం ఎంచుకోండి. |  | pending |
 | `payments.pay.errors.already_paid` | This appointment is already paid. | इस अपॉइंटमेंट का भुगतान पहले ही हो चुका है। | ఈ అపాయింట్‌మెంట్‌కు ఇప్పటికే చెల్లించారు. |  | pending |
 | `payments.pay.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `ratings.badge.average_one` | {average} ★ ({count} rating) | {average} ★ ({count} रेटिंग) | {average} ★ ({count} రేటింగ్) |  | pending |
+| `ratings.badge.average_other` | {average} ★ ({count} ratings) | {average} ★ ({count} रेटिंग) | {average} ★ ({count} రేటింగ్‌లు) |  | pending |
+| `ratings.badge.averageLabel_one` | Rated {average} out of 5 from {count} rating | {count} रेटिंग से 5 में से {average} | {count} రేటింగ్ నుండి 5 కి {average} |  | pending |
+| `ratings.badge.averageLabel_other` | Rated {average} out of 5 from {count} ratings | {count} रेटिंग से 5 में से {average} | {count} రేటింగ్‌ల నుండి 5 కి {average} |  | pending |
+| `ratings.badge.new` | New on DoctorNearMe | DoctorNearMe पर नए | DoctorNearMe లో కొత్తవారు |  | pending |
+| `ratings.public.title` | Ratings | रेटिंग | రేటింగ్‌లు |  | pending |
+| `ratings.public.intro` | Only families who completed a booked visit can rate. Ratings are shown without names. | केवल वे परिवार रेटिंग दे सकते हैं जिन्होंने बुक की गई विज़िट पूरी की। रेटिंग बिना नाम के दिखाई जाती हैं। | బుక్ చేసిన సందర్శన పూర్తి చేసిన కుటుంబాలు మాత్రమే రేటింగ్ ఇవ్వగలరు. రేటింగ్‌లు పేర్లు లేకుండా చూపబడతాయి. |  | pending |
+| `ratings.public.verified` | Verified booking | सत्यापित बुकिंग | ధృవీకరించిన బుకింగ్ |  | pending |
+| `ratings.public.noComments` | No comments yet. | अभी कोई टिप्पणी नहीं। | ఇంకా వ్యాఖ్యలు లేవు. |  | pending |
+| `ratings.family.rate` | Rate this visit | इस विज़िट को रेटिंग दें | ఈ సందర్శనకు రేటింగ్ ఇవ్వండి |  | pending |
+| `ratings.family.youRated` | You rated this visit {stars} ★ | आपने इस विज़िट को {stars} ★ दिए | మీరు ఈ సందర్శనకు {stars} ★ ఇచ్చారు |  | pending |
+| `ratings.family.edit` | Change rating | रेटिंग बदलें | రేటింగ్ మార్చండి |  | pending |
+| `ratings.family.underReview` | Waiting for review | समीक्षा की प्रतीक्षा में | సమీక్ష కోసం వేచి ఉంది |  | pending |
+| `ratings.family.hidden` | Hidden by DoctorNearMe | DoctorNearMe द्वारा छिपाई गई | DoctorNearMe దాచింది |  | pending |
+| `ratings.form.metaTitle` | Rate your visit | अपनी विज़िट को रेटिंग दें | మీ సందర్శనకు రేటింగ్ ఇవ్వండి |  | pending |
+| `ratings.form.title` | Rate your visit | अपनी विज़िट को रेटिंग दें | మీ సందర్శనకు రేటింగ్ ఇవ్వండి |  | pending |
+| `ratings.form.subtitle` | With {provider} on {date} | {provider} के साथ, {date} | {provider} తో, {date} |  | pending |
+| `ratings.form.starsLegend` | How was your visit? | आपकी विज़िट कैसी रही? | మీ సందర్శన ఎలా ఉంది? |  | pending |
+| `ratings.form.star_one` | {count} star | {count} स्टार | {count} స్టార్ |  | pending |
+| `ratings.form.star_other` | {count} stars | {count} स्टार | {count} స్టార్‌లు |  | pending |
+| `ratings.form.commentLabel` | Comment (optional) | टिप्पणी (वैकल्पिक) | వ్యాఖ్య (ఐచ్ఛికం) |  | pending |
+| `ratings.form.commentHint` | Shown without your name. Do not write names, phone numbers, emails or links. | आपके नाम के बिना दिखाई जाती है। नाम, फ़ोन नंबर, ईमेल या लिंक न लिखें। | మీ పేరు లేకుండా చూపబడుతుంది. పేర్లు, ఫోన్ నంబర్లు, ఇమెయిల్‌లు లేదా లింక్‌లు రాయవద్దు. |  | pending |
+| `ratings.form.counter` | {count} of 500 characters | 500 में से {count} अक्षर | 500 లో {count} అక్షరాలు |  | pending |
+| `ratings.form.submit` | Send rating | रेटिंग भेजें | రేటింగ్ పంపండి |  | pending |
+| `ratings.form.update` | Save changes | बदलाव सहेजें | మార్పులు సేవ్ చేయండి |  | pending |
+| `ratings.form.saving` | Saving... | सहेजा जा रहा है... | సేవ్ అవుతోంది... |  | pending |
+| `ratings.form.saved` | Thank you. Your rating is saved. | धन्यवाद। आपकी रेटिंग सहेज ली गई है। | ధన్యవాదాలు. మీ రేటింగ్ సేవ్ అయింది. |  | pending |
+| `ratings.form.savedReview` | Thank you. Your rating will be shown after a review. | धन्यवाद। समीक्षा के बाद आपकी रेटिंग दिखाई जाएगी। | ధన్యవాదాలు. సమీక్ష తర్వాత మీ రేటింగ్ చూపబడుతుంది. |  | pending |
+| `ratings.form.back` | Back to appointments | अपॉइंटमेंट पर वापस जाएँ | అపాయింట్‌మెంట్‌లకు తిరిగి వెళ్ళండి |  | pending |
+| `ratings.form.notEligible` | This visit cannot be rated. You can rate a completed visit within 30 days. | इस विज़िट को रेटिंग नहीं दी जा सकती। पूरी हुई विज़िट को 30 दिनों के भीतर रेटिंग दी जा सकती है। | ఈ సందర్శనకు రేటింగ్ ఇవ్వలేరు. పూర్తయిన సందర్శనకు 30 రోజులలోపు రేటింగ్ ఇవ్వవచ్చు. |  | pending |
+| `ratings.form.editClosed` | Ratings can be changed only within 7 days. | रेटिंग केवल 7 दिनों के भीतर बदली जा सकती है। | రేటింగ్‌ను 7 రోజులలోపు మాత్రమే మార్చవచ్చు. |  | pending |
+| `ratings.form.errors.screen` | Please remove names and contact details from your comment. | कृपया अपनी टिप्पणी से नाम और संपर्क विवरण हटाएँ। | దయచేసి మీ వ్యాఖ్య నుండి పేర్లు మరియు సంప్రదింపు వివరాలను తీసివేయండి. |  | pending |
+| `ratings.form.errors.notEligible` | You can rate only your completed appointments. | आप केवल अपने पूरे हुए अपॉइंटमेंट को रेटिंग दे सकते हैं। | మీరు మీ పూర్తయిన అపాయింట్‌మెంట్‌లకు మాత్రమే రేటింగ్ ఇవ్వగలరు. |  | pending |
+| `ratings.form.errors.already` | You already rated this visit. | आप इस विज़िट को पहले ही रेटिंग दे चुके हैं। | మీరు ఈ సందర్శనకు ఇప్పటికే రేటింగ్ ఇచ్చారు. |  | pending |
+| `ratings.form.errors.locked` | This rating can no longer be changed. | यह रेटिंग अब बदली नहीं जा सकती। | ఈ రేటింగ్‌ను ఇక మార్చలేరు. |  | pending |
+| `ratings.form.errors.chooseStars` | Choose 1 to 5 stars. | 1 से 5 स्टार चुनें। | 1 నుండి 5 స్టార్‌లు ఎంచుకోండి. |  | pending |
+| `ratings.form.errors.generic` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాము. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `ratings.provider.nav` | Ratings | रेटिंग | రేటింగ్‌లు |  | pending |
+| `ratings.provider.metaTitle` | Ratings | रेटिंग | రేటింగ్‌లు |  | pending |
+| `ratings.provider.title` | Ratings from families | परिवारों की रेटिंग | కుటుంబాల రేటింగ్‌లు |  | pending |
+| `ratings.provider.intro` | Families rate a visit after it is marked completed. Names are never shown. Report a rating if it is abusive or not about your service. | विज़िट पूरी होने के बाद परिवार उसे रेटिंग देते हैं। नाम कभी नहीं दिखाए जाते। अगर कोई रेटिंग अपमानजनक है या आपकी सेवा के बारे में नहीं है, तो उसकी रिपोर्ट करें। | సందర్శన పూర్తయిన తర్వాత కుటుంబాలు రేటింగ్ ఇస్తాయి. పేర్లు ఎప్పుడూ చూపబడవు. రేటింగ్ దూషణగా ఉన్నా లేదా మీ సేవ గురించి కాకపోయినా దాన్ని నివేదించండి. |  | pending |
+| `ratings.provider.noProfile` | Ratings appear here once you have a public profile. | सार्वजनिक प्रोफ़ाइल बनने के बाद रेटिंग यहाँ दिखेंगी। | మీకు పబ్లిక్ ప్రొఫైల్ ఉన్న తర్వాత రేటింగ్‌లు ఇక్కడ కనిపిస్తాయి. |  | pending |
+| `ratings.provider.none` | No ratings yet. | अभी कोई रेटिंग नहीं। | ఇంకా రేటింగ్‌లు లేవు. |  | pending |
+| `ratings.provider.stars` | {stars} ★ | {stars} ★ | {stars} ★ |  | pending |
+| `ratings.provider.report` | Report a rating | रेटिंग की रिपोर्ट करें | రేటింగ్‌ను నివేదించండి |  | pending |
+| `ratings.provider.reportReason` | What is wrong with this rating? | इस रेटिंग में क्या गलत है? | ఈ రేటింగ్‌లో ఏమి తప్పు ఉంది? |  | pending |
+| `ratings.provider.sendReport` | Send report | रिपोर्ट भेजें | నివేదిక పంపండి |  | pending |
+| `ratings.provider.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `ratings.provider.reported` | Reported - under review | रिपोर्ट की गई - समीक्षा में | నివేదించబడింది - సమీక్షలో ఉంది |  | pending |
+| `ratings.provider.reportFailed` | Could not send the report. Please try again. | रिपोर्ट नहीं भेजी जा सकी। कृपया फिर से कोशिश करें। | నివేదిక పంపలేకపోయాము. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `ratings.provider.reasonRequired` | Tell us briefly what is wrong. | संक्षेप में बताएँ कि क्या गलत है। | ఏమి తప్పో క్లుప్తంగా చెప్పండి. |  | pending |
+| `ratings.admin.nav` | Ratings | रेटिंग | రేటింగ్‌లు |  | pending |
+| `ratings.admin.metaTitle` | Ratings moderation | रेटिंग मॉडरेशन | రేటింగ్‌ల మోడరేషన్ |  | pending |
+| `ratings.admin.title` | Ratings moderation | रेटिंग मॉडरेशन | రేటింగ్‌ల మోడరేషన్ |  | pending |
+| `ratings.admin.tabs.pending_review` | Waiting for review | समीक्षा की प्रतीक्षा में | సమీక్ష కోసం వేచి ఉన్నవి |  | pending |
+| `ratings.admin.tabs.published` | Published | प्रकाशित | ప్రచురించినవి |  | pending |
+| `ratings.admin.tabs.hidden` | Hidden | छिपाई गई | దాచినవి |  | pending |
+| `ratings.admin.none` | Nothing here. | यहाँ कुछ नहीं है। | ఇక్కడ ఏమీ లేదు. |  | pending |
+| `ratings.admin.guardian` | Written by | लिखने वाले | రాసినవారు |  | pending |
+| `ratings.admin.provider` | Provider | प्रदाता | ప్రొవైడర్ |  | pending |
+| `ratings.admin.stars` | {stars} ★ | {stars} ★ | {stars} ★ |  | pending |
+| `ratings.admin.noComment` | No comment | कोई टिप्पणी नहीं | వ్యాఖ్య లేదు |  | pending |
+| `ratings.admin.reason.abuse_screen` | Flagged words | चिह्नित शब्द | గుర్తించిన పదాలు |  | pending |
+| `ratings.admin.reason.provider_report` | Reported by the provider | प्रदाता द्वारा रिपोर्ट की गई | ప్రొవైడర్ నివేదించారు |  | pending |
+| `ratings.admin.reportReason` | Report reason | रिपोर्ट का कारण | నివేదిక కారణం |  | pending |
+| `ratings.admin.lastNote` | Last note | पिछला नोट | చివరి నోట్ |  | pending |
+| `ratings.admin.note` | Note (required to hide) | नोट (छिपाने के लिए ज़रूरी) | నోట్ (దాచడానికి తప్పనిసరి) |  | pending |
+| `ratings.admin.publish` | Publish | प्रकाशित करें | ప్రచురించండి |  | pending |
+| `ratings.admin.hide` | Hide | छिपाएँ | దాచండి |  | pending |
+| `ratings.admin.noteRequired` | Add a note saying why the rating is hidden. | रेटिंग छिपाने का कारण नोट में लिखें। | రేటింగ్‌ను ఎందుకు దాచారో నోట్‌లో రాయండి. |  | pending |
+| `ratings.admin.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాము. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |

@@ -1,0 +1,24 @@
+PASS /p/e036-dr-asha-mwegozqx at 375 px: no horizontal scroll :: overflow 0
+PASS profile badge `4.5 ★ (4 ratings)` with accessible label
+PASS profile: 3 comments, each `Verified booking` + month/year
+PASS profile: no console errors
+PASS /p/e036-dr-fresh-mwegozqx at 375 px: no horizontal scroll :: overflow 0
+PASS fresh profile badge `New on DoctorNearMe`
+PASS /family/appointments at 375 px: no horizontal scroll :: overflow 0
+PASS family list: `Rate this visit` link
+PASS family list: own rating shown
+PASS family list: no console errors
+PASS /family/appointments/072a3d3a-b0af-4639-ac33-ee187c82a460/rate at 375 px: no horizontal scroll :: overflow 0
+PASS rate form: child's name -> translated error
+PASS rate form: saved
+PASS rate page: no console errors (besides the expected 422 response)
+PASS /dashboard/ratings at 375 px: no horizontal scroll :: overflow 0
+PASS provider: report -> `Reported - under review`
+PASS provider page: no console errors
+PASS admin queue shows the reported rating with the guardian email
+PASS admin: hide without note -> error
+PASS admin: publish empties the queue
+PASS profile after publish: `4.4 ★ (5 ratings)` and the new comment
+PASS /p/e036-dr-asha-mwegozqx at 375 px: no horizontal scroll :: overflow 0
+PASS Telugu profile: badge translated
+ALL PASS

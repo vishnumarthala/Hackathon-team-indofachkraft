@@ -21,6 +21,7 @@ import type { TemplateName } from "./templates";
 import type { Channel, OutboxEventRow } from "./types";
 import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
 import { refundedPaymentGuardian } from "@/lib/payments/recipients";
+import { ratingPromptGuardian } from "@/lib/ratings/recipients";
 
 const uuid = z.uuid();
 // 030 appointment events (display values for the templates; no child data).
@@ -237,6 +238,14 @@ export const TOPICS = {
     template: "payment_refunded",
     recipients: (p, { sql }) => refundedPaymentGuardian(sql, p.payment_id),
   }),
+  // 036 FR-2: enqueued by a trigger on appointments when one is completed (dedup `appt:<id>:rate_prompt`,
+  // deliver_after = completion + 2 h). The booking guardian only, while the visit can still be rated.
+  "appointment.rate_prompt": topic({
+    payload: z.object({ appointment_id: uuid, provider_name: z.string().min(1).max(120) }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "rating_prompt",
+    recipients: (p, { sql }) => ratingPromptGuardian(sql, p.appointment_id),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -285,6 +294,11 @@ export const APPOINTMENT_TOPICS = {
   reminder2h: "appointment.reminder_two_hours",
   cancelled: "appointment.cancelled",
   rescheduled: "appointment.rescheduled",
+} as const satisfies Record<string, Topic>;
+
+// 036: ratings (rate prompt enqueued by the `appointments_rate_prompt` trigger, migration 20261113003600).
+export const RATING_TOPICS = {
+  ratePrompt: "appointment.rate_prompt",
 } as const satisfies Record<string, Topic>;
 
 // 031: payments (enqueued by the payment SQL functions).

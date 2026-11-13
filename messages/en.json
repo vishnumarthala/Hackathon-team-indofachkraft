@@ -992,7 +992,9 @@
       "map": "Map",
       "mapLabel": "Map of search results",
       "mapUnavailable": "The map could not be loaded. The list shows all results.",
-      "clusterLabel": "{count} providers here. Zoom in."
+      "clusterLabel": "{count} providers here. Zoom in.",
+      "rating_one": "{average} ★ ({count} rating)",
+      "rating_other": "{average} ★ ({count} ratings)"
     },
     "browse": {
       "title": "Browse by specialty in Hyderabad"
@@ -1717,7 +1719,8 @@
         "homeProgram": "Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes).",
         "messages": "Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them.",
         "screen": "Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs.",
-        "payments": "Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them."
+        "payments": "Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them.",
+        "ratings": "Ratings you give after a completed visit: stars and an optional comment. They are shown without your name; only DoctorNearMe admins can see who wrote them."
       },
       "purposesTitle": "Why we use it",
       "purposes": "To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising.",
@@ -1813,6 +1816,10 @@
         "payments": {
           "what": "Payments (amount, status, refunds)",
           "how": "Kept as a financial record (period pending legal review), also after deletion; no card or UPI details"
+        },
+        "ratings": {
+          "what": "Ratings and comments",
+          "how": "While your account is active; deleted with your account, or with your child's data when you ask us to delete everything"
         }
       },
       "rightsTitle": "Your rights",
@@ -1893,7 +1900,8 @@
         "audit": "Audit log",
         "requests": "Deletion requests",
         "ops": "Operations",
-        "notifications": "Notifications"
+        "notifications": "Notifications",
+        "ratings": "Ratings"
       },
       "audit": {
         "title": "Audit log",
@@ -2580,6 +2588,97 @@
         "already_paid": "This appointment is already paid.",
         "generic": "Something went wrong. Please try again."
       }
+    }
+  },
+  "ratings": {
+    "badge": {
+      "average_one": "{average} ★ ({count} rating)",
+      "average_other": "{average} ★ ({count} ratings)",
+      "averageLabel_one": "Rated {average} out of 5 from {count} rating",
+      "averageLabel_other": "Rated {average} out of 5 from {count} ratings",
+      "new": "New on DoctorNearMe"
+    },
+    "public": {
+      "title": "Ratings",
+      "intro": "Only families who completed a booked visit can rate. Ratings are shown without names.",
+      "verified": "Verified booking",
+      "noComments": "No comments yet."
+    },
+    "family": {
+      "rate": "Rate this visit",
+      "youRated": "You rated this visit {stars} ★",
+      "edit": "Change rating",
+      "underReview": "Waiting for review",
+      "hidden": "Hidden by DoctorNearMe"
+    },
+    "form": {
+      "metaTitle": "Rate your visit",
+      "title": "Rate your visit",
+      "subtitle": "With {provider} on {date}",
+      "starsLegend": "How was your visit?",
+      "star_one": "{count} star",
+      "star_other": "{count} stars",
+      "commentLabel": "Comment (optional)",
+      "commentHint": "Shown without your name. Do not write names, phone numbers, emails or links.",
+      "counter": "{count} of 500 characters",
+      "submit": "Send rating",
+      "update": "Save changes",
+      "saving": "Saving...",
+      "saved": "Thank you. Your rating is saved.",
+      "savedReview": "Thank you. Your rating will be shown after a review.",
+      "back": "Back to appointments",
+      "notEligible": "This visit cannot be rated. You can rate a completed visit within 30 days.",
+      "editClosed": "Ratings can be changed only within 7 days.",
+      "errors": {
+        "screen": "Please remove names and contact details from your comment.",
+        "notEligible": "You can rate only your completed appointments.",
+        "already": "You already rated this visit.",
+        "locked": "This rating can no longer be changed.",
+        "chooseStars": "Choose 1 to 5 stars.",
+        "generic": "Could not save. Please try again."
+      }
+    },
+    "provider": {
+      "nav": "Ratings",
+      "metaTitle": "Ratings",
+      "title": "Ratings from families",
+      "intro": "Families rate a visit after it is marked completed. Names are never shown. Report a rating if it is abusive or not about your service.",
+      "noProfile": "Ratings appear here once you have a public profile.",
+      "none": "No ratings yet.",
+      "stars": "{stars} ★",
+      "report": "Report a rating",
+      "reportReason": "What is wrong with this rating?",
+      "sendReport": "Send report",
+      "cancel": "Cancel",
+      "reported": "Reported - under review",
+      "reportFailed": "Could not send the report. Please try again.",
+      "reasonRequired": "Tell us briefly what is wrong."
+    },
+    "admin": {
+      "nav": "Ratings",
+      "metaTitle": "Ratings moderation",
+      "title": "Ratings moderation",
+      "tabs": {
+        "pending_review": "Waiting for review",
+        "published": "Published",
+        "hidden": "Hidden"
+      },
+      "none": "Nothing here.",
+      "guardian": "Written by",
+      "provider": "Provider",
+      "stars": "{stars} ★",
+      "noComment": "No comment",
+      "reason": {
+        "abuse_screen": "Flagged words",
+        "provider_report": "Reported by the provider"
+      },
+      "reportReason": "Report reason",
+      "lastNote": "Last note",
+      "note": "Note (required to hide)",
+      "publish": "Publish",
+      "hide": "Hide",
+      "noteRequired": "Add a note saying why the rating is hidden.",
+      "failed": "Could not save. Please try again."
     }
   }
 }

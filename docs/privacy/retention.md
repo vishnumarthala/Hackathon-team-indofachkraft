@@ -22,6 +22,7 @@ effect.
 | Consent records (020) and signed paper forms | Kept (legal proof of consent), also after erasure, with free text stripped | - | - |
 | Appointments (030: `appointments`, `appointment_events`) | Kept as the provider's appointment record (period pending legal review). Erasure (`everything`): future appointments cancelled (provider notified), the child removed from every appointment (`booking_erase_child`) | - | - |
 | Payments (031: `payments`, `payment_events`) | Kept as a financial record (period pending legal review; Indian accounting rules usually require 8 years), also after erasure (`retainedOnErasure`). Amounts, statuses and Razorpay ids only; no child data, no card/UPI details (webhook payloads allowlisted). Export: the requesting guardian's payments for the child's appointments | - | - |
+| Ratings (036: `ratings`) | While the guardian's account is active; deleted with the account (FK cascade) and, on erasure (`everything`), with the child's appointments (registered before `appointments`). Export: the requesting guardian's ratings of the child's appointments. Public pages show only the average and approved comment text (no names) | - | - |
 | Messages with the care team (027: `message_threads`, `messages`, `thread_reads`) | Kept with the clinical record of the case; a deleted message's text is overwritten at once; removed with the child's threads (every organisation) and their outbox events on erasure | - | - |
 | Clinical records (cases, transcripts, confirmed facts, final reports) | Kept while the child is in care and as long as the law requires the clinic to keep them; erasure is reviewed (D-5) | - | - |
 
@@ -45,7 +46,7 @@ guardian's own practice logs; drafts and other guardians' notes never exported; 
 their own read markers; attachments as document ids), 038 `ai_scribe` (session-note/Rx drafts and goal-progress
 suggestions; shared notes are exported through `published_versions`), documents, health profile, consent records, sharing/care team,
 notifications, exports, audit, provider credentials, pilot sign-ups, 030 `appointments` (export: the requesting
-guardian's own bookings of the child; erase: `booking_erase_child`). `published_versions` is append-only (024): rows with a
+guardian's own bookings of the child; erase: `booking_erase_child`), 036 `ratings` (export: the guardian's own ratings of the child's appointments; erase: deleted). `published_versions` is append-only (024): rows with a
 case go with the case; case-less rows are removed only by `privacy_delete_published_versions()` (migration
 `20261113004102`).
 

@@ -27,7 +27,7 @@ is server-rendered and addresses are geocoded from a bundled table.
 - Radius is clamped to 1-50 km, limit to 1-100; invalid coordinates or mode raise `22023`.
 - Returns `profile_id, slug, display_name, provider_type, languages, location_id, locality, distance_km,
   org_public_name, org_kind, org_slug (only if the organisation is listed), offers_video, offers_in_clinic,
-  rating_avg, rating_count (null until 036), is_synthetic, lat, lng`. No user ids, emails, registration
+  rating_avg (036: average of published ratings, null below 3), rating_count (published ratings, 0 when none), is_synthetic, lat, lng`. No user ids, emails, registration
   numbers or verification notes.
 - NFR-1: with 1,000 profiles / 2,000 locations the plan uses a Bitmap Index Scan on
   `practice_locations_geog_idx`; p95 over 50 varied calls was 5.2 ms locally (see the ticket results).

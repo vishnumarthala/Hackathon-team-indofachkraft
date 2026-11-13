@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: `${t("metaTitle")} | DoctorNearMe` };
 }
 
-const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "scribe", "assessments", "plans", "screen", "homeProgram", "appointments", "payments", "messages", "notifications", "website"] as const;
+const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "scribe", "assessments", "plans", "screen", "homeProgram", "appointments", "payments", "ratings", "messages", "notifications", "website"] as const;
 const PROCESSORS = ["elevenlabs", "gemini", "resend", "whatsapp", "supabase", "razorpay"] as const;
 const RIGHTS = ["access", "correction", "erasure", "withdraw", "grievance", "nominate"] as const;
 
@@ -33,6 +33,7 @@ export default async function PrivacyNoticePage() {
     { key: "clinical", what: t("retention.clinical.what"), how: t("retention.clinical.how") },
     { key: "appointments", what: t("retention.appointments.what"), how: t("retention.appointments.how") },
     { key: "payments", what: t("retention.payments.what"), how: t("retention.payments.how") },
+    { key: "ratings", what: t("retention.ratings.what"), how: t("retention.ratings.how") },
     { key: "messages", what: t("retention.messages.what"), how: t("retention.messages.how") },
     { key: "consent", what: t("retention.consent.what"), how: t("retention.consent.how") },
     { key: "audit", what: t("retention.audit.what"), how: t("retention.audit.how", { years: policy.auditYears }) },

@@ -49,6 +49,7 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "appointment.cancelled": { ...APPOINTMENT, cancelled_by: "provider" },
   "appointment.rescheduled": APPOINTMENT,
   "payment.refunded": { payment_id: ID, appointment_id: ID, reason: "slot_unavailable" },
+  "appointment.rate_prompt": { appointment_id: ID, provider_name: "Dr Synthetic Rao" },
 };
 
 const topics = Object.entries(TOPICS) as [keyof typeof TOPICS, (typeof TOPICS)[keyof typeof TOPICS]][];
@@ -98,6 +99,7 @@ describe("topic registry", () => {
         "appointment.cancelled",
         "appointment.rescheduled",
         "payment.refunded",
+        "appointment.rate_prompt",
       ].sort(),
     );
     for (const [, def] of topics) expect(TEMPLATES[def.template]).toBeDefined();
