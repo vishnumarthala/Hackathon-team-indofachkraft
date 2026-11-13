@@ -76,3 +76,22 @@ into `extensions`), `DEMO_MODE=true`, dev server on port 3050 with `CRON_SECRET=
   appointment records (shown as pending legal review).
 - The E2E data (`e030-*` accounts, `e030` clinics, their appointments) is left in the slot 5 database; test suites clean
   up after themselves.
+
+## Merge with `main` (026 home program, 027 messaging, 038 AI scribe)
+
+- `git merge main`. Conflicts resolved keeping both sides: `app/privacy/page.tsx` (collect list and retention rows of
+  026/027/038 + appointments), `app/dashboard/layout.tsx` (`Messages` and `Schedule` links), `docs/privacy/retention.md`,
+  `docs/system-design.md` (API rows), `messages/{en,hi,te}.json` (deep-merged, no value clashes),
+  `messages/REVIEW.md` (regenerated with `npx tsx scripts/i18n-review.ts`, 2000 rows). `lib/notify/topics.ts`,
+  `lib/notify/recipients.ts`, the template index, `lib/privacy/registry.ts`, `lib/csp.ts`, `tests/notify-templates.test.ts`,
+  `docs/notifications.md` merged automatically (both topic sets registered; the templates test covers all of them).
+- **Migration order:** a fresh `dnm-db.sh 5 <worktree> reset` applies all 24 migrations cleanly. `20261113003000_booking.sql`
+  runs before 032's outbox and 038's scribe migrations; it references the outbox only inside PL/pgSQL bodies (late
+  binding) and creates no FK to or from `recordings`. 038's `recordings.appointment_id` stays without FK (035 adds it).
+- **038 scribe and the real `appointments` table:** `lib/scribe/appointments.ts` works unchanged (reads rows as JSON:
+  `service_snapshot.mode`, `slot`). `tests/scribe.test.ts` no longer creates a stand-in table: it inserts real appointments
+  (distinct half-open slots, required `provider_profile_id`) under a synthetic unlisted provider profile that is deleted
+  afterwards (appointments cascade). `docs/scribe.md` updated.
+- After the reset: `npm run lint` exit 0, `npm run typecheck` exit 0, `npx vitest run` 76 files, 1175 passed, 11 skipped
+  (the opt-in `CT_DB_TESTS` block of 10 + the live no-tracking crawl; every DB suite ran, incl. 026/027/038's),
+  `npm run build` exit 0; booking test files 3 files, 45 passed; `tests/scribe.test.ts` 24 passed.

@@ -19,11 +19,17 @@ export const ScribeResponseSchema = z.object({
 });
 export type ScribeResponse = z.infer<typeof ScribeResponseSchema>;
 
-export type TranscribeInput = { audio: Buffer; fileName: string; mimeType: string };
+export type TranscribeInput = {
+  audio: Buffer;
+  fileName: string;
+  mimeType: string;
+  /** 038: DEMO_MODE role-play matching the AI scribe template (default: the ISAA role-play). */
+  demoFixture?: string | null;
+};
 
 // Server only: the API key never leaves this module.
-export async function transcribeAudio({ audio, fileName, mimeType }: TranscribeInput): Promise<ScribeResponse> {
-  if (isDemoMode()) return loadFixture("scribe-response.json", ScribeResponseSchema);
+export async function transcribeAudio({ audio, fileName, mimeType, demoFixture }: TranscribeInput): Promise<ScribeResponse> {
+  if (isDemoMode()) return loadFixture(demoFixture ?? "scribe-response.json", ScribeResponseSchema);
 
   const form = new FormData();
   form.append("model_id", "scribe_v2");

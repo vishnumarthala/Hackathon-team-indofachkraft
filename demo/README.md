@@ -1,7 +1,7 @@
 # Demo data
 
 All names and data in this folder are **synthetic** (role-play). There is no real patient, child or
-parent data here. The only names used are `Ravi` (child), `Lakshmi` (parent) and `Demo Therapist`.
+parent data here. The only names used are `Ravi` (child), `Lakshmi` (parent) and `Demo Therapist`, and for the 038 AI scribe role-plays `Asha` (child) and `Meena` (parent).
 AI documents, the clinician decides: this is not a diagnosis.
 
 ## Fixtures (`demo/fixtures/`)
@@ -19,6 +19,9 @@ Used by `DEMO_MODE=true` instead of calling ElevenLabs or Gemini (see `docs/syst
 | `gemini/referral.json` | Referral summary (`ReferralSummarySchema`). |
 | `gemini/ask.json` | Answer to "When did speech regress?" citing `1:s10`. |
 | `gemini/parent-summary.json` | Parent summary in Telugu (`ParentSummarySchema`). |
+| `roleplay-therapy-segments.json`, `roleplay-consult-segments.json` | 038 AI scribe role-plays (child `Asha`, parent `Meena`, both synthetic): a speech-therapy session (`s4` four two-word requests, `s6` 6 of 10 turns) and a developmental paediatrician consult (`s10` melatonin plan, `s6` amoxicillin allergy). |
+| `scribe-response-therapy.json`, `scribe-response-consult.json` | Scribe v2 responses for those role-plays (`npm run fixtures:scribe`); the transcribe route picks them by the recording's template. |
+| `gemini/scribe-therapy.json`, `gemini/scribe-medical.json`, `gemini/scribe-rx.json` | 038 session notes (cited statements + goal suggestions for `G1`/`G2`) and the Rx draft (`lib/scribe/schema.ts`). |
 
 `tests/fixtures.test.ts` checks every rule these files must follow.
 

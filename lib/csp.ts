@@ -48,7 +48,8 @@ export function familyCsp(options: { pathname: string; nonce: string; supabaseUr
     ["style-src", ["'self'", "'unsafe-inline'"]],
     ["img-src", ["'self'", "data:", "blob:"]],
     ["font-src", ["'self'", "data:"]],
-    ["connect-src", ["'self'", ...(supabaseOrigin ? [supabaseOrigin] : []), ...extra.connectSrc]],
+    // 027: Supabase Realtime (messaging) connects over ws(s):// to the same Supabase host.
+    ["connect-src", ["'self'", ...(supabaseOrigin ? [supabaseOrigin, supabaseOrigin.replace(/^http/, "ws")] : []), ...extra.connectSrc]],
     ["frame-src", extra.frameSrc.length ? extra.frameSrc : ["'none'"]],
     ["object-src", ["'none'"]],
     ["base-uri", ["'self'"]],

@@ -121,7 +121,7 @@ export async function runRetention(opts: RetentionOptions = {}): Promise<Retenti
   {
     const due = await sql<{ id: string; storage_path: string | null }[]>`
       select id, storage_path from public.recordings
-      where status = 'created' and kind = 'session' and created_at < ${now}::timestamptz - ${hours(p.pendingRecordingHours)}::interval
+      where status = 'created' and kind in ('session', 'consult') and created_at < ${now}::timestamptz - ${hours(p.pendingRecordingHours)}::interval
       limit 1000`;
     const paths = due.map((r) => r.storage_path).filter((x): x is string => Boolean(x));
     if (paths.length) await remove("recordings", paths);

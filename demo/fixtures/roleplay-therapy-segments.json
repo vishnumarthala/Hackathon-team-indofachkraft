@@ -1,0 +1,98 @@
+[
+  {
+    "id": "s1",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 0.5,
+    "end_sec": 8.48,
+    "text": "Good morning Meena garu. Today Asha and I will work on asking for things with two words and on taking turns."
+  },
+  {
+    "id": "s2",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 10.48,
+    "end_sec": 15.04,
+    "text": "Good morning madam. At home she is saying more words this week."
+  },
+  {
+    "id": "s3",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 17.04,
+    "end_sec": 21.6,
+    "text": "Let us start with the snack game. Asha, what do you want?"
+  },
+  {
+    "id": "s4",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 23.6,
+    "end_sec": 30.44,
+    "text": "Well done Asha, you said want biscuit. In this game she made four two-word requests without any prompt."
+  },
+  {
+    "id": "s5",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 32.44,
+    "end_sec": 36.62,
+    "text": "At home she still pulls my hand when she wants water."
+  },
+  {
+    "id": "s6",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 38.62,
+    "end_sec": 48.12,
+    "text": "Next is the ball rolling game for turn taking. She waited for her turn in six out of ten rolls today, that is sixty percent."
+  },
+  {
+    "id": "s7",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 50.12,
+    "end_sec": 55.44,
+    "text": "That is better than last month, she used to grab the ball every time."
+  },
+  {
+    "id": "s8",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 57.44,
+    "end_sec": 65.04,
+    "text": "Meena garu, when she pulls your hand, wait and model the words want water, then give it when she tries."
+  },
+  {
+    "id": "s9",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 67.04,
+    "end_sec": 70.84,
+    "text": "Okay madam, I will wait and say want water first."
+  },
+  {
+    "id": "s10",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 72.84,
+    "end_sec": 80.82,
+    "text": "For home practice, play the snack game at tea time and roll a ball with her for five minutes each evening."
+  },
+  {
+    "id": "s11",
+    "speaker": "therapist",
+    "speaker_label": "speaker_0",
+    "start_sec": 82.82,
+    "end_sec": 88.9,
+    "text": "Next week we will add colour words to her requests, like red ball and blue cup."
+  },
+  {
+    "id": "s12",
+    "speaker": "parent",
+    "speaker_label": "speaker_1",
+    "start_sec": 90.9,
+    "end_sec": 93.56,
+    "text": "Thank you madam, see you next week."
+  }
+]

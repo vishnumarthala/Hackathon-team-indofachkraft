@@ -224,6 +224,65 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "reviewDeletionRequest",
     impl: { kind: "auditStrict", module: "lib/privacy/deletion.ts" },
   },
+  // ---------- 038 AI scribe: publishing a session note (guardian visibility) ----------
+  {
+    action: "scribe.note_finalized",
+    description: "Provider finalizes an AI-drafted session note (published, optionally visible to the guardian)",
+    routes: ["app/api/sessions/[id]/scribe/route.ts"],
+    call: "finalizeSessionNote",
+    impl: { kind: "auditStrict", module: "lib/scribe/notes.ts" },
+  },
+  {
+    action: "scribe.note_sharing_changed",
+    description: "Provider shares or stops sharing a final session note with the guardian",
+    routes: ["app/api/sessions/[id]/scribe/route.ts"],
+    call: "setSessionNoteSharing",
+    impl: { kind: "auditStrict", module: "lib/scribe/notes.ts" },
+  },
+  // ---------- 026 home program ----------
+  {
+    action: "home_program.published",
+    description: "Provider publishes a home program to the guardian (024 published version + activity snapshot)",
+    routes: ["app/api/home-programs/[pid]/publish/route.ts"],
+    call: "publishProgram",
+    impl: { kind: "auditStrict", module: "lib/home-program/index.ts" },
+  },
+  {
+    action: "home_program.log_deleted",
+    description: "Guardian removes one of their own practice logs",
+    routes: ["app/api/family/home-activity-logs/[id]/route.ts"],
+    call: "deleteOwnLog",
+    impl: { kind: "auditStrict", module: "lib/home-program/index.ts" },
+  },
+  // ---------- 027 messaging (message + outbox event + audit row in one database function) ----------
+  {
+    action: "thread.created",
+    description: "Guardian or provider starts a conversation (first message included)",
+    routes: ["app/api/threads/route.ts"],
+    call: "createThread",
+    impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "create_message_thread", migration: "supabase/migrations/20261113002700_messaging.sql" },
+  },
+  {
+    action: "message.sent",
+    description: "Message sent in a conversation",
+    routes: ["app/api/threads/[id]/messages/route.ts"],
+    call: "sendMessage",
+    impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "send_thread_message", migration: "supabase/migrations/20261113002700_messaging.sql" },
+  },
+  {
+    action: "message.deleted",
+    description: "Sender deletes their message (text overwritten for everyone)",
+    routes: ["app/api/messages/[id]/route.ts"],
+    call: "deleteMessage",
+    impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "delete_thread_message", migration: "supabase/migrations/20261113002700_messaging.sql" },
+  },
+  {
+    action: "thread.archived",
+    description: "Owner/admin archives a conversation",
+    routes: ["app/api/threads/[id]/archive/route.ts"],
+    call: "archiveThread",
+    impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "archive_message_thread", migration: "supabase/migrations/20261113002700_messaging.sql" },
+  },
 ];
 
 export function strictAction(action: string): StrictAction | undefined {

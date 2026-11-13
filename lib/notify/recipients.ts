@@ -85,6 +85,16 @@ export async function visibleDocumentGuardians(sql: Queryable, documentId: strin
   return rows.map((r) => r.user_id);
 }
 
+/** 027 FR-3: who hears about a new message, decided by `message_notification_recipients` at fan-out: the child's
+ * active guardians, the case's assigned care team and anyone who started or wrote in the thread, while they can
+ * still access it, minus the sender and anyone whose read marker is at or after the message; nobody once the
+ * message is deleted. */
+export async function threadMessageRecipients(sql: Queryable, messageId: string): Promise<string[]> {
+  const rows = await sql<{ user_id: string }[]>`
+    select r.user_id from public.message_notification_recipients(${messageId}::uuid) as r(user_id)`;
+  return rows.map((r) => r.user_id);
+}
+
 /** 041: active platform admins (deletion requests to review). */
 export async function platformAdmins(sql: Queryable): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`

@@ -32,6 +32,7 @@ export async function listExtractedSessions(caseId: string): Promise<ExtractedSe
     .select("id, session_number, created_at")
     .eq("case_id", caseId)
     .eq("kind", "session")
+    .eq("template", "child_dev_isaa") // 038: AI scribe sessions have no ISAA facts
     .eq("status", "extracted")
     .order("session_number", { ascending: true });
   if (error) throw new Error(`Could not load sessions: ${error.message}`);

@@ -11,10 +11,10 @@ import {
   activeGuardians,
   assignedAssessmentGuardian,
   caseProviders,
-  childAccessFilter,
   existingUser,
   profileOwner,
   platformAdmins,
+  threadMessageRecipients,
   visibleDocumentGuardians,
 } from "./recipients";
 import type { TemplateName } from "./templates";
@@ -67,20 +67,15 @@ export const TOPICS = {
     devOnly: true,
     recipients: (_payload, { sql, event }) => existingUser(sql, event.aggregate_id),
   }),
-  // 027 registers thread participants here; until then the producer names recipients, re-checked against the child.
+  // 027 FR-3: enqueued by `create_message_thread` / `send_thread_message` in the sending transaction, 2 minutes later
+  // (aggregate = the thread). At fan-out: the child's active guardians, the case's assigned care team and anyone who
+  // started or wrote in the thread, still with access, minus the sender and anyone who has read the thread since
+  // the message; nobody once the message is deleted. Generic text only (no sender, child or body).
   "message.created": topic({
-    payload: z
-      .object({
-        message_id: uuid,
-        child_id: uuid.optional(),
-        case_id: uuid.optional(),
-        recipient_user_ids: userList.optional(),
-      })
-      .strict(),
+    payload: z.object({ message_id: uuid }).strict(),
     channels: GUARDIAN_CHANNELS,
     template: "message_created",
-    recipients: async (p, { sql }) =>
-      p.child_id && p.recipient_user_ids ? childAccessFilter(sql, p.child_id, p.recipient_user_ids) : [],
+    recipients: (p, { sql }) => threadMessageRecipients(sql, p.message_id),
   }),
   // 023: a provider document became visible to the guardians (enqueued by `complete_document` /
   // `set_document_visibility`). In-app + email only. At fan-out: active guardians, and only while the document is
@@ -241,6 +236,11 @@ export const PROVIDER_TOPICS = {
 
 export const SHARING_TOPICS = {
   granted: "sharing.granted",
+} as const satisfies Record<string, Topic>;
+
+// 027 FR-3: enqueued by `create_message_thread` / `send_thread_message` (migration 20261113002700).
+export const MESSAGE_TOPICS = {
+  created: "message.created",
 } as const satisfies Record<string, Topic>;
 
 // 024: questionnaires (enqueued in the producing transactions in lib/assessments).

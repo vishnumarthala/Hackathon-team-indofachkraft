@@ -22,6 +22,7 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
     await getLocale(),
   ];
   const ti = await getT("iep.family");
+  const thp = await getT("homeProgram");
   const [state, docs] = await Promise.all([getConsentState(child.id), currentDocuments(locale)]);
 
   const views: PermissionView[] = CONSENT_FEATURES.map((feature) => {
@@ -73,6 +74,18 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
           className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
         >
           {ti("link")}
+        </Link>
+        <Link
+          href={`/family/children/${child.id}/notes`}
+          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+        >
+          {(await getT("scribe.family"))("link")}
+        </Link>
+        <Link
+          href={`/family/children/${child.id}/home-program`}
+          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+        >
+          {thp("link")}
         </Link>
         <Link
           href={`/family/children/${child.id}/privacy`}

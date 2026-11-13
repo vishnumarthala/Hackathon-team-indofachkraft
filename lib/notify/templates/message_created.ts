@@ -1,6 +1,6 @@
-import { defineTemplate, idOf, roleLink } from "./shared";
+import { defineTemplate } from "./shared";
 
-// 027 FR-3 wording: no sender name, no child name, no message body.
+// 027 FR-3 wording: no sender name, no child name, no message body. The event's aggregate is the thread.
 export default defineTemplate({
   name: "message_created",
   strings: {
@@ -9,7 +9,8 @@ export default defineTemplate({
     te: { title: "కొత్త సందేశం", body: "DoctorNearMe లో మీకు కొత్త సందేశం వచ్చింది." },
   },
   link: (ctx) => {
-    const caseId = idOf(ctx.payload, "case_id");
-    return roleLink(ctx, "/family/messages", caseId ? `/cases/${caseId}` : "/dashboard");
+    const thread = ctx.event.aggregate_type === "thread" && /^[0-9a-f-]{36}$/i.test(ctx.event.aggregate_id) ? ctx.event.aggregate_id : null;
+    const suffix = thread ? `/${thread}` : "";
+    return ctx.role === "guardian" ? `/family/messages${suffix}` : `/dashboard/messages${suffix}`;
   },
 });

@@ -137,6 +137,13 @@ flowchart LR
   concurrency (`version`, 409). Publishing renders markdown and stores it with `publishVersion` (`iep_plan`,
   visible to guardians) plus a goal snapshot (`iep_publications`); guardians (`/family/children/[id]/plan`) and the
   `iep` share scope see only published text with live progress values. See `docs/iep.md`.
+- **Home program (ticket 026).** Case-scoped programs (`home_programs`, one `published` per case) of up to 15
+  active activities (`home_activities`, optionally linked to a goal of the case's active IEP plan and to a guide
+  document from the vault) and guardian practice logs (`home_activity_logs`, one per activity/day/guardian,
+  upserted). Publishing stores `publishVersion` (`home_program`) plus an activity snapshot
+  (`home_program_publications`); guardians (`/family/children/[id]/home-program`, `Done today`), the
+  `home_program` share scope and 040 (`getGuardianHomePrograms`) see only the published snapshot. Adherence weeks
+  start Monday in the guardian's time zone. See `docs/home-program.md`.
 - **Real patient data** still waits for the privacy/audit baseline (041) and legal review of the consent
   texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
@@ -163,6 +170,14 @@ flowchart LR
   `/api/cron/outbox`, `CRON_SECRET`) plus an immediate `after()` drain (`drainSoon`); locally
   `npm run outbox:run`. Bell + `/notifications`, preferences in settings, `/admin/notifications`.
   See `docs/notifications.md`.
+- **Secure messaging (ticket 027).** Case-scoped threads between a child's guardians and the care team of
+  one organisation (`message_threads`, `messages`, `thread_reads`). Access is one SQL rule
+  (`thread_access_level`: linked guardian, or 022 case access) used by the routes and by RLS
+  (`can_access_thread`), which is the browser's only path: `messages` is in the `supabase_realtime`
+  publication and pages fall back to polling every 15 s without Realtime. Writes are security-definer
+  functions (message + `message.created` outbox event 2 min later + strict audit, ids only); notifications
+  never carry message text. Attachments must be readable by every participant under 023's rule. See
+  `docs/messaging.md`.
 - **Privacy, audit and operations (ticket 041).** `audit_events` is append-only for every role, survives case
   deletion (`case_ref`, no FK) and is attributed (`actor_user_id` + `actor_role` from the session, `org_id`,
   `child_id`, `request_id`, `ip_hash`; a trigger fills them for every writer). `audit()` is best effort; security-critical
@@ -218,7 +233,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
-          documents.md  assessments.md  notifications.md  iep.md
+          documents.md  assessments.md  notifications.md  iep.md  home-program.md  messaging.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -526,13 +541,19 @@ captured before 024 (`tests/fixtures/regression-child-dev/baseline.json`).
 |---|---|---|
 | Instrument registry | `lib/clinical/instruments.ts` (`getInstrument`, `InstrumentDefinition`, `score`), table `clinical_instruments` | Keys `ISAA`, `CASE_SHEET`, `ISAA_PARENT_CHECKIN`; `definition` = the `schemas/*.json` file (a test fails on drift). `facts.instrument` is a foreign key to it. `score("ISAA", facts)` delegates to `scoreIsaa` unchanged. New standardised instruments need a licensing review. |
 | Parent check-in | `schemas/isaa-parent-checkin.json`, `lib/clinical/checkin.ts` (`scoreCheckin`, `checkinRedFlags`, `URGENT_COPY`) | 15 ISAA-derived parent questions (never/sometimes/often/always, some reverse-worded) + 6 yes/no red-flag questions (`skill_regression`, `self_injury`, `seizure`, `breathing`, `not_eating_drinking`, `safety_concern`). Bands `no_strong_signs` (0-9) / `discuss_with_professional` (10-19) / `see_professional_soon` (20-45, or any red flag). Copy always says `This is a developmental check-in, not a diagnosis.`; any red flag shows `Please contact your child's doctor now. In an emergency call 108 (ambulance) or 112.` English only; thresholds and wording await clinical review. |
-| Report kinds | `lib/clinical/reports.ts` (`REPORT_KINDS`) | In use: `pre_session_brief`, `assessment`, `parent_summary`; reserved: `session_note` (038), `rx_draft` (038/039), `generic_intake_brief` (035). Each has `audience`, `publishable`, `producer`. The ticket that starts writing a reserved kind extends the `reports.kind` check in its migration. |
+| Report kinds | `lib/clinical/reports.ts` (`REPORT_KINDS`) | In use: `pre_session_brief`, `assessment`, `parent_summary`, `session_note` and `rx_draft` (038, `docs/scribe.md`); reserved: `generic_intake_brief` (035). Each has `audience`, `publishable`, `producer`. The ticket that starts writing a reserved kind extends the `reports.kind` check in its migration. |
 | Published versions | `lib/clinical/publish.ts` (`publishVersion(tx, input)`, `getLatestPublished`, `listGuardianVisible`, `contentHash`, `setActor`), table `published_versions`, SQL `publish_version(jsonb)` | **`content_md` is authoritative**; `reports.content` (jsonb) is only the AI draft input. One append-only row per (entity_type, entity_id, version): `report`, `iep_plan`, `home_program`, `prescription`, `assessment`; `content_hash` = sha256(content_md); update/delete raise (rows go only with their case; `child_id` follows its case when 020's claim merges a placeholder child, trigger `cases_child_follow`). `publish_version` is the only writer (service role cannot insert); call `publishVersion(tx, ...)` inside the transaction that changes the entity. A report becoming `final` publishes itself in the same transaction (trigger `reports_publish_final`; `assessment` -> provider only, `parent_summary` -> visible to the guardian; a changed final `content_md` -> next version). The latest version decides guardian visibility. Guardians read only `visible_to_guardian` versions; other orgs only through a sharing grant. Existing final reports were backfilled (`backfill_published_reports()`); `npm run db:check` reports final reports without a version. |
 | Speaker roles | `lib/clinical/speakers.ts`, `SpeakerRoleSchema` | Stored values unchanged: `therapist` = the clinician of any provider type, `parent` = guardian/caregiver, `agent` = AI assistant, `unknown`; new `child`, `other_adult`. UI labels via i18n `speakers.*` (`Clinician`, `Parent or caregiver`, `Child`, `Other adult`, `AI assistant`, `Unknown`); prompts keep the stored value. The 008 swap only exchanges therapist <-> parent. |
 
 The assessment portal (questionnaires sent to guardians, review, publishing, `assessments` share scope) is
 described in `docs/assessments.md`.
 IEP plans publish with `entity_type = 'iep_plan'` (ticket 025, `docs/iep.md`).
+The AI scribe (ticket 038, `docs/scribe.md`) generalises the session pipeline to every provider type: recordings carry a
+`template` (`child_dev_isaa` = the unchanged ISAA path, `therapy_session_note`, `medical_consult_note` with `kind =
+'consult'`), and produce `session_note` / `rx_draft` reports and `goal_progress_suggestions`. Session notes are
+published by `finalizeSessionNote` (not by the `reports_publish_final` trigger, which skips both kinds) with the
+clinician's `visible_to_guardian` choice.
+Home programs publish with `entity_type = 'home_program'` (ticket 026, `docs/home-program.md`).
 
 ## 8. API contracts
 
@@ -546,9 +567,11 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 |---|---|---|---|
 | `POST /api/cases` | 004 | `{ child_alias, child_age_months?, parent_alias, parent_email?, parent_phone?, language, therapist_name? }` | 201 `{ case }` |
 | `PATCH /api/cases/:id` | 004 | any of `{ facp_score: 0..100 \| null, language, parent_email, parent_phone }` | 200 `{ case }` |
-| `POST /api/cases/:id/sessions` | 005 | `{ file_name, mime_type, size_bytes, consent?: boolean }` | 201 `{ recording_id, session_number, bucket, path, token, signed_url }` |
+| `POST /api/cases/:id/sessions` | 005, 038 | `{ file_name, mime_type, size_bytes, consent?: boolean, template?, appointment_id? }` | 201 `{ recording_id, session_number, template, bucket, path, token, signed_url }`; 422 video appointment (`The AI scribe is available for in-clinic sessions only`) |
 | `POST /api/sessions/:id/transcribe` | 005 | - | 200 `{ recording_id, status, segments_count, duration_sec, speaker_map }` |
-| `POST /api/sessions/:id/extract` | 006 | - | 200 `{ recording_id, facts, red_flags, therapist_notes_applied }` |
+| `POST /api/sessions/:id/extract` | 006 | - | 200 `{ recording_id, facts, red_flags, therapist_notes_applied }` (409 for AI scribe templates) |
+| `POST\|GET\|PATCH /api/sessions/:id/scribe` | 038 | PATCH `{ content_md?, status?: "final", visible_to_guardian? }` | POST 200 `{ session_note_id, session_note_status, goal_suggestions, rx_draft_id? }`; 409 ISAA session / running / not transcribed; 422 consent or video appointment (`docs/scribe.md`) |
+| `PATCH /api/goal-suggestions/:id` | 038 | `{ status: "accepted" \| "rejected", value? }` | 200 `{ suggestion, entry?, trend? }` (goal_progress `ai_suggested_confirmed`); 409 already decided; 404 other org |
 | `PATCH /api/facts/:id` | 007 | `{ action: "confirm" }` or `{ action: "edit", value: 1..5 }` | 200 `{ fact, score }` |
 | `POST /api/sessions/:id/bulk` | 007 | `{ action: "confirm_suggested" }` or `{ action: "rate_unrated", value: 1 }` | 200 `{ updated, score }` |
 | `PATCH /api/sessions/:id/speakers` | 008 | `{ swap: true }` | 200 `{ speaker_map, segments_count }` |
@@ -568,9 +591,11 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|PUT /api/family/children/:id/health`, `GET /api/cases/:id/health` | 021 | PUT: full profile + `version` | 200 `{ profile }`; 409 stale version; 400 `details` by field path; case route 404 without profile (`docs/health-profile.md`) |
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
 | `GET\|POST /api/cases/:id/iep-plans`, `GET\|PATCH /api/iep-plans/:planId`, `POST /api/iep-plans/:planId/publish`, `GET\|POST /api/iep-plans/:planId/goals`, `PATCH\|DELETE /api/iep-goals/:goalId`, `GET\|POST /api/iep-goals/:goalId/progress`, `GET /api/family/children/:id/plan` | 025 | plan/goal writes carry the plan `version` | 201/200; 409 stale `This plan was changed by someone else. Reload to see the latest version.`; 400 field errors; 422 no goals / > 20 goals (`docs/iep.md`) |
+| `GET\|POST /api/cases/:id/home-programs`, `GET\|PATCH /api/home-programs/:pid`, `POST /api/home-programs/:pid/activities`, `POST /api/home-programs/:pid/publish`, `PATCH\|DELETE /api/home-activities/:aid`, `GET /api/family/children/:id/home-program`, `POST /api/family/home-activities/:aid/logs`, `DELETE /api/family/home-activity-logs/:id` | 026 | program PATCH / publish carry the program `version` | 201/200; 409 stale; 422 `Choose a goal from this child's plan` / > 15 active activities; guardian logs 201 new / 200 same day again, 400 future or > 14 days ago (`docs/home-program.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
+| `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |
 | `GET\|POST /api/family/children/:id/deletion-requests`, `POST /api/admin/privacy/requests/:id` | 041 | `{ scope: "all_ai_processing" \| "everything", reason? }`; admin `{ decision: "approve" \| "reject", note? }` | 201 `{ request }`; 409 open request; admin 200 `{ id, status }`, 403 non-admin, 400 rejection without a cited note |
@@ -591,7 +616,8 @@ Every mutation writes an `audit_events` row via `lib/audit.ts` (041: security-cr
 | Call | Fixture |
 |------|---------|
 | Scribe v2 | `demo/fixtures/scribe-response.json` (generated from `roleplay-segments.json` by `scripts/make-scribe-fixture.ts`) |
-| Gemini task `<task>` | `demo/fixtures/gemini/<task>.json` for `extract`, `brief`, `report`, `referral`, `ask`, `parent-summary` |
+| Gemini task `<task>` | `demo/fixtures/gemini/<task>.json` for `extract`, `brief`, `report`, `referral`, `ask`, `parent-summary`, `scribe-therapy`, `scribe-medical`, `scribe-rx` (038) |
+| Scribe v2 for AI scribe templates (038) | `scribe-response-therapy.json` / `scribe-response-consult.json` (from `roleplay-{therapy,consult}-segments.json`, `npm run fixtures:scribe`) |
 | ElevenLabs conversation token | none: start endpoint returns `{ demo: true }`, intake page shows "Simulate completed call" |
 | ElevenLabs finished conversation | `demo/fixtures/elevenlabs-post-call.json` (`data`) returned by `/api/intake/:token/complete` and replayed by `/api/dev/simulate-intake/:token` |
 | ElevenLabs TTS | skipped: report saved without audio, page shows "Voice note skipped in demo mode" |
@@ -730,6 +756,9 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
 - Audio: private bucket, signed URLs valid 1 hour for playback.
 - Documents (023): private bucket, signed URLs valid 300 s, minted only after the access check and the
   strict `document.downloaded` audit row; never logged (`docs/documents.md`).
+- Messaging (027): RLS select policies are the browser's path to `message_threads` / `messages` /
+  `thread_reads` (also for Realtime); message text is never logged, audited or put in notifications
+  (`docs/messaging.md`).
 - Consent: intake page requires a consent checkbox before Start. Since 020 every gated step also needs the
   guardian's recorded consent for that feature (server-side; a client `parent_consent` flag is ignored);
   see `docs/consent.md`.

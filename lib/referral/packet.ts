@@ -128,6 +128,8 @@ export type PacketSession = {
   status: string;
   kind?: string;
   created_at?: string;
+  /** 038: AI scribe sessions have no ISAA facts and never feed the packet. */
+  template?: string | null;
 };
 
 export type IntakeFlags = { lost_speech?: boolean; self_injury?: boolean };
@@ -152,7 +154,9 @@ export function decidedIsaaFacts(facts: PacketFact[]): DecidedFact[] {
 
 /** The latest extracted session: the Referral tab and the refer route both use this one. */
 export function pickReferralSession<T extends PacketSession>(recordings: T[]): T | null {
-  const sessions = recordings.filter((r) => (r.kind ?? "session") === "session" && r.status === "extracted");
+  const sessions = recordings.filter(
+    (r) => (r.kind ?? "session") === "session" && (r.template ?? "child_dev_isaa") === "child_dev_isaa" && r.status === "extracted",
+  );
   sessions.sort(
     (a, b) =>
       (b.session_number ?? 0) - (a.session_number ?? 0) || (b.created_at ?? "").localeCompare(a.created_at ?? ""),
