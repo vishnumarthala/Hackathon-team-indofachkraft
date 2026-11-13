@@ -77,9 +77,12 @@ Scopes (`lib/sharing/scopes.ts`, same list as the check constraint): `reports`, 
   - `POST /api/family/children/:id/sharing-grants/:grantId/revoke` -> 200 `{ grant }`; unknown/revoked -> 404.
   - Audit `sharing.granted` / `sharing.revoked` is **strict**: written by `create_sharing_grant` /
     `revoke_sharing_grant` in the same transaction; if it fails nothing is saved and the API answers 503.
-- **Notification**: after a grant, `notifyLater("sharing.granted", { grant_id, source_org_id, grantee_org_id })`
-  (`lib/notify/topics.ts`, `SHARING_TOPICS`). Until ticket 032 wires the outbox this only logs ids.
-  Recipients for 032: active owners/admins of `grantee_org_id`.
+- **Notification** (032): a trigger on `sharing_grants` enqueues outbox event `sharing.granted`
+  (`{ grant_id, child_id, source_org_id, grantee_org_id, grantee_case_id }`, dedup `sharing.granted:<grant id>`)
+  in the granting transaction; `createSharingGrant` then calls `drainSoon()`. Recipients: active owners/admins
+  of the grantee org, re-checked at fan-out (grant not revoked/expired, granting guardian's link active).
+  In-app + email, no child name or scopes; links to the grantee case's `Shared with us` tab. See
+  `docs/notifications.md`.
 - **UI**: `/family/children/[id]/team` (care team by organisation + `Sharing`: one card per ordered pair of
   treating organisations with `Share` or `Stop sharing`), linked from the child page.
 

@@ -3,7 +3,7 @@
 import { randomUUID } from "node:crypto";
 import type { z } from "zod";
 import { supabaseAdmin } from "@/lib/db";
-import { notifyLater, PROVIDER_TOPICS } from "@/lib/notify/topics";
+import { drainSoon } from "@/lib/notify/outbox";
 import { CREDENTIALS_BUCKET, MAX_CERTIFICATE_BYTES, type CertificateMime } from "./constants";
 import { sniffType } from "./images";
 import type { Result } from "./index";
@@ -117,10 +117,9 @@ export async function reviewSubmission(
     return { ok: false, status: 404, error: "Submission not found" };
   }
   const profileId = outcome.profile_id as string;
-  await notifyLater(action === "approve" ? PROVIDER_TOPICS.verified : PROVIDER_TOPICS.rejected, {
-    provider_profile_id: profileId,
-    submission_id: submissionId,
-  });
+  // 032: the decision's outbox event (provider.verified / provider.rejected) was written by a trigger in the same
+  // transaction; deliver it right after the response.
+  drainSoon();
   return { ok: true, data: { profileId } };
 }
 
@@ -134,7 +133,7 @@ export async function suspendProfile(profileId: string, adminId: string, note: s
   if (data === "not_found") return { ok: false, status: 404, error: "Profile not found" };
   if (data === "not_verified") return { ok: false, status: 409, error: "Only verified profiles can be suspended" };
   if (data === "note_required") return { ok: false, status: 400, error: "A note is required to suspend" };
-  await notifyLater(PROVIDER_TOPICS.suspended, { provider_profile_id: profileId });
+  drainSoon(); // 032: provider.suspended was enqueued by a trigger in the suspension transaction.
   return { ok: true, data: null };
 }
 

@@ -21,10 +21,11 @@ vi.mock("@/lib/auth", async (importOriginal) => {
   return { ...actual, getAuthenticatedUser: vi.fn(async () => session.user) };
 });
 
-const notify = vi.hoisted(() => ({ calls: [] as unknown[][] }));
-vi.mock("@/lib/notify/topics", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/notify/topics")>();
-  return { ...actual, notifyLater: vi.fn(async (...args: unknown[]) => void notify.calls.push(args)) };
+// 032: the grant transaction enqueues `sharing.granted`; the immediate drain is not under test here.
+const drain = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/notify/outbox", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/notify/outbox")>();
+  return { ...actual, drainSoon: drain };
 });
 
 describe("grant request validation and helpers", () => {
@@ -175,7 +176,7 @@ describe.skipIf(!enabled)("sharing grants (database)", { timeout: 90_000 }, () =
 
     // active: org A -> org B, reports only, 3 months (E-2.2)
     as(guardianA);
-    notify.calls = [];
+    drain.mockClear();
     const res = await share({ source_org_id: orgA, grantee_org_id: orgB, scopes: ["reports"], expires_in_days: 90 });
     expect(res.status).toBe(201);
     const { grant } = await res.json();
@@ -187,7 +188,15 @@ describe.skipIf(!enabled)("sharing grants (database)", { timeout: 90_000 }, () =
       select actor, actor_user_id, details from audit_events where action = 'sharing.granted' and entity_id = ${grant.id}`;
     expect(granted).toMatchObject({ actor: "parent", actor_user_id: guardianA.id });
     expect(granted.details).toMatchObject({ source_org_id: orgA, grantee_org_id: orgB, scopes: ["reports"] });
-    expect(notify.calls).toEqual([["sharing.granted", { grant_id: grant.id, source_org_id: orgA, grantee_org_id: orgB }]]);
+    const events = await sql<{ payload: Record<string, unknown>; dedup_key: string }[]>`
+      select payload, dedup_key from outbox_events where topic = 'sharing.granted' and aggregate_id = ${grant.id}`;
+    expect(events).toEqual([
+      {
+        payload: { grant_id: grant.id, child_id: childId, source_org_id: orgA, grantee_org_id: orgB, grantee_case_id: caseB },
+        dedup_key: `sharing.granted:${grant.id}`,
+      },
+    ]);
+    expect(drain).toHaveBeenCalled();
 
     expect(await sharedStatus(providerB)).toEqual([orgA]);
     // Unassigned member of the grantee org, the source org's own providers and other guardians: no shared access.
