@@ -1,3 +1,4 @@
+import { AuditWriteError, auditFailure } from "@/lib/audit";
 import { publishProgram } from "@/lib/home-program";
 import { requireHomeProgramActor } from "@/lib/home-program/authz";
 import { PublishSchema } from "@/lib/home-program/schema";
@@ -16,7 +17,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ pid: st
   const parsed = await parseJson(req, PublishSchema);
   if ("response" in parsed) return parsed.response;
 
-  const result = await publishProgram({ programId: pid, actorUserId: gate.actor.user.id, version: parsed.data.version });
+  let result: Awaited<ReturnType<typeof publishProgram>>;
+  try {
+    result = await publishProgram({ programId: pid, actorUserId: gate.actor.user.id, version: parsed.data.version });
+  } catch (err) {
+    if (err instanceof AuditWriteError) return auditFailure(err);
+    throw err;
+  }
   if (!result.ok) return fail(result.status, result.error, result.details);
   drainSoon(result.event_ids);
   return ok({

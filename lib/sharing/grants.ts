@@ -1,5 +1,6 @@
 // Ticket 022 FR-4/FR-5: guardian-created sharing grants. Server only. Writes go through one database function
 // each (grant/revoke + audit in one transaction, strict: an audit failure saves nothing -> 503).
+import { auditWouldFail } from "@/lib/audit";
 import { z } from "zod";
 import { isUuid } from "@/lib/cases/validation";
 import { supabaseAdmin } from "@/lib/db";
@@ -50,6 +51,7 @@ const ERRORS: Record<string, { status: number; error: string }> = {
 };
 
 export async function createSharingGrant(childId: string, userId: string, input: GrantCreateInput): Promise<Result<SharingGrant>> {
+  if (auditWouldFail("sharing.granted")) return { ok: false, status: 503, error: SAVE_FAILED };
   try {
     const { data, error } = await supabaseAdmin().rpc("create_sharing_grant", {
       p_child: childId,
@@ -77,6 +79,7 @@ export async function createSharingGrant(childId: string, userId: string, input:
 
 export async function revokeSharingGrant(childId: string, grantId: string, userId: string): Promise<Result<SharingGrant>> {
   if (!isUuid(grantId)) return { ok: false, status: 404, error: GRANT_NOT_FOUND };
+  if (auditWouldFail("sharing.revoked")) return { ok: false, status: 503, error: SAVE_FAILED };
   try {
     const { data, error } = await supabaseAdmin().rpc("revoke_sharing_grant", {
       p_child: childId,

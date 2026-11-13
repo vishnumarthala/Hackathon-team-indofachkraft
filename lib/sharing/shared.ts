@@ -67,7 +67,7 @@ export async function openSharedItem(userId: string, kase: CaseRef, scope: Share
     .from("audit_events")
     .insert({
       case_id: kase.id,
-      actor: "therapist",
+      actor: "provider",
       actor_user_id: userId,
       action: "sharing.viewed",
       entity: "sharing_grant",

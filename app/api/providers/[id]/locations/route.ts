@@ -36,7 +36,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     geocoded = geo.geocoded;
     location = await createLocation(org_id, geo.fields);
     await audit({
-      actor: "therapist",
       actorUserId: userId,
       action: "org.location_created",
       entity: "practice_location",

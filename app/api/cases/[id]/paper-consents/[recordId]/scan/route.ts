@@ -28,7 +28,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!url) return fail(503, "Could not load the form");
   await audit({
     caseId: id,
-    actor: "therapist",
     actorUserId: gate.actor.user.id,
     action: "consent.scan_viewed",
     entity: "consent_record",

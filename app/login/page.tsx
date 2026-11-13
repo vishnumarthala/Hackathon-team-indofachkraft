@@ -46,7 +46,12 @@ export default async function LoginPage({
           </p>
         </div>
 
-        <p className="text-xs text-slate-500">{t("login.disclaimer")}</p>
+        <p className="text-xs text-slate-500">
+          {t("login.disclaimer")}{" "}
+          <Link href="/privacy" className="underline">
+            {t("privacy.link")}
+          </Link>
+        </p>
       </div>
 
       <div className="relative hidden overflow-hidden bg-[#0b1f1d] lg:block">

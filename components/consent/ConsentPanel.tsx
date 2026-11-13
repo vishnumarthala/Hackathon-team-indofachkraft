@@ -88,6 +88,9 @@ export async function ConsentPanel({ caseRow }: { caseRow: CaseRow & { child_id:
         <Link href={`/cases/${caseRow.id}/consent/paper`} className={linkClass}>
           {t("recordPaper")}
         </Link>
+        <Link href="/privacy" className={linkClass}>
+          {(await getT("privacy"))("link")}
+        </Link>
       </div>
     </section>
   );

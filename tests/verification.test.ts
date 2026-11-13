@@ -6,6 +6,7 @@ import postgres, { type Sql } from "postgres";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { registerSearchUrl } from "@/lib/providers/constants";
 import { jsonRequest, params, providerFixtures, SYNTHETIC_PDF, type TestUser } from "./helpers/providers";
+import { purgeTestAudit } from "./helpers/audit";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
 const enabled = Boolean(process.env.DATABASE_URL) && process.env.SKIP_DB_TESTS !== "1";
@@ -271,6 +272,6 @@ describe.skipIf(!enabled)("credential verification (database)", { timeout: 60_00
     const [{ certificate_path }] = await sql`select certificate_path from credential_submissions where id = ${submission_id}`;
     const pub = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/credentials/${certificate_path}`);
     expect(pub.ok).toBe(false);
-    await sql`delete from audit_events where entity_id = ${submission_id}`;
+    await purgeTestAudit(sql, (tx) => tx`delete from audit_events where entity_id = ${submission_id}`);
   });
 });

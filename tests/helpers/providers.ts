@@ -3,6 +3,7 @@
 import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Sql } from "postgres";
+import { purgeTestAudit } from "./audit";
 
 export type TestUser = { id: string; email: string };
 
@@ -56,7 +57,7 @@ export function providerFixtures(prefix: string, getDb: () => SupabaseClient, ge
             for (const file of data ?? []) objects.push({ bucket, path: `${id}/${file.name}` });
           }
         }
-        await sql`delete from audit_events where entity_id in ${sql(profileIds)} or details ->> 'provider_profile_id' in ${sql(profileIds)}`;
+        await purgeTestAudit(sql, (tx) => tx`delete from audit_events where entity_id in ${tx(profileIds)} or details ->> 'provider_profile_id' in ${tx(profileIds)}`);
         // 032: provider decisions enqueue outbox events (notifications cascade).
         await sql`delete from outbox_events where aggregate_type = 'provider_profile' and aggregate_id in ${sql(profileIds)}`;
         await sql`delete from provider_profiles where id in ${sql(profileIds)}`;

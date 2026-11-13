@@ -14,6 +14,7 @@
 // Typed entry point for 040 (follow-up agent): `getGuardianHomePrograms(childId)` = the published, guardian-visible
 // programs of a child (snapshot wording only, this week's adherence, no guardian notes).
 import type postgres from "postgres";
+import { auditStrict } from "@/lib/audit";
 import { contentHash, getLatestPublished, publishVersion, type PublishedVersion } from "@/lib/clinical/publish";
 import { isUuid } from "@/lib/cases/validation";
 import {
@@ -175,22 +176,23 @@ function omitVersion<T extends { version?: number }>(body: T): Omit<T, "version"
   return out as Omit<T, "version">;
 }
 
+// 041: strict audit in the caller's transaction (fails closed: AuditWriteError rolls the change back), attributed to
+// the acting session user; the database fills actor_role, child_id and org_id.
 async function auditTx(
   tx: Tx,
   e: {
     caseId: string;
     actorUserId: string;
-    actor?: "therapist" | "parent";
     action: string;
     entity: "home_program" | "home_activity" | "home_activity_log";
     entityId: string;
     details?: Record<string, unknown>;
   },
 ) {
-  await tx`
-    insert into audit_events (case_id, actor, actor_user_id, action, entity, entity_id, details)
-    values (${e.caseId}, ${e.actor ?? "therapist"}, ${e.actorUserId}, ${e.action}, ${e.entity}, ${e.entityId},
-            ${tx.json((e.details ?? {}) as postgres.JSONValue)})`;
+  await auditStrict(
+    { caseId: e.caseId, actorUserId: e.actorUserId, action: e.action, entity: e.entity, entityId: e.entityId, details: e.details ?? {} },
+    tx,
+  );
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -506,14 +508,17 @@ export async function publishProgram(input: { programId: string; actorUserId: st
       insert into home_program_publications (published_version_id, program_id, program_version, title, activities)
       values (${published.id}, ${program.id}, ${program.version + 1}, ${program.title},
               ${tx.json(snapshot as unknown as postgres.JSONValue)})`;
-    await auditTx(tx, {
-      caseId: program.case_id,
-      actorUserId: input.actorUserId,
-      action: "home_program.published",
-      entity: "home_program",
-      entityId: program.id,
-      details: { published_version_id: published.id, published_version: published.version, activities: active.length, version: program.version + 1 },
-    });
+    await auditStrict(
+      {
+        caseId: program.case_id,
+        actorUserId: input.actorUserId,
+        action: "home_program.published",
+        entity: "home_program",
+        entityId: program.id,
+        details: { published_version_id: published.id, published_version: published.version, activities: active.length, version: program.version + 1 },
+      },
+      tx,
+    );
     const eventId = await enqueue(tx, {
       topic: "home_program.published",
       aggregateType: "home_program",
@@ -934,15 +939,17 @@ export async function deleteOwnLog(input: {
       where l.id = ${input.log.id} and l.logged_by = ${input.userId} and a.id = l.activity_id and p.id = a.program_id
       returning p.case_id, p.id as program_id`;
     if (!ctx) return fail(404, MSG.logNotFound);
-    await auditTx(tx, {
-      caseId: ctx.case_id,
-      actorUserId: input.userId,
-      actor: "parent",
-      action: "home_program.log_deleted",
-      entity: "home_activity_log",
-      entityId: input.log.id,
-      details: { program_id: ctx.program_id, activity_id: input.log.activity_id, done_on: input.log.done_on },
-    });
+    await auditStrict(
+      {
+        caseId: ctx.case_id,
+        actorUserId: input.userId,
+        action: "home_program.log_deleted",
+        entity: "home_activity_log",
+        entityId: input.log.id,
+        details: { program_id: ctx.program_id, activity_id: input.log.activity_id, done_on: input.log.done_on },
+      },
+      tx,
+    );
     return { ok: true as const };
   });
 }

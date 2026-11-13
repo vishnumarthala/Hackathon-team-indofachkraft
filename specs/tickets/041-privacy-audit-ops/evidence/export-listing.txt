@@ -1,0 +1,11 @@
+child.json
+documents/5cf91f51-acdc-47c1-9787-50421ae52d36-letter.pdf
+documents/d4e647c7-b7b0-4d81-85d2-bb73ece7c4bc-plan.pdf
+
+assessments: [{"id":"707232f4-f9ba-42f1-87c5-6f18587b9813","title":"Parent developmental check-in","instrument_key":"ISAA_PARENT_CHECKIN","status":"submitted","due_on":null,"submitted_at":"2026-11-13T02:10:18.265Z","created_at":"2026-11-13T02:10:18.265Z","answers":[{"item_id":"q1","value":2,"answered_at":"2026-11-13T02:10:18.268Z"}]}]
+iep_plans: e041 Plan (synthetic)
+published_versions: iep_plan v1
+sections: child_profile, assessments, published_versions, iep_plans, documents, health_profile, consent_records, sharing_and_care_team
+consent_records: 7
+documents: e041 School letter, e041 Therapy plan
+health allergies: [{"reaction":"rash","severity":"severe","substance":"Peanut (synthetic)"}]

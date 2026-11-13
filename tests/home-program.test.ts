@@ -558,6 +558,16 @@ describe.skipIf(!enabled)("home program (database)", { timeout: 180_000 }, () =>
     const res = await deleteLog(olderId);
     expect(res.status).toBe(409);
     expect((await res.json()).error).toBe(MSG.notThisWeek);
+    // 041: the audit row is strict; if it cannot be written nothing is deleted (503).
+    process.env.AUDIT_FAIL_ACTIONS = "home_program.log_deleted";
+    try {
+      const failed = await deleteLog(logId);
+      expect(failed.status).toBe(503);
+      expect(await failed.json()).toEqual({ error: "Could not save. Please try again." });
+      expect(await sql`select id from home_activity_logs where id = ${logId}`).toHaveLength(1);
+    } finally {
+      delete process.env.AUDIT_FAIL_ACTIONS;
+    }
     expect((await deleteLog(logId)).status).toBe(200);
     expect((await deleteLog(logId)).status).toBe(404);
     expect(await sql`select action from audit_events where entity = 'home_activity_log' and entity_id = ${logId}`).toEqual([{ action: "home_program.log_deleted" }]);
@@ -585,6 +595,31 @@ describe.skipIf(!enabled)("home program (database)", { timeout: 180_000 }, () =>
     const { programs } = await (await family()).json();
     expect(programs.map((p: { program_id: string }) => p.program_id)).toEqual([next]);
     expect((await log(activityId, { done_on: TODAY, difficulty: "okay" })).status).toBe(404);
+  });
+
+  it("041 audit actor and privacy registry: provider rows carry the session role; export = published programs + own logs only", async () => {
+    const roles = await sql<{ action: string; actor_role: string | null; actor_user_id: string }[]>`
+      select action, actor_role, actor_user_id from audit_events where action = 'home_program.published' and entity_id = ${programId}`;
+    expect(roles.length).toBeGreaterThan(0);
+    expect(roles.every((r) => r.actor_role === "provider" && r.actor_user_id === providerA.id)).toBe(true);
+    const [deleted] = await sql<{ actor_role: string | null }[]>`select actor_role from audit_events where action = 'home_program.log_deleted' and entity_id = ${logId}`;
+    expect(deleted.actor_role).toBe("guardian");
+
+    const other = await world.user("guardiana2", "guardian");
+    await world.link(childA, other, "father");
+    await sql`insert into home_activity_logs (activity_id, child_id, logged_by, done_on, difficulty, note)
+              values (${activityId}, ${childA}, ${other.id}, ${addDays(TODAY, -1)}, 'hard', 'OTHER-GUARDIAN-NOTE')`;
+    const { REGISTRY } = await import("@/lib/privacy/registry");
+    const entry = REGISTRY.find((c) => c.key === "home_programs")!;
+    expect(entry.tables).toEqual(["home_programs", "home_activities", "home_activity_logs", "home_program_publications"]);
+    const section = await entry.export!({ sql, childId: childA, guardianUserId: guardianA.id });
+    const data = section!.data as { programs: { program_id: string }[]; your_logs: { activity_id: string; activity_title: string; note: string | null }[] };
+    expect(data.programs.map((p) => p.program_id)).toHaveLength(1);
+    const mine = await sql`select id from home_activity_logs where child_id = ${childA} and logged_by = ${guardianA.id}`;
+    expect(data.your_logs).toHaveLength(mine.length);
+    expect(data.your_logs.find((l) => l.activity_id === activityId)?.activity_title).toBe("Snack-time requesting");
+    expect(JSON.stringify(data)).not.toContain("OTHER-GUARDIAN-NOTE");
+    expect(entry.erase?.scopes).toEqual(["everything"]);
   });
 
   it("RLS: the care team reads programs, activities and logs; guardians and other orgs read nothing; no client writes", async () => {

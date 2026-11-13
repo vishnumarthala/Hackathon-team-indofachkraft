@@ -79,6 +79,7 @@ import { InvalidPostCallError } from "@/lib/intake/process";
 import { signPayload } from "@/lib/intake/signature";
 import { BriefSchema } from "@/lib/types";
 import { withI18n } from "./helpers/i18n";
+import { purgeTestAudit } from "./helpers/audit";
 
 const SECRET = "test-secret";
 const API_KEY = "sk_test_never_returned_1234";
@@ -398,9 +399,11 @@ describe("mocked routes", () => {
       const res = await reviewedCall(CASE.id);
       expect(res.status).toBe(200);
       expect(await res.json()).toEqual({ report });
+      // 041 FR-3: no hard-coded actor; audit() attributes the event to the signed-in provider.
       expect(m.audit).toHaveBeenCalledWith(
-        expect.objectContaining({ caseId: CASE.id, actor: "therapist", action: "brief.reviewed", entityId: "rep-1" }),
+        expect.objectContaining({ caseId: CASE.id, action: "brief.reviewed", entityId: "rep-1" }),
       );
+      expect(m.audit.mock.calls.at(-1)?.[0]).not.toHaveProperty("actor");
     });
   });
 });
@@ -626,7 +629,7 @@ describe.skipIf(!DB_TESTS)("database integration (CT_DB_TESTS=1, isolated a010 c
   afterAll(async () => {
     if (createdCases.length) await sql`delete from cases where id in ${sql(createdCases)}`;
     if (conversationIds.length) {
-      await sql`delete from audit_events where case_id is null and details->>'conversation_id' in ${sql(conversationIds)}`;
+      await purgeTestAudit(sql, (tx) => tx`delete from audit_events where case_id is null and details->>'conversation_id' in ${tx(conversationIds)}`);
     }
     await sql?.end({ timeout: 5 });
     const shared = (globalThis as { __carethreadSql?: Sql }).__carethreadSql;

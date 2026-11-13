@@ -3,6 +3,7 @@
 // requireDocumentAccess / requirePendingUpload); every multi-step write is one database function with its
 // audit row (strict: an audit failure saves nothing -> 503).
 import { createHash, randomUUID } from "node:crypto";
+import { auditWouldFail } from "@/lib/audit";
 import { supabaseAdmin } from "@/lib/db";
 import { drainSoon } from "@/lib/notify/outbox";
 import type { Result } from "@/lib/orgs";
@@ -145,6 +146,7 @@ function deliver(eventId: number | string | null | undefined): void {
  * signed URL that downloads as the original file name. No audit row -> no URL. The URL is never logged.
  */
 export async function downloadUrl(documentId: string, userId: string): Promise<Result<string>> {
+  if (auditWouldFail("document.downloaded")) return { ok: false, status: 503, error: OPEN_FAILED };
   const db = supabaseAdmin();
   const logged = await db.rpc("log_document_download", { p_doc: documentId, p_user: userId });
   if (logged.error) {
@@ -163,6 +165,7 @@ export async function downloadUrl(documentId: string, userId: string): Promise<R
 
 /** FR-6: soft delete (re-checked under a row lock) + `document.deleted`; the object is removed immediately. */
 export async function deleteDocument(documentId: string, userId: string): Promise<Result<null>> {
+  if (auditWouldFail("document.deleted")) return { ok: false, status: 503, error: SAVE_FAILED };
   const { data, error } = await supabaseAdmin().rpc("delete_document", { p_doc: documentId, p_user: userId });
   if (error) {
     console.error(`delete_document failed: ${error.message}`);

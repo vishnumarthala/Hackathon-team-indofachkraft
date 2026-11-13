@@ -1,3 +1,4 @@
+import { AuditWriteError, auditFailure } from "@/lib/audit";
 import { requireChildGuardian, requireGuardian } from "@/lib/authz";
 import { deleteOwnLog, findOwnLog } from "@/lib/home-program";
 import { MSG } from "@/lib/home-program/schema";
@@ -18,7 +19,13 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   const access = await requireChildGuardian(log.child_id, session);
   if (access instanceof Response) return fail(404, MSG.logNotFound);
 
-  const result = await deleteOwnLog({ log, userId: session.user.id, timeZone: await getTimeZone() });
+  let result: Awaited<ReturnType<typeof deleteOwnLog>>;
+  try {
+    result = await deleteOwnLog({ log, userId: session.user.id, timeZone: await getTimeZone() });
+  } catch (err) {
+    if (err instanceof AuditWriteError) return auditFailure(err);
+    throw err;
+  }
   if (!result.ok) return fail(result.status, result.error, result.details);
   return ok({ deleted: true });
 }

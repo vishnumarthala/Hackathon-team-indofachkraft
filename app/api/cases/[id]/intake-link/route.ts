@@ -48,7 +48,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
   const share = buildIntakeShare(caseRow, env.NEXT_PUBLIC_APP_URL, token);
   if (created) {
-    await audit({ caseId: id, actor: "therapist", action: "intake.link_created", entity: "case", entityId: id });
+    await audit({ caseId: id, action: "intake.link_created", entity: "case", entityId: id });
   }
 
   if (!body.send_email || !caseRow.parent_email) {
@@ -64,7 +64,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     });
     await audit({
       caseId: id,
-      actor: "therapist",
       action: "intake.link_emailed",
       entity: "case",
       entityId: id,
@@ -89,7 +88,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
     return fail(500, "Could not revoke the intake link");
   }
   if (revoked) {
-    await audit({ caseId: id, actor: "therapist", action: "intake.link_revoked", entity: "case", entityId: id });
+    await audit({ caseId: id, action: "intake.link_revoked", entity: "case", entityId: id });
   }
   return ok({ revoked: true });
 }

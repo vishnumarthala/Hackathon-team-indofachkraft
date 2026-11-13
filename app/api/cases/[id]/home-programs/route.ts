@@ -1,3 +1,4 @@
+import { AuditWriteError, auditFailure } from "@/lib/audit";
 import { requireCaseActor } from "@/lib/authz";
 import { createProgram, listCasePrograms } from "@/lib/home-program";
 import { ProgramCreateSchema } from "@/lib/home-program/schema";
@@ -22,7 +23,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const parsed = await parseJson(req, ProgramCreateSchema);
   if ("response" in parsed) return parsed.response;
 
-  const result = await createProgram({ caseId: id, actorUserId: gate.actor.user.id, body: parsed.data });
+  let result: Awaited<ReturnType<typeof createProgram>>;
+  try {
+    result = await createProgram({ caseId: id, actorUserId: gate.actor.user.id, body: parsed.data });
+  } catch (err) {
+    if (err instanceof AuditWriteError) return auditFailure(err);
+    throw err;
+  }
   if (!result.ok) return fail(result.status, result.error, result.details);
   return ok({ program: result.program }, 201);
 }

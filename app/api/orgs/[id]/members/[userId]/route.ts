@@ -1,4 +1,4 @@
-import { audit } from "@/lib/audit";
+import { auditActorOf, auditFailure } from "@/lib/audit";
 import { requireProviderApi } from "@/lib/authz";
 import { isUuid } from "@/lib/cases/validation";
 import { fail, ok } from "@/lib/http";
@@ -17,16 +17,12 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   }
   if (!isUuid(userId)) return fail(404, "Member not found");
 
-  const result = await revokeMember(orgId, userId);
+  let result: Awaited<ReturnType<typeof revokeMember>>;
+  try {
+    result = await revokeMember(orgId, userId, auditActorOf(gate.actor.user, gate.actor.role));
+  } catch (err) {
+    return auditFailure(err);
+  }
   if (!result.ok) return fail(result.status, result.error);
-
-  await audit({
-    actor: "therapist",
-    actorUserId: actorId,
-    action: "org.member_revoked",
-    entity: "org_member",
-    entityId: userId,
-    details: { org_id: orgId },
-  });
   return ok({ revoked: true });
 }

@@ -10,6 +10,10 @@ import message_created from "./message_created";
 import provider_claimed from "./provider_claimed";
 import provider_rejected from "./provider_rejected";
 import provider_suspended from "./provider_suspended";
+import privacy_deletion_completed from "./privacy_deletion_completed";
+import privacy_deletion_rejected from "./privacy_deletion_rejected";
+import privacy_deletion_requested from "./privacy_deletion_requested";
+import privacy_export_ready from "./privacy_export_ready";
 import provider_verified from "./provider_verified";
 import sharing_granted from "./sharing_granted";
 import test_ping from "./test_ping";
@@ -28,6 +32,10 @@ export const TEMPLATES = {
   provider_rejected,
   provider_suspended,
   provider_claimed,
+  privacy_export_ready,
+  privacy_deletion_requested,
+  privacy_deletion_completed,
+  privacy_deletion_rejected,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

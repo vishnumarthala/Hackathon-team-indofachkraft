@@ -15,7 +15,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
   await audit({
     caseId: id,
-    actor: "therapist",
     action: "brief.reviewed",
     entity: "report",
     entityId: report.id,

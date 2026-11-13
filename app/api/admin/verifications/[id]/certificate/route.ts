@@ -17,7 +17,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const url = await certificateSignedUrl(id);
   if (!url) return fail(404, "Certificate not found");
   await audit({
-    actor: "system",
     actorUserId: gate.actor.user.id,
     action: "provider.certificate_viewed",
     entity: "credential_submission",

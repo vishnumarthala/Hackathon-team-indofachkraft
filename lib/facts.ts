@@ -7,6 +7,7 @@ import { env } from "@/lib/env";
 import { isUuid } from "@/lib/cases/validation";
 import { scoreIsaa, type IsaaScore, type ScoringFact } from "@/lib/scoring";
 import type { FactRow } from "@/lib/types";
+import { setTxAuditActor, type SessionAuditActor } from "@/lib/audit";
 
 export type FactStatus = "suggested" | "confirmed" | "edited";
 
@@ -134,11 +135,14 @@ function factRow(row: Record<string, unknown>): FactRow {
 export async function updateFact(
   factId: string,
   action: FactAction,
+  actor?: SessionAuditActor,
 ): Promise<UpdateResult<{ fact: FactRow; score: IsaaScore }>> {
   if (!isUuid(factId)) return { ok: false, status: 404, error: FACT_NOT_FOUND };
   const sql = await db();
 
   return sql.begin(async (tx) => {
+    // 041 FR-3: the audit row below is attributed to the signed-in provider.
+    await setTxAuditActor(tx, actor);
     const found = await tx<{ recording_id: string }[]>`select recording_id from facts where id = ${factId}`;
     if (!found[0]) return { ok: false, status: 404, error: FACT_NOT_FOUND } as const;
 
@@ -182,11 +186,13 @@ export async function updateFact(
 export async function bulkUpdate(
   recordingId: string,
   action: BulkAction,
+  actor?: SessionAuditActor,
 ): Promise<UpdateResult<{ updated: number; score: IsaaScore }>> {
   if (!isUuid(recordingId)) return { ok: false, status: 404, error: SESSION_NOT_FOUND };
   const sql = await db();
 
   return sql.begin(async (tx) => {
+    await setTxAuditActor(tx, actor);
     const recording = await lockRecording(tx, recordingId);
     if (!recording || recording.kind !== "session") return { ok: false, status: 404, error: SESSION_NOT_FOUND } as const;
     if (recording.status === "extracting") return { ok: false, status: 409, error: EXTRACTION_RUNNING } as const;

@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1539. Not yet approved: 1539.
+Rows: 1717. Not yet approved: 1717.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1449,6 +1449,184 @@ Rows: 1539. Not yet approved: 1539.
 | `iep.family.sharedOn` | Shared on {date} | {date} को साझा किया गया | {date}న పంచుకోబడింది |  | pending |
 | `iep.family.progressTitle` | Progress | प्रगति | పురోగతి |  | pending |
 | `iep.family.progressIntro` | Values the care team recorded for each goal. | हर लक्ष्य के लिए केयर टीम द्वारा दर्ज मान। | ప్రతి లక్ష్యానికి కేర్ టీమ్ నమోదు చేసిన విలువలు. |  | pending |
+| `privacy.link` | Privacy notice | गोपनीयता सूचना | గోప్యతా ప్రకటన |  | pending |
+| `privacy.notice.metaTitle` | Privacy notice | गोपनीयता सूचना | గోప్యతా ప్రకటన |  | pending |
+| `privacy.notice.title` | Privacy notice | गोपनीयता सूचना | గోప్యతా ప్రకటన |  | pending |
+| `privacy.notice.draftBadge` | Draft - pending legal review | मसौदा - कानूनी समीक्षा बाकी | ముసాయిదా - చట్టపరమైన సమీక్ష పెండింగ్‌లో ఉంది |  | pending |
+| `privacy.notice.intro` | DoctorNearMe helps families and child development professionals work together. This notice explains what we collect, why, who processes it, how long we keep it and the rights you have under India's Digital Personal Data Protection Act, 2023. | DoctorNearMe परिवारों और बाल विकास विशेषज्ञों को साथ मिलकर काम करने में मदद करता है। यह सूचना बताती है कि हम क्या जानकारी लेते हैं, क्यों, कौन उसे प्रोसेस करता है, हम उसे कितने समय तक रखते हैं, और भारत के डिजिटल व्यक्तिगत डेटा संरक्षण अधिनियम, 2023 के तहत आपके क्या अधिकार हैं। | DoctorNearMe కుటుంబాలు మరియు పిల్లల అభివృద్ధి నిపుణులు కలిసి పనిచేయడానికి సహాయపడుతుంది. మేము ఏమి సేకరిస్తాము, ఎందుకు, దాన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎంతకాలం ఉంచుతాము, మరియు భారతదేశ డిజిటల్ వ్యక్తిగత డేటా సంరక్షణ చట్టం, 2023 ప్రకారం మీకు ఉన్న హక్కులను ఈ ప్రకటన వివరిస్తుంది. |  | pending |
+| `privacy.notice.controllerTitle` | Who is responsible | कौन ज़िम्मेदार है | ఎవరు బాధ్యులు |  | pending |
+| `privacy.notice.controller` | DoctorNearMe (pilot operator) decides how this data is used (data fiduciary). Each clinic or therapist you work with is responsible for the clinical records they create. | DoctorNearMe (पायलट संचालक) तय करता है कि यह डेटा कैसे उपयोग होता है (डेटा फ़िड्यूशियरी)। आप जिस क्लिनिक या थेरेपिस्ट के साथ काम करते हैं, वे अपने बनाए क्लिनिकल रिकॉर्ड के लिए ज़िम्मेदार हैं। | ఈ డేటాను ఎలా ఉపయోగించాలో DoctorNearMe (పైలట్ నిర్వాహకుడు) నిర్ణయిస్తుంది (డేటా ఫిడ్యూషియరీ). మీరు పనిచేసే ప్రతి క్లినిక్ లేదా థెరపిస్ట్ తాము సృష్టించే క్లినికల్ రికార్డులకు బాధ్యులు. |  | pending |
+| `privacy.notice.collectTitle` | What we collect, by feature | हम क्या लेते हैं, सुविधा के अनुसार | మేము ఏమి సేకరిస్తాము, సౌకర్యం వారీగా |  | pending |
+| `privacy.notice.collect.account` | Your account: name, email address, mobile number and sign-in details. | आपका खाता: नाम, ईमेल पता, मोबाइल नंबर और साइन-इन विवरण। | మీ ఖాతా: పేరు, ఇమెయిల్ చిరునామా, మొబైల్ నంబర్ మరియు సైన్-ఇన్ వివరాలు. |  | pending |
+| `privacy.notice.collect.children` | Your children: name, date of birth, sex (optional) and your relationship to them. | आपके बच्चे: नाम, जन्म तिथि, लिंग (वैकल्पिक) और उनसे आपका रिश्ता। | మీ పిల్లలు: పేరు, పుట్టిన తేదీ, లింగం (ఐచ్ఛికం) మరియు వారితో మీ సంబంధం. |  | pending |
+| `privacy.notice.collect.consent` | Your permissions (consents): what you allowed or withdrew, when, and the version of the text you saw. | आपकी अनुमतियाँ (सहमति): आपने क्या अनुमति दी या वापस ली, कब, और आपने पाठ का कौन सा संस्करण देखा। | మీ అనుమతులు (సమ్మతి): మీరు ఏమి అనుమతించారు లేదా ఉపసంహరించారు, ఎప్పుడు, మరియు మీరు చూసిన పాఠం యొక్క వెర్షన్. |  | pending |
+| `privacy.notice.collect.health` | Health profile: blood group, allergies, medicines, conditions, birth and development history, emergency contact. | स्वास्थ्य प्रोफ़ाइल: ब्लड ग्रुप, एलर्जी, दवाइयाँ, बीमारियाँ, जन्म और विकास का इतिहास, आपातकालीन संपर्क। | ఆరోగ్య ప్రొఫైల్: బ్లడ్ గ్రూప్, అలర్జీలు, మందులు, ఆరోగ్య సమస్యలు, పుట్టుక మరియు అభివృద్ధి చరిత్ర, అత్యవసర సంప్రదింపు. |  | pending |
+| `privacy.notice.collect.documents` | Documents you or the care team upload (reports, prescriptions, school letters). | आप या देखभाल टीम द्वारा अपलोड किए गए दस्तावेज़ (रिपोर्ट, पर्चे, स्कूल के पत्र)। | మీరు లేదా సంరక్షణ బృందం అప్‌లోడ్ చేసే పత్రాలు (రిపోర్టులు, ప్రిస్క్రిప్షన్లు, పాఠశాల లేఖలు). |  | pending |
+| `privacy.notice.collect.intake` | AI intake voice call (only with your permission): the call audio and its transcript, and the summary prepared for the therapist. | AI इनटेक वॉयस कॉल (केवल आपकी अनुमति से): कॉल की ऑडियो और उसका लिखित रूप, और थेरेपिस्ट के लिए तैयार सारांश। | AI ఇన్‌టేక్ వాయిస్ కాల్ (మీ అనుమతితో మాత్రమే): కాల్ ఆడియో మరియు దాని లిఖిత రూపం, థెరపిస్ట్ కోసం సిద్ధం చేసిన సారాంశం. |  | pending |
+| `privacy.notice.collect.sessions` | Session recordings (only with your permission): audio recorded at the centre, transcripts, observations suggested by AI and confirmed by the therapist, reports and referrals. | सत्र की रिकॉर्डिंग (केवल आपकी अनुमति से): केंद्र में रिकॉर्ड की गई ऑडियो, लिखित रूप, AI द्वारा सुझाए और थेरेपिस्ट द्वारा पुष्टि किए गए अवलोकन, रिपोर्ट और रेफ़रल। | సెషన్ రికార్డింగ్‌లు (మీ అనుమతితో మాత్రమే): కేంద్రంలో రికార్డ్ చేసిన ఆడియో, లిఖిత రూపాలు, AI సూచించి థెరపిస్ట్ ధృవీకరించిన పరిశీలనలు, రిపోర్టులు మరియు రిఫరల్స్. |  | pending |
+| `privacy.notice.collect.assessments` | Questionnaires your care team sends you (for example the developmental check-in): your answers and the summary the team publishes. | आपकी देखभाल टीम द्वारा भेजी गई प्रश्नावली (जैसे विकास की जाँच): आपके जवाब और टीम द्वारा प्रकाशित सारांश। | మీ సంరక్షణ బృందం పంపే ప్రశ్నావళులు (ఉదాహరణకు అభివృద్ధి చెక్-ఇన్): మీ సమాధానాలు మరియు బృందం ప్రచురించే సారాంశం. |  | pending |
+| `privacy.notice.collect.plans` | Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you. | थेरेपी योजनाएँ (IEP): लक्ष्य, देखभाल टीम द्वारा दर्ज की गई प्रगति, और आपके लिए प्रकाशित योजना के संस्करण। | థెరపీ ప్రణాళికలు (IEP): లక్ష్యాలు, సంరక్షణ బృందం నమోదు చేసే పురోగతి, మరియు మీకు ప్రచురించిన ప్రణాళిక వెర్షన్లు. |  | pending |
+| `privacy.notice.collect.homeProgram` | Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes). | घर की गतिविधियाँ: आपकी देखभाल टीम घर पर अभ्यास के लिए जो गतिविधियाँ प्रकाशित करती है, और आप जो दर्ज करते हैं (किया, कैसा रहा, मिनट, नोट)। | ఇంటి కార్యకలాపాలు: ఇంట్లో సాధన కోసం మీ సంరక్షణ బృందం ప్రచురించే కార్యకలాపాలు, మీరు నమోదు చేసేవి (చేశాం, ఎలా జరిగింది, నిమిషాలు, గమనికలు). |  | pending |
+| `privacy.notice.collect.notifications` | Notifications we send you in the app, by email or WhatsApp. | ऐप में, ईमेल या WhatsApp पर हमारी भेजी सूचनाएँ। | యాప్‌లో, ఇమెయిల్ లేదా WhatsApp ద్వారా మేము పంపే నోటిఫికేషన్లు. |  | pending |
+| `privacy.notice.collect.website` | If you ask for a demo on our website: name, email, role and centre. | अगर आप हमारी वेबसाइट पर डेमो माँगते हैं: नाम, ईमेल, भूमिका और केंद्र। | మీరు మా వెబ్‌సైట్‌లో డెమో అడిగితే: పేరు, ఇమెయిల్, పాత్ర మరియు కేంద్రం. |  | pending |
+| `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
+| `privacy.notice.purposes` | To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising. | आपका पारिवारिक खाता और आपके चुने विशेषज्ञों के साथ बच्चे की देखभाल चलाने के लिए; इनटेक सारांश, लिखित रूप और मसौदा रिपोर्ट तैयार करने के लिए जिन्हें एक विशेषज्ञ जाँचता है; आपको रिमाइंडर और अपडेट भेजने के लिए; कानून द्वारा ज़रूरी रिकॉर्ड रखने के लिए; और सेवा को सुरक्षित रखने के लिए। हम डेटा कभी नहीं बेचते और विज्ञापन के लिए कभी उपयोग नहीं करते। | మీ కుటుంబ ఖాతాను మరియు మీరు ఎంచుకున్న నిపుణులతో మీ పిల్లల సంరక్షణను నడపడానికి; ఒక నిపుణుడు తనిఖీ చేసే ఇన్‌టేక్ సారాంశాలు, లిఖిత రూపాలు మరియు ముసాయిదా రిపోర్టులు సిద్ధం చేయడానికి; మీకు రిమైండర్లు మరియు అప్‌డేట్లు పంపడానికి; చట్టం కోరే రికార్డులను ఉంచడానికి; మరియు సేవను సురక్షితంగా ఉంచడానికి. మేము డేటాను ఎప్పుడూ అమ్మము, ప్రకటనల కోసం ఎప్పుడూ ఉపయోగించము. |  | pending |
+| `privacy.notice.processorsTitle` | Who processes it for us, and where | हमारे लिए इसे कौन प्रोसेस करता है, और कहाँ | మా కోసం దీన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎక్కడ |  | pending |
+| `privacy.notice.processorName` | Processor | प्रोसेसर | ప్రాసెసర్ |  | pending |
+| `privacy.notice.processorPurpose` | What for | किसलिए | దేనికోసం |  | pending |
+| `privacy.notice.processorLocation` | Where | कहाँ | ఎక్కడ |  | pending |
+| `privacy.notice.processors.elevenlabs.name` | ElevenLabs | ElevenLabs | ElevenLabs |  | pending |
+| `privacy.notice.processors.elevenlabs.purpose` | AI voice calls, speech-to-text, voice summaries | AI वॉयस कॉल, बोली से लिखित रूप, वॉयस सारांश | AI వాయిస్ కాల్స్, మాటను లిఖిత రూపంలోకి మార్చడం, వాయిస్ సారాంశాలు |  | pending |
+| `privacy.notice.processors.elevenlabs.location` | USA | अमेरिका | అమెరికా |  | pending |
+| `privacy.notice.processors.gemini.name` | Google Gemini | Google Gemini | Google Gemini |  | pending |
+| `privacy.notice.processors.gemini.purpose` | AI analysis, draft reports and answers | AI विश्लेषण, मसौदा रिपोर्ट और जवाब | AI విశ్లేషణ, ముసాయిదా రిపోర్టులు మరియు సమాధానాలు |  | pending |
+| `privacy.notice.processors.gemini.location` | Outside India (Google data centres) | भारत के बाहर (Google डेटा केंद्र) | భారతదేశం బయట (Google డేటా కేంద్రాలు) |  | pending |
+| `privacy.notice.processors.resend.name` | Resend | Resend | Resend |  | pending |
+| `privacy.notice.processors.resend.purpose` | Email | ईमेल | ఇమెయిల్ |  | pending |
+| `privacy.notice.processors.resend.location` | USA | अमेरिका | అమెరికా |  | pending |
+| `privacy.notice.processors.whatsapp.name` | Meta WhatsApp | Meta WhatsApp | Meta WhatsApp |  | pending |
+| `privacy.notice.processors.whatsapp.purpose` | WhatsApp messages (only if you turn them on) | WhatsApp संदेश (केवल अगर आप चालू करें) | WhatsApp సందేశాలు (మీరు ఆన్ చేస్తే మాత్రమే) |  | pending |
+| `privacy.notice.processors.whatsapp.location` | Outside India (Meta data centres) | भारत के बाहर (Meta डेटा केंद्र) | భారతదేశం బయట (Meta డేటా కేంద్రాలు) |  | pending |
+| `privacy.notice.processors.supabase.name` | Supabase | Supabase | Supabase |  | pending |
+| `privacy.notice.processors.supabase.purpose` | Database and file storage | डेटाबेस और फ़ाइल भंडारण | డేటాబేస్ మరియు ఫైల్ నిల్వ |  | pending |
+| `privacy.notice.processors.supabase.location` | {region} | {region} | {region} |  | pending |
+| `privacy.notice.crossBorder` | AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time. | AI सुविधाएँ आपके बच्चे का डेटा भारत के बाहर भेजती हैं। वे तभी चलती हैं जब आप उस बच्चे के लिए अनुमति देते हैं, और आप कभी भी अनुमति वापस ले सकते हैं। | AI సౌకర్యాలు మీ పిల్లల డేటాను భారతదేశం బయటకు పంపుతాయి. ఆ పిల్లల కోసం మీరు అనుమతించిన తర్వాతే అవి పనిచేస్తాయి, మరియు మీరు ఎప్పుడైనా ఉపసంహరించుకోవచ్చు. |  | pending |
+| `privacy.notice.retentionTitle` | How long we keep it | हम इसे कितने समय तक रखते हैं | మేము దీన్ని ఎంతకాలం ఉంచుతాము |  | pending |
+| `privacy.notice.retentionWhat` | Data | डेटा | డేటా |  | pending |
+| `privacy.notice.retentionHow` | Kept for | कितने समय तक | ఎంతకాలం |  | pending |
+| `privacy.notice.retention.audio.what` | Raw audio of intake calls and sessions | इनटेक कॉल और सत्रों की मूल ऑडियो | ఇన్‌టేక్ కాల్స్ మరియు సెషన్ల అసలు ఆడియో |  | pending |
+| `privacy.notice.retention.audio.how` | {days} days after it is transcribed (the transcript stays with the clinical record) | लिखित रूप बनने के {days} दिन बाद तक (लिखित रूप क्लिनिकल रिकॉर्ड के साथ रहता है) | లిఖిత రూపం తయారైన {days} రోజుల వరకు (లిఖిత రూపం క్లినికల్ రికార్డుతో ఉంటుంది) |  | pending |
+| `privacy.notice.retention.pending.what` | Uploads that were never finished | अधूरे रह गए अपलोड | పూర్తికాని అప్‌లోడ్‌లు |  | pending |
+| `privacy.notice.retention.pending.how` | Deleted within 24 hours | 24 घंटे के भीतर हटाए जाते हैं | 24 గంటల్లో తొలగించబడతాయి |  | pending |
+| `privacy.notice.retention.inApp.what` | In-app notifications | ऐप की सूचनाएँ | యాప్‌లోని నోటిఫికేషన్లు |  | pending |
+| `privacy.notice.retention.inApp.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
+| `privacy.notice.retention.delivery.what` | Email and WhatsApp message text in our delivery log | हमारे डिलीवरी लॉग में ईमेल और WhatsApp संदेश का पाठ | మా డెలివరీ లాగ్‌లో ఇమెయిల్ మరియు WhatsApp సందేశ పాఠం |  | pending |
+| `privacy.notice.retention.delivery.how` | {days} days (then only the date and status remain) | {days} दिन (फिर केवल तारीख और स्थिति रहती है) | {days} రోజులు (తర్వాత తేదీ మరియు స్థితి మాత్రమే ఉంటాయి) |  | pending |
+| `privacy.notice.retention.exports.what` | Data downloads you request | आपके माँगे गए डेटा डाउनलोड | మీరు అడిగిన డేటా డౌన్‌లోడ్‌లు |  | pending |
+| `privacy.notice.retention.exports.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
+| `privacy.notice.retention.signups.what` | Website demo requests | वेबसाइट पर डेमो अनुरोध | వెబ్‌సైట్ డెమో అభ్యర్థనలు |  | pending |
+| `privacy.notice.retention.signups.how` | {months} months | {months} महीने | {months} నెలలు |  | pending |
+| `privacy.notice.retention.clinical.what` | Clinical records (cases, transcripts, confirmed observations, reports) | क्लिनिकल रिकॉर्ड (केस, लिखित रूप, पुष्टि किए गए अवलोकन, रिपोर्ट) | క్లినికల్ రికార్డులు (కేసులు, లిఖిత రూపాలు, ధృవీకరించిన పరిశీలనలు, రిపోర్టులు) |  | pending |
+| `privacy.notice.retention.clinical.how` | While your child is in care, and as long as the law requires clinics to keep them | जब तक आपका बच्चा देखभाल में है, और जब तक कानून क्लिनिक से उन्हें रखने को कहता है | మీ పిల్లలు సంరక్షణలో ఉన్నంతకాలం, మరియు క్లినిక్‌లు వాటిని ఉంచాలని చట్టం కోరినంతకాలం |  | pending |
+| `privacy.notice.retention.consent.what` | Consent records | सहमति के रिकॉर्ड | సమ్మతి రికార్డులు |  | pending |
+| `privacy.notice.retention.consent.how` | Kept as proof of consent, also after deletion (without free text) | सहमति के प्रमाण के रूप में रखे जाते हैं, हटाने के बाद भी (बिना मुक्त पाठ के) | సమ్మతికి రుజువుగా ఉంచబడతాయి, తొలగించిన తర్వాత కూడా (స్వేచ్ఛా పాఠం లేకుండా) |  | pending |
+| `privacy.notice.retention.audit.what` | Security audit log | सुरक्षा ऑडिट लॉग | భద్రతా ఆడిట్ లాగ్ |  | pending |
+| `privacy.notice.retention.audit.how` | {years} years | {years} साल | {years} సంవత్సరాలు |  | pending |
+| `privacy.notice.rightsTitle` | Your rights | आपके अधिकार | మీ హక్కులు |  | pending |
+| `privacy.notice.rights.access` | Access: download a copy of your child's data from the child's Privacy page in the app. | पहुँच: ऐप में बच्चे के गोपनीयता पेज से बच्चे के डेटा की कॉपी डाउनलोड करें। | యాక్సెస్: యాప్‌లో పిల్లల గోప్యతా పేజీ నుండి పిల్లల డేటా కాపీని డౌన్‌లోడ్ చేయండి. |  | pending |
+| `privacy.notice.rights.correction` | Correction: change details in the app, or ask the clinic to correct a record. | सुधार: ऐप में विवरण बदलें, या क्लिनिक से रिकॉर्ड ठीक करने को कहें। | సవరణ: యాప్‌లో వివరాలు మార్చండి, లేదా రికార్డును సరిచేయమని క్లినిక్‌ను అడగండి. |  | pending |
+| `privacy.notice.rights.erasure` | Erasure: ask us to stop AI processing or to delete your child's data from the child's Privacy page. We review each request; a clinic may have to keep some clinical records by law, and we tell you if so. | मिटाना: बच्चे के गोपनीयता पेज से AI प्रोसेसिंग रोकने या बच्चे का डेटा हटाने को कहें। हम हर अनुरोध की समीक्षा करते हैं; कानून के अनुसार क्लिनिक को कुछ क्लिनिकल रिकॉर्ड रखने पड़ सकते हैं, और ऐसा होने पर हम आपको बताते हैं। | తొలగింపు: పిల్లల గోప్యతా పేజీ నుండి AI ప్రాసెసింగ్ ఆపమని లేదా పిల్లల డేటాను తొలగించమని అడగండి. మేము ప్రతి అభ్యర్థనను సమీక్షిస్తాము; చట్టం ప్రకారం క్లినిక్ కొన్ని క్లినికల్ రికార్డులను ఉంచవలసి రావచ్చు, అలా అయితే మీకు చెబుతాము. |  | pending |
+| `privacy.notice.rights.withdraw` | Withdraw consent: switch off any AI feature on your child's page at any time. Work that has not started yet is stopped and its audio deleted. | सहमति वापस लेना: बच्चे के पेज पर कभी भी कोई भी AI सुविधा बंद करें। जो काम शुरू नहीं हुआ है, वह रोक दिया जाता है और उसकी ऑडियो हटा दी जाती है। | సమ్మతి ఉపసంహరణ: పిల్లల పేజీలో ఏ AI సౌకర్యాన్నైనా ఎప్పుడైనా ఆపివేయండి. ఇంకా ప్రారంభం కాని పని ఆపివేయబడుతుంది మరియు దాని ఆడియో తొలగించబడుతుంది. |  | pending |
+| `privacy.notice.rights.grievance` | Grievance: contact our grievance officer. If you are not satisfied, you can complain to the Data Protection Board of India. | शिकायत: हमारे शिकायत अधिकारी से संपर्क करें। अगर आप संतुष्ट नहीं हैं, तो भारतीय डेटा संरक्षण बोर्ड में शिकायत कर सकते हैं। | ఫిర్యాదు: మా ఫిర్యాదుల అధికారిని సంప్రదించండి. మీకు సంతృప్తి లేకపోతే, భారత డేటా సంరక్షణ బోర్డుకు ఫిర్యాదు చేయవచ్చు. |  | pending |
+| `privacy.notice.rights.nominate` | Nominate: you can name another person to use these rights for you if you cannot. | नामांकन: अगर आप ख़ुद न कर सकें, तो इन अधिकारों का उपयोग करने के लिए किसी और व्यक्ति को नामित कर सकते हैं। | నామినేషన్: మీరు చేయలేని పక్షంలో మీ కోసం ఈ హక్కులను ఉపయోగించడానికి మరొకరిని నియమించవచ్చు. |  | pending |
+| `privacy.notice.childrenTitle` | Children's data | बच्चों का डेटा | పిల్లల డేటా |  | pending |
+| `privacy.notice.children` | We process a child's data only with verifiable consent from their parent or legal guardian, separately for each child and each feature. Child pages have no tracking, no analytics and no targeted advertising. | हम बच्चे का डेटा केवल उसके माता-पिता या कानूनी अभिभावक की सत्यापन योग्य सहमति से प्रोसेस करते हैं, हर बच्चे और हर सुविधा के लिए अलग से। बच्चों के पेजों पर कोई ट्रैकिंग, कोई एनालिटिक्स और कोई लक्षित विज्ञापन नहीं है। | పిల్లల తల్లిదండ్రులు లేదా చట్టపరమైన సంరక్షకుల నుండి ధృవీకరించదగిన సమ్మతితో మాత్రమే, ప్రతి పిల్లవాడికి మరియు ప్రతి సౌకర్యానికి విడిగా, మేము పిల్లల డేటాను ప్రాసెస్ చేస్తాము. పిల్లల పేజీలలో ట్రాకింగ్, అనలిటిక్స్ లేదా లక్షిత ప్రకటనలు ఉండవు. |  | pending |
+| `privacy.notice.contactTitle` | Grievance officer | शिकायत अधिकारी | ఫిర్యాదుల అధికారి |  | pending |
+| `privacy.notice.contact` | Email {email}. We reply within 7 days. | ईमेल {email}। हम 7 दिनों के भीतर जवाब देते हैं। | ఇమెయిల్ {email}. మేము 7 రోజుల్లో సమాధానం ఇస్తాము. |  | pending |
+| `privacy.notice.contactMissing` | Grievance officer contact will be published before the pilot starts. | शिकायत अधिकारी का संपर्क पायलट शुरू होने से पहले प्रकाशित किया जाएगा। | పైలట్ ప్రారంభానికి ముందు ఫిర్యాదుల అధికారి సంప్రదింపు వివరాలు ప్రచురించబడతాయి. |  | pending |
+| `privacy.notice.updated` | This notice may change; we will tell you in the app before important changes. | यह सूचना बदल सकती है; महत्वपूर्ण बदलावों से पहले हम आपको ऐप में बताएँगे। | ఈ ప్రకటన మారవచ్చు; ముఖ్యమైన మార్పులకు ముందు యాప్‌లో మీకు తెలియజేస్తాము. |  | pending |
+| `privacy.family.link` | Privacy and data | गोपनीयता और डेटा | గోప్యత మరియు డేటా |  | pending |
+| `privacy.family.title` | Privacy and data | गोपनीयता और डेटा | గోప్యత మరియు డేటా |  | pending |
+| `privacy.family.intro` | Download a copy of {name}'s data, or ask us to delete it. | {name} के डेटा की कॉपी डाउनलोड करें, या हमसे उसे हटाने को कहें। | {name} డేటా కాపీని డౌన్‌లోడ్ చేయండి, లేదా దాన్ని తొలగించమని మమ్మల్ని అడగండి. |  | pending |
+| `privacy.family.exportTitle` | Download a copy | कॉपी डाउनलोड करें | కాపీని డౌన్‌లోడ్ చేయండి |  | pending |
+| `privacy.family.exportIntro` | You get a ZIP file with everything about {name} that you can see in the app, including the documents. We send you a notification when it is ready. | आपको एक ZIP फ़ाइल मिलती है जिसमें {name} के बारे में वह सब होता है जो आप ऐप में देख सकते हैं, दस्तावेज़ों सहित। तैयार होने पर हम आपको सूचना भेजते हैं। | యాప్‌లో మీరు చూడగలిగే {name} గురించిన అన్నింటితో, పత్రాలతో సహా, మీకు ఒక ZIP ఫైల్ వస్తుంది. అది సిద్ధమైనప్పుడు మీకు నోటిఫికేషన్ పంపుతాము. |  | pending |
+| `privacy.family.exportLimit` | Up to 3 downloads per day. Each file can be downloaded for 7 days. | दिन में अधिकतम 3 डाउनलोड। हर फ़ाइल 7 दिनों तक डाउनलोड की जा सकती है। | రోజుకు గరిష్టంగా 3 డౌన్‌లోడ్‌లు. ప్రతి ఫైల్‌ను 7 రోజుల పాటు డౌన్‌లోడ్ చేసుకోవచ్చు. |  | pending |
+| `privacy.family.exportButton` | Download {name}'s data | {name} का डेटा डाउनलोड करें | {name} డేటాను డౌన్‌లోడ్ చేయండి |  | pending |
+| `privacy.family.exportRequesting` | Requesting... | अनुरोध भेजा जा रहा है... | అభ్యర్థిస్తోంది... |  | pending |
+| `privacy.family.exportRequested` | We are preparing the file. This usually takes a minute. | हम फ़ाइल तैयार कर रहे हैं। आमतौर पर इसमें एक मिनट लगता है। | మేము ఫైల్‌ను సిద్ధం చేస్తున్నాము. సాధారణంగా దీనికి ఒక నిమిషం పడుతుంది. |  | pending |
+| `privacy.family.exportRunning` | A download is already being prepared. | एक डाउनलोड पहले से तैयार किया जा रहा है। | ఒక డౌన్‌లోడ్ ఇప్పటికే సిద్ధమవుతోంది. |  | pending |
+| `privacy.family.exportLimitReached` | You can request 3 downloads per day. Please try again tomorrow. | आप दिन में 3 डाउनलोड माँग सकते हैं। कृपया कल फिर कोशिश करें। | మీరు రోజుకు 3 డౌన్‌లోడ్‌లు అడగవచ్చు. దయచేసి రేపు మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.family.exportFailedRequest` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.family.exportsListTitle` | Your downloads | आपके डाउनलोड | మీ డౌన్‌లోడ్‌లు |  | pending |
+| `privacy.family.exportStatus.queued` | Preparing | तैयार हो रहा है | సిద్ధమవుతోంది |  | pending |
+| `privacy.family.exportStatus.building` | Preparing | तैयार हो रहा है | సిద్ధమవుతోంది |  | pending |
+| `privacy.family.exportStatus.ready` | Ready | तैयार | సిద్ధంగా ఉంది |  | pending |
+| `privacy.family.exportStatus.failed` | Could not be prepared | तैयार नहीं हो सका | సిద్ధం చేయలేకపోయాం |  | pending |
+| `privacy.family.exportStatus.expired` | Expired | समय समाप्त | గడువు ముగిసింది |  | pending |
+| `privacy.family.download` | Download | डाउनलोड करें | డౌన్‌లోడ్ చేయండి |  | pending |
+| `privacy.family.requestedOn` | Requested {date} | {date} को माँगा गया | {date}న అభ్యర్థించబడింది |  | pending |
+| `privacy.family.availableUntil` | Available until {date} | {date} तक उपलब्ध | {date} వరకు అందుబాటులో ఉంది |  | pending |
+| `privacy.family.deleteTitle` | Delete data | डेटा हटाएँ | డేటాను తొలగించండి |  | pending |
+| `privacy.family.deleteIntro` | Choose what to delete. A DoctorNearMe administrator reviews every request before anything is deleted. | चुनें कि क्या हटाना है। कुछ भी हटाने से पहले DoctorNearMe का एक प्रशासक हर अनुरोध की समीक्षा करता है। | ఏమి తొలగించాలో ఎంచుకోండి. ఏదైనా తొలగించే ముందు DoctorNearMe నిర్వాహకుడు ప్రతి అభ్యర్థనను సమీక్షిస్తారు. |  | pending |
+| `privacy.family.scope.all_ai_processing.label` | Stop AI processing and delete AI data | AI प्रोसेसिंग रोकें और AI डेटा हटाएँ | AI ప్రాసెసింగ్ ఆపి, AI డేటాను తొలగించండి |  | pending |
+| `privacy.family.scope.all_ai_processing.description` | Withdraws all AI permissions, deletes recordings, transcripts and AI suggestions, and deletes the copies of AI voice calls held by ElevenLabs. Records confirmed by the therapist stay. | सभी AI अनुमतियाँ वापस लेता है, रिकॉर्डिंग, लिखित रूप और AI सुझाव हटाता है, और ElevenLabs के पास रखी AI वॉयस कॉल की कॉपी हटाता है। थेरेपिस्ट द्वारा पुष्टि किए गए रिकॉर्ड बने रहते हैं। | అన్ని AI అనుమతులను ఉపసంహరిస్తుంది, రికార్డింగ్‌లు, లిఖిత రూపాలు మరియు AI సూచనలను తొలగిస్తుంది, మరియు ElevenLabs వద్ద ఉన్న AI వాయిస్ కాల్స్ కాపీలను తొలగిస్తుంది. థెరపిస్ట్ ధృవీకరించిన రికార్డులు ఉంటాయి. |  | pending |
+| `privacy.family.scope.everything.label` | Delete everything about {name} | {name} के बारे में सब कुछ हटाएँ | {name} గురించి అన్నింటినీ తొలగించండి |  | pending |
+| `privacy.family.scope.everything.description` | Deletes records at every clinic, documents, the health profile and all recordings, including copies held by our processors. The name is replaced by "Deleted child". Consent records and the security log are kept as the law requires, without free text. | हर क्लिनिक के रिकॉर्ड, दस्तावेज़, स्वास्थ्य प्रोफ़ाइल और सभी रिकॉर्डिंग हटाता है, हमारे प्रोसेसरों के पास रखी कॉपी सहित। नाम की जगह "Deleted child" लिखा जाता है। सहमति के रिकॉर्ड और सुरक्षा लॉग कानून के अनुसार रखे जाते हैं, बिना मुक्त पाठ के। | ప్రతి క్లినిక్‌లోని రికార్డులు, పత్రాలు, ఆరోగ్య ప్రొఫైల్ మరియు అన్ని రికార్డింగ్‌లను, మా ప్రాసెసర్ల వద్ద ఉన్న కాపీలతో సహా తొలగిస్తుంది. పేరు స్థానంలో "Deleted child" అని ఉంటుంది. సమ్మతి రికార్డులు మరియు భద్రతా లాగ్ చట్టం ప్రకారం, స్వేచ్ఛా పాఠం లేకుండా ఉంచబడతాయి. |  | pending |
+| `privacy.family.reasonLabel` | Reason (optional) | कारण (वैकल्पिक) | కారణం (ఐచ్ఛికం) |  | pending |
+| `privacy.family.confirmLabel` | I understand that deleted data cannot be recovered. | मैं समझता/समझती हूँ कि हटाया गया डेटा वापस नहीं लाया जा सकता। | తొలగించిన డేటాను తిరిగి పొందలేమని నాకు అర్థమైంది. |  | pending |
+| `privacy.family.deleteButton` | Request deletion | हटाने का अनुरोध करें | తొలగింపును అభ్యర్థించండి |  | pending |
+| `privacy.family.deleteSending` | Sending... | भेजा जा रहा है... | పంపుతోంది... |  | pending |
+| `privacy.family.deleteSent` | Request sent. We will notify you when it has been reviewed. | अनुरोध भेजा गया। समीक्षा होने पर हम आपको सूचित करेंगे। | అభ్యర్థన పంపబడింది. సమీక్ష పూర్తయినప్పుడు మీకు తెలియజేస్తాము. |  | pending |
+| `privacy.family.deleteOpen` | A deletion request for this child is already open. | इस बच्चे के लिए हटाने का एक अनुरोध पहले से खुला है। | ఈ పిల్లల కోసం తొలగింపు అభ్యర్థన ఇప్పటికే తెరిచి ఉంది. |  | pending |
+| `privacy.family.deleteFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.family.chooseScope` | Choose what to delete | चुनें कि क्या हटाना है | ఏమి తొలగించాలో ఎంచుకోండి |  | pending |
+| `privacy.family.requestsTitle` | Your requests | आपके अनुरोध | మీ అభ్యర్థనలు |  | pending |
+| `privacy.family.requestStatus.requested` | Waiting for review | समीक्षा की प्रतीक्षा में | సమీక్ష కోసం వేచి ఉంది |  | pending |
+| `privacy.family.requestStatus.approved` | Approved, deleting | स्वीकृत, हटाया जा रहा है | ఆమోదించబడింది, తొలగిస్తోంది |  | pending |
+| `privacy.family.requestStatus.in_progress` | Deleting | हटाया जा रहा है | తొలగిస్తోంది |  | pending |
+| `privacy.family.requestStatus.completed` | Completed | पूरा हुआ | పూర్తయింది |  | pending |
+| `privacy.family.requestStatus.rejected` | Not carried out | पूरा नहीं किया गया | అమలు చేయలేదు |  | pending |
+| `privacy.family.requestStatus.failed` | Deleting (retrying) | हटाया जा रहा है (फिर से कोशिश) | తొలగిస్తోంది (మళ్ళీ ప్రయత్నిస్తోంది) |  | pending |
+| `privacy.family.rejectedReason` | Reason: {note} | कारण: {note} | కారణం: {note} |  | pending |
+| `privacy.family.noticeLink` | Read the privacy notice | गोपनीयता सूचना पढ़ें | గోప్యతా ప్రకటన చదవండి |  | pending |
+| `privacy.admin.nav.users` | Accounts | खाते | ఖాతాలు |  | pending |
+| `privacy.admin.nav.audit` | Audit log | ऑडिट लॉग | ఆడిట్ లాగ్ |  | pending |
+| `privacy.admin.nav.requests` | Deletion requests | हटाने के अनुरोध | తొలగింపు అభ్యర్థనలు |  | pending |
+| `privacy.admin.nav.ops` | Operations | संचालन | కార్యకలాపాలు |  | pending |
+| `privacy.admin.nav.notifications` | Notifications | सूचनाएँ | నోటిఫికేషన్లు |  | pending |
+| `privacy.admin.audit.title` | Audit log | ऑडिट लॉग | ఆడిట్ లాగ్ |  | pending |
+| `privacy.admin.audit.intro` | Who did what, newest first. Details of health and consent content are not shown. Viewing this page is itself audited. | किसने क्या किया, नवीनतम पहले। स्वास्थ्य और सहमति सामग्री का विवरण नहीं दिखाया जाता। इस पेज को देखना भी ऑडिट होता है। | ఎవరు ఏమి చేశారు, తాజావి ముందు. ఆరోగ్య మరియు సమ్మతి విషయాల వివరాలు చూపబడవు. ఈ పేజీని చూడటం కూడా ఆడిట్ అవుతుంది. |  | pending |
+| `privacy.admin.audit.action` | Action | कार्य | చర్య |  | pending |
+| `privacy.admin.audit.actor` | Actor | करने वाला | చేసినవారు |  | pending |
+| `privacy.admin.audit.actorHint` | User id or role | उपयोगकर्ता id या भूमिका | వినియోగదారు id లేదా పాత్ర |  | pending |
+| `privacy.admin.audit.organisation` | Organisation | संगठन | సంస్థ |  | pending |
+| `privacy.admin.audit.child` | Child | बच्चा | పిల్లవాడు |  | pending |
+| `privacy.admin.audit.case` | Case | केस | కేసు |  | pending |
+| `privacy.admin.audit.from` | From | से | నుండి |  | pending |
+| `privacy.admin.audit.to` | To | तक | వరకు |  | pending |
+| `privacy.admin.audit.filter` | Filter | फ़िल्टर करें | ఫిల్టర్ చేయండి |  | pending |
+| `privacy.admin.audit.clear` | Clear | साफ़ करें | క్లియర్ చేయండి |  | pending |
+| `privacy.admin.audit.time` | Time | समय | సమయం |  | pending |
+| `privacy.admin.audit.role` | Role | भूमिका | పాత్ర |  | pending |
+| `privacy.admin.audit.actorId` | Actor id | करने वाले की id | చేసినవారి id |  | pending |
+| `privacy.admin.audit.entity` | Entity | इकाई | అంశం |  | pending |
+| `privacy.admin.audit.ids` | Ids | Id | Id లు |  | pending |
+| `privacy.admin.audit.none` | No audit events match. | कोई ऑडिट घटना मेल नहीं खाती। | సరిపోలే ఆడిట్ సంఘటనలు లేవు. |  | pending |
+| `privacy.admin.audit.older` | Older events | पुरानी घटनाएँ | పాత సంఘటనలు |  | pending |
+| `privacy.admin.requests.title` | Deletion requests | हटाने के अनुरोध | తొలగింపు అభ్యర్థనలు |  | pending |
+| `privacy.admin.requests.intro` | Approve to delete the child's data everywhere (including processor copies). Reject only for a legal record-keeping obligation, and cite it. | बच्चे का डेटा हर जगह से हटाने के लिए स्वीकृत करें (प्रोसेसर की कॉपी सहित)। केवल रिकॉर्ड रखने की कानूनी बाध्यता होने पर अस्वीकार करें, और उसका उल्लेख करें। | పిల్లల డేటాను అన్నిచోట్ల నుండి (ప్రాసెసర్ కాపీలతో సహా) తొలగించడానికి ఆమోదించండి. రికార్డులు ఉంచాల్సిన చట్టపరమైన బాధ్యత ఉన్నప్పుడు మాత్రమే తిరస్కరించండి, దాన్ని పేర్కొనండి. |  | pending |
+| `privacy.admin.requests.none` | No deletion requests. | हटाने का कोई अनुरोध नहीं। | తొలగింపు అభ్యర్థనలు లేవు. |  | pending |
+| `privacy.admin.requests.child` | Child | बच्चा | పిల్లవాడు |  | pending |
+| `privacy.admin.requests.scope` | Scope | दायरा | పరిధి |  | pending |
+| `privacy.admin.requests.status` | Status | स्थिति | స్థితి |  | pending |
+| `privacy.admin.requests.requested` | Requested | माँगा गया | అభ్యర్థించినది |  | pending |
+| `privacy.admin.requests.reason` | Guardian's reason | अभिभावक का कारण | సంరక్షకుని కారణం |  | pending |
+| `privacy.admin.requests.note` | Note (required to reject: cite the obligation) | टिप्पणी (अस्वीकार करने के लिए ज़रूरी: बाध्यता का उल्लेख करें) | గమనిక (తిరస్కరించడానికి తప్పనిసరి: బాధ్యతను పేర్కొనండి) |  | pending |
+| `privacy.admin.requests.approve` | Approve | स्वीकृत करें | ఆమోదించండి |  | pending |
+| `privacy.admin.requests.reject` | Reject | अस्वीकार करें | తిరస్కరించండి |  | pending |
+| `privacy.admin.requests.saving` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `privacy.admin.requests.saved` | Saved. | सहेजा गया। | సేవ్ అయింది. |  | pending |
+| `privacy.admin.requests.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.admin.requests.noteRequired` | Explain why (at least 10 characters), citing the record-keeping obligation | कारण बताएँ (कम से कम 10 अक्षर), रिकॉर्ड रखने की बाध्यता का उल्लेख करते हुए | కారణం వివరించండి (కనీసం 10 అక్షరాలు), రికార్డులు ఉంచాల్సిన బాధ్యతను పేర్కొంటూ |  | pending |
+| `privacy.admin.requests.processorsPending` | Processor deletions pending: {count} | प्रोसेसर से हटाना बाकी: {count} | ప్రాసెసర్ తొలగింపులు పెండింగ్: {count} |  | pending |
+| `privacy.admin.requests.lastError` | Last error: {error} | पिछली त्रुटि: {error} | చివరి లోపం: {error} |  | pending |
+| `privacy.admin.ops.title` | Operations | संचालन | కార్యకలాపాలు |  | pending |
+| `privacy.admin.ops.outbox` | Notifications outbox | सूचना आउटबॉक्स | నోటిఫికేషన్ అవుట్‌బాక్స్ |  | pending |
+| `privacy.admin.ops.pendingEvents` | Events waiting | प्रतीक्षा में घटनाएँ | వేచి ఉన్న సంఘటనలు |  | pending |
+| `privacy.admin.ops.oldestPending` | Oldest waiting (minutes) | सबसे पुरानी प्रतीक्षा (मिनट) | అత్యంత పాత నిరీక్షణ (నిమిషాలు) |  | pending |
+| `privacy.admin.ops.deliveries` | Deliveries by status | स्थिति के अनुसार डिलीवरी | స్థితి వారీగా డెలివరీలు |  | pending |
+| `privacy.admin.ops.retention` | Retention job | डेटा अवधि का काम | డేటా నిల్వ కాల పని |  | pending |
+| `privacy.admin.ops.lastRun` | Last run | पिछली बार चला | చివరిసారి నడిచింది |  | pending |
+| `privacy.admin.ops.never` | Never | कभी नहीं | ఎప్పుడూ లేదు |  | pending |
+| `privacy.admin.ops.privacy` | Privacy jobs | गोपनीयता के काम | గోప్యతా పనులు |  | pending |
+| `privacy.admin.ops.openRequests` | Open deletion requests | खुले हटाने के अनुरोध | తెరిచి ఉన్న తొలగింపు అభ్యర్థనలు |  | pending |
+| `privacy.admin.ops.failedRequests` | Deletion requests retrying | फिर से कोशिश हो रहे हटाने के अनुरोध | మళ్ళీ ప్రయత్నిస్తున్న తొలగింపు అభ్యర్థనలు |  | pending |
+| `privacy.admin.ops.queuedExports` | Exports being prepared | तैयार हो रहे डाउनलोड | సిద్ధమవుతున్న డౌన్‌లోడ్‌లు |  | pending |
+| `privacy.admin.ops.failedExports` | Failed exports | विफल डाउनलोड | విఫలమైన డౌన్‌లోడ్‌లు |  | pending |
+| `privacy.admin.ops.processorFailures` | Failed processor deletions | प्रोसेसर से हटाने में विफलता | విఫలమైన ప్రాసెసర్ తొలగింపులు |  | pending |
+| `privacy.admin.ops.stuck` | Recordings stuck for more than 30 minutes | 30 मिनट से ज़्यादा अटकी रिकॉर्डिंग | 30 నిమిషాలకు పైగా నిలిచిపోయిన రికార్డింగ్‌లు |  | pending |
+| `privacy.admin.ops.none` | None. | कोई नहीं। | ఏవీ లేవు. |  | pending |
+| `privacy.admin.ops.minutes` | {count} min | {count} मिनट | {count} ని. |  | pending |
 | `homeProgram.link` | Home activities | घर की गतिविधियाँ | ఇంటి కార్యకలాపాలు |  | pending |
 | `homeProgram.status.draft` | Draft | ड्राफ़्ट | డ్రాఫ్ట్ |  | pending |
 | `homeProgram.status.published` | Published | प्रकाशित | ప్రచురించబడింది |  | pending |

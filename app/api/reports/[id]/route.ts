@@ -39,7 +39,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if (patch.content_md !== undefined) {
     await audit({
       caseId: report.case_id,
-      actor: "therapist",
       actorUserId: gate.actor.user.id,
       action: "report.edited",
       entity: "report",
@@ -50,7 +49,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if (patch.status === "final") {
     await audit({
       caseId: report.case_id,
-      actor: "therapist",
       actorUserId: gate.actor.user.id,
       action: "report.finalized",
       entity: "report",

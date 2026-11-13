@@ -77,7 +77,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 026 | Home program | draft | solo | waits for 023, 025 |
 | 027 | Secure messaging (guardian <-> care team) | draft | solo | waits for 022, 023, 032 |
 | 032 | Notifications - transactional outbox, scheduler, email / in-app / WhatsApp adapters | done | solo | waits for 020 |
-| 041 | Privacy, audit and operations baseline | draft | solo | waits for 023, 032 |
+| 041 | Privacy, audit and operations baseline | done | solo | waits for 023, 032 |
 
 ## M2 - Directory, booking and voice
 

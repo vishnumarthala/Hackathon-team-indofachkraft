@@ -1689,6 +1689,246 @@
       "progressIntro": "Values the care team recorded for each goal."
     }
   },
+  "privacy": {
+    "link": "Privacy notice",
+    "notice": {
+      "metaTitle": "Privacy notice",
+      "title": "Privacy notice",
+      "draftBadge": "Draft - pending legal review",
+      "intro": "DoctorNearMe helps families and child development professionals work together. This notice explains what we collect, why, who processes it, how long we keep it and the rights you have under India's Digital Personal Data Protection Act, 2023.",
+      "controllerTitle": "Who is responsible",
+      "controller": "DoctorNearMe (pilot operator) decides how this data is used (data fiduciary). Each clinic or therapist you work with is responsible for the clinical records they create.",
+      "collectTitle": "What we collect, by feature",
+      "collect": {
+        "account": "Your account: name, email address, mobile number and sign-in details.",
+        "children": "Your children: name, date of birth, sex (optional) and your relationship to them.",
+        "consent": "Your permissions (consents): what you allowed or withdrew, when, and the version of the text you saw.",
+        "health": "Health profile: blood group, allergies, medicines, conditions, birth and development history, emergency contact.",
+        "documents": "Documents you or the care team upload (reports, prescriptions, school letters).",
+        "intake": "AI intake voice call (only with your permission): the call audio and its transcript, and the summary prepared for the therapist.",
+        "sessions": "Session recordings (only with your permission): audio recorded at the centre, transcripts, observations suggested by AI and confirmed by the therapist, reports and referrals.",
+        "assessments": "Questionnaires your care team sends you (for example the developmental check-in): your answers and the summary the team publishes.",
+        "plans": "Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you.",
+        "homeProgram": "Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes).",
+        "notifications": "Notifications we send you in the app, by email or WhatsApp.",
+        "website": "If you ask for a demo on our website: name, email, role and centre."
+      },
+      "purposesTitle": "Why we use it",
+      "purposes": "To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising.",
+      "processorsTitle": "Who processes it for us, and where",
+      "processorName": "Processor",
+      "processorPurpose": "What for",
+      "processorLocation": "Where",
+      "processors": {
+        "elevenlabs": {
+          "name": "ElevenLabs",
+          "purpose": "AI voice calls, speech-to-text, voice summaries",
+          "location": "USA"
+        },
+        "gemini": {
+          "name": "Google Gemini",
+          "purpose": "AI analysis, draft reports and answers",
+          "location": "Outside India (Google data centres)"
+        },
+        "resend": {
+          "name": "Resend",
+          "purpose": "Email",
+          "location": "USA"
+        },
+        "whatsapp": {
+          "name": "Meta WhatsApp",
+          "purpose": "WhatsApp messages (only if you turn them on)",
+          "location": "Outside India (Meta data centres)"
+        },
+        "supabase": {
+          "name": "Supabase",
+          "purpose": "Database and file storage",
+          "location": "{region}"
+        }
+      },
+      "crossBorder": "AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time.",
+      "retentionTitle": "How long we keep it",
+      "retentionWhat": "Data",
+      "retentionHow": "Kept for",
+      "retention": {
+        "audio": {
+          "what": "Raw audio of intake calls and sessions",
+          "how": "{days} days after it is transcribed (the transcript stays with the clinical record)"
+        },
+        "pending": {
+          "what": "Uploads that were never finished",
+          "how": "Deleted within 24 hours"
+        },
+        "inApp": {
+          "what": "In-app notifications",
+          "how": "{days} days"
+        },
+        "delivery": {
+          "what": "Email and WhatsApp message text in our delivery log",
+          "how": "{days} days (then only the date and status remain)"
+        },
+        "exports": {
+          "what": "Data downloads you request",
+          "how": "{days} days"
+        },
+        "signups": {
+          "what": "Website demo requests",
+          "how": "{months} months"
+        },
+        "clinical": {
+          "what": "Clinical records (cases, transcripts, confirmed observations, reports)",
+          "how": "While your child is in care, and as long as the law requires clinics to keep them"
+        },
+        "consent": {
+          "what": "Consent records",
+          "how": "Kept as proof of consent, also after deletion (without free text)"
+        },
+        "audit": {
+          "what": "Security audit log",
+          "how": "{years} years"
+        }
+      },
+      "rightsTitle": "Your rights",
+      "rights": {
+        "access": "Access: download a copy of your child's data from the child's Privacy page in the app.",
+        "correction": "Correction: change details in the app, or ask the clinic to correct a record.",
+        "erasure": "Erasure: ask us to stop AI processing or to delete your child's data from the child's Privacy page. We review each request; a clinic may have to keep some clinical records by law, and we tell you if so.",
+        "withdraw": "Withdraw consent: switch off any AI feature on your child's page at any time. Work that has not started yet is stopped and its audio deleted.",
+        "grievance": "Grievance: contact our grievance officer. If you are not satisfied, you can complain to the Data Protection Board of India.",
+        "nominate": "Nominate: you can name another person to use these rights for you if you cannot."
+      },
+      "childrenTitle": "Children's data",
+      "children": "We process a child's data only with verifiable consent from their parent or legal guardian, separately for each child and each feature. Child pages have no tracking, no analytics and no targeted advertising.",
+      "contactTitle": "Grievance officer",
+      "contact": "Email {email}. We reply within 7 days.",
+      "contactMissing": "Grievance officer contact will be published before the pilot starts.",
+      "updated": "This notice may change; we will tell you in the app before important changes."
+    },
+    "family": {
+      "link": "Privacy and data",
+      "title": "Privacy and data",
+      "intro": "Download a copy of {name}'s data, or ask us to delete it.",
+      "exportTitle": "Download a copy",
+      "exportIntro": "You get a ZIP file with everything about {name} that you can see in the app, including the documents. We send you a notification when it is ready.",
+      "exportLimit": "Up to 3 downloads per day. Each file can be downloaded for 7 days.",
+      "exportButton": "Download {name}'s data",
+      "exportRequesting": "Requesting...",
+      "exportRequested": "We are preparing the file. This usually takes a minute.",
+      "exportRunning": "A download is already being prepared.",
+      "exportLimitReached": "You can request 3 downloads per day. Please try again tomorrow.",
+      "exportFailedRequest": "Could not save. Please try again.",
+      "exportsListTitle": "Your downloads",
+      "exportStatus": {
+        "queued": "Preparing",
+        "building": "Preparing",
+        "ready": "Ready",
+        "failed": "Could not be prepared",
+        "expired": "Expired"
+      },
+      "download": "Download",
+      "requestedOn": "Requested {date}",
+      "availableUntil": "Available until {date}",
+      "deleteTitle": "Delete data",
+      "deleteIntro": "Choose what to delete. A DoctorNearMe administrator reviews every request before anything is deleted.",
+      "scope": {
+        "all_ai_processing": {
+          "label": "Stop AI processing and delete AI data",
+          "description": "Withdraws all AI permissions, deletes recordings, transcripts and AI suggestions, and deletes the copies of AI voice calls held by ElevenLabs. Records confirmed by the therapist stay."
+        },
+        "everything": {
+          "label": "Delete everything about {name}",
+          "description": "Deletes records at every clinic, documents, the health profile and all recordings, including copies held by our processors. The name is replaced by \"Deleted child\". Consent records and the security log are kept as the law requires, without free text."
+        }
+      },
+      "reasonLabel": "Reason (optional)",
+      "confirmLabel": "I understand that deleted data cannot be recovered.",
+      "deleteButton": "Request deletion",
+      "deleteSending": "Sending...",
+      "deleteSent": "Request sent. We will notify you when it has been reviewed.",
+      "deleteOpen": "A deletion request for this child is already open.",
+      "deleteFailed": "Could not save. Please try again.",
+      "chooseScope": "Choose what to delete",
+      "requestsTitle": "Your requests",
+      "requestStatus": {
+        "requested": "Waiting for review",
+        "approved": "Approved, deleting",
+        "in_progress": "Deleting",
+        "completed": "Completed",
+        "rejected": "Not carried out",
+        "failed": "Deleting (retrying)"
+      },
+      "rejectedReason": "Reason: {note}",
+      "noticeLink": "Read the privacy notice"
+    },
+    "admin": {
+      "nav": {
+        "users": "Accounts",
+        "audit": "Audit log",
+        "requests": "Deletion requests",
+        "ops": "Operations",
+        "notifications": "Notifications"
+      },
+      "audit": {
+        "title": "Audit log",
+        "intro": "Who did what, newest first. Details of health and consent content are not shown. Viewing this page is itself audited.",
+        "action": "Action",
+        "actor": "Actor",
+        "actorHint": "User id or role",
+        "organisation": "Organisation",
+        "child": "Child",
+        "case": "Case",
+        "from": "From",
+        "to": "To",
+        "filter": "Filter",
+        "clear": "Clear",
+        "time": "Time",
+        "role": "Role",
+        "actorId": "Actor id",
+        "entity": "Entity",
+        "ids": "Ids",
+        "none": "No audit events match.",
+        "older": "Older events"
+      },
+      "requests": {
+        "title": "Deletion requests",
+        "intro": "Approve to delete the child's data everywhere (including processor copies). Reject only for a legal record-keeping obligation, and cite it.",
+        "none": "No deletion requests.",
+        "child": "Child",
+        "scope": "Scope",
+        "status": "Status",
+        "requested": "Requested",
+        "reason": "Guardian's reason",
+        "note": "Note (required to reject: cite the obligation)",
+        "approve": "Approve",
+        "reject": "Reject",
+        "saving": "Saving...",
+        "saved": "Saved.",
+        "failed": "Could not save. Please try again.",
+        "noteRequired": "Explain why (at least 10 characters), citing the record-keeping obligation",
+        "processorsPending": "Processor deletions pending: {count}",
+        "lastError": "Last error: {error}"
+      },
+      "ops": {
+        "title": "Operations",
+        "outbox": "Notifications outbox",
+        "pendingEvents": "Events waiting",
+        "oldestPending": "Oldest waiting (minutes)",
+        "deliveries": "Deliveries by status",
+        "retention": "Retention job",
+        "lastRun": "Last run",
+        "never": "Never",
+        "privacy": "Privacy jobs",
+        "openRequests": "Open deletion requests",
+        "failedRequests": "Deletion requests retrying",
+        "queuedExports": "Exports being prepared",
+        "failedExports": "Failed exports",
+        "processorFailures": "Failed processor deletions",
+        "stuck": "Recordings stuck for more than 30 minutes",
+        "none": "None.",
+        "minutes": "{count} min"
+      }
+    }
+  },
   "homeProgram": {
     "link": "Home activities",
     "status": {

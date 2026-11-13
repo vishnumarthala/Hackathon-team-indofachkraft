@@ -18,6 +18,7 @@ import {
   type ReviewInput,
 } from "@/lib/assessments/schemas";
 import { assessmentSummaryMarkdown } from "@/lib/assessments/summary";
+import { auditStrict } from "@/lib/audit";
 import { scoreCheckin, type CheckinScore } from "@/lib/clinical/checkin";
 import { getInstrument, type InstrumentItem } from "@/lib/clinical/instruments";
 import { getLatestPublished, publishVersion, type PublishedVersion } from "@/lib/clinical/publish";
@@ -80,13 +81,16 @@ const fail = (status: Failure["status"], error: string, details?: Record<string,
   ...(details ? { details } : {}),
 });
 
+// 041: strict audit in the caller's transaction; the actor is the session user resolved by the route (role from
+// user_profiles), never a hard-coded kind.
 async function auditTx(
   tx: Tx,
-  e: { caseId: string; actor: "therapist" | "parent"; actorUserId: string; action: string; entityId: string; details?: Record<string, unknown> },
+  e: { caseId: string; actorUserId: string; action: string; entityId: string; details?: Record<string, unknown> },
 ) {
-  await tx`
-    insert into audit_events (case_id, actor, actor_user_id, action, entity, entity_id, details)
-    values (${e.caseId}, ${e.actor}, ${e.actorUserId}, ${e.action}, 'assessment', ${e.entityId}, ${tx.json((e.details ?? {}) as postgres.JSONValue)})`;
+  await auditStrict(
+    { caseId: e.caseId, actorUserId: e.actorUserId, action: e.action, entity: "assessment", entityId: e.entityId, details: e.details ?? {} },
+    tx,
+  );
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -247,7 +251,6 @@ export async function createAssessment(input: {
       returning id`;
     await auditTx(tx, {
       caseId: kase.id,
-      actor: "therapist",
       actorUserId: input.actorUserId,
       action: "assessment.assigned",
       entityId: created.id,
@@ -315,7 +318,6 @@ export async function reviewAssessment(input: {
     });
     await auditTx(tx, {
       caseId: locked.case_id,
-      actor: "therapist",
       actorUserId: input.actorUserId,
       action: "assessment.reviewed",
       entityId: locked.id,
@@ -350,7 +352,6 @@ export async function cancelAssessment(input: {
       where id = ${locked.id}`;
     await auditTx(tx, {
       caseId: locked.case_id,
-      actor: "therapist",
       actorUserId: input.actorUserId,
       action: "assessment.cancelled",
       entityId: locked.id,
@@ -472,7 +473,6 @@ export async function saveResponses(input: {
 
     await auditTx(tx, {
       caseId: locked.case_id,
-      actor: "parent",
       actorUserId: input.userId,
       action: "assessment.responses_saved",
       entityId: locked.id,
@@ -482,7 +482,6 @@ export async function saveResponses(input: {
     if (newRedFlags.length > 0) {
       await auditTx(tx, {
         caseId: locked.case_id,
-        actor: "parent",
         actorUserId: input.userId,
         action: "assessment.red_flag",
         entityId: locked.id,
@@ -541,7 +540,6 @@ export async function submitAssessment(input: { assessmentId: string; userId: st
     const redFlags = redFlagCodes(locked.instrument_key, answers);
     await auditTx(tx, {
       caseId: locked.case_id,
-      actor: "parent",
       actorUserId: input.userId,
       action: "assessment.submitted",
       entityId: locked.id,

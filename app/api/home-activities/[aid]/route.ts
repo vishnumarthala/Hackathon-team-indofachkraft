@@ -1,3 +1,4 @@
+import { AuditWriteError, auditFailure } from "@/lib/audit";
 import { deleteActivity, updateActivity } from "@/lib/home-program";
 import { requireHomeActivityActor } from "@/lib/home-program/authz";
 import { ActivityPatchSchema } from "@/lib/home-program/schema";
@@ -14,7 +15,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ aid: s
   const parsed = await parseJson(req, ActivityPatchSchema);
   if ("response" in parsed) return parsed.response;
 
-  const result = await updateActivity({ activityId: aid, actorUserId: gate.actor.user.id, body: parsed.data });
+  let result: Awaited<ReturnType<typeof updateActivity>>;
+  try {
+    result = await updateActivity({ activityId: aid, actorUserId: gate.actor.user.id, body: parsed.data });
+  } catch (err) {
+    if (err instanceof AuditWriteError) return auditFailure(err);
+    throw err;
+  }
   if (!result.ok) return fail(result.status, result.error, result.details);
   return ok({ activity: result.activity, program_version: result.program_version });
 }
@@ -31,7 +38,13 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ aid: 
     return fail(400, "Invalid request", { version: "version must be a positive integer" });
   }
 
-  const result = await deleteActivity({ activityId: aid, actorUserId: gate.actor.user.id, version });
+  let result: Awaited<ReturnType<typeof deleteActivity>>;
+  try {
+    result = await deleteActivity({ activityId: aid, actorUserId: gate.actor.user.id, version });
+  } catch (err) {
+    if (err instanceof AuditWriteError) return auditFailure(err);
+    throw err;
+  }
   if (!result.ok) return fail(result.status, result.error, result.details);
   return ok({ deleted: result.deleted, activity: result.activity, program_version: result.program_version });
 }
