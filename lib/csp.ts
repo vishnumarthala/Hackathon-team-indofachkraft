@@ -30,6 +30,9 @@ export const FAMILY_CSP_EXCEPTIONS: Record<string, CspAllowance> = {
   // 034: the voice booking widget on /find (approved 2026-11-13). /find is not under the strict family policy today
   // (029 loads Google Maps there), so this applies once it is.
   "/find": { connectSrc: ELEVENLABS_CONNECT },
+  // 040: `Ask by voice` on the follow-up page (and its document viewer under it); allowlist entry "ElevenLabs SDK
+  // (voice agent)". The SDK is bundled, so no script-src exception.
+  "/family/children/*/ask": { connectSrc: ELEVENLABS_CONNECT },
   // 031: Razorpay Checkout on the payment page only (script, its API iframe and telemetry endpoint).
   "/book/*/pay/*": {
     scriptSrc: ["https://checkout.razorpay.com"],

@@ -275,6 +275,8 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `ELEVENLABS_AGENT_ID` | intake page | agent configured per `docs/elevenlabs-agent.md` |
 | `ELEVENLABS_SCREEN_AGENT_ID` | `/screen` voice check-in (033) | optional; English-only public agent per `docs/elevenlabs-screen-agent.md`; unset (and not `DEMO_MODE`) -> the page offers only the tap-through form |
 | `ELEVENLABS_BOOKING_AGENT_ID` / `ELEVENLABS_TOOL_SECRET` | `/find` voice booking (034) | optional; English-only booking agent per `docs/elevenlabs-booking-agent.md` and the shared secret its server tools send as `X-Agent-Secret`; without both (and not `DEMO_MODE`) `/find` has no voice widget and every tool call is 401 |
+| `ELEVENLABS_FOLLOWUP_AGENT_ID` | `Ask by voice` in the family portal (040) | optional; English-only follow-up agent per `docs/elevenlabs-followup-agent.md`; its `answer_question` tool uses `ELEVENLABS_TOOL_SECRET`; without both (and not `DEMO_MODE`) the ask page offers the text chat only |
+| `RETENTION_FOLLOWUP_DAYS` | retention job (040) | optional; days follow-up questions/answers are kept [90] |
 | `ELEVENLABS_WEBHOOK_SECRET` | webhook HMAC | only needed when the webhook is used (deployed or tunnel) |
 | `ELEVENLABS_VOICE_ID_EN` / `_HI` / `_TE` | parent voice note | |
 | `GEMINI_API_KEY` | Gemini | |
@@ -652,6 +654,10 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `POST\|GET\|DELETE /api/agents/booking/session` | 034 | public; POST 5 per IP per hour; GET/DELETE bound to the `dnm_booking_session` cookie | 201 `{ booking_session, conversation_token, agent_id?, demo?, dynamic_variables: { booking_session, today } }`; GET 200 `{ active, expires_at, hold }`; DELETE 200 `{ ended: true }`; 404 no session; 429; 503 not configured (section 13b) |
 | `POST /api/agents/booking/tools/{search_providers\|get_slots\|hold_slot}` | 034 | `X-Agent-Secret` + `{ booking_session, ... }` (strict) | 200 tool result; 401 secret / session; 400 unknown keys; 429 after 20 calls per session; 404 unknown provider/service (`docs/elevenlabs-booking-agent.md`) |
 | `POST /api/agents/booking/demo/:tool` | 034 | DEMO_MODE only (else 404); cookie-bound | same handlers as the tools |
+| `POST\|GET /api/family/children/:id/ask` | 040 | guardian of the child (404 others, 403 other roles); POST needs `ai_follow_up` consent (422) and `{ question }` (3-500) | POST 200 `{ id?, found, answer, citations: [{ entity_type, entity_id, version, label, excerpt }], safety?: "red_flag" \| "medical_advice" }`; 429 after 30 questions per guardian per 24 h; 502 model failed. GET 200 `{ questions, remaining_today }` (own history) |
+| `POST\|DELETE /api/agents/followup/session` | 040 | guardian of `child_id`; `ai_follow_up` consent (422) | 201 `{ followup_session, expires_at, conversation_token, agent_id?, demo?, dynamic_variables: { followup_session } }`; 503 not configured; DELETE `{ followup_session, conversation_id? }` -> 200 `{ ended: true }` (own sessions only, else 404) |
+| `POST /api/agents/followup/tools/answer_question` | 040 | `X-Agent-Secret` + `{ followup_session, question }` | same body as the text ask; 401 secret / unknown, expired, ended or revoked-guardian session; 422 consent withdrawn; 429 over 20 calls per session (section 13c) |
+| `POST /api/agents/followup/demo/answer_question` | 040 | DEMO_MODE only (else 404); signed-in guardian who owns the session (else 401) | same handler as the tool |
 | `POST /api/family/screen-results` | 033 | `{ session_id, child_id }` | 201 (200 again) `{ saved: true }`; 401; 404 not your child; 422 `screen_result_save` consent; 409 unfinished / red flag / other child; 410 expired |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 
@@ -760,6 +766,9 @@ confidence capped at 0.5. `start_sec`/`end_sec` come from the segment.
   `docs/elevenlabs-booking-agent.md`) with **server (webhook) tools** `search_providers`, `get_slots`, `hold_slot`
   authenticated by `X-Agent-Secret` (`ELEVENLABS_TOOL_SECRET`) plus the per-conversation `{{booking_session}}`, and a
   client tool `record_red_flag`. No webhook, no data collection. Section 13b.
+- **Follow-up agent** (040): a fourth, English-only private agent `DoctorNearMe Follow-up`
+  (`ELEVENLABS_FOLLOWUP_AGENT_ID`, `docs/elevenlabs-followup-agent.md`) with one server tool `answer_question`
+  (`X-Agent-Secret` + the guardian/child-bound `{{followup_session}}`); it speaks the returned answer only. Section 13c.
 
 ## 12. Flows
 
@@ -900,6 +909,48 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
 - `/find` has no nonce CSP (029 loads Google Maps); the ElevenLabs endpoints are declared for `/find` in `lib/csp.ts`
   and `lib/privacy/third-party-allowlist.ts` (approved) for when it gets one. Expired sessions are purged 1 day after
   expiry when new sessions start; the table holds hashes and counters only (not a privacy-registry category).
+
+## 13c. Follow-up agent: "ask about my child's plan" (ticket 040)
+
+- **Page** `/family/children/<id>/ask` (`components/followup/*`): `Ask about <child>'s plan` input, suggested questions,
+  disclaimer `AI answers from your child's shared plans. It is not medical advice.`, answers newest first with citation
+  chips that open `/family/children/<id>/ask/sources/<entity_type>/<entity_id>/<version>` (the cited published version
+  if it is still the guardian's current one; otherwise the current version with a note, or "not shared with you").
+  Without `ai_follow_up` consent the page links to the child's permissions and offers no input. Questions and answers
+  are English (the agent language, D-3); the UI chrome is translated (`followup` namespace).
+- **Grounding** (`lib/followup/context.ts`, design rule 9): `loadGuardianContext(guardianUserId, childId)` returns null
+  unless the guardian's link is active, then reads ONLY 025 `getGuardianPlans`, 026 `getGuardianHomePrograms` (+ this
+  week's logged practice counts), 038 `listGuardianSessionNotes`, 024 `listGuardianVisible("report")` (final,
+  guardian-facing kinds) and `listGuardianVisible("assessment")`, and 039 `listGuardianPrescriptions` (signed only; a
+  voided prescription's "Prescription cancelled" version is never used). No drafts, transcripts, facts, messages or
+  guardian notes. Newest first, every document tagged `[HOME1]`, `[PLAN1]`, `[RX1]`, ...; max 60,000 characters (013's
+  limit; older documents are cut). The model (`prompts/follow-up.md`, Gemini `generateJson`, 5.5 s timeout) returns
+  `{ found, answer, medical_advice, citations: [{ ref, quote }] }`; unknown refs are dropped, quotes are verified against
+  the document (else the chip shows the document's first line), an uncited answer becomes `I couldn't find that in your
+  child's shared plans. Please ask your provider using Messages.`
+- **Pipeline** (`lib/followup/answer.ts`, shared by text and voice): (1) the shared free-text red-flag classifier
+  `lib/clinical/red-flags.ts` (033 codes + `medicine_overdose`, `unconscious`, `suicidal`) -> 033's 108/112 message,
+  `safety: "red_flag"`, no model, not stored, audit `followup.red_flag` `{ code, channel }` without the text; (2) 30
+  questions per guardian per rolling 24 h (advisory-locked count + reservation row, 429); (3) medicine-change questions
+  -> `Please don't change any medicine without talking to the prescriber.` and condition questions -> a fixed referral
+  sentence, both `safety: "medical_advice"`, no model; (4) `assertConsentOrAbort(childId, "ai_follow_up")` (020) before
+  any data reaches the model; (5) context; (6) model + post-check (an answer suggesting a medicine change is replaced by
+  the medicine sentence). Audit `followup.question_asked` `{ found, citations, safety, channel }` (no text).
+- **Storage** (migration `20261113004000_followup.sql`): `followup_questions` (question, answer, citations, safety,
+  channel; the guardian's own history; 90 days, `RETENTION_FOLLOWUP_DAYS`, retention step `followup_questions`) and
+  `followup_agent_sessions` (SHA-256 of the token, guardian, child, 15-minute expiry, tool-call counter, optional
+  ElevenLabs conversation id). RLS on, no browser grants. Privacy registry key `followup_questions` (export = the
+  requesting guardian's own history; erasure `all_ai_processing`/`everything` deletes both tables and queues the
+  ElevenLabs conversations for deletion).
+- **Voice** (`lib/followup/session.ts`, `lib/followup/tool.ts`): `POST /api/agents/followup/session` (guardian of the
+  child, consent at start) -> `startAgentSession(ELEVENLABS_FOLLOWUP_AGENT_ID)` + a session token as the only dynamic
+  variable (no names). The tool checks the secret, charges the session (401 unknown/expired/ended, 429 over 20), checks
+  that the guardian is still linked (else the session ends, 401) and that consent still holds, then runs the pipeline as
+  that guardian. A red flag ends the session. CSP: `/family/children/*/ask` gets the ElevenLabs `connect-src` exception
+  (`lib/csp.ts`; allowlist entry "ElevenLabs SDK (voice agent)"). DEMO_MODE: a voice demo panel (typed "speech", the
+  answer read aloud by the browser's Web Speech API) through `POST /api/agents/followup/demo/answer_question`; the model
+  step reads `demo/fixtures/gemini/follow-up.json` (keyword-picked canned answers citing `HOME1`/`PLAN1`/`RX1`/`NOTE1`)
+  and logs `followup model call` for every read.
 
 ## 14. Human setup checklist (not tickets)
 

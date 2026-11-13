@@ -19,6 +19,7 @@ Used by `DEMO_MODE=true` instead of calling ElevenLabs or Gemini (see `docs/syst
 | `gemini/referral.json` | Referral summary (`ReferralSummarySchema`). |
 | `gemini/ask.json` | Answer to "When did speech regress?" citing `1:s10`. |
 | `gemini/parent-summary.json` | Parent summary in Telugu (`ParentSummarySchema`). |
+| `gemini/follow-up.json` | 040 follow-up answers: canned answers picked by keywords of the question (practise / review / medicine / session note), citing `HOME1` / `PLAN1` / `RX1` / `NOTE1`, plus the not-found fallback. |
 | `roleplay-therapy-segments.json`, `roleplay-consult-segments.json` | 038 AI scribe role-plays (child `Asha`, parent `Meena`, both synthetic): a speech-therapy session (`s4` four two-word requests, `s6` 6 of 10 turns) and a developmental paediatrician consult (`s10` melatonin plan, `s6` amoxicillin allergy). |
 | `scribe-response-therapy.json`, `scribe-response-consult.json` | Scribe v2 responses for those role-plays (`npm run fixtures:scribe`); the transcribe route picks them by the recording's template. |
 | `gemini/scribe-therapy.json`, `gemini/scribe-medical.json`, `gemini/scribe-rx.json` | 038 session notes (cited statements + goal suggestions for `G1`/`G2`) and the Rx draft (`lib/scribe/schema.ts`). |

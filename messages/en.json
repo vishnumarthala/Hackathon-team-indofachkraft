@@ -1735,6 +1735,7 @@
         "appointments": "Appointments you book: provider, service, time, place, status and changes. The provider sees your child's name and age.",
         "scribe": "AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you.",
         "homeProgram": "Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes).",
+        "followUp": "Questions to the AI follow-up assistant (only with your permission): your questions about your child's shared plans and the answers, kept for 90 days. If you ask by voice, the call is processed by ElevenLabs.",
         "messages": "Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them.",
         "videoCalls": "Video appointments: the Google Meet link. You join signed in to your own Google account; your email is never added to the provider's calendar.",
         "screen": "Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs.",
@@ -2820,6 +2821,66 @@
       "cancelled": "Cancelled by prescriber",
       "cancelledNote": "Do not use this prescription. Contact your child's doctor if you have questions.",
       "download": "Download PDF"
+    }
+  },
+  "followup": {
+    "link": "Ask about the plan",
+    "title": "Ask about {name}'s plan",
+    "back": "Back to {name}",
+    "intro": "Ask a question about {name}'s shared plans, home program, session notes and signed prescriptions. Questions and answers are in English.",
+    "disclaimer": "AI answers from your child's shared plans. It is not medical advice.",
+    "inputLabel": "Ask about {name}'s plan",
+    "placeholder": "Type your question in English",
+    "ask": "Ask",
+    "asking": "Finding the answer...",
+    "suggestionsTitle": "Try asking",
+    "sources": "Sources",
+    "openSource": "Open {label}",
+    "messagesLink": "Open Messages",
+    "you": "You asked",
+    "answer": "Answer",
+    "byVoice": "Asked by voice",
+    "historyTitle": "Earlier questions",
+    "historyEmpty": "No questions yet. Your questions and answers are kept for 90 days.",
+    "remaining_one": "{count} question left today",
+    "remaining_other": "{count} questions left today",
+    "errors": {
+      "generic": "The question could not be answered. Please try again.",
+      "limit": "You have reached today's limit of questions. Please try again tomorrow, or ask your provider using Messages.",
+      "consent": "The AI follow-up assistant is turned off for this child. Turn it on in the child's permissions to ask questions.",
+      "length": "Questions must be 3 to 500 characters."
+    },
+    "consentNeeded": {
+      "title": "Turn on the AI follow-up assistant",
+      "body": "To ask questions about {name}'s plan, first allow the AI follow-up assistant in {name}'s permissions.",
+      "link": "Open permissions"
+    },
+    "voice": {
+      "title": "Ask by voice",
+      "button": "Ask by voice",
+      "intro": "Talk to the DoctorNearMe Follow-up assistant. It speaks English only and answers from the same shared plans.",
+      "processor": "Your voice is processed by ElevenLabs to answer you.",
+      "end": "End call",
+      "connecting": "Connecting...",
+      "listening": "Listening",
+      "speaking": "Speaking",
+      "ended": "The voice call has ended. You can type a question below.",
+      "unavailable": "Voice questions are not available right now. Please type your question.",
+      "failed": "The voice call could not start. Please type your question.",
+      "demoTitle": "Voice demo",
+      "demoNote": "Demo mode: no call is made. Type what you would say. The answer is read aloud by your browser.",
+      "demoLabel": "What you would say",
+      "demoSay": "Say it",
+      "agent": "Assistant",
+      "parent": "You"
+    },
+    "source": {
+      "from": "From {org}",
+      "sharedOn": "Shared on {date}",
+      "version": "Version {version}",
+      "notAvailable": "This document is not shared with you, or no longer is.",
+      "updated": "This document has been updated since the answer. You are seeing the current version ({version}).",
+      "back": "Back to questions"
     }
   }
 }

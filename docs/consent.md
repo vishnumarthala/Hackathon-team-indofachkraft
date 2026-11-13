@@ -50,7 +50,7 @@ Current gates (FR-7):
 | `ai_voice_note` | `POST /api/reports/:id/parent-voice-note` | before TTS |
 | `referral_share` | `POST /api/cases/:id/refer` | every `/specialist/<token>` load and `POST /api/cases/:id/ask` (410 when unavailable) |
 | `screen_result_save` | `POST /api/family/screen-results` (033: guardian link, then `requireConsent`; 422 -> inline Allow dialog on `/screen`) | - (the save is synchronous) |
-| `ai_follow_up` | ticket 040 must call `requireConsent` before the agent starts | `assertConsentOrAbort` before each question |
+| `ai_follow_up` | 040: `requireConsent` on `POST /api/family/children/:id/ask`, `POST /api/agents/followup/session` and every voice tool call (422) | `assertConsentOrAbort` before each question reaches the model (`lib/followup/answer.ts`) |
 
 Withdrawing `ai_intake_call` revokes the child's open intake links (035: also appointment intake attempts, by a
 trigger on `consent_records`; a later grant issues links for upcoming appointments through the `consent.granted`

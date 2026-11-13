@@ -373,6 +373,38 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 040 FR-6: the follow-up agent's questions and grounded answers (text and voice) and its 15-minute voice
+    // sessions (token hash, ElevenLabs conversation id). Red-flag questions are never stored (audit row without text).
+    key: "followup_questions",
+    label: "Follow-up agent questions and answers about the child's shared plans (040)",
+    owner: "child",
+    tables: ["followup_questions", "followup_agent_sessions"],
+    retention: "Questions and answers are deleted after 90 days; voice sessions 90 days after they expired.",
+    retentionEnv: "RETENTION_FOLLOWUP_DAYS",
+    processors: ["supabase", "gemini", "elevenlabs"],
+    // Exactly the requesting guardian's own history (other guardians' questions are never exported).
+    export: async ({ sql, childId, guardianUserId }) => {
+      const rows = await sql`
+        select question, answer, found, citations, safety, channel, created_at from public.followup_questions
+        where child_id = ${childId} and guardian_user_id = ${guardianUserId} and answer <> ''
+        order by created_at`;
+      return { data: rowsJson(rows) };
+    },
+    erase: {
+      scopes: AI_SCOPES,
+      externalRefs: async (sql, ctx) => {
+        const rows = await sql<{ conversation_id: string }[]>`
+          select conversation_id from public.followup_agent_sessions where child_id = ${ctx.childId} and conversation_id is not null`;
+        return rows.map((r) => ({ processor: "elevenlabs", ref: r.conversation_id }));
+      },
+      rows: async (tx, ctx) => {
+        const questions = await tx`delete from public.followup_questions where child_id = ${ctx.childId}`;
+        const sessions = await tx`delete from public.followup_agent_sessions where child_id = ${ctx.childId}`;
+        return questions.count + sessions.count;
+      },
+    },
+  },
+  {
     key: "documents",
     label: "Document vault (uploads by the family and the care team)",
     owner: "child",

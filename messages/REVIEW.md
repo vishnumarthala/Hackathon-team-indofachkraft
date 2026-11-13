@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2351. Not yet approved: 2351.
+Rows: 2402. Not yet approved: 2402.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1488,6 +1488,7 @@ Rows: 2351. Not yet approved: 2351.
 | `privacy.notice.collect.appointments` | Appointments you book: provider, service, time, place, status and changes. The provider sees your child's name and age. | आपके बुक किए अपॉइंटमेंट: प्रदाता, सेवा, समय, स्थान, स्थिति और बदलाव। प्रदाता आपके बच्चे का नाम और उम्र देखते हैं। | మీరు బుక్ చేసే అపాయింట్‌మెంట్‌లు: ప్రొవైడర్, సేవ, సమయం, స్థలం, స్థితి మరియు మార్పులు. ప్రొవైడర్ మీ పిల్లల పేరు, వయస్సు చూస్తారు. |  | pending |
 | `privacy.notice.collect.scribe` | AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you. | AI सत्र नोट (केवल आपकी अनुमति से): क्लिनिक में की गई रिकॉर्डिंग से AI द्वारा तैयार नोट, लक्ष्य की प्रगति और प्रिस्क्रिप्शन के मसौदे। क्लिनिशियन हर सुझाव की जाँच करते हैं; आप कोई नोट तभी देखते हैं जब क्लिनिशियन उसे आपके साथ साझा करें। | AI సెషన్ నోట్‌లు (మీ అనుమతితో మాత్రమే): క్లినిక్‌లో చేసిన రికార్డింగ్‌ల నుండి AI తయారు చేసిన నోట్‌లు, లక్ష్యాల పురోగతి మరియు ప్రిస్క్రిప్షన్ ముసాయిదాలు. క్లినిషియన్ ప్రతి సూచనను పరిశీలిస్తారు; క్లినిషియన్ మీతో పంచుకున్నప్పుడే మీరు నోట్‌ను చూస్తారు. |  | pending |
 | `privacy.notice.collect.homeProgram` | Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes). | घर की गतिविधियाँ: आपकी देखभाल टीम घर पर अभ्यास के लिए जो गतिविधियाँ प्रकाशित करती है, और आप जो दर्ज करते हैं (किया, कैसा रहा, मिनट, नोट)। | ఇంటి కార్యకలాపాలు: ఇంట్లో సాధన కోసం మీ సంరక్షణ బృందం ప్రచురించే కార్యకలాపాలు, మీరు నమోదు చేసేవి (చేశాం, ఎలా జరిగింది, నిమిషాలు, గమనికలు). |  | pending |
+| `privacy.notice.collect.followUp` | Questions to the AI follow-up assistant (only with your permission): your questions about your child's shared plans and the answers, kept for 90 days. If you ask by voice, the call is processed by ElevenLabs. | AI फ़ॉलो-अप सहायक से प्रश्न (केवल आपकी अनुमति से): आपके बच्चे की साझा योजनाओं के बारे में आपके प्रश्न और उत्तर, 90 दिनों तक रखे जाते हैं। यदि आप आवाज़ से पूछते हैं, तो कॉल ElevenLabs द्वारा संसाधित की जाती है। | AI ఫాలో-అప్ సహాయకుడికి ప్రశ్నలు (మీ అనుమతితో మాత్రమే): మీ పిల్లల పంచుకున్న ప్లాన్‌ల గురించి మీ ప్రశ్నలు మరియు సమాధానాలు, 90 రోజులు ఉంచబడతాయి. మీరు గొంతుతో అడిగితే, కాల్‌ను ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
 | `privacy.notice.collect.messages` | Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them. | देखभाल टीम के साथ संदेश: DoctorNearMe बातचीत में आप और देखभाल टीम जो लिखते हैं, जोड़े गए दस्तावेज़ों के लिंक, और आपने उन्हें आखिरी बार कब पढ़ा। | సంరక్షణ బృందంతో సందేశాలు: DoctorNearMe సంభాషణల్లో మీరు మరియు సంరక్షణ బృందం రాసేవి, జోడించిన పత్రాల లింకులు, మరియు మీరు వాటిని చివరిసారి ఎప్పుడు చదివారు. |  | pending |
 | `privacy.notice.collect.videoCalls` | Video appointments: the Google Meet link. You join signed in to your own Google account; your email is never added to the provider's calendar. | वीडियो अपॉइंटमेंट: Google Meet लिंक। आप अपने Google खाते में साइन इन करके जुड़ते हैं; आपका ईमेल कभी प्रदाता के कैलेंडर में नहीं जोड़ा जाता। | వీడియో అపాయింట్‌మెంట్‌లు: Google Meet లింక్. మీరు మీ స్వంత Google ఖాతాలో సైన్ ఇన్ చేసి చేరతారు; మీ ఇమెయిల్ ఎప్పుడూ ప్రొవైడర్ క్యాలెండర్‌కు జోడించబడదు. |  | pending |
 | `privacy.notice.collect.screen` | Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs. | हमारे सार्वजनिक जाँच पेज से विकास जाँच: आपके बच्चे की उम्र का दायरा और आपके जवाब, बिना किसी नाम के। अगर आप आवाज़ इस्तेमाल करते हैं, तो कॉल ElevenLabs द्वारा प्रोसेस की जाती है। | మా పబ్లిక్ పరిశీలన పేజీ నుండి అభివృద్ధి పరిశీలన: మీ బిడ్డ వయస్సు శ్రేణి, మీ సమాధానాలు, ఏ పేరూ లేకుండా. మీరు వాయిస్ ఉపయోగిస్తే, కాల్‌ను ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
@@ -2366,3 +2367,53 @@ Rows: 2351. Not yet approved: 2351.
 | `rx.family.cancelled` | Cancelled by prescriber | डॉक्टर ने रद्द किया | ప్రిస్క్రైబర్ రద్దు చేశారు |  | pending |
 | `rx.family.cancelledNote` | Do not use this prescription. Contact your child's doctor if you have questions. | इस पर्चे का उपयोग न करें। सवाल हों तो अपने बच्चे के डॉक्टर से संपर्क करें। | ఈ ప్రిస్క్రిప్షన్‌ను ఉపయోగించవద్దు. ప్రశ్నలు ఉంటే మీ పిల్లల డాక్టర్‌ను సంప్రదించండి. |  | pending |
 | `rx.family.download` | Download PDF | PDF डाउनलोड करें | PDF డౌన్‌లోడ్ చేయండి |  | pending |
+| `followup.link` | Ask about the plan | योजना के बारे में पूछें | ప్లాన్ గురించి అడగండి |  | pending |
+| `followup.title` | Ask about {name}'s plan | {name} की योजना के बारे में पूछें | {name} ప్లాన్ గురించి అడగండి |  | pending |
+| `followup.back` | Back to {name} | {name} पर वापस जाएँ | {name} కి తిరిగి వెళ్ళండి |  | pending |
+| `followup.intro` | Ask a question about {name}'s shared plans, home program, session notes and signed prescriptions. Questions and answers are in English. | {name} की साझा योजनाओं, होम प्रोग्राम, सत्र नोट्स और हस्ताक्षरित पर्चों के बारे में प्रश्न पूछें। प्रश्न और उत्तर अंग्रेज़ी में हैं। | {name} పంచుకున్న ప్లాన్‌లు, హోమ్ ప్రోగ్రామ్, సెషన్ నోట్స్ మరియు సంతకం చేసిన ప్రిస్క్రిప్షన్‌ల గురించి ప్రశ్న అడగండి. ప్రశ్నలు మరియు సమాధానాలు ఇంగ్లీష్‌లో ఉంటాయి. |  | pending |
+| `followup.disclaimer` | AI answers from your child's shared plans. It is not medical advice. | AI आपके बच्चे की साझा योजनाओं से उत्तर देता है। यह चिकित्सा सलाह नहीं है। | AI మీ పిల్లల పంచుకున్న ప్లాన్‌ల నుండి సమాధానం ఇస్తుంది. ఇది వైద్య సలహా కాదు. |  | pending |
+| `followup.inputLabel` | Ask about {name}'s plan | {name} की योजना के बारे में पूछें | {name} ప్లాన్ గురించి అడగండి |  | pending |
+| `followup.placeholder` | Type your question in English | अपना प्रश्न अंग्रेज़ी में लिखें | మీ ప్రశ్నను ఇంగ్లీష్‌లో టైప్ చేయండి |  | pending |
+| `followup.ask` | Ask | पूछें | అడగండి |  | pending |
+| `followup.asking` | Finding the answer... | उत्तर खोजा जा रहा है... | సమాధానం వెతుకుతోంది... |  | pending |
+| `followup.suggestionsTitle` | Try asking | यह पूछकर देखें | ఇలా అడిగి చూడండి |  | pending |
+| `followup.sources` | Sources | स्रोत | మూలాలు |  | pending |
+| `followup.openSource` | Open {label} | {label} खोलें | {label} తెరవండి |  | pending |
+| `followup.messagesLink` | Open Messages | संदेश खोलें | సందేశాలు తెరవండి |  | pending |
+| `followup.you` | You asked | आपने पूछा | మీరు అడిగారు |  | pending |
+| `followup.answer` | Answer | उत्तर | సమాధానం |  | pending |
+| `followup.byVoice` | Asked by voice | आवाज़ से पूछा गया | గొంతుతో అడిగారు |  | pending |
+| `followup.historyTitle` | Earlier questions | पहले के प्रश्न | ముందటి ప్రశ్నలు |  | pending |
+| `followup.historyEmpty` | No questions yet. Your questions and answers are kept for 90 days. | अभी कोई प्रश्न नहीं। आपके प्रश्न और उत्तर 90 दिनों तक रखे जाते हैं। | ఇంకా ప్రశ్నలు లేవు. మీ ప్రశ్నలు మరియు సమాధానాలు 90 రోజులు ఉంచబడతాయి. |  | pending |
+| `followup.remaining_one` | {count} question left today | आज {count} प्रश्न बाकी है | ఈ రోజు {count} ప్రశ్న మిగిలి ఉంది |  | pending |
+| `followup.remaining_other` | {count} questions left today | आज {count} प्रश्न बाकी हैं | ఈ రోజు {count} ప్రశ్నలు మిగిలి ఉన్నాయి |  | pending |
+| `followup.errors.generic` | The question could not be answered. Please try again. | प्रश्न का उत्तर नहीं दिया जा सका। कृपया फिर से कोशिश करें। | ప్రశ్నకు సమాధానం ఇవ్వలేకపోయాము. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `followup.errors.limit` | You have reached today's limit of questions. Please try again tomorrow, or ask your provider using Messages. | आज के प्रश्नों की सीमा पूरी हो गई है। कृपया कल फिर कोशिश करें, या संदेश से अपने प्रदाता से पूछें। | ఈ రోజు ప్రశ్నల పరిమితి చేరుకున్నారు. దయచేసి రేపు మళ్ళీ ప్రయత్నించండి, లేదా సందేశాల ద్వారా మీ ప్రొవైడర్‌ను అడగండి. |  | pending |
+| `followup.errors.consent` | The AI follow-up assistant is turned off for this child. Turn it on in the child's permissions to ask questions. | इस बच्चे के लिए AI फ़ॉलो-अप सहायक बंद है। प्रश्न पूछने के लिए बच्चे की अनुमतियों में इसे चालू करें। | ఈ పిల్లల కోసం AI ఫాలో-అప్ సహాయకుడు ఆఫ్‌లో ఉంది. ప్రశ్నలు అడగడానికి పిల్లల అనుమతుల్లో దీన్ని ఆన్ చేయండి. |  | pending |
+| `followup.errors.length` | Questions must be 3 to 500 characters. | प्रश्न 3 से 500 अक्षरों का होना चाहिए। | ప్రశ్న 3 నుండి 500 అక్షరాలు ఉండాలి. |  | pending |
+| `followup.consentNeeded.title` | Turn on the AI follow-up assistant | AI फ़ॉलो-अप सहायक चालू करें | AI ఫాలో-అప్ సహాయకుడిని ఆన్ చేయండి |  | pending |
+| `followup.consentNeeded.body` | To ask questions about {name}'s plan, first allow the AI follow-up assistant in {name}'s permissions. | {name} की योजना के बारे में प्रश्न पूछने के लिए, पहले {name} की अनुमतियों में AI फ़ॉलो-अप सहायक की अनुमति दें। | {name} ప్లాన్ గురించి ప్రశ్నలు అడగడానికి, ముందుగా {name} అనుమతుల్లో AI ఫాలో-అప్ సహాయకుడిని అనుమతించండి. |  | pending |
+| `followup.consentNeeded.link` | Open permissions | अनुमतियाँ खोलें | అనుమతులు తెరవండి |  | pending |
+| `followup.voice.title` | Ask by voice | आवाज़ से पूछें | గొంతుతో అడగండి |  | pending |
+| `followup.voice.button` | Ask by voice | आवाज़ से पूछें | గొంతుతో అడగండి |  | pending |
+| `followup.voice.intro` | Talk to the DoctorNearMe Follow-up assistant. It speaks English only and answers from the same shared plans. | DoctorNearMe फ़ॉलो-अप सहायक से बात करें। यह केवल अंग्रेज़ी बोलता है और उन्हीं साझा योजनाओं से उत्तर देता है। | DoctorNearMe ఫాలో-అప్ సహాయకుడితో మాట్లాడండి. ఇది ఇంగ్లీష్ మాత్రమే మాట్లాడుతుంది మరియు అవే పంచుకున్న ప్లాన్‌ల నుండి సమాధానం ఇస్తుంది. |  | pending |
+| `followup.voice.processor` | Your voice is processed by ElevenLabs to answer you. | आपको उत्तर देने के लिए आपकी आवाज़ ElevenLabs द्वारा संसाधित की जाती है। | మీకు సమాధానం ఇవ్వడానికి మీ గొంతును ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
+| `followup.voice.end` | End call | कॉल समाप्त करें | కాల్ ముగించండి |  | pending |
+| `followup.voice.connecting` | Connecting... | जोड़ा जा रहा है... | కనెక్ట్ అవుతోంది... |  | pending |
+| `followup.voice.listening` | Listening | सुन रहा है | వింటోంది |  | pending |
+| `followup.voice.speaking` | Speaking | बोल रहा है | మాట్లాడుతోంది |  | pending |
+| `followup.voice.ended` | The voice call has ended. You can type a question below. | आवाज़ कॉल समाप्त हो गई। आप नीचे प्रश्न लिख सकते हैं। | వాయిస్ కాల్ ముగిసింది. మీరు క్రింద ప్రశ్న టైప్ చేయవచ్చు. |  | pending |
+| `followup.voice.unavailable` | Voice questions are not available right now. Please type your question. | आवाज़ से प्रश्न अभी उपलब्ध नहीं हैं। कृपया अपना प्रश्न लिखें। | గొంతుతో ప్రశ్నలు ఇప్పుడు అందుబాటులో లేవు. దయచేసి మీ ప్రశ్నను టైప్ చేయండి. |  | pending |
+| `followup.voice.failed` | The voice call could not start. Please type your question. | आवाज़ कॉल शुरू नहीं हो सकी। कृपया अपना प्रश्न लिखें। | వాయిస్ కాల్ ప్రారంభం కాలేదు. దయచేసి మీ ప్రశ్నను టైప్ చేయండి. |  | pending |
+| `followup.voice.demoTitle` | Voice demo | आवाज़ डेमो | వాయిస్ డెమో |  | pending |
+| `followup.voice.demoNote` | Demo mode: no call is made. Type what you would say. The answer is read aloud by your browser. | डेमो मोड: कोई कॉल नहीं होती। जो आप कहते, वह लिखें। उत्तर आपका ब्राउज़र पढ़कर सुनाएगा। | డెమో మోడ్: కాల్ జరగదు. మీరు చెప్పేది టైప్ చేయండి. సమాధానాన్ని మీ బ్రౌజర్ చదివి వినిపిస్తుంది. |  | pending |
+| `followup.voice.demoLabel` | What you would say | आप क्या कहते | మీరు ఏమి చెబుతారు |  | pending |
+| `followup.voice.demoSay` | Say it | कहें | చెప్పండి |  | pending |
+| `followup.voice.agent` | Assistant | सहायक | సహాయకుడు |  | pending |
+| `followup.voice.parent` | You | आप | మీరు |  | pending |
+| `followup.source.from` | From {org} | {org} से | {org} నుండి |  | pending |
+| `followup.source.sharedOn` | Shared on {date} | {date} को साझा किया गया | {date} న పంచుకున్నారు |  | pending |
+| `followup.source.version` | Version {version} | संस्करण {version} | వెర్షన్ {version} |  | pending |
+| `followup.source.notAvailable` | This document is not shared with you, or no longer is. | यह दस्तावेज़ आपके साथ साझा नहीं है, या अब नहीं है। | ఈ పత్రం మీతో పంచుకోబడలేదు, లేదా ఇకపై పంచుకోబడలేదు. |  | pending |
+| `followup.source.updated` | This document has been updated since the answer. You are seeing the current version ({version}). | उत्तर के बाद यह दस्तावेज़ अपडेट हुआ है। आप वर्तमान संस्करण ({version}) देख रहे हैं। | సమాధానం తర్వాత ఈ పత్రం నవీకరించబడింది. మీరు ప్రస్తుత వెర్షన్ ({version}) చూస్తున్నారు. |  | pending |
+| `followup.source.back` | Back to questions | प्रश्नों पर वापस जाएँ | ప్రశ్నలకు తిరిగి వెళ్ళండి |  | pending |
