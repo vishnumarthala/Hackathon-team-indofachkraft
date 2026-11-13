@@ -158,6 +158,17 @@ flowchart LR
   `/api/cron/outbox`, `CRON_SECRET`) plus an immediate `after()` drain (`drainSoon`); locally
   `npm run outbox:run`. Bell + `/notifications`, preferences in settings, `/admin/notifications`.
   See `docs/notifications.md`.
+- **Privacy, audit and operations (ticket 041).** `audit_events` is append-only for every role, survives case
+  deletion (`case_ref`, no FK) and is attributed (`actor_user_id` + `actor_role` from the session, `org_id`,
+  `child_id`, `request_id`, `ip_hash`; a trigger fills them for every writer). `audit()` is best effort; security-critical
+  actions (`lib/audit/strict-actions.ts`) use `auditStrict(event, tx)` in the same transaction (or a SQL function that
+  writes its own audit row) and answer 503 when the audit row cannot be written. `lib/privacy/registry.ts` lists every
+  personal-data category with its retention, exporter, deleter and processors; daily `/api/cron/retention`, privacy
+  jobs `/api/cron/privacy` (guardian ZIP exports, deletion requests incl. ElevenLabs conversation deletion), public
+  `/privacy` notice, `/admin/audit`, `/admin/privacy/requests`, `/admin/ops`, public `GET /api/health`. No third-party
+  scripts on `/family/**` except the per-route allowlist (`lib/privacy/third-party-allowlist.ts`). Logs go through
+  `lib/log.ts` (redacts emails, phones, tokens). See `docs/privacy/retention.md`, `docs/privacy/processors.md`,
+  `docs/privacy/incident-response.md`.
 
 ## 3. Repo layout
 
@@ -236,6 +247,11 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `CRON_SECRET` | `/api/cron/*` (032) | `Authorization: Bearer <CRON_SECRET>`; Vercel cron sends it automatically when set in the project; unset = cron refused |
 | `WHATSAPP_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` | WhatsApp notifications (032) | optional; unset or `DEMO_MODE=true` -> WhatsApp deliveries `skipped` (`whatsapp_not_configured`) |
 | `WHATSAPP_API_VERSION` | WhatsApp notifications (032) | Graph API version, default `v21.0` |
+| `GRIEVANCE_OFFICER_EMAIL` | `/privacy` (041) | grievance officer contact on the privacy notice; required before the pilot |
+| `PRIVACY_NOTICE_REVIEWED` | `/privacy` (041) | `true` only after legal review; otherwise the notice shows `Draft - pending legal review` |
+| `SUPABASE_REGION_LABEL` | `/privacy` (041) | where Supabase stores data, as shown to families (e.g. `India (Mumbai)`) |
+| `RETENTION_AUDIO_DAYS` | retention job (041) | raw audio kept after transcription, default 90; other `RETENTION_*` overrides in `.env.example` and `docs/privacy/retention.md` |
+| `AUDIT_FAIL_ACTIONS` | dev/test only (041) | comma-separated audit actions whose audit write fails (checks fail-closed behaviour); ignored in production builds |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
 used). `npm run build` must succeed with no `.env.local`.
@@ -521,12 +537,17 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
+| `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |
+| `GET\|POST /api/family/children/:id/deletion-requests`, `POST /api/admin/privacy/requests/:id` | 041 | `{ scope: "all_ai_processing" \| "everything", reason? }`; admin `{ decision: "approve" \| "reject", note? }` | 201 `{ request }`; 409 open request; admin 200 `{ id, status }`, 403 non-admin, 400 rejection without a cited note |
+| `GET\|POST /api/cron/retention` (daily), `GET\|POST /api/cron/privacy` (every 5 min) | 041 | `Authorization: Bearer <CRON_SECRET>` | 200 `{ counts }` / `{ exports, deletions }`; 401 |
+| `GET /api/health` | 041 | public | 200 `{ ok: true, db: "ok", version }`; 503 `{ ok: false, db: "unreachable" }` |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 
 `ResolvedCitation = { kind: "fact" | "segment", id, recording_id, session_number | null, start_sec, label }`
 where `label` is e.g. `Session 1 · 01:23` or `Intake call · 02:10`.
 
-Every mutation writes an `audit_events` row via `lib/audit.ts`.
+Every mutation writes an `audit_events` row via `lib/audit.ts` (041: security-critical ones with `auditStrict`, see
+`lib/audit/strict-actions.ts`).
 
 ## 9. DEMO_MODE and fixtures
 
@@ -678,6 +699,11 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   guardian's recorded consent for that feature (server-side; a client `parent_consent` flag is ignored);
   see `docs/consent.md`.
 - Audit log of every mutation (`audit_events`).
+- 041: the audit log is append-only for every role (trigger + revoked grants), attributed from the session, kept 7
+  years and survives case deletion; strict audit for security-critical writes (503 on failure); retention, guardian
+  export and deletion (incl. ElevenLabs conversations) per `docs/privacy/retention.md`; incident procedure in
+  `docs/privacy/incident-response.md`; no third-party scripts on `/family/**` outside the per-route allowlist; server
+  logs redact emails, phones and tokens (`lib/log.ts`), and the dev request log skips token URLs.
 - Copy rules: never "diagnose/diagnosis" (except "not a diagnosis"), never "HIPAA compliant".
 
 ## 14. Human setup checklist (not tickets)

@@ -12,10 +12,12 @@ import {
   childAccessFilter,
   existingUser,
   profileOwner,
+  platformAdmins,
   visibleDocumentGuardians,
 } from "./recipients";
 import type { TemplateName } from "./templates";
 import type { Channel, OutboxEventRow } from "./types";
+import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
 
 const uuid = z.uuid();
 const userList = z.array(uuid).min(1).max(100);
@@ -142,6 +144,33 @@ export const TOPICS = {
     template: "provider_claimed",
     recipients: (p, { sql }) => profileOwner(sql, p.provider_profile_id),
   }),
+  // 041 FR-7: the requesting guardian, while still linked to the live child and the export is ready.
+  "privacy.export_ready": topic({
+    payload: z.object({ export_id: uuid, child_id: uuid }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "privacy_export_ready",
+    recipients: (p, { sql }) => exportRequester(sql, p.export_id, p.child_id),
+  }),
+  // 041 FR-8: platform admins review deletion requests.
+  "privacy.deletion_requested": topic({
+    payload: z.object({ request_id: uuid, child_id: uuid }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "privacy_deletion_requested",
+    recipients: (_p, { sql }) => platformAdmins(sql),
+  }),
+  // 041 FR-8: the requesting guardian (their link may already be revoked by the erasure: account only).
+  "privacy.deletion_completed": topic({
+    payload: z.object({ request_id: uuid }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "privacy_deletion_completed",
+    recipients: (p, { sql }) => deletionRequester(sql, p.request_id, "completed"),
+  }),
+  "privacy.deletion_rejected": topic({
+    payload: z.object({ request_id: uuid, child_id: uuid }).strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "privacy_deletion_rejected",
+    recipients: (p, { sql }) => deletionRequester(sql, p.request_id, "rejected"),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -161,6 +190,14 @@ export const SHARING_TOPICS = {
 // 023 FR-9: enqueued by `complete_document` / `set_document_visibility` (migration 20261113002300).
 export const DOCUMENT_TOPICS = {
   sharedWithGuardian: "document.shared_with_guardian",
+} as const satisfies Record<string, Topic>;
+
+// 041: privacy export / deletion notifications.
+export const PRIVACY_TOPICS = {
+  exportReady: "privacy.export_ready",
+  deletionRequested: "privacy.deletion_requested",
+  deletionCompleted: "privacy.deletion_completed",
+  deletionRejected: "privacy.deletion_rejected",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

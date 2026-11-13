@@ -1,4 +1,5 @@
 // Ticket 020: children, guardian links and claim codes. Server only (pure helpers are in ./codes.ts).
+import { assertAuditWritable } from "@/lib/audit";
 import { isUuid } from "@/lib/cases/validation";
 import { supabaseAdmin } from "@/lib/db";
 import type { Relationship } from "@/lib/consent/features";
@@ -159,6 +160,7 @@ export async function claimChild(input: {
   relationship: Relationship;
   existingChildId: string | null;
 }): Promise<ClaimResult> {
+  assertAuditWritable("child.claimed");
   const { data, error } = await supabaseAdmin().rpc("claim_child", {
     p_hash: input.codeHash,
     p_user: input.userId,

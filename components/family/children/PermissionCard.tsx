@@ -39,6 +39,7 @@ export const dateOnly = (value: string) => `${value}T12:00:00Z`;
 export function PermissionCard({ childId, view, phoneVerified }: { childId: string; view: PermissionView; phoneVerified: boolean }) {
   const t = useT("family.children.overview");
   const tc = useT("consent");
+  const tp = useT("privacy");
   const format = useFormatter();
   const router = useRouter();
   const id = useId();
@@ -108,6 +109,9 @@ export function PermissionCard({ childId, view, phoneVerified }: { childId: stri
             <p className="mt-2 text-sm whitespace-pre-line text-slate-800">{view.document.body.replace(/\*\*/g, "")}</p>
             <p className="mt-2 text-xs text-slate-500">{tc("version", { version: view.document.version })}</p>
           </details>
+          <Link href="/privacy" className="inline-flex min-h-11 items-center text-sm font-semibold text-teal-800 underline">
+            {tp("link")}
+          </Link>
         </>
       ) : null}
       {error ? (

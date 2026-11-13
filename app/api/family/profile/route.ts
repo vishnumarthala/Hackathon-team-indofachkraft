@@ -43,7 +43,6 @@ export async function PATCH(req: Request) {
   if (error || !data) return fail(500, "Could not save your profile");
 
   await audit({
-    actor: "parent",
     actorUserId: session.user.id,
     action: "guardian.profile_updated",
     entity: "user_profile",

@@ -23,7 +23,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const result = await submitCredentials(id, gate.actor.user.id, parsed.data);
   if (!result.ok) return fail(result.status, result.error);
   await audit({
-    actor: "therapist",
     actorUserId: gate.actor.user.id,
     action: "provider.credentials_submitted",
     entity: "credential_submission",

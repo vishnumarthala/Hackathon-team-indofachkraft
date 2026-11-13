@@ -3,6 +3,7 @@
 // (translated) if they have a profile. Access rule (D-1): org owners/admins reach every case of their org; members only cases they are assigned to.
 // Writes go through database functions (team change + audit row in one transaction; the case row lock
 // serialises concurrent changes, so a case never ends up with zero or two leads).
+import { assertAuditWritable } from "@/lib/audit";
 import { z } from "zod";
 import { isUuid } from "@/lib/cases/validation";
 import { supabaseAdmin } from "@/lib/db";
@@ -78,7 +79,14 @@ export async function canManageCaseTeam(userId: string, caseId: string): Promise
 
 type Outcome = { result: string; id?: string; user_id?: string };
 
+const AUDIT_ACTIONS: Record<string, string> = {
+  add_case_assignment: "case.assigned",
+  update_case_assignment: "case.assignment_updated",
+  remove_case_assignment: "case.unassigned",
+};
+
 async function call(fn: string, args: Record<string, unknown>): Promise<Outcome> {
+  if (AUDIT_ACTIONS[fn]) assertAuditWritable(AUDIT_ACTIONS[fn]);
   const { data, error } = await supabaseAdmin().rpc(fn, args);
   if (error) throw new Error(`${fn} failed: ${error.message}`);
   return data as Outcome;

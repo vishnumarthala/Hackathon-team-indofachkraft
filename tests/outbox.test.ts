@@ -6,6 +6,7 @@ import { loadEnvConfig } from "@next/env";
 import postgres, { type Sql } from "postgres";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { createWorld, ctx, post, type TestUser } from "./helpers/world";
+import { purgeTestAudit } from "./helpers/audit";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
 const enabled = Boolean(process.env.DATABASE_URL) && process.env.SKIP_DB_TESTS !== "1";
@@ -85,7 +86,7 @@ describe.skipIf(!enabled)("notifications outbox (database)", { timeout: 120_000 
 
   afterAll(async () => {
     await sql`delete from outbox_events where dedup_key like ${`${prefix}:%`}`;
-    await sql`delete from audit_events where action like 'notification.%' and actor_user_id in ${sql([guardianA.id, guardianB.id, provider.id, admin.id])}`;
+    await purgeTestAudit(sql, (tx) => tx`delete from audit_events where action like 'notification.%' and actor_user_id in ${tx([guardianA.id, guardianB.id, provider.id, admin.id])}`);
     await world.cleanup();
     await sql.end({ timeout: 5 });
     await sql2.end({ timeout: 5 });
@@ -276,7 +277,7 @@ describe.skipIf(!enabled)("notifications outbox (database)", { timeout: 120_000 
         const audit = await sql`select details from audit_events where action = 'notification.dead' and entity_id = ${email.id}`;
         expect(audit).toHaveLength(1);
         expect(audit[0].details).toMatchObject({ channel: "email", template: "test_ping", attempts: 6 });
-        await sql`delete from audit_events where action = 'notification.dead' and entity_id = ${email.id}`;
+        await purgeTestAudit(sql, (tx) => tx`delete from audit_events where action = 'notification.dead' and entity_id = ${email.id}`);
       }
     }
     expect(delays).toEqual([1, 5, 30, 120, 720]);
@@ -291,7 +292,7 @@ describe.skipIf(!enabled)("notifications outbox (database)", { timeout: 120_000 
     });
     const [email] = (await rowsFor(perm)).filter((r) => r.channel === "email");
     expect([email.status, email.attempts]).toEqual(["dead", 1]);
-    await sql`delete from audit_events where action = 'notification.dead' and entity_id = ${email.id}`;
+    await purgeTestAudit(sql, (tx) => tx`delete from audit_events where action = 'notification.dead' and entity_id = ${email.id}`);
   });
 
   it("E-5 / NFR-2: two concurrent workers deliver 200 queued notifications exactly once", async () => {

@@ -1,0 +1,7 @@
+6|5|5|5
+parent|guardian|f|f
+therapist|provider|t|t
+parent|anonymous|t|t
+ai|ai|t|t
+system|system|t|t
+specialist|anonymous|t|t

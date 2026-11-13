@@ -54,7 +54,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const previous = await setPhotoPath(id, path);
   await removeObject(previous);
   await audit({
-    actor: "therapist",
     actorUserId: gate.actor.user.id,
     action: "provider.photo_updated",
     entity: "provider_profile",

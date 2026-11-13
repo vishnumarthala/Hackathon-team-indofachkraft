@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
 import { RelationshipSelect } from "@/components/family/children/AddChildForm";
@@ -33,6 +34,7 @@ export function PaperConsentForm({
   featureNames: Record<ConsentFeature, string>;
 }) {
   const t = useT("paperConsent");
+  const tp = useT("privacy");
   const router = useRouter();
   const id = useId();
   const [locale, setLocale] = useState<Locale>(defaultLocale);
@@ -138,6 +140,11 @@ export function PaperConsentForm({
         </label>
       </div>
       {fieldError("attestation")}
+      <p className="text-sm">
+        <Link href="/privacy" className="font-semibold text-teal-800 underline">
+          {tp("link")}
+        </Link>
+      </p>
       <button type="submit" className={button} disabled={status === "saving"}>
         {status === "saving" ? t("saving") : t("submit")}
       </button>

@@ -20,7 +20,6 @@ export async function POST(req: Request) {
   if (!result.ok) return fail(result.status, result.error);
   if (result.data.created) {
     await audit({
-      actor: "therapist",
       actorUserId: user.id,
       action: "provider.registered",
       entity: "provider_profile",

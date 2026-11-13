@@ -154,7 +154,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
   await audit({
     caseId: caseRow.id,
-    actor: "therapist",
     action: emailStatus === "failed" ? "parent_note.email_failed" : "parent_note.sent",
     entity: "report",
     entityId: report.id,

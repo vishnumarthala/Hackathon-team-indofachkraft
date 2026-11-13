@@ -84,3 +84,10 @@ export async function visibleDocumentGuardians(sql: Queryable, documentId: strin
       and d.uploader_kind = 'provider' and d.visible_to_guardian`;
   return rows.map((r) => r.user_id);
 }
+
+/** 041: active platform admins (deletion requests to review). */
+export async function platformAdmins(sql: Queryable): Promise<string[]> {
+  const rows = await sql<{ id: string }[]>`
+    select p.id from public.user_profiles p join auth.users u on u.id = p.id where p.role = 'platform_admin'`;
+  return rows.map((r) => r.id);
+}

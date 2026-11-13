@@ -1,6 +1,8 @@
 import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
+import { auditStrict, getAuditActor, type SessionAuditActor } from "@/lib/audit";
 import { supabaseAdmin } from "@/lib/db";
+import { pg } from "@/lib/pg";
 import { newToken } from "@/lib/tokens";
 
 // Legacy CareThread cases and local demo data live in this organisation (migration 20261112120000).
@@ -105,58 +107,83 @@ export async function createOrganization(userId: string, input: { name: string; 
   return data as Organization;
 }
 
+// 041 FR-2: invitations and membership changes are security-critical: the change and its audit row are one
+// transaction (`auditStrict`), so an audit failure saves nothing (callers turn AuditWriteError into 503).
 export async function createInvitation(
   orgId: string,
   inviterId: string,
   input: z.output<typeof InviteCreateSchema>,
   now: Date = new Date(),
+  actor?: SessionAuditActor,
 ): Promise<{ token: string; invitationId: string; orgName: string }> {
-  const db = supabaseAdmin();
-  const { data: org, error: orgError } = await db.from("organizations").select("name").eq("id", orgId).single();
-  if (orgError) throw new Error(`Could not load organisation: ${orgError.message}`);
-
+  const who = actor ?? (await getAuditActor());
   const token = newToken();
   const expiresAt = new Date(now.getTime() + INVITE_TTL_DAYS * 24 * 60 * 60 * 1000);
-  const { data, error } = await db
-    .from("org_invitations")
-    .insert({
-      org_id: orgId,
-      email: input.email,
-      org_role: input.org_role,
-      token_hash: hashToken(token),
-      invited_by: inviterId,
-      expires_at: expiresAt.toISOString(),
-    })
-    .select("id")
-    .single();
-  if (error) throw new Error(`Could not create invitation: ${error.message}`);
-  return { token, invitationId: (data as { id: string }).id, orgName: (org as { name: string }).name };
+  const sql = await pg();
+  return sql.begin(async (tx) => {
+    const [org] = await tx<{ name: string }[]>`select name from public.organizations where id = ${orgId}`;
+    if (!org) throw new Error("Could not load organisation");
+    const [row] = await tx<{ id: string }[]>`
+      insert into public.org_invitations (org_id, email, org_role, token_hash, invited_by, expires_at)
+      values (${orgId}, ${input.email}, ${input.org_role}, ${hashToken(token)}, ${inviterId}, ${expiresAt})
+      returning id`;
+    await auditStrict(
+      {
+        ...who,
+        orgId,
+        action: "org.invitation_created",
+        entity: "org_invitation",
+        entityId: row.id,
+        details: { org_id: orgId, org_role: input.org_role },
+      },
+      tx,
+    );
+    return { token, invitationId: row.id, orgName: org.name };
+  });
 }
 
-export async function revokeInvitation(orgId: string, invitationId: string): Promise<boolean> {
-  const { data, error } = await supabaseAdmin()
-    .from("org_invitations")
-    .update({ revoked_at: new Date().toISOString() })
-    .eq("id", invitationId)
-    .eq("org_id", orgId)
-    .is("accepted_at", null)
-    .is("revoked_at", null)
-    .select("id");
-  if (error) throw new Error(`Could not revoke invitation: ${error.message}`);
-  return (data ?? []).length > 0;
+export async function revokeInvitation(orgId: string, invitationId: string, actor?: SessionAuditActor): Promise<boolean> {
+  const who = actor ?? (await getAuditActor());
+  const sql = await pg();
+  return sql.begin(async (tx) => {
+    const rows = await tx<{ id: string }[]>`
+      update public.org_invitations set revoked_at = now()
+      where id = ${invitationId} and org_id = ${orgId} and accepted_at is null and revoked_at is null
+      returning id`;
+    if (rows.length === 0) return false;
+    await auditStrict(
+      { ...who, orgId, action: "org.invitation_revoked", entity: "org_invitation", entityId: invitationId, details: { org_id: orgId } },
+      tx,
+    );
+    return true;
+  });
 }
 
 export async function acceptInvitation(
   user: { id: string; email?: string | null },
   token: string,
+  actor?: SessionAuditActor,
 ): Promise<Result<{ orgId: string }>> {
-  const { data, error } = await supabaseAdmin().rpc("accept_org_invitation", {
-    invite_hash: hashToken(token),
-    accepting_user: user.id,
-    accepting_email: user.email ?? "",
+  const who = actor ?? (await getAuditActor());
+  const sql = await pg();
+  const outcome = await sql.begin(async (tx) => {
+    const [row] = await tx<{ outcome: { result: "accepted" | "invalid" | "wrong_email"; org_id?: string } }[]>`
+      select public.accept_org_invitation(${hashToken(token)}, ${user.id}::uuid, ${user.email ?? ""}) as outcome`;
+    const result = row.outcome;
+    if (result.result === "accepted" && result.org_id) {
+      await auditStrict(
+        {
+          ...(who.actorUserId === user.id ? who : { actorUserId: user.id }),
+          orgId: result.org_id,
+          action: "org.invitation_accepted",
+          entity: "organization",
+          entityId: result.org_id,
+        },
+        tx,
+      );
+    }
+    return result;
   });
-  if (error) throw new Error(`Could not accept invitation: ${error.message}`);
-  const outcome = data as { result: "accepted" | "invalid" | "wrong_email"; org_id?: string };
   if (outcome.result === "accepted" && outcome.org_id) return { ok: true, data: { orgId: outcome.org_id } };
   if (outcome.result === "wrong_email") {
     return { ok: false, status: 403, error: "This invitation was sent to a different email" };
@@ -164,11 +191,21 @@ export async function acceptInvitation(
   return { ok: false, status: 404, error: "This invitation is not valid" };
 }
 
-export async function revokeMember(orgId: string, userId: string): Promise<Result<null>> {
-  const { data, error } = await supabaseAdmin().rpc("revoke_org_member", { target_org: orgId, target_user: userId });
-  if (error) throw new Error(`Could not revoke member: ${error.message}`);
-  if (data === "revoked") return { ok: true, data: null };
-  if (data === "last_owner") return { ok: false, status: 409, error: "An organisation needs at least one owner" };
+export async function revokeMember(orgId: string, userId: string, actor?: SessionAuditActor): Promise<Result<null>> {
+  const who = actor ?? (await getAuditActor());
+  const sql = await pg();
+  const result = await sql.begin(async (tx) => {
+    const [row] = await tx<{ result: string }[]>`select public.revoke_org_member(${orgId}::uuid, ${userId}::uuid) as result`;
+    if (row.result === "revoked") {
+      await auditStrict(
+        { ...who, orgId, action: "org.member_revoked", entity: "org_member", entityId: userId, details: { org_id: orgId } },
+        tx,
+      );
+    }
+    return row.result;
+  });
+  if (result === "revoked") return { ok: true, data: null };
+  if (result === "last_owner") return { ok: false, status: 409, error: "An organisation needs at least one owner" };
   return { ok: false, status: 404, error: "Member not found" };
 }
 

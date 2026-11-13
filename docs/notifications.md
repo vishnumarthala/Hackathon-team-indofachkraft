@@ -132,6 +132,9 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `assessment.red_flag` (024) | providers who can access the case under 022's rule (org owners/admins + assigned care team; optionally only `recipient_user_ids`) | in-app, email | `assessment_red_flag` |
 | `sharing.granted` (022, enqueued by a trigger on `sharing_grants` inside `create_sharing_grant`) | active owners/admins of the grantee org, only while the grant is in force (not revoked/expired, child live) and the granting guardian's link is active; org and child read from the grant row | in-app, email | `sharing_granted` (links to the grantee case's `Shared with us` tab) |
 | `provider.verified` / `.rejected` / `.suspended` / `.claimed` (028) | the provider bound to the profile | in-app, email | `provider_*` |
+| `privacy.export_ready` (041, enqueued with the export's `ready` update) | the requesting guardian, while still linked to the live child and the export is ready | in-app, email | `privacy_export_ready` (links to the child's Privacy page) |
+| `privacy.deletion_requested` (041) | platform admins | in-app, email | `privacy_deletion_requested` |
+| `privacy.deletion_completed` / `privacy.deletion_rejected` (041) | the requesting guardian (account only: the erasure revokes the link) | in-app, email | `privacy_deletion_completed` / `privacy_deletion_rejected` (reason shown in the app only) |
 
 Later tickets register their own (030: `appointment.*` with `.ics`; 031 payments; 037 Meet links).
 

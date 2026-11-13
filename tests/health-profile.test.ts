@@ -21,6 +21,7 @@ import {
 import { healthProfileMarkdown, healthSummary } from "@/lib/health/summary";
 import { SHARE_LOADERS } from "@/lib/sharing/registry";
 import { createWorld, ctx, type TestUser } from "./helpers/world";
+import { purgeTestAudit } from "./helpers/audit";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
 const enabled = Boolean(process.env.DATABASE_URL) && process.env.SKIP_DB_TESTS !== "1";
@@ -197,7 +198,7 @@ describe.skipIf(!enabled)("health profile (database)", { timeout: 90_000 }, () =
   });
 
   afterAll(async () => {
-    if (sql && childId) await sql`delete from audit_events where action = 'health_profile.updated' and entity_id in ${sql([childId, otherChild])}`;
+    if (sql && childId) await purgeTestAudit(sql, (tx) => tx`delete from audit_events where action = 'health_profile.updated' and entity_id in ${tx([childId, otherChild])}`);
     await world?.cleanup();
     await sql?.end({ timeout: 5 });
   });

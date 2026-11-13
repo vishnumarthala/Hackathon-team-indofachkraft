@@ -42,7 +42,6 @@ export async function GET(req: Request) {
       return redirectTo(req, `${SETTINGS_PATH}?error=link_failed`);
     }
     await audit({
-      actor: "parent",
       actorUserId: data.user.id,
       action: "guardian.identity_linked",
       entity: "user",
