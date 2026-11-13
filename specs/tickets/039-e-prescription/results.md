@@ -24,6 +24,25 @@ outside the repo). Synthetic accounts and data only, removed after each run.
 Browser evidence (screenshots, downloaded PDF and its text, notification rows, 29/29 PASS log) is kept in the worker's
 session folder (`files/e2e039/`), not committed.
 
+## Merge of main (030 booking, 031 Razorpay, 033 voice screen, 037 Google Meet)
+
+- `git merge main`: conflicts resolved keeping both sides in `lib/notify/recipients.ts`, `lib/notify/templates/index.ts`,
+  `tests/notify-templates.test.ts` (topic list), `docs/privacy/retention.md`, `messages/{en,hi,te}.json` (main's
+  catalogues + `rx` and `caseTabs.prescriptions`); `messages/REVIEW.md` regenerated (2301 rows). CaseTabs, strict
+  actions, privacy registry, package files and docs merged automatically.
+- New migration `20261113003901_prescriptions_appointment_fk.sql`: FK `prescriptions.appointment_id ->
+  appointments(id) on delete set null` (deleting an appointment - 030 erasure, org cascade - clears the link and keeps
+  the signed prescription; RESTRICT would block erasure, CASCADE would delete a clinical record), index, guard
+  redefined so the link may only become null once signed, trigger `prescriptions_guard_appointment` (same org and same
+  case or child). New DB test: foreign appointment refused, link survives signing, appointment delete -> link null,
+  prescription still signed. Test cleanup deletes payments before appointments (031).
+- Post-merge `tsc` hit TS2589 ("type instantiation is excessively deep") in `lib/i18n/translate.ts` once the merged
+  catalogue passed ~2300 keys; fixed by typing the inner translate function's key as `string` and casting the result
+  to `TFunction<N>` (call sites keep the typed keys).
+- After `$H 8 <worktree> reset`: `npm run lint` exit 0; `npm run typecheck` exit 0; `npx vitest run` 82 files, 1336
+  passed, 11 skipped (the same opt-in suites; DB suites run); `npm run build` exit 0; `tests/prescriptions.test.ts`
+  17/17 passed.
+
 ## Deviations
 
 - **Signature**: "signed" means an authenticated, server-checked click by a verified prescriber recorded with signer,
@@ -54,5 +73,5 @@ session folder (`files/e2e039/`), not committed.
 - Deleting a provider account that signed prescriptions is refused (`signed_by` FK without `set null`): signed
   prescriptions are clinical records.
 - For 040: a voided prescription's latest published version is a `Prescription cancelled` notice, so
-  `listGuardianVisible(..., "prescription")` never presents it as current. For 030/035: `prescriptions.appointment_id`
-  has no FK yet.
+  `listGuardianVisible(..., "prescription")` never presents it as current. `prescriptions.appointment_id` references
+  `appointments` (on delete set null) since the merge with 030.

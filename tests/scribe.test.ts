@@ -291,7 +291,8 @@ describe.skipIf(!enabled)("AI scribe (database, DEMO fixtures)", { timeout: 180_
   let owner: TestUser, providerA: TestUser, providerRx: TestUser, memberA: TestUser, providerB: TestUser, guardian: TestUser;
   let orgA: string, orgB: string, caseA: string, childA: string, isaaRecording: string, linkId: string;
   let goal1: string, goal2: string;
-  let createdAppointmentsTable = false;
+  // 030: appointments reference a provider profile; a synthetic, unlisted one owns this suite's appointments.
+  let appointmentProfileId: string | null = null;
   const profiles: string[] = [];
 
   const as = (u: TestUser | null) => {
@@ -405,18 +406,17 @@ describe.skipIf(!enabled)("AI scribe (database, DEMO fixtures)", { timeout: 180_
     const published = await iep.publishPlan({ planId: plan.plan.id, actorUserId: providerA.id, version: g2.plan_version });
     if (!("ok" in published) || !published.ok) throw new Error("publish failed");
 
-    // Appointments belong to 030 (not merged on this base): a minimal stand-in table when it does not exist yet.
-    const [{ present }] = await sql<{ present: boolean }[]>`select to_regclass('public.appointments') is not null as present`;
-    if (!present) {
-      await sql`create table public.appointments (id uuid primary key, org_id uuid, case_id uuid, child_id uuid, status text, service_snapshot jsonb, slot tstzrange)`;
-      createdAppointmentsTable = true;
-    }
+    const [profile] = await sql<{ id: string }[]>`
+      insert into provider_profiles (slug, display_name, provider_type, is_synthetic)
+      values (${`t038-appt-${randomUUID().slice(0, 8)}`}, 't038 Appointment provider (synthetic)', 'speech_language_pathologist', true)
+      returning id`;
+    appointmentProfileId = profile.id;
   });
 
   afterAll(async () => {
     as(null);
     if (sql) {
-      if (createdAppointmentsTable) await sql`drop table if exists public.appointments`;
+      if (appointmentProfileId) await sql`delete from provider_profiles where id = ${appointmentProfileId}`; // appointments cascade
       if (caseA) {
         const { data } = await db.storage.from("recordings").list(caseA, { limit: 100 });
         const keys = (data ?? []).map((o) => `${caseA}/${o.name}`);
@@ -597,10 +597,11 @@ describe.skipIf(!enabled)("AI scribe (database, DEMO fixtures)", { timeout: 180_
     const video = randomUUID();
     const clinic = randomUUID();
     const foreign = randomUUID();
-    await sql`insert into public.appointments (id, org_id, case_id, child_id, status, service_snapshot) values
-      (${video}, ${orgA}, ${caseA}, ${childA}, 'confirmed', ${sql.json({ mode: "video" })}),
-      (${clinic}, ${orgA}, null, ${childA}, 'confirmed', ${sql.json({ mode: "in_clinic" })}),
-      (${foreign}, ${orgB}, null, ${childA}, 'confirmed', ${sql.json({ mode: "in_clinic" })})`;
+    // 030's real table: distinct half-open slots so the exclusion constraint is satisfied.
+    await sql`insert into public.appointments (id, provider_profile_id, org_id, case_id, child_id, status, service_snapshot, slot) values
+      (${video}, ${appointmentProfileId}, ${orgA}, ${caseA}, ${childA}, 'confirmed', ${sql.json({ mode: "video" })}, tstzrange(now() - interval '3 hours', now() - interval '150 minutes', '[)')),
+      (${clinic}, ${appointmentProfileId}, ${orgA}, null, ${childA}, 'confirmed', ${sql.json({ mode: "in_clinic" })}, tstzrange(now() - interval '2 hours', now() - interval '90 minutes', '[)')),
+      (${foreign}, ${appointmentProfileId}, ${orgB}, null, ${childA}, 'confirmed', ${sql.json({ mode: "in_clinic" })}, tstzrange(now() - interval '1 hour', now() - interval '30 minutes', '[)'))`;
     const refused = await upload(caseA, { template: "therapy_session_note", appointment_id: video });
     expect(refused).toEqual({ status: 422, body: { error: IN_CLINIC_ONLY } });
     expect((await upload(caseA, { template: "therapy_session_note", appointment_id: foreign })).status).toBe(404);

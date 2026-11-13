@@ -263,6 +263,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` / `_SECRET` | Supabase CLI only (local Google sign-in) | not read by the app; see `docs/guardian-auth.md`. Hosted projects set Google in the Supabase dashboard |
 | `ELEVENLABS_API_KEY` | Scribe, conversation token, TTS | |
 | `ELEVENLABS_AGENT_ID` | intake page | agent configured per `docs/elevenlabs-agent.md` |
+| `ELEVENLABS_SCREEN_AGENT_ID` | `/screen` voice check-in (033) | optional; English-only public agent per `docs/elevenlabs-screen-agent.md`; unset (and not `DEMO_MODE`) -> the page offers only the tap-through form |
 | `ELEVENLABS_WEBHOOK_SECRET` | webhook HMAC | only needed when the webhook is used (deployed or tunnel) |
 | `ELEVENLABS_VOICE_ID_EN` / `_HI` / `_TE` | parent voice note | |
 | `GEMINI_API_KEY` | Gemini | |
@@ -278,7 +279,10 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `PRIVACY_NOTICE_REVIEWED` | `/privacy` (041) | `true` only after legal review; otherwise the notice shows `Draft - pending legal review` |
 | `SUPABASE_REGION_LABEL` | `/privacy` (041) | where Supabase stores data, as shown to families (e.g. `India (Mumbai)`) |
 | `RETENTION_AUDIO_DAYS` | retention job (041) | raw audio kept after transcription, default 90; other `RETENTION_*` overrides in `.env.example` and `docs/privacy/retention.md` |
+| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` / `RAZORPAY_WEBHOOK_SECRET` | payments (031) | **test mode only**: a key id not starting with `rzp_test_` stops the server (`instrumentation.ts`); optional with `DEMO_MODE=true` (demo gateway); see `docs/payments.md` |
 | `AUDIT_FAIL_ACTIONS` | dev/test only (041) | comma-separated audit actions whose audit write fails (checks fail-closed behaviour); ignored in production builds |
+| `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` | Google Calendar / Meet (037) | server-only; unset + `DEMO_MODE=true` -> local fake Google; unset otherwise -> providers add Meet links by hand (`docs/google-meet.md`) |
+| `TOKEN_ENCRYPTION_KEY` | Google refresh tokens (037) | 32 random bytes, base64; AES-256-GCM; required to connect Google Calendar |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
 used). `npm run build` must succeed with no `.env.local`.
@@ -422,6 +426,35 @@ Migrations are applied by the Supabase CLI against the local Docker stack: `npm 
 (= `supabase migration up --local`, applies pending files, tracked in
 `supabase_migrations.schema_migrations`) or `npx supabase db reset` (rebuild from scratch). New files are
 named `<YYYYMMDDHHMMSS>_<name>.sql`, additive only, never edited after they reach `main`.
+
+### Booking (ticket 030, design rules 10-12)
+
+`services`, `availability_rules`, `availability_overrides`, `appointments` (half-open `tstzrange` slot,
+`exclude using gist (provider_profile_id with =, slot with &&)` over `held`/`pending_payment`/`confirmed`,
+`btree_gist`) and the append-only `appointment_events`; every transition is one security-definer SQL function
+(`booking_hold`, `booking_attach`, `booking_confirm`, `booking_cancel`, `booking_reschedule`, `booking_complete`,
+`booking_expire_stale`). Migration `20261113003000_booking.sql`; details, API and extension points for 031/034/035/037/042
+in `docs/booking.md`.
+
+### Google Meet (ticket 037)
+
+`provider_google_connections` (the provider's own Google grant; refresh token AES-256-GCM encrypted with
+`TOKEN_ENCRYPTION_KEY`, no browser access), `appointments.meet_url` / `google_event_id` / `meet_status`, and
+`outbox_job_attempts`. A trigger on `outbox_events` turns the booking functions' `appointment.confirmed` /
+`.rescheduled` / `.cancelled` events for video appointments into the outbox **job topics** `meet.create` / `meet.update`
+/ `meet.delete` (same transaction), run by the outbox worker with retries and an extended-property lookup so retries
+never duplicate events. Events have no attendees (`sendUpdates=none`); guardians need a linked Google account to book
+video (`lib/booking/hooks.ts`). Migration `20261113003700_google_meet.sql`; setup (Google Cloud, OAuth verification lead
+time) and details in `docs/google-meet.md`.
+
+### Payments (ticket 031, design rule 12)
+
+`payments` (one Razorpay order per appointment, status `created`/`authorized`/`captured`/`failed`/`refund_pending`/
+`refunded`, separate from the appointment's status) and `payment_events` (webhook deliveries, unique Razorpay event id,
+allowlisted payload without card/UPI details). `payment_apply_captured` is the single capture path (checkout handler and
+webhook): confirms through 030's helpers, re-books a late payment's slot if still free, else refunds. Triggers on
+`appointments` apply the cancellation refund policy and move a payment with a reschedule. Migration
+`20261113003100_payments.sql`; details in `docs/payments.md`.
 
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
@@ -595,12 +628,17 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/cases/:id/prescriptions`, `GET\|PATCH /api/prescriptions/:id`, `POST /api/prescriptions/:id/sign`, `POST /api/prescriptions/:id/void`, `GET /api/prescriptions/:id/pdf`, `GET /api/family/children/:id/prescriptions`, `GET /api/family/prescriptions/:id/pdf` | 039 | PATCH carries the prescription `version`; sign `{ confirm: true, allergy_override_reason? }` | 201/200; 403 `Only verified prescribers can write prescriptions`; 409 stale / signed; 422 incomplete or allergy match (`details.matches`); 503 strict audit (`docs/prescriptions.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
+| `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
+| `GET /api/integrations/google/{connect,callback,connection}`, `POST /api/integrations/google/disconnect`, `POST /api/appointments/:id/meet-link` | 037 | see `docs/google-meet.md` | 303 redirects (connect/callback, `?error=state` on a state mismatch); 404 other providers' profiles/appointments; 400 non-Meet link; 422 `Link your Google account to book a video consultation` on video holds/confirms |
+| `POST /api/appointments/:id/payment-order`, `POST /api/payments/verify`, `POST /api/payments/demo` (DEMO_MODE), `POST /api/webhooks/razorpay` (public, signed), `GET\|POST /api/cron/payments` | 031 | see `docs/payments.md` | 200 `{ key_id, order_id, amount_paise, currency, prefill }`; verify 400 signature mismatch; webhook 401 bad signature, 200 `{ received: true, duplicate: true }` on replay; 404 other owners; 409 nothing to pay / already paid; 410 hold expired |
 | `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |
 | `GET\|POST /api/family/children/:id/deletion-requests`, `POST /api/admin/privacy/requests/:id` | 041 | `{ scope: "all_ai_processing" \| "everything", reason? }`; admin `{ decision: "approve" \| "reject", note? }` | 201 `{ request }`; 409 open request; admin 200 `{ id, status }`, 403 non-admin, 400 rejection without a cited note |
 | `GET\|POST /api/cron/retention` (daily), `GET\|POST /api/cron/privacy` (every 5 min) | 041 | `Authorization: Bearer <CRON_SECRET>` | 200 `{ counts }` / `{ exports, deletions }`; 401 |
 | `GET /api/health` | 041 | public | 200 `{ ok: true, db: "ok", version }`; 503 `{ ok: false, db: "unreachable" }` |
+| `POST /api/screen/sessions`, `GET /api/screen/sessions/:id`, `POST /api/screen/sessions/:id/answers\|red-flag\|finish` | 033 | public; `{ age_band, mode }`, `{ answers: [{ item_id, answer }] }`, `{ code }`, finish `{ conversation_id? }` | 201 `{ session_id, questions, conversation_token?, dynamic_variables? }` or `{ demo: true }`; answers 200 `{ missing, stop }`; red-flag 200 `{ stop: true }`; finish 200 `{ result_band, domains, red_flag, message }`; 404 / 409 stopped or finished / 410 expired (2 h) / 422 incomplete / 429 5 per IP per hour (section 13a) |
+| `POST /api/family/screen-results` | 033 | `{ session_id, child_id }` | 201 (200 again) `{ saved: true }`; 401; 404 not your child; 422 `screen_result_save` consent; 409 unfinished / red flag / other child; 410 expired |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 
 `ResolvedCitation = { kind: "fact" | "segment", id, recording_id, session_number | null, start_sec, label }`
@@ -623,6 +661,7 @@ Every mutation writes an `audit_events` row via `lib/audit.ts` (041: security-cr
 | ElevenLabs TTS | skipped: report saved without audio, page shows "Voice note skipped in demo mode" |
 | Resend | not sent: audit `email.demo_skipped`, returns `{ id: "demo", delivered: false }` |
 | WhatsApp Cloud API (032) | not called: notification `skipped` with `whatsapp_not_configured` |
+| Razorpay (031) | demo gateway (`lib/payments/razorpay.ts`): deterministic `order_DEMO…` / `pay_DEMO…` / `rfnd_DEMO…` ids, refunds processed at once; the payment page shows `Simulate successful payment` / `Simulate failed payment` (signed and verified through `/api/payments/verify`) and never loads Razorpay's script |
 
 `demo/fixtures/roleplay-segments.json` is the expected `Segment[]` for the role-play session (speaker
 roles already mapped). Gaps between segments are >= 2.0 s and speakers alternate, so `lib/transcript.ts`
@@ -698,6 +737,11 @@ confidence capped at 0.5. `start_sec`/`end_sec` come from the segment.
   (`eleven_v3` supports Telugu and Hindi; `eleven_multilingual_v2` has no Telugu).
 - Agent configuration (prompt, first message, data collection, security overrides, webhook) is a
   human task for Role A: see `docs/elevenlabs-agent.md` (written by ticket 009).
+- **Public check-in agent** (033): a second, English-only private agent (`ELEVENLABS_SCREEN_AGENT_ID`,
+  `docs/elevenlabs-screen-agent.md`). `startAgentSession(agentId)` / `getConversationToken(agentId)` take the agent
+  id (default: the intake agent). Dynamic variables `{ screen_session_id, age_band, questions }` only; answers come
+  back through the client tools `record_answer({ item_id, answer })` / `record_red_flag({ code })`
+  (`lib/screen/client.ts`); no webhook, no data collection.
 
 ## 12. Flows
 
@@ -770,7 +814,37 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   export and deletion (incl. ElevenLabs conversations) per `docs/privacy/retention.md`; incident procedure in
   `docs/privacy/incident-response.md`; no third-party scripts on `/family/**` outside the per-route allowlist; server
   logs redact emails, phones and tokens (`lib/log.ts`), and the dev request log skips token URLs.
+- 037: providers' Google refresh tokens are AES-256-GCM encrypted (`TOKEN_ENCRYPTION_KEY`, row-bound AAD), never sent
+  to a browser or logged; OAuth uses PKCE and a state sealed to the signed-in session; calendar events never include
+  the guardian (no attendees, `sendUpdates=none`) or child data.
 - Copy rules: never "diagnose/diagnosis" (except "not a diagnosis"), never "HIPAA compliant".
+
+## 13a. Public developmental check-in (ticket 033)
+
+- `/screen` (public, linked from the landing page and the nav): age band (`18-36m`, `3-5y`, `6-9y`, `10y+`, mapped to
+  024's instrument bands), the "not a diagnosis" agreement, then voice (`components/screen/VoiceCheckin.tsx`) or the
+  tap-through form (`QuestionForm.tsx`) over the **same** 024 `ISAA_PARENT_CHECKIN` questions, red-flag questions
+  first (`lib/screen/questions.ts` `screenQuestions`). Question text stays English; the chrome is translated
+  (`screen.*` messages).
+- Rule 6: before sign-in nothing identifies the child. `screen_sessions` (migration `20261113003300_screen.sql`) holds
+  `id, created_at, expires_at (+2 h), age_band, mode, answers, result_band, red_flag_codes, conversation_id,
+  saved_child_id, saved_by` - no IP, no names; `screen_answers_valid()` lets `answers` hold only item ids -> scale
+  values. The rate limit (5 sessions per IP per hour, `lib/screen/rate-limit.ts`) keys on a salted in-memory hash.
+  Anonymous actions write no audit rows (they would attach a hashed IP). The browser keeps only the session id in
+  `sessionStorage` (resume after reload / sign-in).
+- Server-side scoring: `finish` calls 024 `score("ISAA_PARENT_CHECKIN", answers)`; domain levels are draft
+  thresholds (`domainLevel`). A red flag (any time, `answers` with `yes` or `red-flag`) stops the session: no band,
+  the page shows only the 108/112 message (`UrgentNotice`), no providers, no booking.
+- Result page: band headline, per-domain text, "not a diagnosis", `Find a specialist near you` (029
+  `GET /api/public/providers` per suggested type after a locality / "Use my location" prompt; links to `/p/<slug>`
+  and `/find`, no booking), and `Save this result to <child>` for a signed-in guardian
+  (`POST /api/family/screen-results`: guardian link -> 020 `requireConsent(childId, "screen_result_save")` (422 ->
+  inline Allow dialog posting to 020's consent API) -> strict audit `screen.result_saved`). Saved check-ins appear
+  under `Check-ins` on the child page and leave the anonymous endpoints (404).
+- Privacy: 041 registry `screen_results` (export = the Check-ins list; erasure deletes the rows and the ElevenLabs
+  conversation); retention step `unsaved_screen_sessions` deletes unsaved rows after 30 days. `/screen` gets the
+  strict family CSP (nonce, no analytics) plus the ElevenLabs API/LiveKit `connect-src` (`lib/csp.ts`,
+  `lib/privacy/third-party-allowlist.ts`).
 
 ## 14. Human setup checklist (not tickets)
 
@@ -783,6 +857,7 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
 | D | Resend account (free), API key; `DEMO_EMAIL_TO` = the Resend account email |
 | D | Record the role-play audio as `demo/audio/session-1.mp3` (commit on `int/d-pitch`); then one live run with `DEMO_MODE=false` and refresh fixtures if needed |
 | D (15:30) | Decide the product link: deploy (Vercel + Supabase cloud) or tunnel during judging |
+| Product owner (037, start now: weeks of lead time) | Google Cloud OAuth client + consent screen with the sensitive `calendar.events` scope, test users (max 100, 7-day tokens) and the OAuth verification submission; see `docs/google-meet.md` |
 | Merge captain | Verify configured public-repo branch protection remains active; merge reviewed checkpoint PRs, smoke-test `main`, tag `cp<n>`; require `ci` only after 001 creates it and it has run ([workflow](team-workflow.md)) |
 
 ## 15. Build plan

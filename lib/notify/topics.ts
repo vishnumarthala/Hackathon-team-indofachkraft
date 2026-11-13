@@ -7,6 +7,7 @@ import { env } from "@/lib/env";
 import type { Queryable } from "@/lib/pg";
 import {
   activeGrantRecipients,
+  appointmentParties,
   activeGuardians,
   assignedAssessmentGuardian,
   caseProviders,
@@ -20,8 +21,23 @@ import {
 import type { TemplateName } from "./templates";
 import type { Channel, OutboxEventRow } from "./types";
 import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
+import { meetFailedRecipients, meetReadyRecipients, reconnectRecipients } from "@/lib/google/recipients";
+import { refundedPaymentGuardian } from "@/lib/payments/recipients";
 
 const uuid = z.uuid();
+// 030 appointment events (display values for the templates; no child data).
+const appointmentPayload = z
+  .object({
+    appointment_id: uuid,
+    starts_at: z.iso.datetime({ offset: true }),
+    ends_at: z.iso.datetime({ offset: true }),
+    provider_name: z.string().min(1).max(120),
+    mode: z.enum(["in_clinic", "video"]),
+    time_zone: z.string().min(1).max(64),
+    location: z.string().max(300).nullable().optional(),
+    cancelled_by: z.enum(["guardian", "provider", "system"]).optional(),
+  })
+  .strict();
 const userList = z.array(uuid).min(1).max(100);
 
 export type RecipientContext = { sql: Queryable; event: OutboxEventRow };
@@ -191,6 +207,74 @@ export const TOPICS = {
     template: "privacy_deletion_rejected",
     recipients: (p, { sql }) => deletionRequester(sql, p.request_id, "rejected"),
   }),
+  // 030: enqueued by the booking SQL functions in the same transaction (supabase/migrations/20261113003000_booking.sql).
+  // Payload: small display values only (provider name, time, mode, location) - never the child.
+  "appointment.confirmed": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_confirmed",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"]),
+  }),
+  "appointment.reminder_day_before": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_reminder_24h",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"], "guardian"),
+  }),
+  "appointment.reminder_two_hours": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_reminder_2h",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"], "guardian"),
+  }),
+  "appointment.cancelled": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_cancelled",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["cancelled"]),
+  }),
+  "appointment.rescheduled": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_rescheduled",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"]),
+  }),
+  // 037: the Meet link exists (created by the `meet.create` job, or pasted by the provider). The link itself stays in
+  // the app (Join video call); notifications only point to the appointment page.
+  "appointment.meet_ready": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_meet_ready",
+    recipients: (p, { sql }) => meetReadyRecipients(sql, p.appointment_id),
+  }),
+  // 037 FR-4: no link after the retries (or no connected calendar): the provider adds one by hand.
+  "appointment.meet_failed": topic({
+    payload: appointmentPayload,
+    channels: PROVIDER_CHANNELS,
+    template: "appointment_meet_failed",
+    recipients: (p, { sql }) => meetFailedRecipients(sql, p.appointment_id),
+  }),
+  // 037 FR-2: `invalid_grant` on refresh (e.g. 7-day tokens of an unverified Google app).
+  "google_calendar.reconnect_required": topic({
+    payload: z.object({ provider_profile_id: uuid }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "google_calendar_reconnect",
+    recipients: (p, { sql }) => reconnectRecipients(sql, p.provider_profile_id),
+  }),
+  // 031: enqueued by payment_mark_refunded in the refunding transaction (dedup `payment:<id>:refunded`). The booking
+  // guardian only, while the payment is refunded. In-app + email (no approved WhatsApp template yet).
+  "payment.refunded": topic({
+    payload: z
+      .object({
+        payment_id: uuid,
+        appointment_id: uuid,
+        reason: z.enum(["slot_unavailable", "appointment_cancelled", "provider_cancelled", "guardian_cancelled", "system_cancelled", "amount_mismatch", "external"]),
+      })
+      .strict(),
+    channels: GUARDIAN_IN_APP_EMAIL,
+    template: "payment_refunded",
+    recipients: (p, { sql }) => refundedPaymentGuardian(sql, p.payment_id),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -236,6 +320,20 @@ export const PRIVACY_TOPICS = {
   deletionRequested: "privacy.deletion_requested",
   deletionCompleted: "privacy.deletion_completed",
   deletionRejected: "privacy.deletion_rejected",
+} as const satisfies Record<string, Topic>;
+
+// 030: booking (enqueued by the SQL state machine; reminders cancelled with outbox_cancel('appt:<id>:')).
+export const APPOINTMENT_TOPICS = {
+  confirmed: "appointment.confirmed",
+  reminder24h: "appointment.reminder_day_before",
+  reminder2h: "appointment.reminder_two_hours",
+  cancelled: "appointment.cancelled",
+  rescheduled: "appointment.rescheduled",
+} as const satisfies Record<string, Topic>;
+
+// 031: payments (enqueued by the payment SQL functions).
+export const PAYMENT_TOPICS = {
+  refunded: "payment.refunded",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

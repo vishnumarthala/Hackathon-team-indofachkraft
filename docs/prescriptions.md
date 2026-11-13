@@ -11,7 +11,7 @@ of scope (legal review, see the ticket's open questions).
 
 | Table | What |
 |-------|------|
-| `prescriptions` | `case_id` (cascade), `child_id`, `org_id` (copied from the case by the trigger; `child_id` follows a 020 claim merge), `appointment_id` (no FK, 030 owns appointments), `prescriber_profile_id` (creator, replaced by the signer at signing), `source_report_id` (the 038 `rx_draft`, `on delete set null`), `status` `draft` / `signed` / `void`, `current_version` (the version row in effect), `version` (optimistic concurrency for edits), `void_reason` (1-500) / `voided_by` / `voided_at`, `created_by`. |
+| `prescriptions` | `case_id` (cascade), `child_id`, `org_id` (copied from the case by the trigger; `child_id` follows a 020 claim merge), `appointment_id` (-> `appointments`, `on delete set null`, migration `20261113003901`; must be an appointment of the same organisation and of the prescription's case or child), `prescriber_profile_id` (creator, replaced by the signer at signing), `source_report_id` (the 038 `rx_draft`, `on delete set null`), `status` `draft` / `signed` / `void`, `current_version` (the version row in effect), `version` (optimistic concurrency for edits), `void_reason` (1-500) / `voided_by` / `voided_at`, `created_by`. |
 | `prescription_versions` | `prescription_id`, `version` (unique together), `items` (FR-2, <= 15), `advice` (<= 2000), `follow_up` (<= 300); set at signing: `allergies_snapshot`, `child_snapshot`, `prescriber_snapshot`, `content_md` (authoritative), `content_hash` (sha256 hex of `content_md`), `pdf_path`, `signed_by` (kept: no `set null`), `signed_at`. A check makes a signed row complete. |
 
 While a prescription is a draft its content is the current version row with `signed_at` null (editable). Signing fills
@@ -164,8 +164,13 @@ versions exist (`signed_by` keeps its FK).
 - **040 follow-up agent**: read prescriptions through `listGuardianVisible(sql, childId, "prescription")` (024) or
   `listGuardianPrescriptions(childId)` (`lib/rx`); a cancelled prescription's latest published version is the
   cancellation notice, so it is never presented as current.
-- **030/035 appointments**: `prescriptions.appointment_id` exists without FK; set it when a prescription is written
-  for an appointment and add the FK once `appointments` is merged.
+- **030/035 appointments**: `prescriptions.appointment_id` references `appointments(id)` **on delete set null**
+  (`20261113003901_prescriptions_appointment_fk.sql`): the appointment link is context and the prescription is the
+  clinical record, so deleting an appointment (030 `booking_erase_child`, organisation cascade) clears the link
+  instead of failing (RESTRICT would block erasure) or deleting a signed prescription (CASCADE). The link can be set on
+  a draft only (trigger `prescriptions_guard_appointment` checks same organisation and same case or child); once
+  signed it can only become null. No API sets it yet - a later ticket can accept `appointment_id` on
+  `POST /api/cases/:id/prescriptions`.
 
 ## Tests
 

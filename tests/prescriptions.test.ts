@@ -297,6 +297,11 @@ describe.skipIf(!enabled)("prescriptions (database)", () => {
       const paths = [...new Set([...pdfPaths, ...rows.map((r) => r.path)])];
       if (paths.length) await db.storage.from("prescriptions").remove(paths);
       await sql`delete from outbox_events where aggregate_type = 'prescription' and payload ->> 'child_id' = ${childA}`;
+      // 031: payments block appointment deletes; remove them first.
+      if (profiles.length) {
+        await sql`delete from payments where appointment_id in (select id from appointments where provider_profile_id in ${sql(profiles)})`;
+        await sql`delete from appointments where provider_profile_id in ${sql(profiles)}`;
+      }
       await sql`delete from cases where id in ${sql([caseA, caseB].filter(Boolean))}`;
       if (profiles.length) await sql`delete from provider_profiles where id in ${sql(profiles)}`;
     }
@@ -607,6 +612,33 @@ describe.skipIf(!enabled)("prescriptions (database)", () => {
     expect(data ?? []).toHaveLength(0);
     // The same draft signs once the audit log works again.
     expect((await sign(id)).status).toBe(200);
+  });
+
+  it("030 link: appointment_id must be an appointment of the same org and case/child; deleting it keeps the signed prescription", async () => {
+    as(providerRx);
+    const [{ id: profileId }] = await sql<{ id: string }[]>`select id from provider_profiles where user_id = ${providerRx.id}`;
+    const [{ id: orgB }] = await sql<{ id: string }[]>`select org_id as id from cases where id = ${caseB}`;
+    const appt = async (org: string, kase: string | null, child: string | null, hour: number) =>
+      (
+        await sql<{ id: string }[]>`
+          insert into appointments (provider_profile_id, org_id, service_snapshot, child_id, case_id, slot, status)
+          values (${profileId}, ${org}, ${sql.json({ mode: "in_clinic", duration_min: 30 })}, ${child}, ${kase},
+                  tstzrange(${`2030-01-0${hour}T04:00:00Z`}::timestamptz, ${`2030-01-0${hour}T04:30:00Z`}::timestamptz, '[)'), 'completed')
+          returning id`
+      )[0].id;
+    const mine = await appt(orgA, caseA, childA, 1);
+    const foreign = await appt(orgB, caseB, null, 2);
+    const created = await create(caseA);
+    const id = created.body.prescription.id as string;
+    await expect(sql`update prescriptions set appointment_id = ${foreign} where id = ${id}`).rejects.toThrow(/another organisation/);
+    await sql`update prescriptions set appointment_id = ${mine} where id = ${id}`;
+    await patch(id, { items: items(), advice: null, follow_up: null, version: created.body.prescription.version });
+    expect((await sign(id)).status).toBe(200);
+    // Signed: the link cannot be changed, but deleting the appointment clears it (on delete set null).
+    await expect(sql`update prescriptions set appointment_id = ${foreign} where id = ${id}`).rejects.toThrow();
+    await sql`delete from appointments where id in ${sql([mine, foreign])}`;
+    const [row] = await sql`select status, appointment_id from prescriptions where id = ${id}`;
+    expect(row).toEqual({ status: "signed", appointment_id: null });
   });
 
   it("041 export: the guardian's copy has the signed prescriptions (PDF only while not cancelled), never drafts", async () => {

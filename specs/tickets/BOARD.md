@@ -85,9 +85,9 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 |---|-------|--------|------|------|
 | 028 | Public provider profiles, credential verification, admin seeding and claim links | done | solo | waits for 017, 018 |
 | 029 | PostGIS "near me" directory with Google Maps | done | solo | waits for 028 |
-| 030 | Availability and atomic one-off booking | draft | solo | waits for 028, 032, 041 |
-| 031 | Razorpay payments (test mode) | draft | solo | waits for 030 |
-| 033 | Voice developmental check-in (public screen) | draft | solo | waits for 020, 024, 029, 041 |
+| 030 | Availability and atomic one-off booking | done | solo | waits for 028, 032, 041 |
+| 031 | Razorpay payments (test mode) | done | solo | waits for 030 |
+| 033 | Voice developmental check-in (public screen) | done | solo | waits for 020, 024, 029, 041 |
 | 034 | Voice booking agent (web widget on /find) | draft | solo | waits for 030, 033 |
 | 035 | Appointment-scoped pre-consult intake | draft | solo | waits for 021, 024, 030, 041 |
 | 036 | Ratings for completed appointments | draft | solo | waits for 030 |
@@ -97,7 +97,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 
 | # | Title | Status | Mode | Runs |
 |---|-------|--------|------|------|
-| 037 | Google Meet for video appointments | draft | solo | waits for 030 |
+| 037 | Google Meet for video appointments | done | solo | waits for 030 |
 | 038 | AI scribe for any provider type | done | solo | waits for 024, 025, 028, 041 |
 | 039 | E-prescriptions for verified prescribers | draft | solo | waits for 021, 028, 038 |
 | 040 | Follow-up agent ("ask about my child's plan") | draft | solo | waits for 026, 033, 039 |

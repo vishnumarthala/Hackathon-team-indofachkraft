@@ -58,11 +58,17 @@ describe("third-party allowlist (D-6)", () => {
     for (const route of ["/family", "/family/appointments", "/family/children/x/ask"]) expect(scriptAllowed(src, route, APP)).toBe(false);
   });
 
-  it("allowlist entries are approved vendors, scoped to /family routes, and never trackers", () => {
-    expect(THIRD_PARTY_ALLOWLIST.map((e) => e.name)).toEqual(["ElevenLabs SDK (voice agent)", "Razorpay checkout"]);
+  it("allowlist entries are approved vendors, scoped to /family routes (or 033's /screen, 031's payment page), and never trackers", () => {
+    expect(THIRD_PARTY_ALLOWLIST.map((e) => e.name)).toEqual([
+      "ElevenLabs SDK (voice agent)",
+      "ElevenLabs SDK (developmental check-in)",
+      "Razorpay checkout",
+    ]);
     for (const entry of THIRD_PARTY_ALLOWLIST) {
       expect(entry.routes.length).toBeGreaterThan(0);
-      for (const route of entry.routes) expect(route.startsWith("/family/")).toBe(true);
+      // 031: Razorpay Checkout runs on the booking payment page `/book/<profileId>/pay/<appointmentId>` (rd FR-4).
+      for (const route of entry.routes)
+        expect(route.startsWith("/family/") || route === "/screen" || (entry.name === "Razorpay checkout" && route === "/book/*/pay/*")).toBe(true);
       for (const origin of entry.origins) {
         expect(new URL(origin).origin).toBe(origin);
         expect(isBannedHost(new URL(origin).hostname)).toBe(false);
@@ -164,6 +170,7 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
     const userId = created.user.id;
     let childId: string | null = null;
     let caseId: string | null = null;
+    let profileId: string | null = null;
     try {
       await sql`update user_profiles set role = 'guardian', phone_verified_at = now() where id = ${userId}`;
       const [child] = await sql<{ id: string }[]>`
@@ -180,6 +187,23 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
         values (${caseId}, ${childId}, '00000000-0000-4000-8000-00000000a001', '00000000-0000-4000-8024-000000000001', ${userId})
         returning id`;
 
+      // 030: a confirmed appointment of this guardian, so /family/appointments lists it and its reschedule page renders.
+      const [profile] = await sql<{ id: string }[]>`
+        insert into provider_profiles (slug, display_name, provider_type, is_synthetic)
+        values (${`t041-crawl-${userId.slice(0, 8)}`}, 't041 Crawl provider (synthetic)', 'speech_language_pathologist', true) returning id`;
+      profileId = profile.id;
+      const [appointment] = await sql<{ id: string }[]>`
+        insert into appointments (provider_profile_id, org_id, service_snapshot, guardian_user_id, child_id, slot, status)
+        values (${profileId}, '00000000-0000-4000-8000-00000000a001',
+                '{"name":"Crawl visit","duration_min":30,"mode":"video","fee_inr":0,"payment_mode":"free","location":null}'::jsonb,
+                ${userId}, ${childId}, tstzrange(now() + interval '3 days', now() + interval '3 days 30 minutes', '[)'), 'confirmed')
+        returning id`;
+
+      // 027: a conversation on the guardian's case, so /family/messages/[threadId] renders (removed with the case).
+      const [thread] = await sql<{ id: string }[]>`
+        insert into message_threads (case_id, org_id, child_id, subject, created_by)
+        values (${caseId}, '00000000-0000-4000-8000-00000000a001', ${childId}, 'Crawl thread (synthetic)', ${userId}) returning id`;
+
       const jar: { name: string; value: string }[] = [];
       const ssr = createServerClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string, {
         cookies: { getAll: () => jar, setAll: (cookies) => cookies.forEach((c) => jar.push({ name: c.name, value: c.value })) },
@@ -189,7 +213,10 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
       const cookie = jar.map((c) => `${c.name}=${c.value}`).join("; ");
 
       const routes = FAMILY_PAGES.map(routeOf).map((r) =>
-        r.replace("[id]", r.startsWith("/family/assessments/") ? assessment.id : (childId as string)).replace("[version]", "1"),
+        r
+          .replace("[id]", r.startsWith("/family/assessments/") ? assessment.id : r.startsWith("/family/appointments/") ? appointment.id : (childId as string))
+          .replace("[version]", "1")
+          .replace("[threadId]", thread.id),
       );
       const failures: string[] = [];
       const checked: string[] = [];
@@ -210,6 +237,7 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
       expect(checked.length).toBe(routes.length);
       console.info(`[no-tracking] crawled ${checked.length} pages:\n${checked.join("\n")}`);
     } finally {
+      if (profileId) await sql`delete from provider_profiles where id = ${profileId}`; // appointments cascade
       if (caseId) await sql`delete from cases where id = ${caseId}`;
       if (childId) {
         await sql.begin(async (tx) => {

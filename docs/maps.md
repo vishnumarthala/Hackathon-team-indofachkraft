@@ -11,7 +11,7 @@ is server-rendered and addresses are geocoded from a bundled table.
 |---|---|
 | `extensions.postgis` | `create extension if not exists postgis with schema extensions` (available in the Supabase image; PostGIS 3.3 locally). Qualify PostGIS names with `extensions.` in `search_path = ''` functions. |
 | `practice_locations.geog geography(Point, 4326)` | Always derived from `lat`/`lng` by the `practice_locations_set_geog` trigger (insert and every update); null while the address could not be geocoded. GiST index `practice_locations_geog_idx`. Existing rows were backfilled. |
-| `provider_profiles.offers_in_clinic` (default `true`), `offers_video` (default `false`) | Consultation modes. Set by the provider in the profile editor (`PATCH /api/providers/:id`) or by a platform admin when seeding. 030 will derive them from active services. |
+| `provider_profiles.offers_in_clinic` (default `true`), `offers_video` (default `false`) | Consultation modes. Set by the provider in the profile editor (`PATCH /api/providers/:id`) or by a platform admin when seeding. Since 030 they are derived from active services (triggers) as soon as the profile has any service; manual changes are then overridden. |
 | `search_providers(p_lat, p_lng, p_radius_km = 10, p_types = null, p_language = null, p_mode = 'any', p_limit = 20, p_offset = 0, p_include_synthetic = true)` | `security definer`, `stable`, execute granted to `service_role` only. See below. |
 
 ### `search_providers`

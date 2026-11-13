@@ -136,9 +136,28 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `prescription.signed` / `prescription.voided` (039, enqueued by `signPrescription` / `voidPrescription` in the same transaction, dedup `prescription:<id>:signed` / `:void`) | active guardians of the live child, while the prescription is still in that state and its latest published version is guardian-visible | in-app, email | `prescription_signed` / `prescription_voided` (generic text, no medicine names; links to `/family/children/<id>/prescriptions`) |
 | `privacy.export_ready` (041, enqueued with the export's `ready` update) | the requesting guardian, while still linked to the live child and the export is ready | in-app, email | `privacy_export_ready` (links to the child's Privacy page) |
 | `privacy.deletion_requested` (041) | platform admins | in-app, email | `privacy_deletion_requested` |
+| `appointment.confirmed` / `.reminder_day_before` / `.reminder_two_hours` / `.cancelled` / `.rescheduled` (030, enqueued by the booking SQL functions; dedup `appt:<id>:confirmed` / `:r24` / `:r2` / `:cancelled` / `:rescheduled`, cancelled with `outbox_cancel('appt:<id>:')`) | the booking guardian + the provider bound to the profile (reminders: guardian only), while the appointment is still in the matching status | in-app, email, WhatsApp | `appointment_*` (email `.ics` REQUEST / CANCEL; provider name, time in the clinic's zone, mode, place - never the child; see `docs/booking.md`) |
+| `appointment.meet_ready` (037, enqueued by the `meet.create` job or a manual link; dedup `appt:<id>:meet_ready`) | booking guardian + profile provider while the appointment is confirmed and has a link | in-app, email, WhatsApp | `appointment_meet_ready` (app page only, never the Meet URL) |
+| `appointment.meet_failed` (037, final `meet.create` failure) | profile provider while still `failed` | in-app, email | `appointment_meet_failed` (`Add a video link`) |
+| `google_calendar.reconnect_required` (037, `invalid_grant` on refresh) | profile provider while the connection is `expired` | in-app, email | `google_calendar_reconnect` |
+| `payment.refunded` (031, enqueued by `payment_mark_refunded` in the refunding transaction, dedup `payment:<id>:refunded`, payload `{ payment_id, appointment_id, reason }`) | the booking guardian, while the payment is refunded | in-app, email | `payment_refunded` (`Your payment was refunded because the time was no longer available.` for late payments; links to `/family/appointments`; see `docs/payments.md`) |
 | `privacy.deletion_completed` / `privacy.deletion_rejected` (041) | the requesting guardian (account only: the erasure revokes the link) | in-app, email | `privacy_deletion_completed` / `privacy_deletion_rejected` (reason shown in the app only) |
 
-Later tickets register their own (030: `appointment.*` with `.ics`; 031 payments; 037 Meet links).
+Later tickets register their own (030 done: `appointment.*` with `.ics`; 031 payments; 037 done: Meet links). Topic names
+allow no digits (`outbox_events_topic_check`), so 030's 24 h / 2 h reminders are `appointment.reminder_day_before` /
+`appointment.reminder_two_hours`.
+
+## Job topics (037)
+
+Some events run server work instead of notifying anyone. Register a **job topic** in `lib/notify/jobs.ts`
+(`JobDefinition` from `lib/notify/job-types.ts`: strict `payload`, `maxAttempts`, `retryDelaysMs`, `run`, optional
+`onFailure`); the worker (`fanOutEvent`) hands those events to `runJob()` inside the fan-out transaction while the event
+row is locked. Attempts and the last error code are kept in `outbox_job_attempts`; a failed attempt moves
+`deliver_after` (back-off) and keeps the event `pending`; success or a final failure marks it `fanned_out`. Throw
+`JobError(code, true)` to stop retrying. Job topics are not in `TOPICS` (no recipients, no template) and are enqueued
+from SQL. In use: `meet.create`, `meet.update`, `meet.delete` (037), enqueued by the `meet_jobs_from_outbox` trigger
+when the booking functions insert `appointment.confirmed` / `.rescheduled` / `.cancelled` for a video appointment
+(dedup `meet:<id>:create|update|delete`). See `docs/google-meet.md`.
 
 ## Delivery
 
@@ -225,8 +244,14 @@ for the text; for example:
 | `home_program_published` | UTILITY | `{{1}}` app link | Your child's care team shared new activities to do at home. Open: {{1}} |
 | `assessment_assigned` | UTILITY | `{{1}}` app link | Your child's care team sent you a questionnaire to fill in. Open: {{1}} |
 | `test_ping` (optional, ops check) | UTILITY | `{{1}}` app link | Notifications are working for your DoctorNearMe account. Open: {{1}} |
+| `appointment_confirmed` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} |
+| `appointment_reminder_24h` (030) | UTILITY | `{{1}}` app link | Reminder: you have a DoctorNearMe appointment tomorrow. Details: {{1}} |
+| `appointment_reminder_2h` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment starts in 2 hours. Details: {{1}} |
+| `appointment_cancelled` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment was cancelled. Details: {{1}} |
+| `appointment_rescheduled` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment was moved to a new time. Details: {{1}} |
+| `appointment_meet_ready` (037) | UTILITY | `{{1}}` app link | The video call link for your DoctorNearMe appointment is ready. Join from: {{1}} |
 
-030 adds `appointment_confirmed`, reminders and cancellations; each later ticket adds its rows here. The
+030 added `appointment_*` and 037 `appointment_meet_ready` (rows above); each later ticket adds its rows here. The
 template name sent to Meta is the DoctorNearMe template name; the language code is the recipient's UI
 locale. Until a template is approved, set nothing: deliveries stay `skipped` (`whatsapp_not_configured`).
 

@@ -130,3 +130,20 @@ export async function prescriptionGuardians(
            where pv.entity_type = 'prescription' and pv.entity_id = p.id order by pv.version desc limit 1)`;
   return rows.map((r) => r.user_id);
 }
+
+/** 030: the booking guardian and the provider bound to the profile, while the appointment is in one of `statuses`
+ * (re-read at fan-out: a reminder of a cancelled appointment reaches nobody). `who` narrows to one side. */
+export async function appointmentParties(
+  sql: Queryable,
+  appointmentId: string,
+  statuses: string[],
+  who: "both" | "guardian" = "both",
+): Promise<string[]> {
+  const rows = await sql<{ guardian: string | null; provider: string | null }[]>`
+    select g.id as guardian, case when ${who} = 'both' then p.user_id end as provider
+    from public.appointments a
+    join public.provider_profiles p on p.id = a.provider_profile_id
+    left join public.user_profiles g on g.id = a.guardian_user_id and g.role = 'guardian'
+    where a.id = ${appointmentId} and a.status in ${sql(statuses)}`;
+  return rows.flatMap((r) => [r.guardian, r.provider].filter((id): id is string => Boolean(id)));
+}
