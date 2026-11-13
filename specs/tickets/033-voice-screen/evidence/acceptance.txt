@@ -1,0 +1,42 @@
+PASS setup: seed developmental_pediatrician listing - HTTP 201 geocoded=true
+PASS setup: seed speech_language_pathologist listing - HTTP 201 geocoded=true
+PASS setup: guardian children
+PASS NFR-1 /screen has the strict nonce CSP + ElevenLabs connect-src only - connect-src 'self' http://127.0.0.1:63321 https://api.elevenlabs.io wss://api.elevenlabs.io https://livekit.rtc.elevenlabs.io wss://livekit.rtc.elevenlabs.io wss://api.eu.residency.elevenlabs.io wss://livekit.rtc.eu.residency.elevenlabs.io wss://api.in.residency.elevenlabs.io wss://livekit.rtc.in.residency.elevenlabs.io
+PASS NFR-1 /screen loads no third-party <script src> - 22 script tags, external: 0
+PASS E-2 create form session 201 - HTTP 201, first question rf_skill_regression
+PASS E-2 regression yes -> stop - {"missing":["rf_self_injury","rf_seizure","rf_breathing","rf_not_eating_drinking","rf_safety_concern","q1","q2","q3","q4","q5","q6","q7","q8","q9","q10","q11","q12","q13","q14","q15"],"stop":true}
+PASS E-2 finish -> red_flag true, no band - {"result_band":null,"domains":[],"red_flag":true,"message":"Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today."}
+PASS E-2 red_flag_codes stored - {"result_band":null,"red_flag_codes":["skill_regression"]}
+PASS E-3 DEMO_MODE voice -> { demo: true }, no token - HTTP 201 demo=true
+PASS E-4.1 screen_sessions columns = FR-5 (no IP) - id,created_at,expires_at,age_band,mode,answers,result_band,red_flag_codes,conversation_id,saved_child_id,saved_by
+PASS E-1 API some-concerns pattern -> discuss_with_professional - [{"domain":"social","level":"some_signs"},{"domain":"emotional","level":"some_signs"},{"domain":"speech","level":"some_signs"},{"domain":"behaviour","level":"some_signs"},{"domain":"sensory","level":"some_signs"},{"domain":"cognitive","level":"some_signs"}]
+PASS E-4.2 anonymous save -> 401 - HTTP 401
+PASS E-4.2 guardian_a without consent -> 422 - {"error":"Guardian consent required","details":{"feature":"screen_result_save","child_id":"1d1bed9c-322a-4f79-a72a-32010623cb14"}}
+PASS E-4.2 guardian_a -> guardian_b's child -> 404 - HTTP 404 {"error":"Child not found"}
+PASS E-4.2 allow screen_result_save (020 API) - HTTP 201
+PASS E-4.2 allow -> saved to own child - HTTP 201
+PASS E-4.2 row linked to child and guardian
+PASS FR-4 rate limit 5 sessions/hour per IP - 201,201,201,201,201,429
+PASS E-1 Start disabled until ticked (both buttons) - before=true/true, age only=true, ticked enabled=true
+PASS E-1 headline 'Some areas are worth discussing with a professional'
+PASS E-1 'not a diagnosis' line
+PASS E-1 directory with suggested types - developmental_pediatrician,child_psychologist,speech_language_pathologist,occupational_therapist
+PASS E-1 nearby providers from 029 search (location prompt) - e033 Dr Synthetic Devped (synthetic) | e033 Dr Synthetic Devped Clinic (synthetic), Banjara Hills 0.1 km away | e033 Synthetic Speech Therapist (synthetic) | e033 Synthetic Speech Therapist Clinic (synthetic), Banjara Hills 0.1 km away
+PASS E-1 no booking from the result page
+PASS E-1 375 px: no horizontal scroll
+PASS E-1 no console errors, no third-party requests - errors=0  third-party=0 
+PASS E-2 regression question first and yes -> only the 108/112 message - Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today.
+PASS E-2 no provider list or 'Book' anywhere in the DOM - elements: directory=false result=false
+PASS E-2 reload keeps showing only the urgent message
+PASS E-2 no console errors
+PASS E-3 DEMO_MODE: demo notice, tap-through form on the same session, no SDK start - elevenlabs requests=0
+PASS E-3b voice start (stub token): SDK connects only to ElevenLabs, no CSP violation, falls back to tapping - voice panel=true, fallback form=true, notice=true, ElevenLabs requests (aborted)=1 https://livekit.rtc.elevenlabs.io/rtc/v1/validate, CSP errors=0 
+PASS E-4 UI no-concerns pattern -> 'No strong signs from this check-in'
+PASS E-4 UI 422 -> inline Allow dialog
+PASS E-4 UI allow -> saved
+PASS FR-8 child page lists it under Check-ins (date, age band, headline) - Check-ins |  | Developmental check-ins you saved from the check-in page. This is a developmental check-in, not a diagnosis. |  | No strong signs from this check-in |  | 13 November 2026 · Age 18-36 months |  | Take a developmental check-in
+PASS E-4 UI no console errors (besides the designed 422 consent answer) - 1 logged: Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)
+PASS FR-8 anonymous: 'Sign in to save' -> /family/login?next=/screen; result survives reload - band=see_professional_soon href=/family/login?next=%2Fscreen
+PASS FR-2 translated chrome (hi) - विकास जाँच
+Screenshots: screen-intro-en-375.png, screen-form-safety-question-375.png, screen-result-some-concerns-375.png, screen-red-flag-375.png, screen-voice-demo-375.png, screen-voice-fallback-375.png, screen-save-allow-dialog-375.png, family-child-checkins-375.png, screen-intro-hi-375.png
+TOTAL: 40 PASS, 0 FAIL

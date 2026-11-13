@@ -44,7 +44,7 @@ export const FEATURE_GATES: Record<ConsentFeature, { collect: string[]; recheck:
     collect: ["POST /api/cases/:id/refer"],
     recheck: ["/specialist/:token page load", "POST /api/cases/:id/ask"],
   },
-  screen_result_save: { collect: ["saving a public screen result to a child (ticket 033)"], recheck: [] },
+  screen_result_save: { collect: ["POST /api/family/screen-results"], recheck: [] },
   ai_follow_up: { collect: ["follow-up agent (ticket 040)"], recheck: ["each question (ticket 040)"] },
 };
 

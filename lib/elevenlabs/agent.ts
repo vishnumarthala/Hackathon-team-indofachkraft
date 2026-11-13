@@ -12,9 +12,10 @@ export class TokenRequestError extends Error {
   }
 }
 
-// Server only: issues a short-lived WebRTC conversation token for the private intake agent.
-export async function getConversationToken(): Promise<string> {
-  const url = `${CONVERSATION_TOKEN_URL}?agent_id=${encodeURIComponent(env.ELEVENLABS_AGENT_ID)}`;
+// Server only: issues a short-lived WebRTC conversation token for a private agent (default: the intake agent;
+// 033 passes ELEVENLABS_SCREEN_AGENT_ID).
+export async function getConversationToken(agentId: string = env.ELEVENLABS_AGENT_ID): Promise<string> {
+  const url = `${CONVERSATION_TOKEN_URL}?agent_id=${encodeURIComponent(agentId)}`;
   const res = await fetch(url, { method: "GET", headers: { "xi-api-key": env.ELEVENLABS_API_KEY } });
   if (!res.ok) throw new TokenRequestError(`Conversation token request failed (HTTP ${res.status})`, res.status);
   const json = (await res.json().catch(() => null)) as { token?: unknown } | null;
@@ -32,11 +33,10 @@ const PUBLIC_FALLBACK_STATUSES = new Set([401, 403, 404]);
 
 // Server only. Returns a conversation token when possible, otherwise the agent ID for a public start.
 // Throws when no agent is configured, or on other provider failures (network, 5xx).
-export async function startAgentSession(): Promise<AgentStart> {
-  const agentId = env.ELEVENLABS_AGENT_ID;
+export async function startAgentSession(agentId: string = env.ELEVENLABS_AGENT_ID): Promise<AgentStart> {
   if (!process.env.ELEVENLABS_API_KEY) return { agent_id: agentId, conversation_token: null };
   try {
-    return { agent_id: agentId, conversation_token: await getConversationToken() };
+    return { agent_id: agentId, conversation_token: await getConversationToken(agentId) };
   } catch (err) {
     if (err instanceof TokenRequestError && err.status !== null && PUBLIC_FALLBACK_STATUSES.has(err.status)) {
       return { agent_id: agentId, conversation_token: null };

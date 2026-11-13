@@ -16,6 +16,7 @@ effect.
 | Guardian data exports (`exports` bucket) | Deleted 7 days after they are ready (`status = expired`) | `expired_exports` | `RETENTION_EXPORT_DAYS` (7) |
 | In-app notifications | Deleted after 180 days | `in_app_notifications` | `RETENTION_IN_APP_NOTIFICATION_DAYS` (180) |
 | Email / WhatsApp delivery rows | `title` / `body` stripped after 90 days (date, status, channel stay) | `delivery_content` | `RETENTION_DELIVERY_CONTENT_DAYS` (90) |
+| Public developmental check-ins not saved to a child (`screen_sessions`, 033) | Deleted **30 days** after they started; check-ins saved to a child (consent `screen_result_save`) stay with the child until erasure | `unsaved_screen_sessions` | - |
 | Website pilot sign-ups (`pilot_signups`) | Deleted after 24 months | `pilot_signups` | `RETENTION_PILOT_SIGNUP_MONTHS` (24) |
 | Audit events | Kept **7 years**, then deleted by `audit_purge_expired()` (refuses anything younger than 1 year) | `audit_events` | `RETENTION_AUDIT_YEARS` (7) |
 | Consent records (020) and signed paper forms | Kept (legal proof of consent), also after erasure, with free text stripped | - | - |
