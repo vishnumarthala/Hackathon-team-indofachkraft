@@ -2,6 +2,7 @@
 import type { Template } from "../types";
 import assessment_assigned from "./assessment_assigned";
 import assessment_red_flag from "./assessment_red_flag";
+import assessment_submitted from "./assessment_submitted";
 import document_shared from "./document_shared";
 import home_program_published from "./home_program_published";
 import iep_published from "./iep_published";
@@ -21,6 +22,7 @@ export const TEMPLATES = {
   home_program_published,
   assessment_assigned,
   assessment_red_flag,
+  assessment_submitted,
   sharing_granted,
   provider_verified,
   provider_rejected,

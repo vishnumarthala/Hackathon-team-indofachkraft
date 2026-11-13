@@ -1,0 +1,66 @@
+{
+  "instrument": "ISAA_PARENT_CHECKIN",
+  "version": "1",
+  "title": "Parent developmental check-in",
+  "status": "draft_pending_clinical_review",
+  "derived_from": "ISAA",
+  "disclaimer": "This is a developmental check-in, not a diagnosis.",
+  "answer_scale": ["never", "sometimes", "often", "always"],
+  "answer_labels": { "never": "Never", "sometimes": "Sometimes", "often": "Often", "always": "Always" },
+  "age_bands": [
+    { "id": "18-35m", "min_months": 18, "max_months": 35 },
+    { "id": "36-71m", "min_months": 36, "max_months": 71 },
+    { "id": "72-215m", "min_months": 72, "max_months": 215 }
+  ],
+  "domains": [
+    { "id": "social", "name": "Social relationship and reciprocity" },
+    { "id": "emotional", "name": "Emotional responsiveness" },
+    { "id": "speech", "name": "Speech-language and communication" },
+    { "id": "behaviour", "name": "Behaviour patterns" },
+    { "id": "sensory", "name": "Sensory aspects" },
+    { "id": "cognitive", "name": "Cognitive component" }
+  ],
+  "questions": [
+    { "id": "q1", "domain": "social", "text_en": "Does your child look at your face or eyes when you talk or play together?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": true, "isaa_items": [1], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q2", "domain": "social", "text_en": "Does your child smile back when you smile at them?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": true, "isaa_items": [2], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q3", "domain": "social", "text_en": "Does your child prefer to play alone, even when other children are around?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [3, 7, 9], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q4", "domain": "emotional", "text_en": "Does your child get very upset or very excited for no clear reason?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [10, 11, 14], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q5", "domain": "emotional", "text_en": "Does your child seem unaware of danger, for example running towards traffic?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [13], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q6", "domain": "speech", "text_en": "Does your child point or use gestures to show you what they want?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": true, "isaa_items": [16], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q7", "domain": "speech", "text_en": "Does your child repeat words or phrases they heard instead of answering you?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [17, 18], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q8", "domain": "speech", "text_en": "Does your child take turns with you in simple back-and-forth talk, sounds or games?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": true, "isaa_items": [8, 20], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q9", "domain": "behaviour", "text_en": "Does your child flap their hands, rock, spin or repeat the same body movements?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [24], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q10", "domain": "behaviour", "text_en": "Does your child get very upset when a routine or something around them changes?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [30], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q11", "domain": "behaviour", "text_en": "Does your child have strong tantrums or hit other people?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [27, 28], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q12", "domain": "sensory", "text_en": "Does your child cover their ears or get upset with everyday sounds, lights or touch?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [31], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q13", "domain": "sensory", "text_en": "Does your child smell, lick or touch objects or people in an unusual way?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [36], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q14", "domain": "cognitive", "text_en": "Does your child find it hard to stay with one activity for a few minutes?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": false, "isaa_items": [37], "age_bands": ["18-35m", "36-71m", "72-215m"] },
+    { "id": "q15", "domain": "cognitive", "text_en": "Does your child turn to look at you when you call their name?", "answer_scale": ["never", "sometimes", "often", "always"], "reverse": true, "isaa_items": [6, 38], "age_bands": ["18-35m", "36-71m", "72-215m"] }
+  ],
+  "red_flag_answer_scale": ["no", "yes"],
+  "red_flags": [
+    { "id": "rf_skill_regression", "code": "skill_regression", "text_en": "Has your child stopped using words or skills that they used to have?" },
+    { "id": "rf_self_injury", "code": "self_injury", "text_en": "Does your child hurt themselves on purpose, for example by hitting their head or biting themselves?" },
+    { "id": "rf_seizure", "code": "seizure", "text_en": "Has your child had a fit (seizure), or episodes of jerking movements or not responding?" },
+    { "id": "rf_breathing", "code": "breathing", "text_en": "Does your child have trouble breathing, or turn blue around the lips?" },
+    { "id": "rf_not_eating_drinking", "code": "not_eating_drinking", "text_en": "Has your child stopped eating or drinking, or are they losing weight?" },
+    { "id": "rf_safety_concern", "code": "safety_concern", "text_en": "Are you worried about your child's safety right now, or that someone may be hurting them?" }
+  ],
+  "scoring": {
+    "points": { "never": 0, "sometimes": 1, "often": 2, "always": 3 },
+    "reverse_points": { "never": 3, "sometimes": 2, "often": 1, "always": 0 },
+    "max_total": 45,
+    "bands": [
+      { "id": "no_strong_signs", "min": 0, "max": 9 },
+      { "id": "discuss_with_professional", "min": 10, "max": 19 },
+      { "id": "see_professional_soon", "min": 20, "max": 45 }
+    ],
+    "any_red_flag_band": "see_professional_soon"
+  },
+  "result_copy": {
+    "no_strong_signs": "Your answers do not show strong signs of a developmental concern right now. If you are still worried, talk to your child's doctor or therapist. This is a developmental check-in, not a diagnosis.",
+    "discuss_with_professional": "Some of your answers suggest it would help to talk about your child's development with a professional. This is a developmental check-in, not a diagnosis.",
+    "see_professional_soon": "Your answers suggest your child should see a developmental professional soon. This is a developmental check-in, not a diagnosis."
+  },
+  "urgent_copy": "Please contact your child's doctor now. In an emergency call 108 (ambulance) or 112."
+}

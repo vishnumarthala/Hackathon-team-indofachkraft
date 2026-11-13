@@ -129,6 +129,11 @@ orgs for the child; its file `url` is `/api/documents/<id>/download` (access re-
 `document.downloaded` audit, then a 300 s signed URL) rather than a pre-minted signed URL. Guardian uploads
 are shared per document instead (`docs/documents.md`).
 
+Since ticket 024 loaders show **published versions** (`published_versions`, `lib/clinical/publish.ts`), never
+drafts: `reports` = the current published version of each final assessment report (item id = report id);
+`assessments` = the current published summary of each reviewed questionnaire (item id = assessment id,
+`lib/sharing/loaders/assessments.ts`, see `docs/assessments.md`). Loaders for 025/026 should do the same.
+
 ## RLS (browser reads only; the server uses the service role and the gates above)
 
 - `cases`: `can_access_case(id)` (replaces 017's org-member policy). `can_read_child_via_org` (020) now
