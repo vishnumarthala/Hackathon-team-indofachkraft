@@ -168,3 +168,9 @@ an audit row or `last_error` (logs carry ids and error codes; `tests/google-meet
 - A failed `meet.update` keeps the old time on the provider's calendar (the link keeps working); a failed
   `meet.delete` leaves the event (admins see `outbox_job_attempts.last_error`).
 - Meet links are not time-bound by Google: anyone with the link could knock; the provider admits only the family.
+
+## Demo bookings (ticket 042)
+
+Demo appointments (`is_demo`, on `is_synthetic` profiles) get `meet_status = 'not_needed'` on insert, so no
+`meet.create` job is ever enqueued and the manual-link route answers 409; demo video bookings skip the
+Google-account requirement (`lib/booking/hooks.ts`). See `docs/pilot-seeding.md`.

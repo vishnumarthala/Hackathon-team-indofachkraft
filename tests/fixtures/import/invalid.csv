@@ -1,0 +1,4 @@
+display_name,provider_type,org_name,org_kind,address_line1,locality,pincode,phone_public,languages,website
+Dr. Synthetic Valid Row,pediatrician,Synthetic Valid Clinic,solo,"Plot 5, Sample Street (synthetic)",Ameerpet,500016,,en,
+Synthetic Bad Pincode,speech_language_pathologist,Synthetic Bad Clinic,solo,"Plot 6, Sample Street (synthetic)",Ameerpet,50001,,en,
+Synthetic Bad Type,astrologer,Synthetic Odd Clinic,solo,"Plot 7, Sample Street (synthetic)",Ameerpet,500016,,en,

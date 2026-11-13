@@ -1,0 +1,4 @@
+display_name,provider_type,org_name,org_kind,address_line1,locality,pincode,phone_public,languages,website
+Dr. Synthetic Import One,developmental_pediatrician,Synthetic Import Kids Centre,centre,"Plot 1, Sample Street (synthetic)",Gachibowli,500032,+91 90000 09991,en;te,https://synthetic-import-centre.example.com
+Synthetic Import Two,speech_language_pathologist,Synthetic Import Kids Centre,centre,"Plot 1, Sample Street (synthetic)",Gachibowli,500032,,en hi,
+Synthetic Import Three,occupational_therapist,Synthetic Import Three Practice,solo,"Flat 2, Demo Lane (synthetic)",Kukatpally,500072,+91 90000 09993,te,

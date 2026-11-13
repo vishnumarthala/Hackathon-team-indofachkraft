@@ -65,6 +65,8 @@ export type AppointmentView = {
   provider_slug: string;
   provider_time_zone: string;
   created_at: string;
+  /** 042 FR-2a: booked on a demo profile (free, no payment, no Meet, in-app notifications only). */
+  is_demo: boolean;
 };
 
 export type BookableProfile = {
@@ -95,7 +97,8 @@ const APPOINTMENT_SELECT = (sql: Queryable) => sql`
          lower(a.slot) as starts_at, upper(a.slot) as ends_at, a.hold_expires_at, a.child_id,
          c.display_name as child_name, c.date_of_birth::text as child_date_of_birth, a.guardian_user_id,
          a.cancelled_by, a.cancel_reason, a.rescheduled_from, a.origin_appointment_id,
-         p.display_name as provider_name, p.slug as provider_slug, p.time_zone as provider_time_zone, a.created_at
+         p.display_name as provider_name, p.slug as provider_slug, p.time_zone as provider_time_zone, a.created_at,
+         a.is_demo
   from public.appointments a
   join public.provider_profiles p on p.id = a.provider_profile_id
   left join public.children c on c.id = a.child_id and c.deleted_at is null`;

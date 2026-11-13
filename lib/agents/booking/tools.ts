@@ -5,7 +5,7 @@
 import { randomUUID } from "node:crypto";
 import { auditStrict } from "@/lib/audit";
 import { toBookingError, type BookingErrorCode, BOOKING_ERRORS } from "@/lib/booking/errors";
-import { checkHoldPreconditions } from "@/lib/booking/hooks";
+import { checkHoldPreconditions, DEMO_PROFILE_NOTICE } from "@/lib/booking/hooks";
 import { getBookableProfile, getService, getSlots, holdSlot, listServices } from "@/lib/booking/store";
 import { utcToWall } from "@/lib/booking/time";
 import { DEFAULT_RADIUS_KM, isInIndia, SEO_RADIUS_KM } from "@/lib/geo/constants";
@@ -151,6 +151,9 @@ const HOLD_REFUSALS: BookingErrorCode[] = ["slot_taken", "slot_unavailable", "to
 
 /** What the agent tells the parent when a hold rule (lib/booking/hooks.ts) refuses an agent hold. */
 export function refusalMessage(blocked: { code: string; error: string }): string {
+  if (blocked.code === "demo_ack_required") {
+    return `Nothing was held. ${DEMO_PROFILE_NOTICE} Read that sentence to the parent and ask whether they understand this is a demo. Only if they say yes, call hold_slot again with the same values and demo_acknowledged true; otherwise offer another provider.`;
+  }
   if (blocked.code === "google_account_required") {
     return "Nothing was held. Video consultations need the parent's Google account, which you cannot check by phone. Offer an in-clinic time instead, or tell the parent to tap the provider's name in the search results on their screen, sign in with Google and book the video time there.";
   }
@@ -165,7 +168,12 @@ export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Prom
   if (!service || !profile) return notFound("Service not found", "This time cannot be booked. Read the free times again with get_slots.");
 
   // 037/042 rules apply to agent holds too (anonymous: no user). A refusal is relayed, never an error for the agent.
-  const blocked = await checkHoldPreconditions({ profile, service, userId: null, body: { service_id: input.service_id, start: input.start } });
+  const blocked = await checkHoldPreconditions({
+    profile,
+    service,
+    userId: null,
+    body: { service_id: input.service_id, start: input.start, demo_ack: input.demo_acknowledged === true },
+  });
   if (blocked) return ok({ held: false, reason: blocked.code, booking_url: `/book/${profile.id}`, message: refusalMessage(blocked) });
 
   const sql = await pg();
@@ -191,8 +199,10 @@ export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Prom
     });
     const start = new Date(input.start).toISOString();
     // 031: online services move to pending_payment at confirm and the 030 page continues to the payment step.
+    // 042: demo bookings are free (no payment, no real consultation).
+    const demo = profile.is_synthetic;
     const payNext =
-      service.payment_mode === "online" && service.fee_inr > 0
+      !demo && service.payment_mode === "online" && service.fee_inr > 0
         ? ` After confirming, the parent pays the fee of ${service.fee_inr} rupees online on the next screen to complete the booking.`
         : "";
     return ok({
@@ -203,9 +213,10 @@ export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Prom
       provider_name: profile.display_name,
       start,
       local_time: spokenTime(start, service.time_zone),
-      payment_mode: service.payment_mode,
-      fee_inr: service.fee_inr,
-      message: `The time is held for 10 minutes, not booked yet. Tell the parent to tap 'Sign in and confirm' on their screen to finish.${payNext} You cannot confirm the booking yourself.`,
+      payment_mode: demo ? "free" : service.payment_mode,
+      fee_inr: demo ? 0 : service.fee_inr,
+      ...(demo ? { demo: true } : {}),
+      message: `The time is held for 10 minutes, not booked yet.${demo ? ` This is a demo booking: ${DEMO_PROFILE_NOTICE}` : ""} Tell the parent to tap 'Sign in and confirm' on their screen to finish.${payNext} You cannot confirm the booking yourself.`,
     });
   } catch (err) {
     const known = toBookingError(err);

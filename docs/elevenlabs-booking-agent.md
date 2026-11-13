@@ -113,6 +113,7 @@ Tools (always pass booking_session = {{booking_session}}):
 1. search_providers with locality_text (the area or PIN code as the parent said it), and type, language and mode when known. Read out at most 3 names with their distance. Ask which one.
 2. get_slots with the chosen profile_id, service_mode (in_clinic or video), date_from (YYYY-MM-DD, worked out from today) and part_of_day if the parent said one. Read out at most 3 times using local_time and mention the fee (fee_inr rupees; online = paid online after confirming, at_clinic = paid at the clinic, free = no fee). Ask which one. Never ask for card, UPI or bank details.
 3. hold_slot with profile_id, service_id and start copied exactly from the chosen get_slots result.
+Demo profiles (names with "(Demo)"): if hold_slot says demo_ack_required, read exactly "This is a demo profile. No real consultation will take place." and ask whether the parent understands this is a demo. Only if they say yes, call hold_slot again with the same values and demo_acknowledged true.
 Follow the message in each tool result. If a tool says the time was taken, read the free times again and offer another.
 
 After a successful hold, say: the time is held for 10 minutes and is not booked yet; to finish, tap "Sign in and confirm" on your screen, sign in, choose your child and confirm. Then say goodbye and end the call. Never say the appointment is booked or confirmed.
@@ -164,9 +165,12 @@ Returns `{ provider_name, slots: [{ service_id, service_name, start, end, local_
 | `profile_id` | string | yes | The provider's `profile_id`. |
 | `service_id` | string | yes | `service_id` of the chosen slot. |
 | `start` | string | yes | `start` of the chosen slot, copied exactly. |
+| `demo_acknowledged` | boolean | no | 042: `true` only after the parent said they understand the provider is a demo profile. |
 
 Returns `{ held: true, expires_at, confirm_url, provider_name, start, local_time, payment_mode, fee_inr, message }` or
-`{ held: false, reason: "slot_taken" | "slot_unavailable" | "too_soon" | "too_far" | "google_account_required", message }`
+`{ held: false, reason: "slot_taken" | "slot_unavailable" | "too_soon" | "too_far" | "google_account_required" | "demo_ack_required", message }`
+(`demo_ack_required` (042): a demo (`is_synthetic`) profile; the agent reads the notice, asks, and repeats the call with
+`demo_acknowledged: true`; the hold is then a free demo booking, `demo: true`, see `docs/pilot-seeding.md`)
 (`google_account_required` (037): video consultations need the parent's Google account, so the agent cannot hold
 them; the result adds `booking_url` and tells the agent to offer an in-clinic time or send the parent to the booking
 page). One hold per session:

@@ -124,6 +124,13 @@ async function fanOutEvent(tx: Queryable, claimed: OutboxEventRow, appUrl: strin
   }
 
   const recipients = [...new Set(await def.recipients(parsed.data, { sql: tx, event }))];
+  // 042 FR-2a: events about a demo appointment stay in the app (the notifications trigger enforces the same).
+  let channels = def.channels;
+  if (recipients.length > 0 && channels.some((c) => c !== "in_app")) {
+    const [{ demo }] = await tx<{ demo: boolean }[]>`
+      select public.outbox_event_is_demo(${event.aggregate_type}, ${event.aggregate_id}::uuid, ${tx.json(event.payload as never)}) as demo`;
+    if (demo) channels = channels.filter((c) => c === "in_app");
+  }
   let inserted = 0;
   if (recipients.length > 0) {
     const profiles = await tx<{ id: string; role: UserRole; preferred_locale: string | null }[]>`
@@ -131,7 +138,7 @@ async function fanOutEvent(tx: Queryable, claimed: OutboxEventRow, appUrl: strin
     const rows = profiles.flatMap((profile) => {
       const locale: Locale = isLocale(profile.preferred_locale) ? profile.preferred_locale : "en";
       const rendered = template.render({ payload: parsed.data, locale, role: profile.role, appUrl, event });
-      return def.channels.map((channel) => ({
+      return channels.map((channel) => ({
         event_id: event.id,
         recipient_user_id: profile.id,
         channel,

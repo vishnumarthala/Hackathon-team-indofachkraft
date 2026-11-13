@@ -68,7 +68,7 @@ export default async function BookPage({ params, searchParams }: Props) {
         </p>
       ) : null}
       <BookingFlow
-        profile={{ id: profile.id, name: profile.display_name, slug: profile.slug }}
+        profile={{ id: profile.id, name: profile.display_name, slug: profile.slug, demo: profile.is_synthetic }}
         services={services.map((s) => ({
           id: s.id,
           name: s.name,

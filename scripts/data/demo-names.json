@@ -1,0 +1,16 @@
+{
+  "_comment": "Ticket 042 (NFR-2): fictional names for synthetic provider profiles. Providers are a given name plus a single initial (no family names), always shown as `Dr. (Demo) <given> <initial>.`; centres are invented compound words, always shown as `(Demo) <word> Child Development Centre`. Never add a real person's or business's name, phone number or registration number here.",
+  "given_names": [
+    "Aarav", "Aditi", "Akhil", "Ananya", "Anika", "Arjun", "Bhavana", "Chaitanya", "Deepika", "Divya",
+    "Farhan", "Gautam", "Harini", "Ishaan", "Jahnavi", "Karthik", "Kavya", "Keerthi", "Lakshmi", "Madhav",
+    "Meera", "Mohan", "Nandini", "Naveen", "Nikhil", "Pallavi", "Pranav", "Priya", "Rahul", "Rajeshwari",
+    "Ravi", "Rohini", "Sahana", "Sameer", "Sanjana", "Shreya", "Siddharth", "Sneha", "Srinivas", "Swathi",
+    "Tanvi", "Tarun", "Uma", "Varun", "Vasudha", "Vikram", "Yamini", "Zoya", "Ayesha", "Imran",
+    "Sana", "Kiran", "Lavanya", "Mounika", "Pavan", "Revathi", "Sai", "Tejaswini", "Vamsi", "Yashwant"
+  ],
+  "initials": ["A", "B", "C", "D", "G", "J", "K", "L", "M", "N", "P", "R", "S", "T", "V", "Y"],
+  "centre_words": [
+    "Moonberry", "Pebblewing", "Tinkerleaf", "Sunnyfern", "Brightkite", "Dewdrop Lane", "Puddlehop", "Starlingvale",
+    "Maplequill", "Cloudnest", "Fernwhistle", "Honeymoss", "Lanternbloom", "Ripplebrook", "Thistlewick", "Willowmint"
+  ]
+}

@@ -171,3 +171,9 @@ audit fail-closed, privacy export).
 - Retention period for payment records (pending legal review; Indian accounting rules usually require 8 years).
 - A second successful payment on the same order (`duplicate_payment`) is logged but not refunded automatically
   (Razorpay prevents it with auto-capture + one order; refund it from the dashboard if it ever happens).
+
+## Demo bookings (ticket 042)
+
+Appointments on demo (`is_synthetic`) profiles are `is_demo`: their snapshot is `free` / ₹0, so they confirm without
+payment; `POST /api/appointments/:id/payment-order` answers 409 `not_payable` and the `payments_refuse_demo` trigger
+refuses a payment row for them. See `docs/pilot-seeding.md`.

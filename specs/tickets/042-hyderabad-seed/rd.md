@@ -1,6 +1,6 @@
 # 042: Hyderabad directory seed data (synthetic demo + real-provider import)
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 029, 030: seeds geo-located profiles (029) with services and availability (030)
 

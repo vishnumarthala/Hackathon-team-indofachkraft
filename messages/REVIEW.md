@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2428. Not yet approved: 2428.
+Rows: 2434. Not yet approved: 2434.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1697,6 +1697,7 @@ Rows: 2428. Not yet approved: 2428.
 | `booking.errors.rate_limited` | Too many tries. Please wait a few minutes. | बहुत बार कोशिश हुई। कृपया कुछ मिनट रुकें। | చాలా ప్రయత్నాలు. దయచేసి కొన్ని నిమిషాలు ఆగండి. |  | pending |
 | `booking.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर से कोशिश करें। | ఏదో పొరపాటు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
 | `booking.errors.google_account_required` | Link your Google account to book a video consultation | वीडियो परामर्श बुक करने के लिए अपना Google खाता जोड़ें | వీడియో సంప్రదింపు బుక్ చేయడానికి మీ Google ఖాతాను లింక్ చేయండి |  | pending |
+| `booking.errors.demo_ack_required` | This is a demo profile. No real consultation will take place. Tick “I understand this is a demo” to continue. | यह एक डेमो प्रोफ़ाइल है। कोई असली परामर्श नहीं होगा। आगे बढ़ने के लिए “मैं समझता/समझती हूँ कि यह एक डेमो है” चुनें। | ఇది డెమో ప్రొఫైల్. నిజమైన సంప్రదింపు జరగదు. కొనసాగడానికి “ఇది డెమో అని నాకు అర్థమైంది” ఎంచుకోండి. |  | pending |
 | `booking.flow.metaTitle` | Book with {name} | {name} के साथ बुक करें | {name} తో బుక్ చేయండి |  | pending |
 | `booking.flow.title` | Book an appointment | अपॉइंटमेंट बुक करें | అపాయింట్‌మెంట్ బుక్ చేయండి |  | pending |
 | `booking.flow.with` | with {name} | {name} के साथ | {name} తో |  | pending |
@@ -1731,6 +1732,10 @@ Rows: 2428. Not yet approved: 2428.
 | `booking.flow.googleRequired` | Link your Google account to book a video consultation | वीडियो परामर्श बुक करने के लिए अपना Google खाता जोड़ें | వీడియో సంప్రదింపు బుక్ చేయడానికి మీ Google ఖాతాను లింక్ చేయండి |  | pending |
 | `booking.flow.googleRequiredHint` | You join video calls signed in to your Google account, and the provider admits you from the waiting room. Your email is never added to the provider's calendar. | आप अपने Google खाते में साइन इन करके वीडियो कॉल से जुड़ते हैं, और प्रदाता आपको प्रतीक्षा कक्ष से अंदर लेते हैं। आपका ईमेल कभी प्रदाता के कैलेंडर में नहीं जोड़ा जाता। | మీరు మీ Google ఖాతాలో సైన్ ఇన్ చేసి వీడియో కాల్‌లో చేరతారు, ప్రొవైడర్ మిమ్మల్ని వెయిటింగ్ రూమ్ నుండి లోపలికి అనుమతిస్తారు. మీ ఇమెయిల్ ఎప్పుడూ ప్రొవైడర్ క్యాలెండర్‌కు జోడించబడదు. |  | pending |
 | `booking.flow.connectGoogle` | Connect Google | Google जोड़ें | Google కనెక్ట్ చేయండి |  | pending |
+| `booking.flow.demoNotice` | This is a demo profile. No real consultation will take place. | यह एक डेमो प्रोफ़ाइल है। कोई असली परामर्श नहीं होगा। | ఇది డెమో ప్రొఫైల్. నిజమైన సంప్రదింపు జరగదు. |  | pending |
+| `booking.flow.demoAck` | I understand this is a demo | मैं समझता/समझती हूँ कि यह एक डेमो है | ఇది డెమో అని నాకు అర్థమైంది |  | pending |
+| `booking.flow.demoFee` | Demo booking: no payment | डेमो बुकिंग: कोई भुगतान नहीं | డెమో బుకింగ్: చెల్లింపు లేదు |  | pending |
+| `booking.flow.demoBookedDetail` | Demo booking saved. No real consultation will take place, and nothing is sent outside the app. | डेमो बुकिंग सहेज ली गई। कोई असली परामर्श नहीं होगा, और ऐप के बाहर कुछ नहीं भेजा जाता। | డెమో బుకింగ్ సేవ్ అయింది. నిజమైన సంప్రదింపు జరగదు, యాప్ బయటకు ఏదీ పంపబడదు. |  | pending |
 | `booking.list.title` | Appointments | अपॉइंटमेंट | అపాయింట్‌మెంట్‌లు |  | pending |
 | `booking.list.upcoming` | Upcoming | आने वाले | రాబోయేవి |  | pending |
 | `booking.list.past` | Past and cancelled | पिछले और रद्द | గతవి మరియు రద్దయినవి |  | pending |
@@ -1754,6 +1759,7 @@ Rows: 2428. Not yet approved: 2428.
 | `booking.list.rescheduled` | Your appointment was moved. | आपका अपॉइंटमेंट बदल दिया गया। | మీ అపాయింట్‌మెంట్ మార్చబడింది. |  | pending |
 | `booking.list.back` | Back to appointments | अपॉइंटमेंट पर वापस | అపాయింట్‌మెంట్‌లకు తిరిగి |  | pending |
 | `booking.list.cancelledDone` | The appointment was cancelled. | अपॉइंटमेंट रद्द हो गया। | అపాయింట్‌మెంట్ రద్దయింది. |  | pending |
+| `booking.list.demo` | Demo booking | डेमो बुकिंग | డెమో బుకింగ్ |  | pending |
 | `booking.list.intake.link` | Before the visit: take the short AI intake call | मुलाक़ात से पहले: छोटी AI इनटेक कॉल करें | సందర్శనకు ముందు: చిన్న AI ఇన్‌టేక్ కాల్ చేయండి |  | pending |
 | `booking.list.intake.consent` | Allow the AI intake call in your DoctorNearMe app to prepare for this visit. | इस मुलाक़ात की तैयारी के लिए अपने DoctorNearMe ऐप में AI इनटेक कॉल की अनुमति दें। | ఈ సందర్శనకు సిద్ధం కావడానికి మీ DoctorNearMe యాప్‌లో AI ఇన్‌టేక్ కాల్‌ను అనుమతించండి. |  | pending |
 | `booking.list.intake.allow` | Open permissions | अनुमतियाँ खोलें | అనుమతులు తెరవండి |  | pending |
