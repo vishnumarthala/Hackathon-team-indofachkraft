@@ -17,7 +17,7 @@
 import type { Queryable, Tx } from "@/lib/pg";
 
 export type DataOwner = "child" | "case" | "user";
-export type Processor = "elevenlabs" | "gemini" | "resend" | "whatsapp" | "supabase";
+export type Processor = "elevenlabs" | "gemini" | "resend" | "whatsapp" | "supabase" | "razorpay";
 export type DeletionScope = "all_ai_processing" | "everything";
 
 export type ExportContext = { sql: Queryable; childId: string; guardianUserId: string };
@@ -537,6 +537,28 @@ export const REGISTRY: PrivacyCategory[] = [
         const [row] = await tx<{ n: number }[]>`select public.booking_erase_child(${ctx.childId}) as n`;
         return row.n;
       },
+    },
+  },
+  {
+    // 031 NFR-3: online prepayments. Amounts, statuses and Razorpay ids only; never card, UPI, bank or wallet details
+    // (webhook payloads are allowlisted before storage, lib/payments/webhook.ts).
+    key: "payments",
+    label: "Payments for appointments (amount, status, refunds)",
+    owner: "user",
+    tables: ["payments", "payment_events"],
+    retention:
+      "Kept as a financial record (period pending legal review; Indian accounting rules usually require 8 years), also after erasure. Holds no child data and no card or UPI details.",
+    processors: ["supabase", "razorpay"],
+    retainedOnErasure: true,
+    export: async ({ sql, childId, guardianUserId }) => {
+      // Only the requesting guardian's own payments for this child's appointments.
+      const rows = await sql`
+        select p.appointment_id, p.amount_paise, p.currency, p.status, p.refund_reason, p.created_at, p.captured_at, p.refunded_at,
+               p.razorpay_order_id, p.razorpay_payment_id
+        from public.payments p join public.appointments a on a.id = p.appointment_id
+        where a.child_id = ${childId} and a.guardian_user_id = ${guardianUserId}
+        order by p.created_at`;
+      return { data: rowsJson(rows) };
     },
   },
   {

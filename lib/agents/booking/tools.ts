@@ -96,7 +96,17 @@ export async function searchProvidersTool(input: SearchProvidersInput): Promise<
 
 // ---------- get_slots ----------
 
-export type SlotResult = { service_id: string; service_name: string; start: string; end: string; local_time: string; time_zone: string };
+export type SlotResult = {
+  service_id: string;
+  service_name: string;
+  start: string;
+  end: string;
+  local_time: string;
+  time_zone: string;
+  /** 031: `online` = the parent pays this fee online after confirming on screen. */
+  payment_mode: "online" | "at_clinic" | "free";
+  fee_inr: number;
+};
 
 export async function getSlotsTool(input: GetSlotsInput): Promise<ToolResult> {
   const profile = await getBookableProfile(input.profile_id);
@@ -118,6 +128,8 @@ export async function getSlotsTool(input: GetSlotsInput): Promise<ToolResult> {
         end: slot.end,
         local_time: spokenTime(slot.start, service.time_zone),
         time_zone: service.time_zone,
+        payment_mode: service.payment_mode,
+        fee_inr: service.fee_inr,
       });
     }
   }
@@ -127,7 +139,7 @@ export async function getSlotsTool(input: GetSlotsInput): Promise<ToolResult> {
     provider_name: profile.display_name,
     slots,
     message: slots.length
-      ? `Offer these ${label} times (local_time) and ask which one to hold. Use the exact service_id and start in hold_slot.`
+      ? `Offer these ${label} times (local_time) and ask which one to hold. Mention the fee (fee_inr, in rupees; payment_mode online = paid online after confirming, at_clinic = paid at the clinic, free = no fee). Use the exact service_id and start in hold_slot.`
       : `No free ${label} times in the ${SLOT_SEARCH_DAYS} days from ${input.date_from}${input.part_of_day ? ` in the ${input.part_of_day}` : ""}. Offer another day or part of the day.`,
   });
 }
@@ -169,6 +181,11 @@ export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Prom
       return result;
     });
     const start = new Date(input.start).toISOString();
+    // 031: online services move to pending_payment at confirm and the 030 page continues to the payment step.
+    const payNext =
+      service.payment_mode === "online" && service.fee_inr > 0
+        ? ` After confirming, the parent pays the fee of ${service.fee_inr} rupees online on the next screen to complete the booking.`
+        : "";
     return ok({
       held: true,
       appointment_id: held.appointment_id,
@@ -177,8 +194,9 @@ export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Prom
       provider_name: profile.display_name,
       start,
       local_time: spokenTime(start, service.time_zone),
-      message:
-        "The time is held for 10 minutes, not booked yet. Tell the parent to tap 'Sign in and confirm' on their screen to finish. You cannot confirm the booking yourself.",
+      payment_mode: service.payment_mode,
+      fee_inr: service.fee_inr,
+      message: `The time is held for 10 minutes, not booked yet. Tell the parent to tap 'Sign in and confirm' on their screen to finish.${payNext} You cannot confirm the booking yourself.`,
     });
   } catch (err) {
     const known = toBookingError(err);

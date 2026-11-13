@@ -8,7 +8,7 @@ import { UrgentNotice } from "@/components/screen/UrgentNotice";
 import { primaryButton, secondaryButton } from "@/components/screen/view";
 import type { AgentTool } from "@/lib/agents/booking/constants";
 import { runDemoScript } from "@/lib/agents/booking/demo-script";
-import { formatDateTime } from "@/lib/i18n/format";
+import { formatDateTime, formatInr } from "@/lib/i18n/format";
 import { useLocale, useT, useTimeZone } from "@/lib/i18n/client";
 import type { LiveTarget } from "./LiveBookingCall";
 
@@ -29,6 +29,8 @@ export type WidgetHold = {
   start: string;
   expires_at: string;
   confirm_url: string;
+  payment_mode?: "online" | "at_clinic" | "free";
+  fee_inr?: number;
 };
 
 type Phase = "idle" | "disclosure" | "starting" | "live" | "ended" | "stopped";
@@ -84,6 +86,9 @@ function HoldCard({ hold }: { hold: WidgetHold }) {
             </p>
           ) : null}
           <p className="text-sm text-slate-700">{t("confirmNote")}</p>
+          {hold.payment_mode === "online" && hold.fee_inr ? (
+            <p className="text-sm text-slate-700">{t("payNote", { fee: formatInr(hold.fee_inr * 100, locale) })}</p>
+          ) : null}
           <Link href={hold.confirm_url} className={primaryButton}>
             {t("confirm")}
           </Link>

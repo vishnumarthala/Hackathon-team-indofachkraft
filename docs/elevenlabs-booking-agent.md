@@ -23,7 +23,8 @@ shows the widget with a scripted conversation that calls the same tool handlers 
   not eating or drinking, or a child in danger: call `record_red_flag`, say the safety message below word for word,
   and end the call. No search, no hold.
 - **Hold, never confirm.** `hold_slot` only holds a time for 10 minutes. Always explain that the parent must sign in
-  and confirm on screen. There is no confirm tool.
+  and confirm on screen. There is no confirm tool. For `online` services the parent then pays on the next screen (031);
+  the agent mentions the fee and never takes payment details.
 - English only. Max 6 minutes. Never give medical advice or recommend one provider over another beyond the facts the
   tools return (distance, mode, language).
 
@@ -110,7 +111,7 @@ Safety rule (always, at any point): if the parent describes an emergency, self-h
 
 Tools (always pass booking_session = {{booking_session}}):
 1. search_providers with locality_text (the area or PIN code as the parent said it), and type, language and mode when known. Read out at most 3 names with their distance. Ask which one.
-2. get_slots with the chosen profile_id, service_mode (in_clinic or video), date_from (YYYY-MM-DD, worked out from today) and part_of_day if the parent said one. Read out at most 3 times using local_time. Ask which one.
+2. get_slots with the chosen profile_id, service_mode (in_clinic or video), date_from (YYYY-MM-DD, worked out from today) and part_of_day if the parent said one. Read out at most 3 times using local_time and mention the fee (fee_inr rupees; online = paid online after confirming, at_clinic = paid at the clinic, free = no fee). Ask which one. Never ask for card, UPI or bank details.
 3. hold_slot with profile_id, service_id and start copied exactly from the chosen get_slots result.
 Follow the message in each tool result. If a tool says the time was taken, read the free times again and offer another.
 
@@ -153,7 +154,8 @@ nearest first; only providers who take online bookings).
 | `date_from` | string | yes | First day to look at, `YYYY-MM-DD` (looks 7 days ahead). |
 | `part_of_day` | string | no | `morning` (before 12:00), `afternoon` (12:00-17:00) or `evening`, in the clinic's local time. |
 
-Returns `{ provider_name, slots: [{ service_id, service_name, start, end, local_time, time_zone }], message }` (max 6).
+Returns `{ provider_name, slots: [{ service_id, service_name, start, end, local_time, time_zone, payment_mode, fee_inr }], message }`
+(max 6). `payment_mode`: `online` (paid online after confirming, 031), `at_clinic` or `free`; `fee_inr` in rupees.
 
 **`hold_slot`** - `Hold one time for 10 minutes. The parent confirms on screen; this does not book.`
 
@@ -163,7 +165,7 @@ Returns `{ provider_name, slots: [{ service_id, service_name, start, end, local_
 | `service_id` | string | yes | `service_id` of the chosen slot. |
 | `start` | string | yes | `start` of the chosen slot, copied exactly. |
 
-Returns `{ held: true, expires_at, confirm_url, provider_name, start, local_time, message }` or
+Returns `{ held: true, expires_at, confirm_url, provider_name, start, local_time, payment_mode, fee_inr, message }` or
 `{ held: false, reason: "slot_taken" | "slot_unavailable" | "too_soon" | "too_far", message }`. One hold per session:
 a new hold releases the previous one.
 

@@ -49,3 +49,11 @@ console errors: one hydration warning on 029's find-q input (style caret-color i
 
 ## i18n 375 px
 en/hi/te: /find widget opened, documentElement.scrollWidth = 375 (no horizontal scroll); screenshots find-disclosure-{hi,te}-375.png
+
+## after merging main (031): voice hold on an online-payment service -> payment step (browser, 375 px)
+last caption: AssistantDone. I am holding Saturday, 14 November, 9:00 am with Dr Asha Rao (synthetic) for 10 minutes. It is not booked yet: tap Sign in and confirm on your screen to finish. After you confirm, you pay 500 rupees online on the next screen. Goodbye.
+card: Time held for you | Dr Asha Rao (synthetic) - 14 Nov 2026, 9:00 am IST - held for 10 minutes | Time left: 9:59 | Not booked yet. Sign in, choose your child and tap Confirm to book. | After you confirm, you pay ₹500 online to complete the booking. | Sign in and confirm
+button: Continue to payment
+pay page: /book/e87cc28d-9628-4dce-9796-876a6d9baee4/pay/4aebf75b-bf12-487c-bbdb-8cfae05eea91
+pay text: My appointments | Pay for your appointment | with Dr Asha Rao (synthetic) | Service | Speech assessment, paid online (synthetic) · 30 min | In clinic · e034 Centre A Banjara Hills (synthetic) | When | 14 Nov 2026, 9:00 am IST
+appointment: pending_payment guardian: true expires in s: 898

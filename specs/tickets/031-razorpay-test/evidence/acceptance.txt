@@ -1,0 +1,61 @@
+Ticket 031 acceptance run - 2026-11-13T03:39:06.168Z - dev server http://localhost:3060 (slot 6), DEMO_MODE=true, synthetic accounts (seed:users --prefix e031)
+signed in: guardian_a (phone OTP), guardian_b (phone OTP), provider_a (email)
+
+== E-1 happy path (UI) ==
+[E-1] held: We are holding 15 November 2026, 10:00 am IST for you. | picked 10:00 am IST
+[E-1] pay page /book/df0ddb7d-d101-45d4-b6ee-12c4a9c633d6/pay/dc47c2fa-53f2-47b7-84e0-d85fd5070530
+[E-1] amount: ₹500 | countdown: Pay within 14:59 to keep this time.
+[E-1] policy shown before payment: Cancel 24 hours or more before the appointment and you get a full refund. If you cancel later, the payment is not refunded. If the provider cancels, you always get a full refund. Refunds reach your account in 5-7 working days.
+[E-1] overflow at 375px: false
+[E-1] CSP script-src on the pay page: script-src 'self' 'nonce-0L+w1jOKG/YQ0iPk4M/lWw==' 'strict-dynamic' 'unsafe-eval' https://checkout.razorpay.com
+[E-1] UI: Payment received. Your appointment is booked.
+
+We sent you a confirmation. You can see it in My appointments.
+
+My appointments
+[E-1] appointment dc47c2fa-53f2-47b7-84e0-d85fd5070530 confirmed | payment captured order_DEMOe7d7db0264d710 pay_DEMO722ec5b3d5447d
+[E-1] history: null->held (guardian); held->pending_payment (guardian); pending_payment->confirmed (guardian, payment_captured)
+[E-1] outbox: appointment.confirmed=fanned_out, appointment.reminder_day_before=pending, appointment.reminder_two_hours=pending
+[E-1] notifications (confirmation): guardian email sent "Appointment confirmed" | guardian in_app sent "Appointment confirmed" | guardian whatsapp skipped "Appointment confirmed" | provider email sent "New appointment" | provider in_app sent "New appointment" | provider whatsapp skipped "New appointment"
+[E-1] audit: payment.order_created(guardian), payment.captured(guardian)
+[E-1] webhook payment.captured (same payment): 200 {"received":true,"outcome":"already_captured"} | replay of the same event id: 200 {"received":true,"duplicate":true}
+[E-1] payment_events rows for that id: 1 | stored payload: {"event":"payment.captured","payment":{"id":"pay_DEMO722ec5b3d5447d","amount":50000,"entity":"payment","method":"upi","status":"captured","currency":"INR","order_id":"order_DEMOe7d7db0264d710"},"created_at":1794541155}
+[E-1] after replay: appointment confirmed | confirmed events 1
+[E-1] /family/appointments labels: Paid | overflow: false
+
+== E-5 authz ==
+[E-5] guardian_a pending + order: pending_payment 200 order_DEMOc05514069d16c0
+[E-5] guardian_b payment-order for guardian_a's appointment: {"status":404,"json":{"error":"Appointment not found","code":"not_found"}}
+[E-5] guardian_b verify with guardian_a's order: {"status":404,"json":{"error":"Payment not found","code":"payment_not_found"}}
+[E-5] free appointment confirmed -> payment-order: {"status":409,"json":{"error":"This appointment has nothing to pay online.","code":"not_payable"}}
+[E-5] checkout signature with the wrong secret: {"status":400,"json":{"error":"The payment could not be verified.","code":"invalid_signature"}} | appointment still pending_payment
+[E-5] anonymous payment-order: 401
+[E-5] guardian_b opens guardian_a's pay page: 404
+
+== E-2 webhook security ==
+[E-2] wrong secret: 401 {"error":"Invalid signature"} | tampered body: 401 {"error":"Invalid signature"}
+[E-2] payment_events before/after: 1 1 | appointment pending_payment | payment created
+[E-2] unknown event type: 200 {"received":true,"outcome":"ignored","ignored":"settlement.processed"}
+
+== E-3 late payment ==
+[E-3.1] cron/booking: {"expired":1} -> expired
+[E-3.1] payment.captured after expiry (slot free): 200 {"received":true,"outcome":"late_confirmed"} -> appointment confirmed | payment captured
+[E-3.1] last history row: expired->confirmed (system, late_payment)
+[E-3.2] cron/booking: {"expired":1} -> guardian_a expired
+[E-3.2] guardian_b booked the same slot: d6b9caf4-9387-4489-bde7-6a0111d98202 pending_payment
+[E-3.2] guardian_a payment.captured: 200 {"received":true,"outcome":"refund_slot_unavailable"} -> guardian_a appointment expired | payment right after refund_pending
+[E-3.2] payment after the refund job (after()): refunded slot_unavailable rfnd_DEMO6bcc85373868b9
+[E-3.2] guardian_b appointment untouched: true pending_payment
+[E-3.2] cron/outbox: {"fanned_out":0,"sent":0,"failed":0,"skipped":0}
+[E-3.2] guardian_a notification: email sent "Payment refunded: Your payment was refunded because the time was no longer available." | in_app sent "Payment refunded: Your payment was refunded because the time was no longer available."
+[E-3.2] /family/appointments labels: Paid, Payment pending, Paid, Refunded
+
+== E-4 cancellation refunds ==
+[E-4.1] paid appointment: {"appointment_id":"cefbe520-17d7-4c9c-a665-22e3584c857c","appointment_status":"confirmed","payment_status":"captured","outcome":"confirmed"}
+[E-4.1] provider agenda labels: Paid online, Payment pending, Paid online, Paid online, Payment pending
+[E-4.1] provider cancels: 200 cancelled -> payment refund_pending provider_cancelled
+[E-4.1] cron/payments: {"refunded":1,"pending":0,"failed":0} -> payment refunded rfnd_DEMOa1894419a5ee4c
+[E-4.2] paid appointment moved to start in 3 h: confirmed
+[E-4.2] guardian cancels 3 h before (UI): cancelled -> payment captured refund_reason null
+[E-4.2] labels: Paid, Payment pending, Paid, Refunded, Refunded, Paid, not refunded
+[E-4.2] refund policy shown before payment: see pay-page-policy-375.png (E-1)

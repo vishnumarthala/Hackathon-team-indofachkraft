@@ -3,6 +3,7 @@
   "crons": [
     { "path": "/api/cron/outbox", "schedule": "* * * * *" },
     { "path": "/api/cron/booking", "schedule": "* * * * *" },
+    { "path": "/api/cron/payments", "schedule": "* * * * *" },
     { "path": "/api/cron/privacy", "schedule": "*/5 * * * *" },
     { "path": "/api/cron/retention", "schedule": "30 21 * * *" }
   ]

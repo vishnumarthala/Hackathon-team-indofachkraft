@@ -9,6 +9,8 @@ import { addDays, isValidDate, todayIn, wallToUtc, weekdayOf } from "@/lib/booki
 import { ageLabel } from "@/lib/children/age";
 import { createFormatter } from "@/lib/i18n/format";
 import { getLocale, getT } from "@/lib/i18n/server";
+import { PAYMENT_LABEL_STYLE, paymentLabel } from "@/lib/payments/display";
+import { listPaymentsForAppointments } from "@/lib/payments/store";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +57,9 @@ export default async function SchedulePage({ searchParams }: Props) {
     listOverrides(ctx.profile.id, addDays(today, -1)),
     listAgenda(ctx.profile.id, from, to),
   ]);
+  // 031 FR-8: `Paid online` / `Pay at clinic` on the agenda.
+  const tpay = await getT("payments");
+  const payments = await listPaymentsForAppointments(agenda.map((a) => a.id));
   const days = Array.from({ length: span }, (_, i) => addDays(first, i));
   const dayOf = (iso: string) => todayIn(tz, new Date(iso));
   const nav = (date: string, v = view) => `/dashboard/schedule?view=${v}&date=${date}`;
@@ -107,7 +112,17 @@ export default async function SchedulePage({ searchParams }: Props) {
                               {a.child_name ? t("schedule.agenda.child", { child: a.child_name, age: ageLabel(tc, a.child_date_of_birth) }) : t("schedule.agenda.noChild")}
                             </p>
                           </div>
-                          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">{t(`status.${a.status}`)}</span>
+                          <div className="flex flex-wrap gap-1">
+                            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">{t(`status.${a.status}`)}</span>
+                            {(() => {
+                              const pay = paymentLabel(a, payments.get(a.id), "provider");
+                              return pay ? (
+                                <span data-testid="payment-label" className={`rounded-full px-3 py-1 text-xs font-semibold ${PAYMENT_LABEL_STYLE[pay]}`}>
+                                  {tpay(`labels.${pay}`)}
+                                </span>
+                              ) : null;
+                            })()}
+                          </div>
                         </div>
                         {a.outside_availability ? (
                           <p role="note" className="rounded bg-amber-50 p-2 text-amber-900">{t("schedule.agenda.warning")}</p>

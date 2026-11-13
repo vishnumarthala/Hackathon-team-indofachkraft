@@ -153,7 +153,9 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     hold: typeof import("@/app/api/agents/booking/tools/hold_slot/route");
     demo: typeof import("@/app/api/agents/booking/demo/[tool]/route");
     confirm: typeof import("@/app/api/appointments/[id]/confirm/route");
+    paymentOrder: typeof import("@/app/api/appointments/[id]/payment-order/route");
   };
+  let online600: string;
 
   // Shamshabad (bundled geocoder table): far from the other suites' synthetic clinics.
   const AREA = "Shamshabad";
@@ -180,6 +182,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     vi.stubEnv("ELEVENLABS_TOOL_SECRET", SECRET);
     vi.stubEnv("GOOGLE_MAPS_SERVER_KEY", "");
     vi.stubEnv("SHOW_SYNTHETIC_LISTINGS", "true");
+    vi.stubEnv("RAZORPAY_KEY_ID", "");
     sql = postgres(process.env.DATABASE_URL as string, { max: 4, prepare: false, onnotice: () => {} });
     const db = (await import("@/lib/db")).supabaseAdmin();
     world = bookingWorld(sql, db, "t034");
@@ -193,6 +196,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     mainClinic = await world.service(main, { duration: 30, payment: "free", name: "Speech assessment (synthetic)" });
     await world.service(main, { mode: "video", duration: 30, payment: "free", name: "Video consult (synthetic)" });
     for (const p of providers.slice(1)) await world.service(p, { duration: 30, payment: "free" });
+    online600 = await world.service(providers[6], { duration: 30, payment: "online", fee: 600, name: "Online assessment (synthetic)" });
     guardianA = await world.guardian("ga");
     guardianB = await world.guardian("gb");
     routes = {
@@ -202,6 +206,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
       hold: await import("@/app/api/agents/booking/tools/hold_slot/route"),
       demo: await import("@/app/api/agents/booking/demo/[tool]/route"),
       confirm: await import("@/app/api/appointments/[id]/confirm/route"),
+      paymentOrder: await import("@/app/api/appointments/[id]/payment-order/route"),
     };
   });
 
@@ -220,6 +225,20 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
       if (hashes.length) {
         await purgeAudit(hashes);
         await sql`delete from booking_agent_sessions where token_hash in ${sql(hashes)}`;
+      }
+      // 031: payments block appointment deletes; remove this suite's payments first.
+      const ids = providers.map((p) => p.profileId);
+      if (ids.length) {
+        const pays = await sql<{ id: string }[]>`
+          select p.id from payments p join appointments a on a.id = p.appointment_id where a.provider_profile_id in ${sql(ids)}`;
+        const payIds = pays.map((p) => p.id);
+        if (payIds.length) {
+          await sql`delete from payment_events where payment_id in ${sql(payIds)}`;
+          await sql`delete from outbox_events where aggregate_type = 'payment' and aggregate_id in ${sql(payIds)}`;
+          const { purgeTestAudit } = await import("./helpers/audit");
+          await purgeTestAudit(sql, (tx) => tx`delete from audit_events where entity = 'payment' and entity_id in ${tx(payIds)}`);
+          await sql`delete from payments where id in ${sql(payIds)}`;
+        }
       }
     }
     await world?.cleanup();
@@ -469,6 +488,31 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     const ok = await confirm();
     expect(ok.status, JSON.stringify(ok.json)).toBe(200);
     expect((ok.json.appointment as Json).status).toBe("confirmed");
+    session.user = null;
+  });
+
+  it("031: an agent hold on an online-payment service -> confirm moves it to pending_payment and the guardian gets the payment step", async () => {
+    const { token, owner } = await startSession();
+    const { todayIn, addDays } = await import("@/lib/booking/time");
+    const listed = await tool("get_slots", { booking_session: token, profile_id: providers[6].profileId, service_mode: "in_clinic", date_from: addDays(todayIn("Asia/Kolkata"), 1) });
+    expect((listed.json.slots as Json[]).find((x) => x.service_id === online600)).toMatchObject({ payment_mode: "online", fee_inr: 600 });
+
+    const r = await tool("hold_slot", { booking_session: token, profile_id: providers[6].profileId, service_id: online600, start: futureSlot(60).toISOString() });
+    expect(r.json).toMatchObject({ held: true, payment_mode: "online", fee_inr: 600 });
+    expect(String(r.json.message)).toMatch(/pays the fee of 600 rupees online/);
+    const id = r.json.appointment_id as string;
+    const status = await call(routes.session.GET, new Request("http://localhost/api/agents/booking/session"));
+    expect(status.json.hold).toMatchObject({ appointment_id: id, payment_mode: "online", fee_inr: 600 });
+
+    session.cookies.set("dnm_booking", owner);
+    session.user = { id: guardianA.user.id };
+    const confirmed = await call(routes.confirm.POST, post(`http://localhost/api/appointments/${id}/confirm`, { child_id: guardianA.childId }), { id });
+    expect(confirmed.status, JSON.stringify(confirmed.json)).toBe(200);
+    expect((confirmed.json.appointment as Json).status).toBe("pending_payment");
+    // The 030/031 page then opens /book/<profile>/pay/<appointment>, which asks this route for the order.
+    const order = await call(routes.paymentOrder.POST, post(`http://localhost/api/appointments/${id}/payment-order`, {}), { id });
+    expect(order.status, JSON.stringify(order.json)).toBe(200);
+    expect(order.json).toMatchObject({ amount_paise: 60000, currency: "INR" });
     session.user = null;
   });
 

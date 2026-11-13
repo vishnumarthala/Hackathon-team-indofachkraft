@@ -80,6 +80,8 @@ export async function GET() {
         provider_name: held.provider_name,
         service_name: held.service_snapshot.name,
         mode: held.service_snapshot.mode,
+        payment_mode: held.service_snapshot.payment_mode,
+        fee_inr: held.service_snapshot.fee_inr,
         start: held.starts_at,
         end: held.ends_at,
         time_zone: held.service_snapshot.time_zone ?? held.provider_time_zone,

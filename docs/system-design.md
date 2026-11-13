@@ -273,6 +273,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `PRIVACY_NOTICE_REVIEWED` | `/privacy` (041) | `true` only after legal review; otherwise the notice shows `Draft - pending legal review` |
 | `SUPABASE_REGION_LABEL` | `/privacy` (041) | where Supabase stores data, as shown to families (e.g. `India (Mumbai)`) |
 | `RETENTION_AUDIO_DAYS` | retention job (041) | raw audio kept after transcription, default 90; other `RETENTION_*` overrides in `.env.example` and `docs/privacy/retention.md` |
+| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` / `RAZORPAY_WEBHOOK_SECRET` | payments (031) | **test mode only**: a key id not starting with `rzp_test_` stops the server (`instrumentation.ts`); optional with `DEMO_MODE=true` (demo gateway); see `docs/payments.md` |
 | `AUDIT_FAIL_ACTIONS` | dev/test only (041) | comma-separated audit actions whose audit write fails (checks fail-closed behaviour); ignored in production builds |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
@@ -426,6 +427,15 @@ named `<YYYYMMDDHHMMSS>_<name>.sql`, additive only, never edited after they reac
 (`booking_hold`, `booking_attach`, `booking_confirm`, `booking_cancel`, `booking_reschedule`, `booking_complete`,
 `booking_expire_stale`). Migration `20261113003000_booking.sql`; details, API and extension points for 031/034/035/037/042
 in `docs/booking.md`.
+
+### Payments (ticket 031, design rule 12)
+
+`payments` (one Razorpay order per appointment, status `created`/`authorized`/`captured`/`failed`/`refund_pending`/
+`refunded`, separate from the appointment's status) and `payment_events` (webhook deliveries, unique Razorpay event id,
+allowlisted payload without card/UPI details). `payment_apply_captured` is the single capture path (checkout handler and
+webhook): confirms through 030's helpers, re-books a late payment's slot if still free, else refunds. Triggers on
+`appointments` apply the cancellation refund policy and move a payment with a reschedule. Migration
+`20261113003100_payments.sql`; details in `docs/payments.md`.
 
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
@@ -597,6 +607,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
+| `POST /api/appointments/:id/payment-order`, `POST /api/payments/verify`, `POST /api/payments/demo` (DEMO_MODE), `POST /api/webhooks/razorpay` (public, signed), `GET\|POST /api/cron/payments` | 031 | see `docs/payments.md` | 200 `{ key_id, order_id, amount_paise, currency, prefill }`; verify 400 signature mismatch; webhook 401 bad signature, 200 `{ received: true, duplicate: true }` on replay; 404 other owners; 409 nothing to pay / already paid; 410 hold expired |
 | `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |
@@ -630,6 +641,7 @@ Every mutation writes an `audit_events` row via `lib/audit.ts` (041: security-cr
 | ElevenLabs TTS | skipped: report saved without audio, page shows "Voice note skipped in demo mode" |
 | Resend | not sent: audit `email.demo_skipped`, returns `{ id: "demo", delivered: false }` |
 | WhatsApp Cloud API (032) | not called: notification `skipped` with `whatsapp_not_configured` |
+| Razorpay (031) | demo gateway (`lib/payments/razorpay.ts`): deterministic `order_DEMO…` / `pay_DEMO…` / `rfnd_DEMO…` ids, refunds processed at once; the payment page shows `Simulate successful payment` / `Simulate failed payment` (signed and verified through `/api/payments/verify`) and never loads Razorpay's script |
 
 `demo/fixtures/roleplay-segments.json` is the expected `Segment[]` for the role-play session (speaker
 roles already mapped). Gaps between segments are >= 2.0 s and speakers alternate, so `lib/transcript.ts`
@@ -835,7 +847,9 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   zone, max 6); `hold_slot` runs `checkHoldPreconditions` (037/042 hooks) and `booking_hold` with the owner session in
   one transaction with the strict audit row `booking_agent.hold_created` (actor `ai`, details `{ session_hash }` only).
   There is no confirm tool: `POST /api/appointments/:id/confirm` still needs a signed-in guardian and the holding
-  browser's cookie (D-2). Logs carry tool, status and duration only; payloads and transcripts are never stored.
+  browser's cookie (D-2). Online-payment services (031): `get_slots` / `hold_slot` / the widget card carry
+  `payment_mode` + `fee_inr`; after sign-in the guardian's confirm moves the hold to `pending_payment` and the 030 page
+  continues to `/book/<profileId>/pay/<appointmentId>` (031). Logs carry tool, status and duration only; payloads and transcripts are never stored.
 - **Safety:** the agent prompt reuses 033's red-flag rule and fixed 108/112 message; its `record_red_flag` client tool
   makes the widget show 033's `UrgentNotice` only and `DELETE` the session (later tool calls 401).
 - **DEMO_MODE:** the widget runs `lib/agents/booking/demo-script.ts` (scripted English conversation) against
