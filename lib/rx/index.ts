@@ -623,6 +623,8 @@ export type GuardianPrescription = {
   voided_at: string | null;
   content_md: string;
   published_at: string;
+  /** Number of the latest published version (040 citations). */
+  version: number;
 };
 
 /** Caller must have checked the guardian's active link to the child (requireChildGuardian[Page]). */
@@ -639,15 +641,16 @@ export async function listGuardianPrescriptions(childId: string): Promise<Guardi
       voided_at: Date | null;
       content_md: string;
       published_at: Date;
+      version: number;
     }[]
   >`
     select p.id, p.status, coalesce(o.public_name, o.name) as org_name, v.prescriber_snapshot ->> 'name' as prescriber_name,
-           v.signed_at, p.voided_at, pv.content_md, pv.published_at
+           v.signed_at, p.voided_at, pv.content_md, pv.published_at, pv.version
     from prescriptions p
     join prescription_versions v on v.prescription_id = p.id and v.version = p.current_version and v.signed_at is not null
     join organizations o on o.id = p.org_id
     join lateral (
-      select content_md, published_at, visible_to_guardian from published_versions
+      select content_md, published_at, visible_to_guardian, version from published_versions
       where entity_type = 'prescription' and entity_id = p.id
       order by version desc limit 1
     ) pv on pv.visible_to_guardian

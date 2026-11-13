@@ -1,0 +1,203 @@
+// Ticket 040 acceptance run against the dev server (DEMO_MODE=true, slot 8). Synthetic data only.
+const fs = require("node:fs");
+const path = require("node:path");
+const WT = "/Users/vishnu/Documents/git/dnm-worktrees/040";
+const { createServerClient } = require(path.join(WT, "node_modules/@supabase/ssr"));
+const pgMod = require(path.join(WT, "node_modules/postgres")); const postgres = pgMod.default || pgMod;
+const { chromium } = require("playwright-core");
+
+const DIR = __dirname;
+const BASE = "http://localhost:3080";
+const acct = JSON.parse(fs.readFileSync(path.join(DIR, "accounts.json"), "utf8"));
+const seed = JSON.parse(fs.readFileSync(path.join(DIR, "seed.json"), "utf8"));
+const SECRET = "e040-tool-secret";
+const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false, onnotice: () => {} });
+const out = [];
+let failed = 0;
+function check(name, ok, evidence) {
+  if (!ok) failed++;
+  const line = `${ok ? "PASS" : "FAIL"} ${name} :: ${evidence}`;
+  out.push(line);
+  console.log(line);
+}
+
+async function cookiesFor(user) {
+  const jar = [];
+  const ssr = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+    cookies: { getAll: () => jar, setAll: (cs) => cs.forEach((c) => jar.push({ name: c.name, value: c.value })) },
+  });
+  const { error } = await ssr.auth.signInWithPassword({ email: user.email, password: user.password });
+  if (error) throw new Error(`sign in ${user.email}: ${error.message}`);
+  return jar;
+}
+const header = (jar) => jar.map((c) => `${c.name}=${c.value}`).join("; ");
+async function call(jar, method, url, body, extra = {}) {
+  const t0 = Date.now();
+  const res = await fetch(BASE + url, {
+    method,
+    headers: { ...(jar ? { cookie: header(jar) } : {}), ...(body ? { "content-type": "application/json" } : {}), ...extra },
+    body: body ? JSON.stringify(body) : undefined,
+    redirect: "manual",
+  });
+  const text = await res.text();
+  let json = null;
+  try { json = JSON.parse(text); } catch {}
+  return { status: res.status, json, ms: Date.now() - t0, headers: res.headers };
+}
+const modelCalls = () => (fs.readFileSync(path.join(DIR, "dev.log"), "utf8").match(/followup model call/g) || []).length;
+
+(async () => {
+  const A = await cookiesFor(acct.users.guardian_a);
+  const B = await cookiesFor(acct.users.guardian_b);
+  const P = await cookiesFor(acct.users.provider_a);
+  const askA = `/api/family/children/${seed.childA}/ask`;
+  // Fresh daily budget for this run (earlier runs' questions would count against the 30/day limit).
+  await sql`delete from followup_questions where guardian_user_id = ${acct.users.guardian_a.id}`;
+  const runStart = new Date();
+
+  // ---- E-1 (API)
+  let r = await call(A, "POST", askA, { question: "What should we practise this week?" });
+  const c0 = r.json?.citations?.[0];
+  check("E-1 practise -> cites home program at its version", r.status === 200 && r.json.found === true && c0?.entity_type === "home_program" && c0.entity_id === seed.programA && c0.version === 1,
+    `${r.status} ${r.ms}ms ${JSON.stringify({ answer: r.json?.answer, citations: r.json?.citations })}`);
+  r = await call(A, "POST", askA, { question: "What time does the school bus come?" });
+  check("E-1 absent -> not-found text", r.status === 200 && r.json.found === false && r.json.answer === "I couldn't find that in your child's shared plans. Please ask your provider using Messages.",
+    `${r.status} ${JSON.stringify(r.json)}`);
+  r = await call(A, "POST", askA, { question: "When is the next review?" });
+  check("E-1 review -> cites IEP plan v1 (not the unpublished v2 edit)", r.status === 200 && r.json.citations?.[0]?.entity_type === "iep_plan" && r.json.citations[0].version === 1, `${r.status} ${JSON.stringify(r.json?.citations)}`);
+  r = await call(A, "POST", askA, { question: "How do I give the medicine?" });
+  check("E-1 medicine how-to -> cites the signed prescription (not the voided one)", r.status === 200 && r.json.citations?.[0]?.entity_type === "prescription" && r.json.citations[0].entity_id === seed.rxSigned, `${r.status} ${JSON.stringify(r.json?.citations)}`);
+
+  // ---- E-2
+  r = await call(A, "POST", askA, { question: "Can I double the syrup dose?" });
+  check("E-2 dose change -> fixed medicine message", r.status === 200 && r.json.safety === "medical_advice" && r.json.answer === "Please don't change any medicine without talking to the prescriber.", `${r.status} ${JSON.stringify(r.json)}`);
+  const before = modelCalls();
+  r = await call(A, "POST", askA, { question: "My child is not breathing properly" });
+  await new Promise((x) => setTimeout(x, 500));
+  const after = modelCalls();
+  check("E-2 not breathing -> 108/112, no model call", r.status === 200 && r.json.safety === "red_flag" && /Call 108/.test(r.json.answer) && /112/.test(r.json.answer) && before === after,
+    `${r.status} ${JSON.stringify(r.json)}; dev.log 'followup model call' lines before=${before} after=${after}`);
+  const audits = await sql`select action, details, actor_role from audit_events where action = 'followup.red_flag' and child_id = ${seed.childA} and created_at >= ${runStart}`;
+  check("E-2 audit followup.red_flag without the question text", audits.length === 1 && !JSON.stringify(audits[0].details).includes("breathing properly"), JSON.stringify(audits));
+  const stored = await sql`select count(*)::int as n from followup_questions where child_id = ${seed.childA} and question ilike '%breathing%'`;
+  check("E-2 red-flag question not stored", stored[0].n === 0, `rows=${stored[0].n}`);
+
+  // ---- E-3
+  r = await call(B, "POST", `/api/family/children/${seed.childB}/ask`, { question: "What should we practise this week?" });
+  check("E-3 without ai_follow_up -> 422", r.status === 422 && r.json.details?.feature === "ai_follow_up", `${r.status} ${JSON.stringify(r.json)}`);
+  r = await call(B, "POST", askA, { question: "What should we practise this week?" });
+  check("E-3 guardian_b on guardian_a's child -> 404", r.status === 404, `${r.status} ${JSON.stringify(r.json)}`);
+  r = await call(P, "POST", askA, { question: "What should we practise this week?" });
+  check("E-3 provider -> 403", r.status === 403, `${r.status} ${JSON.stringify(r.json)}`);
+  r = await call(null, "POST", askA, { question: "What should we practise this week?" });
+  check("E-3 anonymous -> 401", r.status === 401, `${r.status}`);
+
+  // ---- E-4
+  const s = await call(A, "POST", "/api/agents/followup/session", { child_id: seed.childA });
+  const token = s.json?.followup_session;
+  check("E-4 voice session (guardian, consent) -> 201, token only variable", s.status === 201 && s.json.demo === true && JSON.stringify(s.json.dynamic_variables) === JSON.stringify({ followup_session: token }), `${s.status} expires_at=${s.json?.expires_at}`);
+  const text = await call(A, "POST", askA, { question: "When is the next review?" });
+  r = await call(null, "POST", "/api/agents/followup/tools/answer_question", { followup_session: token, question: "When is the next review?" }, { "x-agent-secret": SECRET });
+  const same = r.status === 200 && r.json.answer === text.json.answer && JSON.stringify(r.json.citations) === JSON.stringify(text.json.citations);
+  check("E-4 mocked agent tool call with valid session -> same answer", same, `${r.status} ${r.ms}ms answer=${JSON.stringify(r.json?.answer)}`);
+  r = await call(null, "POST", "/api/agents/followup/tools/answer_question", { followup_session: token, question: "When is the next review?" });
+  check("E-4 tool without secret -> 401", r.status === 401, `${r.status}`);
+  r = await call(B, "POST", "/api/agents/followup/demo/answer_question", { followup_session: token, question: "When is the next review?" });
+  check("E-4 foreign session (guardian_b, demo route) -> 401", r.status === 401, `${r.status} ${JSON.stringify(r.json)}`);
+  await sql`update followup_agent_sessions set created_at = now() - interval '16 minutes', expires_at = now() - interval '1 minute' where child_id = ${seed.childA}`;
+  r = await call(null, "POST", "/api/agents/followup/tools/answer_question", { followup_session: token, question: "When is the next review?" }, { "x-agent-secret": SECRET });
+  check("E-4 expired session -> 401", r.status === 401, `${r.status} ${JSON.stringify(r.json)}`);
+
+  // CSP: ElevenLabs only on the ask route.
+  const pageAsk = await call(A, "GET", `/family/children/${seed.childA}/ask`);
+  const pageChild = await call(A, "GET", `/family/children/${seed.childA}`);
+  const cspAsk = pageAsk.headers.get("content-security-policy") || "";
+  const cspChild = pageChild.headers.get("content-security-policy") || "";
+  check("CSP: ElevenLabs connect-src on /family/children/*/ask only", pageAsk.status === 200 && cspAsk.includes("wss://livekit.rtc.elevenlabs.io") && !cspChild.includes("elevenlabs"), `ask=${pageAsk.status} child=${pageChild.status}`);
+
+  // p95 (NFR-2, DEMO fixtures)
+  const times = [];
+  for (let i = 0; i < 10; i++) times.push((await call(A, "POST", askA, { question: i % 2 ? "When is the next review?" : "What should we practise this week?" })).ms);
+  times.sort((a, b) => a - b);
+  check("NFR-2 p95 < 6 s (DEMO fixtures, 10 questions)", times[9] < 6000, `ms=${times.join(",")}`);
+
+  // ---- Browser (375 px)
+  const browser = await chromium.launch({ headless: true, executablePath: "/Users/vishnu/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell" });
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 812 } });
+  await ctx.addCookies(A.map((c) => ({ name: c.name, value: c.value, url: BASE })));
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+  await page.goto(`${BASE}/family/children/${seed.childA}`);
+  const link = page.getByRole("link", { name: "Ask about the plan" });
+  check("UI child page links to the ask page", (await link.count()) === 1, `href=${await link.getAttribute("href")}`);
+  await link.click();
+  await page.waitForURL(/\/ask$/);
+  await page.getByText("AI answers from your child's shared plans. It is not medical advice.").waitFor();
+  const input = page.getByLabel("Ask about Asha (synthetic)'s plan");
+  check("UI input label and disclaimer", (await input.count()) === 1, "label `Ask about Asha (synthetic)'s plan`, disclaimer visible");
+  const cardsBefore = await page.locator('[data-testid="followup-answer"]').count();
+  await page.getByRole("button", { name: "What should we practise this week?" }).click();
+  await page.waitForFunction((n) => document.querySelectorAll('[data-testid="followup-answer"]').length > n, cardsBefore);
+  await page.getByRole("button", { name: "Ask", exact: true }).waitFor();
+  const first = page.locator('[data-testid="followup-answer"]').first();
+  await first.locator('[data-testid="citation-chip"]').first().waitFor();
+  await page.screenshot({ path: path.join(DIR, "ask-answer-375.png"), fullPage: true });
+  const chip = first.locator('[data-testid="citation-chip"]').first();
+  const chipHref = await chip.getAttribute("href");
+  check("UI answer shows a Home program chip", (await chip.getAttribute("data-entity-type")) === "home_program", `href=${chipHref} text=${(await chip.innerText()).replace(/\s+/g, " ")}`);
+  await chip.click();
+  await page.waitForURL(/\/ask\/sources\/home_program\//);
+  const src = page.locator('[data-testid="followup-source"]');
+  await src.waitFor();
+  check("UI chip opens the cited published version", (await src.getAttribute("data-version")) === "1" && (await page.locator("h1").innerText()).includes("Home program: Home practice, term 1 (v1)"),
+    `${page.url().replace(BASE, "")} h1=${await page.locator("h1").innerText()}`);
+  await page.screenshot({ path: path.join(DIR, "ask-source-375.png"), fullPage: true });
+  await page.goBack();
+  await page.getByLabel("Ask about Asha (synthetic)'s plan").fill("Can the school bus pick him up?");
+  await page.getByRole("button", { name: "Ask", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('[data-testid="followup-answer"]')?.textContent?.includes("couldn't find"));
+  const ml = page.locator('[data-testid="followup-answer"]').first().locator('[data-testid="followup-messages-link"]');
+  check("UI not-found answer has a Messages link", (await ml.getAttribute("href")) === "/family/messages", `href=${await ml.getAttribute("href")}`);
+  await page.getByLabel("Ask about Asha (synthetic)'s plan").fill("My child is not breathing properly");
+  await page.getByRole("button", { name: "Ask", exact: true }).click();
+  await page.locator('[data-testid="followup-urgent"]').first().waitFor();
+  check("UI red flag shows only the 108/112 message", (await page.locator('[data-testid="followup-urgent"]').first().innerText()).includes("Call 108"), "urgent alert visible");
+  await page.screenshot({ path: path.join(DIR, "ask-red-flag-375.png"), fullPage: true });
+  // Voice demo panel.
+  await page.getByTestId("followup-voice-start").click();
+  await page.getByLabel("What you would say").fill("When is the next review?");
+  await page.getByRole("button", { name: "Say it" }).click();
+  await page.locator('[data-testid="followup-voice-captions"] li').nth(1).waitFor();
+  const captions = (await page.locator('[data-testid="followup-voice-captions"]').innerText()).replace(/\s+/g, " ");
+  check("UI voice demo answers through the tool handler", /Assistant: .*IEP plan/.test(captions), captions.slice(0, 200));
+  await page.screenshot({ path: path.join(DIR, "ask-voice-demo-375.png"), fullPage: true });
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
+  check("UI no horizontal scroll at 375 px", overflow, "scrollWidth <= innerWidth");
+  // Hindi chrome
+  await ctx.addCookies([{ name: "dnm_locale", value: "hi", url: BASE }]);
+  await page.goto(`${BASE}/family/children/${seed.childA}/ask`);
+  const hiOk = await page.getByText("AI आपके बच्चे की साझा योजनाओं से उत्तर देता है। यह चिकित्सा सलाह नहीं है।").count();
+  check("UI chrome translated (hi)", hiOk === 1, "hi disclaimer visible");
+  await page.screenshot({ path: path.join(DIR, "ask-hi-375.png"), fullPage: true });
+  // guardian_b page on child A -> 404
+  const ctxB = await browser.newContext({ viewport: { width: 375, height: 812 } });
+  await ctxB.addCookies(B.map((c) => ({ name: c.name, value: c.value, url: BASE })));
+  const pb = await ctxB.newPage();
+  const resp = await pb.goto(`${BASE}/family/children/${seed.childA}/ask`);
+  check("UI guardian_b on child A's ask page -> 404", resp.status() === 404, `${resp.status()}`);
+  const resp2 = await pb.goto(`${BASE}/family/children/${seed.childB}/ask`);
+  check("UI without consent: no input, permissions link", resp2.status() === 200 && (await pb.getByTestId("followup-consent-needed").count()) === 1 && (await pb.locator("#followup-question").count()) === 0, `${resp2.status()}`);
+  await pb.screenshot({ path: path.join(DIR, "ask-no-consent-375.png"), fullPage: true });
+  check("UI no console errors", errors.filter((e) => !/caret-color|hydrat/i.test(e)).length === 0, JSON.stringify(errors).slice(0, 300));
+  await browser.close();
+
+  fs.writeFileSync(path.join(DIR, "acceptance.txt"), out.join("\n") + `\n\n${out.length - failed} PASS, ${failed} FAIL\n`);
+  console.log(`${out.length - failed} PASS, ${failed} FAIL`);
+  await sql.end();
+  process.exit(failed ? 1 : 0);
+})().catch(async (e) => {
+  console.error(e);
+  fs.writeFileSync(path.join(DIR, "acceptance.txt"), out.join("\n") + `\n\nERROR ${e?.stack || e}\n`);
+  process.exit(2);
+});

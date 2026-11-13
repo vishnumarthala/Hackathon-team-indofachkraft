@@ -1,0 +1,136 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/040
+
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > My child is not breathing properly -> breathing 1ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > She is struggling to breathe and her lips turned blue -> breathing 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > He had a fit this morning, what do I do? -> seizure 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > He is having a seizure -> seizure 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > My son took too much of his medicine -> medicine_overdose 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > She swallowed the whole bottle of syrup -> medicine_overdose 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > I accidentally gave him a double dose -> medicine_overdose 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > He fainted and is unresponsive -> unconscious 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > She won't wake up -> unconscious 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > My daughter says she wants to die -> suicidal 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > He talks about killing himself -> suicidal 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > He keeps banging his head on the wall -> self_injury 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > She hurts herself on purpose -> self_injury 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > Someone is hurting my child -> safety_concern 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > He has stopped eating and drinking -> not_eating_drinking 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > She has stopped talking, she used to say words -> skill_regression 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > He lost the words he had -> skill_regression 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > covers the 033 codes plus medicine overdose, breathing, unconscious and suicidal 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > ordinary plan questions are not red flags 0ms
+ ✓ tests/followup-safety.test.ts > shared red-flag classifier (FR-3) > uses the 033 safety message word for word 0ms
+ ✓ tests/followup-safety.test.ts > medicine and condition rules (FR-2) > dose or medicine changes get the fixed medicine answer 2ms
+ ✓ tests/followup-safety.test.ts > medicine and condition rules (FR-2) > questions about how to follow the prescription are answered from it 0ms
+ ✓ tests/followup-safety.test.ts > medicine and condition rules (FR-2) > asking whether the child has a condition is never answered by the model 0ms
+ ✓ tests/followup-safety.test.ts > medicine and condition rules (FR-2) > an answer that suggests changing a medicine is caught 2ms
+stdout | tests/followup-safety.test.ts > follow-up pipeline safety (database) > E-2: a red-flag question bypasses the model, is not stored and is audited without its text
+[followup] red flag {"channel":"text","code":"breathing"}
+
+stdout | tests/followup-safety.test.ts > follow-up pipeline safety (database) > E-2: a dose-change question gets the fixed medicine answer without a model call
+[followup] answered {"channel":"text","found":false,"safety":"medical_advice","ms":23}
+
+ ✓ tests/followup-context.test.ts > buildFollowupContext (FR-1, pure) > numbers documents per kind, newest first, and never exceeds 60,000 characters 11ms
+ ✓ tests/followup-context.test.ts > buildFollowupContext (FR-1, pure) > chip excerpts are verbatim from the cited document, never the model's invention 0ms
+stdout | tests/followup-safety.test.ts > follow-up pipeline safety (database) > a model answer that suggests a dose change is replaced by the medicine answer
+[followup] answered {"channel":"text","found":false,"safety":null,"ms":29}
+
+stdout | tests/followup-safety.test.ts > follow-up pipeline safety (database) > FR-2: 30 questions per guardian per day (atomic); red flags still get through at the limit
+[followup] answered {"channel":"text","found":false,"safety":null,"ms":25}
+
+ ✓ tests/followup-safety.test.ts > follow-up pipeline safety (database) > E-2: a red-flag question bypasses the model, is not stored and is audited without its text 130ms
+ ✓ tests/followup-safety.test.ts > follow-up pipeline safety (database) > E-2: a dose-change question gets the fixed medicine answer without a model call 24ms
+ ✓ tests/followup-safety.test.ts > follow-up pipeline safety (database) > a model answer that suggests a dose change is replaced by the medicine answer 29ms
+stdout | tests/followup-safety.test.ts > follow-up pipeline safety (database) > FR-2: 30 questions per guardian per day (atomic); red flags still get through at the limit
+[followup] red flag {"channel":"text","code":"seizure"}
+
+stdout | tests/followup-safety.test.ts > follow-up pipeline safety (database) > FR-2: 30 questions per guardian per day (atomic); red flags still get through at the limit
+[followup] answered {"channel":"text","found":false,"safety":null,"ms":16}
+
+ ✓ tests/followup-safety.test.ts > follow-up pipeline safety (database) > FR-2: 30 questions per guardian per day (atomic); red flags still get through at the limit 65ms
+ ✓ tests/followup-context.test.ts > follow-up context and routes (database) > NFR-1: the context has IEP v1 but not the v2 draft, no draft/hidden report or note, no voided Rx, no transcript, nothing of another child 22ms
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-1: `What should we practise this week?` cites the home program at its version; the chip opens that version
+[followup] followup model call {"demo":true,"fixture":"gemini/follow-up.json"}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-1: `What should we practise this week?` cites the home program at its version; the chip opens that version
+[followup] answered {"channel":"text","found":true,"safety":null,"ms":21}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-1: `What should we practise this week?` cites the home program at its version; the chip opens that version
+[followup] followup model call {"demo":true,"fixture":"gemini/follow-up.json"}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-1: `What should we practise this week?` cites the home program at its version; the chip opens that version
+[followup] answered {"channel":"text","found":false,"safety":null,"ms":16}
+
+ ✓ tests/followup-context.test.ts > follow-up context and routes (database) > E-1: `What should we practise this week?` cites the home program at its version; the chip opens that version 184ms
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-2: dose change -> fixed medicine message; `not breathing properly` -> 108/112 with no model call, audited without text
+[followup] answered {"channel":"text","found":false,"safety":"medical_advice","ms":5}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-2: dose change -> fixed medicine message; `not breathing properly` -> 108/112 with no model call, audited without text
+[followup] red flag {"channel":"text","code":"breathing"}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup] followup model call {"demo":true,"fixture":"gemini/follow-up.json"}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup] answered {"channel":"text","found":true,"safety":null,"ms":12}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup] followup model call {"demo":true,"fixture":"gemini/follow-up.json"}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup] answered {"channel":"voice","found":true,"safety":null,"ms":13}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":200,"ms":18}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":401,"ms":0}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":401,"ms":0}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":401,"ms":1}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"guardian","status":401,"ms":1}
+
+ ✓ tests/followup-context.test.ts > follow-up context and routes (database) > E-2: dose change -> fixed medicine message; `not breathing properly` -> 108/112 with no model call, audited without text 20ms
+ ✓ tests/followup-context.test.ts > follow-up context and routes (database) > E-3: without ai_follow_up -> 422; guardian_b on child A -> 404; a provider -> 403; anonymous -> 401 27ms
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup] followup model call {"demo":true,"fixture":"gemini/follow-up.json"}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup] answered {"channel":"voice","found":true,"safety":null,"ms":12}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"guardian","status":200,"ms":17}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":401,"ms":0}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup] red flag {"channel":"voice","code":"seizure"}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":200,"ms":6}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":401,"ms":1}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":401,"ms":1}
+
+stdout | tests/followup-context.test.ts > follow-up context and routes (database) > NFR-1: a revoked guardian link -> no context, 404 on the routes, and the voice session stops working
+[followup-agent] tool call {"tool":"answer_question","auth":"secret","status":401,"ms":3}
+
+ ✓ tests/followup-context.test.ts > follow-up context and routes (database) > E-4: the agent's tool with a valid session gives the same answer; expired, foreign, ended or unsigned -> 401 100ms
+ ✓ tests/followup-context.test.ts > follow-up context and routes (database) > NFR-1: a revoked guardian link -> no context, 404 on the routes, and the voice session stops working 22ms
+ ✓ tests/followup-context.test.ts > follow-up context and routes (database) > FR-6: questions older than 90 days are removed by the retention step 7ms
+
+ Test Files  2 passed (2)
+      Tests  37 passed (37)
+   Start at  05:34:34
+   Duration  1.40s (transform 340ms, setup 0ms, import 555ms, tests 1.45s, environment 0ms)
+

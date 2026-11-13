@@ -7,6 +7,7 @@ import { supabaseAdmin } from "@/lib/db";
 import { logger } from "@/lib/log";
 import { pg, type Queryable, type Sql } from "@/lib/pg";
 import { UNSAVED_RETENTION_DAYS } from "@/lib/screen/questions";
+import { FOLLOWUP_RETENTION_DAYS } from "@/lib/followup/constants";
 
 const log = logger("retention");
 
@@ -81,6 +82,18 @@ export async function purgeUnsavedScreenSessions(sql: Queryable, now: Date): Pro
     delete from public.screen_sessions
     where saved_child_id is null and created_at < ${now}::timestamptz - ${days(UNSAVED_RETENTION_DAYS)}::interval`;
   return done.count;
+}
+
+/**
+ * 040 FR-6: follow-up questions and answers older than 90 days (`RETENTION_FOLLOWUP_DAYS`), and voice sessions that
+ * ended that long ago (their ElevenLabs conversation ids go with them; the agent keeps no longer copy). Returns the count.
+ */
+export async function purgeFollowupQuestions(sql: Queryable, now: Date, retentionDays = envNumber("RETENTION_FOLLOWUP_DAYS", FOLLOWUP_RETENTION_DAYS, 1)): Promise<number> {
+  const questions = await sql`
+    delete from public.followup_questions where created_at < ${now}::timestamptz - ${days(retentionDays)}::interval`;
+  const sessions = await sql`
+    delete from public.followup_agent_sessions where expires_at < ${now}::timestamptz - ${days(retentionDays)}::interval`;
+  return questions.count + sessions.count;
 }
 
 export async function runRetention(opts: RetentionOptions = {}): Promise<RetentionCounts> {
@@ -239,6 +252,9 @@ export async function runRetention(opts: RetentionOptions = {}): Promise<Retenti
 
   // 033 FR-5: public check-ins that were never saved to a child, 30 days after they started (registry `screen_results`).
   counts.unsaved_screen_sessions = await purgeUnsavedScreenSessions(sql, now);
+
+  // 040 FR-6: follow-up questions after 90 days (registry `followup_questions`).
+  counts.followup_questions = await purgeFollowupQuestions(sql, now);
 
   // FR-6: website sign-ups after 24 months; audit events after 7 years (maintenance function).
   counts.pilot_signups = (

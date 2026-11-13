@@ -52,6 +52,12 @@ export const env = {
   get ELEVENLABS_BOOKING_AGENT_ID() {
     return read("ELEVENLABS_BOOKING_AGENT_ID");
   },
+  // 040: the English-only follow-up agent in the family portal (docs/elevenlabs-followup-agent.md); its server tool
+  // `answer_question` uses ELEVENLABS_TOOL_SECRET too. Optional: without both (and outside DEMO_MODE) the
+  // `Ask by voice` button is hidden and the text chat is the only way to ask.
+  get ELEVENLABS_FOLLOWUP_AGENT_ID() {
+    return read("ELEVENLABS_FOLLOWUP_AGENT_ID");
+  },
   get ELEVENLABS_TOOL_SECRET() {
     return read("ELEVENLABS_TOOL_SECRET");
   },

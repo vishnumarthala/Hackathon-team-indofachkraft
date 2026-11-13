@@ -1,6 +1,6 @@
 # 040: Follow-up agent ("ask about my child's plan")
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 026, 033, 039: grounds answers on published home programs/plans (025/026) and signed prescriptions (039); reuses the screen's red-flag safety handling (033)
 

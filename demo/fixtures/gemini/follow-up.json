@@ -1,0 +1,38 @@
+{
+  "answers": [
+    {
+      "match": ["practise", "practice", "this week", "home program", "activity", "activities"],
+      "found": true,
+      "answer": "This week, practise the activities in your child's home program, as often as each one says. Your family's practice log for this week is shown with the program. Open the home program for the steps.",
+      "medical_advice": false,
+      "citations": [{ "ref": "HOME1", "quote": "" }]
+    },
+    {
+      "match": ["review", "goal", "goals", "plan"],
+      "found": true,
+      "answer": "Your child's IEP plan lists the goals and the review date. Open the plan to see each goal and when it will be reviewed.",
+      "medical_advice": false,
+      "citations": [{ "ref": "PLAN1", "quote": "" }]
+    },
+    {
+      "match": ["medicine", "syrup", "tablet", "prescription", "dose"],
+      "found": true,
+      "answer": "Give the medicine exactly as your child's signed prescription says: the dose, how often and for how many days. Open the prescription to see each medicine and its instructions.",
+      "medical_advice": false,
+      "citations": [{ "ref": "RX1", "quote": "" }]
+    },
+    {
+      "match": ["session", "therapist said", "last visit", "note"],
+      "found": true,
+      "answer": "The latest session note your child's clinician shared describes what happened in the session and what to work on next. Open the note to read it.",
+      "medical_advice": false,
+      "citations": [{ "ref": "NOTE1", "quote": "" }]
+    }
+  ],
+  "fallback": {
+    "found": false,
+    "answer": "I couldn't find that in your child's shared plans. Please ask your provider using Messages.",
+    "medical_advice": false,
+    "citations": []
+  }
+}
