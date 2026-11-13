@@ -3,9 +3,11 @@
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef, useState } from "react";
 import { upsertLine, type Line } from "@/components/landing/VoiceDemo";
+import { useVoiceCallGuard } from "@/components/voice/useVoiceCallGuard";
 import { useT } from "@/lib/i18n/client";
 import { finishScreen, screenClientTools, type StartedSession } from "@/lib/screen/client";
 import { VOICE_MAX_MINUTES, type ScreenResult } from "@/lib/screen/questions";
+import { reportVoiceEnd } from "@/lib/voice/client";
 import { UrgentNotice } from "./UrgentNotice";
 import { secondaryButton } from "./view";
 
@@ -15,11 +17,13 @@ export type VoiceProps = {
   session: StartedSession;
   target: Target;
   dynamicVariables: Record<string, string>;
+  /** 051 FR-7: the `voice_usage` row this call reports its end against. */
+  usageId: string | null;
   /** Red flag: the call has ended; the page keeps showing only the 108/112 message. */
   onStopped: () => void;
   onFinished: (result: ScreenResult) => void;
   /** The call ended before every question was answered: continue with the form, answers kept. */
-  onContinueByTapping: (answers: Record<string, string>, failed: boolean) => void;
+  onContinueByTapping: (answers: Record<string, string>, reason: "voiceFailed" | "silence" | null) => void;
 };
 
 /** Seconds the agent gets to say the safety message / goodbye before the page ends the call itself. */
@@ -29,7 +33,7 @@ export const CONNECT_TIMEOUT_SECONDS = 20;
 
 type Phase = "live" | "stopped" | "complete";
 
-function VoicePanel({ session, target, dynamicVariables, onStopped, onFinished, onContinueByTapping }: VoiceProps) {
+function VoicePanel({ session, target, dynamicVariables, usageId, onStopped, onFinished, onContinueByTapping }: VoiceProps) {
   const t = useT("screen");
   const [phase, setPhase] = useState<Phase>("live");
   const [answered, setAnswered] = useState(0);
@@ -45,21 +49,27 @@ function VoicePanel({ session, target, dynamicVariables, onStopped, onFinished, 
   async function handleEnd() {
     if (endedRef.current) return;
     endedRef.current = true;
+    // 051 FR-7: report the connected seconds (clamped by the server to the reserved 6 minutes).
+    void reportVoiceEnd(fetch, usageId, guard.seconds(), conversationIdRef.current);
     if (phaseRef.current === "stopped") return onStopped();
     if (phaseRef.current === "complete") {
       setFinishing(true);
       const done = await finishScreen(fetch, session.session_id, conversationIdRef.current);
       if (done.ok) return done.result.red_flag ? onStopped() : onFinished(done.result);
     }
-    onContinueByTapping(answersRef.current, failedRef.current);
+    onContinueByTapping(answersRef.current, guard.endedBySilence() ? "silence" : failedRef.current ? "voiceFailed" : null);
   }
 
   const conversation = useConversation({
     onConnect: ({ conversationId }) => {
       connectedRef.current = true;
       conversationIdRef.current = conversationId;
+      guard.connected();
     },
-    onMessage: ({ message, role, event_id }) => setLines((prev) => upsertLine(prev, role, event_id, message ?? "")),
+    onMessage: ({ message, role, event_id }) => {
+      if (role === "user" && message?.trim()) guard.heard();
+      setLines((prev) => upsertLine(prev, role, event_id, message ?? ""));
+    },
     onDisconnect: () => void handleEnd(),
     onError: () => {
       failedRef.current = true;
@@ -67,6 +77,12 @@ function VoicePanel({ session, target, dynamicVariables, onStopped, onFinished, 
   });
   const { endSession, startSession } = conversation;
   const status = conversation.status as "disconnected" | "connecting" | "connected" | "error";
+  // 051 FR-6: 30 seconds without speech from the parent ends the call; the page continues by tapping.
+  const guard = useVoiceCallGuard({
+    live: status === "connected" && phase === "live",
+    isSpeaking: conversation.isSpeaking,
+    onSilence: () => endSession(),
+  });
 
   useEffect(() => {
     const tools = screenClientTools(
@@ -110,7 +126,7 @@ function VoicePanel({ session, target, dynamicVariables, onStopped, onFinished, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // FR-3: the agent itself is capped at 8 minutes; the page enforces the same limit.
+  // FR-3: the agent itself is capped at 6 minutes (051 FR-6, was 8); the page enforces the same limit.
   useEffect(() => {
     if (status !== "connected") return;
     const timer = setTimeout(() => endSession(), VOICE_MAX_MINUTES * 60_000);

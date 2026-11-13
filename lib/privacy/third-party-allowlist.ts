@@ -1,6 +1,7 @@
 // 041 FR-13 / D-6: third-party script origins allowed on child pages (`/family/**`), each scoped to the routes that
 // need it. Approved by the product owner on 2026-11-12: the ElevenLabs SDK (voice agents, 033/040) and Razorpay
-// checkout (031). Nothing else: analytics, ads, tag managers and social pixels are banned on every child page.
+// checkout (031); 051 adds Cloudflare Turnstile (bot check) on the sign-in, /screen and /find pages. Nothing else:
+// analytics, ads, tag managers and social pixels are banned on every child page.
 // `tests/no-tracking.test.ts` crawls the rendered `/family/**` pages and fails on any `<script src>` outside the app
 // origin unless it is listed here for that route; it also checks that the CSP exceptions in lib/csp.ts
 // (FAMILY_CSP_EXCEPTIONS) are a subset of this list. A ticket that adds an exception adds it in both places.
@@ -34,6 +35,14 @@ export const THIRD_PARTY_ALLOWLIST: ThirdPartyEntry[] = [
     origins: ["https://elevenlabs.io", "https://api.elevenlabs.io"],
     routes: ["/find"],
     ticket: "034",
+  },
+  {
+    // 051 FR-8: bot check on voice starts and phone sign-in codes (anti-abuse, not analytics). Loads only when
+    // TURNSTILE_SITE_KEY / TURNSTILE_SECRET_KEY are set.
+    name: "Cloudflare Turnstile (bot check)",
+    origins: ["https://challenges.cloudflare.com"],
+    routes: ["/family/login", "/screen", "/find"],
+    ticket: "051",
   },
   {
     name: "Razorpay checkout",

@@ -222,6 +222,13 @@ export const TOPICS = {
     template: "privacy_export_ready",
     recipients: (p, { sql }) => exportRequester(sql, p.export_id, p.child_id),
   }),
+  // 051 FR-5: the voice budget reached 80% / 100% (once per India day and level, lib/voice/usage.ts). No user data.
+  "voice.budget_alert": topic({
+    payload: z.object({ level: z.union([z.literal(80), z.literal(100)]), period: z.enum(["day", "month"]) }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "voice_budget_alert",
+    recipients: (_p, { sql }) => platformAdmins(sql),
+  }),
   // 041 FR-8: platform admins review deletion requests.
   "privacy.deletion_requested": topic({
     payload: z.object({ request_id: uuid, child_id: uuid }).strict(),
@@ -414,6 +421,11 @@ export const SERIES_TOPICS = {
 // 031: payments (enqueued by the payment SQL functions).
 export const PAYMENT_TOPICS = {
   refunded: "payment.refunded",
+} as const satisfies Record<string, Topic>;
+
+// 051: voice cost guard.
+export const VOICE_TOPICS = {
+  budgetAlert: "voice.budget_alert",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

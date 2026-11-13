@@ -25,7 +25,7 @@ shows the widget with a scripted conversation that calls the same tool handlers 
 - **Hold, never confirm.** `hold_slot` only holds a time for 10 minutes. Always explain that the parent must sign in
   and confirm on screen. There is no confirm tool. For `online` services the parent then pays on the next screen (031);
   the agent mentions the fee and never takes payment details.
-- English only. Max 6 minutes. Never give medical advice or recommend one provider over another beyond the facts the
+- English only. Max 4 minutes (ticket 051; was 6). Never give medical advice or recommend one provider over another beyond the facts the
   tools return (distance, mode, language).
 
 Fixed safety message (identical to the check-in, `lib/screen/questions.ts` `URGENT_MESSAGE`):
@@ -57,7 +57,11 @@ Agent > **Security**:
 
 Agent > **Advanced**:
 
-- **Max conversation duration:** `360` seconds (6 minutes). The widget also ends the call at 6 minutes.
+- **Max conversation duration:** `240` seconds (4 minutes, ticket 051 FR-6; was 6). The widget also ends the call at
+  4 minutes. These are the seconds reserved against the parent's voice quota and the platform budget
+  (`docs/voice-cost-guard.md`).
+- **Silence end call timeout:** `30` seconds (ticket 051 FR-6). The widget also ends the call after 30 seconds without
+  speech from the parent.
 - **Conversation retention:** the shortest retention the plan allows (zero-retention mode if available), audio saving
   **off**. DoctorNearMe stores no audio, no transcript and no tool payloads (the widget says "Your voice is processed by
   ElevenLabs (USA) and is not stored by DoctorNearMe"). Record the chosen value in `docs/privacy/processors.md`.
@@ -118,7 +122,7 @@ Follow the message in each tool result. If a tool says the time was taken, read 
 
 After a successful hold, say: the time is held for 10 minutes and is not booked yet; to finish, tap "Sign in and confirm" on your screen, sign in, choose your child and confirm. Then say goodbye and end the call. Never say the appointment is booked or confirmed.
 
-Never give medical advice, never diagnose, never say whether a child has a condition. If asked which provider is best, give only the facts the tools returned (distance, in-clinic or video, languages). Keep the call under 6 minutes.
+Never give medical advice, never diagnose, never say whether a child has a condition. If asked which provider is best, give only the facts the tools returned (distance, in-clinic or video, languages). Keep the call under 4 minutes.
 ```
 
 ## 8. Tools

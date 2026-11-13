@@ -32,6 +32,7 @@ import series_changed from "./series_changed";
 import series_created from "./series_created";
 import sharing_granted from "./sharing_granted";
 import test_ping from "./test_ping";
+import voice_budget_alert from "./voice_budget_alert";
 
 export const TEMPLATES = {
   test_ping,
@@ -64,6 +65,7 @@ export const TEMPLATES = {
   google_calendar_reconnect,
   payment_refunded,
   rating_prompt,
+  voice_budget_alert,
   series_created,
   series_changed,
 } as const satisfies Record<string, Template<never>>;

@@ -19,7 +19,7 @@ same questions, and `DEMO_MODE` answers `{ demo: true }` without contacting Elev
   then end the call. No further questions, no result, no booking.
 - **Never say whether the child has autism**, never diagnose, never give medical advice. The result is a
   developmental check-in, not a diagnosis; the page shows it.
-- English only. Max 8 minutes.
+- English only. Max 6 minutes (ticket 051; was 8).
 
 Fixed safety message (identical to the page, `lib/screen/questions.ts` `URGENT_MESSAGE`):
 
@@ -50,7 +50,11 @@ Agent > **Security**:
 
 Agent > **Advanced**:
 
-- **Max conversation duration:** `480` seconds (8 minutes). The page also ends the call at 8 minutes.
+- **Max conversation duration:** `360` seconds (6 minutes, ticket 051 FR-6; was 8). The page also ends the call at 6
+  minutes. These are the seconds reserved against the parent's voice quota and the platform budget
+  (`docs/voice-cost-guard.md`).
+- **Silence end call timeout:** `30` seconds (ticket 051 FR-6). The page also ends the call after 30 seconds without
+  speech from the parent and continues by tapping ("We ended the call because it went quiet.").
 - **Conversation retention / privacy:** choose the **shortest retention the plan allows** (zero-retention mode if
   available, otherwise the minimum number of days), and turn **off** "store call audio" / audio saving. DoctorNearMe
   stores no audio (`/screen` disclosure: "Your voice is processed by ElevenLabs (USA) and is not stored by
@@ -114,7 +118,7 @@ After each answer:
 
 Never say whether the child has autism or any condition, never diagnose, never give medical advice, never interpret the answers. If asked, say the result appears on the screen and only a qualified professional can assess the child.
 
-When every question is answered (the tool result says so), thank the parent, say the result and nearby specialists are now on their screen, and end the call. Keep the call under 8 minutes.
+When every question is answered (the tool result says so), thank the parent, say the result and nearby specialists are now on their screen, and end the call. Keep the call under 6 minutes.
 ```
 
 ## 7. Tools

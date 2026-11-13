@@ -31,7 +31,7 @@ flowchart LR
     T[Therapist UI<br/>/dashboard /cases/*]
     P[Parent intake page<br/>/intake/token]
     S[Specialist page<br/>/specialist/token]
-    L[Landing /]
+    L[Parents' home /<br/>Centres /for-centres]
   end
   subgraph Next[Next.js app (local or Vercel)]
     API[API routes /api/*]
@@ -219,7 +219,8 @@ flowchart LR
 app/
   layout.tsx                      root layout: header + demo banner (001); fonts, <html lang>, I18nProvider (018)
   api/locale/route.ts             POST UI language / time zone preference (018)
-  page.tsx                        landing + pilot sign-up (014; placeholder from 001)
+  page.tsx                        parents' home: check-in, find, clinic code, Indian statistics (050)
+  for-centres/page.tsx            therapist / centre landing, Book a demo (014; moved from / in 050)
   dashboard/page.tsx              case list (004)
   dashboard/pilots/page.tsx       pilot sign-ups list (014)
   cases/new/page.tsx              new case form (004)
@@ -305,6 +306,10 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `AUDIT_FAIL_ACTIONS` | dev/test only (041) | comma-separated audit actions whose audit write fails (checks fail-closed behaviour); ignored in production builds |
 | `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` | Google Calendar / Meet (037) | server-only; unset + `DEMO_MODE=true` -> local fake Google; unset otherwise -> providers add Meet links by hand (`docs/google-meet.md`) |
 | `TOKEN_ENCRYPTION_KEY` | Google refresh tokens (037) | 32 random bytes, base64; AES-256-GCM; required to connect Google Calendar |
+| `VOICE_DAILY_MINUTES_CAP` / `VOICE_MONTHLY_MINUTES_CAP` | voice cost guard (051) | platform voice budget in minutes, defaults 300 / 4000; overridable at runtime in `/admin/ops` |
+| `VOICE_QUOTA_{SCREEN,BOOKING,FOLLOWUP}_{DAY,30D}`, `VOICE_QUOTA_INTAKE_DEMO_DAY` | voice cost guard (051) | per-user voice starts; defaults 2/4, 3/10, 5/30, 1 per day (`docs/voice-cost-guard.md`) |
+| `VOICE_COST_PER_MINUTE_USD` / `USD_INR_RATE` | `/admin/ops` (051) | cost estimate, defaults 0.10 and 84 |
+| `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` | bot check (051) | optional; both set = Cloudflare Turnstile on voice starts (`/screen`, `/find`) and phone sign-in codes |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
 used). `npm run build` must succeed with no `.env.local`.
@@ -1023,6 +1028,44 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   answer read aloud by the browser's Web Speech API) through `POST /api/agents/followup/demo/answer_question`; the model
   step reads `demo/fixtures/gemini/follow-up.json` (keyword-picked canned answers citing `HOME1`/`PLAN1`/`RX1`/`NOTE1`)
   and logs `followup model call` for every read.
+
+## 13d. Voice cost guard (ticket 051)
+
+- **No anonymous voice.** Every voice start (`POST /api/screen/sessions` with `mode: "voice"`,
+  `POST /api/agents/booking/session`, `POST /api/agents/followup/session`, `POST /api/demo/voice-token`) runs
+  `voiceGate()` (`lib/voice/gate.ts`) before ElevenLabs: signed in (401 `sign_in_required`), Cloudflare Turnstile on
+  `/screen` and `/find` when configured (400 `bot_check_failed`), then one atomic SQL call
+  `voice_session_start(...)` for the per-user quota (429 `quota_day` / `quota_month`), one open call per user (429
+  `concurrent`) and the platform budget (503 `voice_paused`). Tapping stays anonymous and is always offered.
+- **Ledger** `voice_usage` (migration `20261113005100_voice_usage.sql`): account id, agent, reserved / actual seconds,
+  status, conversation id; no child data. Reserved = max call length (screen 6, booking 4, follow-up 10, demo 3 min).
+  The browser reports the end (`POST /api/voice/usage/:id/end`, clamped); the booking cron expires unreported calls
+  and fetches real durations from ElevenLabs. 180-day retention (privacy registry `voice_usage`).
+- **Landing demo**: the recorded sample for everyone; live only for providers / platform admins and verified demo
+  leads, 1 per day. **Admin**: `/admin/ops` Voice usage card (minutes, cost USD/INR, top users, blocked starts) and the
+  runtime cap override (`voice_settings`, audited `voice.caps_updated`). Alerts at 80% / 100% (`voice.budget_alert`).
+- Details, env vars and the checklist for new voice entry points: `docs/voice-cost-guard.md`.
+
+## 13e. Parent-first home page (ticket 050)
+
+- `/` is for parents (decision D-1): hero "Worried about your child's speech, play or development?", main action
+  **Start a free check-in** (`/screen`, tap, anonymous), second action **Find a therapist near you** (`/find`), and
+  the 051 voice link `Prefer to talk? Sign in to use voice (free)` → `/family/login?next=/screen?voice=1`. Then the
+  How it works strip (Check-in → Find → Visit → Practise at home), Indian statistics, a trust row, the clinic-code
+  card (`/family/children/claim`) and a one-line link to `/for-centres`. Links live in `components/landing/links.ts`.
+- `/for-centres` is the former landing (same components, `Book a demo`, title `landing.meta.title`). Its live voice
+  demo follows 051 (recorded sample for visitors).
+- `SiteNav` takes `variant="parents" | "centres"`: the parents' bar has How it works, Find, For centres and the CTA
+  **Start free check-in**, Log in → `/family/login`; the centres' bar keeps its section links (now
+  `/for-centres#...`), For centres (current) and For parents, CTA **Book a demo**, Log in → `/login`. The desktop
+  bar must fit one line in en/hi/te at 1280 px; the mobile menu lists every link. The footer has For parents /
+  For centres / Find care columns.
+- Statistics (decision D-2, Indian sources only): `components/landing/IndianStats.tsx` renders the four figures
+  (`landing.stats.*`) with linked "Sources:" (`INDIAN_STAT_SOURCES`, URLs from `specs/grill/doctornearme-pmf-check.md`).
+  Use it for any new page that quotes prevalence or workforce numbers; do not add US or German figures.
+- No new third-party scripts: `tests/no-tracking.test.ts` scans the module graph of `/` and `/for-centres`.
+- No `hreflang` alternates: the UI language is a cookie (018), so every language shares one URL; both pages set a
+  canonical URL instead.
 
 ## 14. Human setup checklist (not tickets)
 

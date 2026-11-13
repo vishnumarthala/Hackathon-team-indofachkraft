@@ -19,6 +19,9 @@
     "signIn": "Sign in",
     "logIn": "Log in",
     "bookDemo": "Book a demo",
+    "forCentres": "For centres",
+    "forParents": "For parents",
+    "startCheckIn": "Start free check-in",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "problem": "The problem",
@@ -28,9 +31,8 @@
     "faq": "FAQ"
   },
   "footer": {
-    "tagline": "The AI assistant for early intervention therapists. AI documents, the clinician decides.",
-    "product": "Product",
-    "getStarted": "Get started",
+    "tagline": "A free child development check-in for parents, therapists near you, and an AI assistant for their centres. AI documents, the clinician decides.",
+    "familySignIn": "Family sign-in",
     "features": "Features",
     "trust": "Trust and privacy",
     "copyright": "© 2026 DoctorNearMe. Built for early intervention teams in India.",
@@ -332,6 +334,39 @@
       "title": "DoctorNearMe - autism and early intervention, with an AI assistant for therapists",
       "description": "Autism and early intervention care near you, with an AI assistant for therapists."
     },
+    "parents": {
+      "meta": {
+        "title": "DoctorNearMe – child development check-in and therapists near you (Hyderabad)",
+        "description": "A free check-in for your child's speech, play and development in English, Hindi or Telugu, and verified therapists near you in Hyderabad."
+      },
+      "badge": "For parents in Hyderabad",
+      "title": "Worried about your child's speech, play or development?",
+      "text": "Answer a few short questions by tapping. Free, about 5 minutes, for children up to 8. A check-in, not a diagnosis: you see what to watch and who can help near you.",
+      "checkIn": "Start a free check-in",
+      "find": "Find a therapist near you",
+      "howEyebrow": "How it works",
+      "howTitle": "From a first worry to practice at home",
+      "step1Title": "Check-in",
+      "step1Text": "Answer short questions about your child. Free, about 5 minutes.",
+      "step2Title": "Find",
+      "step2Text": "See verified therapists and centres near you.",
+      "step3Title": "Visit",
+      "step3Text": "Book a visit and share your check-in with the therapist if you choose.",
+      "step4Title": "Practise at home",
+      "step4Text": "Get home activities from your therapist and see progress in the family app.",
+      "trustTitle": "Made for families",
+      "verifiedTitle": "Verified providers",
+      "verifiedText": "Providers marked as verified have had their details checked by our team.",
+      "noTrackingTitle": "No ads or tracking on child pages",
+      "noTrackingText": "Pages about your child load no ads, analytics or tracking scripts.",
+      "dataTitle": "Your data stays yours",
+      "dataText": "You decide who sees your child's information, and you can download or delete it.",
+      "claimTitle": "Already with a centre?",
+      "claimText": "Enter the clinic code from your centre to see your child's visits and home activities.",
+      "claimCta": "Enter your clinic code",
+      "centresText": "Run a therapy centre or practice?",
+      "centresCta": "DoctorNearMe for centres"
+    },
     "hero": {
       "badge": "For early intervention therapists",
       "title": "Spend the session with the child,",
@@ -371,23 +406,26 @@
     },
     "problem": {
       "eyebrow": "The problem",
-      "title": "The signs appear at 2.",
-      "titleEm": "Help arrives at 4 to 6.",
-      "stat1Value": "~2 years",
-      "stat1Label": "Parents notice the first signs (23 months on average)",
-      "stat2Value": "Before 3",
-      "stat2Label": "The window: the younger support starts, the bigger the gains",
-      "stat3Value": "4 years",
-      "stat3Label": "Median age at which US children are identified; only half are evaluated by age 3",
-      "stat4Value": "6.5 years",
-      "stat4Label": "Average age at which German children are identified: after Kita, at school entry",
-      "prevalence1Value": "1 in 31",
-      "prevalence1Label": "US children have autism (1 in 20 boys)",
-      "prevalence2Value": "1 in 100",
-      "prevalence2Label": "children worldwide",
+      "title": "The signs show early.",
+      "titleEm": "Help arrives late.",
       "whyLate": "Why so late?",
-      "whyLateText": "Too few specialists, year-long waitlists, and therapists who spend their sessions on paperwork.",
-      "sources": "Sources: CDC ADDM 2025 · WHO · Höfer et al. 2019"
+      "whyLateText": "Too few specialists, long waitlists, and therapists who spend their sessions on paperwork."
+    },
+    "stats": {
+      "eyebrow": "India, in numbers",
+      "title": "Early help matters, and it is hard to find.",
+      "autismValue": "1 in 100",
+      "autismLabel": "children under 10 in India may have autism",
+      "nddValue": "1 in 8",
+      "nddLabel": "children under 10 has at least one neurodevelopmental condition",
+      "ageValue": "4.6 years",
+      "ageLabel": "average age at which autism was identified, in an Indian clinic sample of 1,321 children",
+      "prosValue": "~15,000",
+      "prosLabel": "registered speech and hearing professionals for 1.4 billion people",
+      "sources": "Sources:",
+      "sourceInclen": "INCLEN study, 2018",
+      "sourceAge": "Indian Journal of Public Health (Chandigarh, n=1,321)",
+      "sourceRci": "Rehabilitation Council of India register, 2023-24"
     },
     "voice": {
       "eyebrow": "Step 1 · The AI intake call",
@@ -430,7 +468,13 @@
       "connecting": "Connecting…",
       "speaking": "Assistant is speaking",
       "listening": "Listening… you are the parent of Ravi",
-      "ended": "Demo call ended. In the product, this call becomes the pre-session brief below."
+      "ended": "Demo call ended. In the product, this call becomes the pre-session brief below.",
+      "liveOnly": "The live demo is for clinics: sign in to your provider account, or book a demo and sign in with that email.",
+      "quota": "You've used today's live demo. Listen to the sample call, or try again tomorrow.",
+      "paused": "Voice is resting right now. Please listen to the sample call.",
+      "notAllowed": "The live demo is for clinics and booked demos. Please listen to the sample call.",
+      "concurrent": "You already have a voice call open. End it first.",
+      "silence": "We ended the call because it went quiet."
     },
     "therapistView": {
       "ended": "Your demo call has ended. This is how an intake call reaches the therapist (example case, synthetic data).",
@@ -461,14 +505,7 @@
       "eyebrow": "The solution",
       "title": "One thread, from the first call",
       "titleEm": "to the specialist.",
-      "evidence1Value": "4 in 10",
-      "evidence1Label": "toddlers identified with autism at 1 to 3 years no longer met the criteria at age 5 to 7",
-      "evidence2Value": "+17.6 vs +7",
-      "evidence2Label": "IQ points after 2 years of early intervention vs usual care (randomised trial)",
-      "sources": "Sources: Harstad et al., JAMA Pediatrics 2023 · Dawson et al., Pediatrics 2010",
-      "parentsTalkIn": "Parents talk in",
-      "soon": "soon",
-      "german": "Deutsch"
+      "parentsTalkIn": "Parents talk in"
     },
     "how": {
       "tablistLabel": "How DoctorNearMe works",
@@ -477,7 +514,7 @@
       "intakeText": "Send the parent a link. DoctorNearMe holds a calm, guided conversation in their language, right in the browser. You open the case to a pre-session brief instead of a blank page.",
       "intakePoint1": "No app to install for parents",
       "intakePoint2": "Consent before anything is recorded",
-      "intakePoint3": "English, Hindi and Telugu today, German coming soon",
+      "intakePoint3": "English, Hindi and Telugu",
       "briefTitle": "Pre-session brief",
       "briefChild": "Ravi, 3 years",
       "briefConcernLabel": "Main concern:",
@@ -585,12 +622,12 @@
       "q4": "Which assessments does it support?",
       "a4": "The ISAA (Indian Scale for Assessment of Autism), all 40 items, with an evidence quote and timestamp for each suggestion.",
       "q5": "Which languages can parents use?",
-      "a5": "English, Hindi and Telugu today. German is coming soon. Reports are written in English.",
+      "a5": "English, Hindi and Telugu. Reports are written in English.",
       "q6": "How do I get access?",
       "a6": "Book a demo. We walk you through DoctorNearMe on a sample case, then set up your centre's workspace and send your team their logins."
     },
     "cta": {
-      "eyebrow": "Now onboarding pilot centres in Germany and India",
+      "eyebrow": "Now onboarding pilot centres in Hyderabad",
       "title": "Get kids into early intervention",
       "titleEm": "sooner.",
       "text": "See DoctorNearMe on a sample case in a short call. If it fits, we set up your centre's workspace and send your team their logins.",
@@ -754,7 +791,8 @@
       "tooMany": "Too many codes requested. Try again later.",
       "oauthFailed": "Google sign-in did not work. Please try again.",
       "clinician": "Are you a clinician? Sign in here",
-      "privacy": "We use your number only to sign you in and send appointment updates."
+      "privacy": "We use your number only to sign you in and send appointment updates.",
+      "botCheck": "Please complete the quick check, then send the code again."
     },
     "shell": {
       "navLabel": "Family account",
@@ -1743,7 +1781,8 @@
         "screen": "Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs.",
         "payments": "Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them.",
         "ratings": "Ratings you give after a completed visit: stars and an optional comment. They are shown without your name; only DoctorNearMe admins can see who wrote them.",
-        "followUp": "Questions to the AI follow-up assistant (only with your permission): your questions about your child's shared plans and the answers, kept for 90 days. If you ask by voice, the call is processed by ElevenLabs."
+        "followUp": "Questions to the AI follow-up assistant (only with your permission): your questions about your child's shared plans and the answers, kept for 90 days. If you ask by voice, the call is processed by ElevenLabs.",
+        "voiceUsage": "Voice usage: when you use voice (check-in, booking, follow-up questions), we record that your account had a voice call, with which assistant and for how long. Nothing about your child, no recording and no transcript. We use it to keep voice free and fair."
       },
       "purposesTitle": "Why we use it",
       "purposes": "To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising.",
@@ -1786,6 +1825,11 @@
           "name": "Razorpay",
           "purpose": "Online payments and refunds for appointments",
           "location": "India"
+        },
+        "cloudflare": {
+          "name": "Cloudflare Turnstile",
+          "purpose": "Bot check before sign-in codes and voice calls (anti-abuse; no tracking or advertising)",
+          "location": "Global (USA)"
         }
       },
       "crossBorder": "AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time.",
@@ -1848,6 +1892,10 @@
         "ratings": {
           "what": "Ratings and comments",
           "how": "While your account is active; deleted with your account, or with your child's data when you ask us to delete everything"
+        },
+        "voiceUsage": {
+          "what": "Voice usage records (account, assistant, minutes)",
+          "how": "{days} days"
         }
       },
       "rightsTitle": "Your rights",
@@ -1988,7 +2036,34 @@
         "processorFailures": "Failed processor deletions",
         "stuck": "Recordings stuck for more than 30 minutes",
         "none": "None.",
-        "minutes": "{count} min"
+        "minutes": "{count} min",
+        "voiceTitle": "Voice usage",
+        "voiceAgent": "Agent",
+        "voiceToday": "Today (min)",
+        "voiceMonth": "This month (min)",
+        "voiceTotal": "Total",
+        "voiceAgents": {
+          "screen": "Check-in",
+          "booking": "Booking",
+          "followup": "Follow-up",
+          "intake_demo": "Landing demo"
+        },
+        "voiceCostToday": "Estimated cost today",
+        "voiceCostMonth": "Estimated cost this month",
+        "voiceCostValue": "US${usd} (₹{inr})",
+        "voiceRate": "At US${usd} per minute and ₹{inr} per US$.",
+        "voiceBlocked": "Blocked starts (today / this month)",
+        "voiceTopUsers": "Top users this month (minutes)",
+        "voiceCaps": "Budget",
+        "voiceDailyCap": "Daily cap (minutes)",
+        "voiceMonthlyCap": "Monthly cap (minutes)",
+        "voiceCapDefault": "Default: {minutes}",
+        "voiceCapHelp": "Leave empty to use the default. 0 pauses voice; pages fall back to tapping.",
+        "voiceCapSave": "Save caps",
+        "voiceCapSaving": "Saving...",
+        "voiceCapSaved": "Saved.",
+        "voiceCapFailed": "Could not save. Please try again.",
+        "voiceCapInUse": "In use: {daily} per day, {monthly} per month"
       }
     }
   },
@@ -2532,7 +2607,7 @@
     },
     "agree": "I understand this is not a diagnosis and agree to talk to an AI assistant.",
     "startVoice": "Start voice check-in",
-    "startForm": "Answer by tapping instead",
+    "startForm": "Start free check-in",
     "startHint": "Choose your child's age and tick the box to start.",
     "starting": "Starting...",
     "englishOnly": "The questions are in English for now.",
@@ -2543,7 +2618,14 @@
       "mic": "Microphone access was not allowed. You can answer by tapping instead.",
       "failed": "Something went wrong. Please try again.",
       "expired": "This check-in has expired. Please start a new one.",
-      "voiceFailed": "The voice call stopped. You can continue by tapping."
+      "voiceFailed": "The voice call stopped. You can continue by tapping.",
+      "signIn": "Please sign in to use voice. It is free. You can also continue by tapping.",
+      "quotaDay": "You've used today's voice check-ins. You can finish by tapping, or talk again tomorrow.",
+      "quotaMonth": "You've used this month's voice check-ins. You can finish by tapping.",
+      "concurrent": "You already have a voice call open. End it first, or continue by tapping.",
+      "paused": "Voice is resting right now – you can continue by tapping",
+      "botCheck": "Please complete the quick check and try again, or continue by tapping.",
+      "silence": "We ended the call because it went quiet. You can continue by tapping."
     },
     "voice": {
       "connecting": "Connecting...",
@@ -2646,7 +2728,10 @@
       "title": "Worried about your child's development?",
       "text": "Answer a few short questions by voice or by tapping. About 5 minutes and free. A developmental check-in, not a diagnosis, with specialists near you.",
       "cta": "Start the developmental check-in"
-    }
+    },
+    "voiceSignIn": "Prefer to talk? Sign in to use voice (free)",
+    "voicePrompt": "Prefer to talk?",
+    "voiceSignedIn": "You are signed in. Choose your child's age, tick the box and start the voice check-in."
   },
   "payments": {
     "labels": {
@@ -2729,8 +2814,17 @@
     "errors": {
       "busy": "Too many voice bookings were started from this connection. Please try again in an hour.",
       "unavailable": "Voice booking is not available right now. Please use the search below.",
-      "connect": "The call could not connect. Please use the search below."
-    }
+      "connect": "The call could not connect. Please use the search below.",
+      "signIn": "Please sign in to use voice. It is free. You can also search and book by tapping below.",
+      "quotaDay": "You've used today's voice bookings. You can search and book by tapping below, or talk again tomorrow.",
+      "quotaMonth": "You've used this month's voice bookings. You can search and book by tapping below.",
+      "concurrent": "You already have a voice call open. End it first, or search by tapping below.",
+      "paused": "Voice is resting right now – you can continue by tapping. Use the search below.",
+      "botCheck": "Please complete the quick check and try again, or use the search below.",
+      "silence": "We ended the call because it went quiet. You can continue by tapping below."
+    },
+    "signIn": "Prefer to talk? Sign in to use voice (free)",
+    "signInNote": "Searching and booking by tapping below works without signing in."
   },
   "rx": {
     "title": "Prescriptions",
@@ -2978,7 +3072,12 @@
       "demoLabel": "What you would say",
       "demoSay": "Say it",
       "agent": "Assistant",
-      "parent": "You"
+      "parent": "You",
+      "quotaDay": "You've used today's voice questions. You can type your question, or talk again tomorrow.",
+      "quotaMonth": "You've used this month's voice questions. You can type your question.",
+      "concurrent": "You already have a voice call open. End it first, or type your question.",
+      "paused": "Voice is resting right now – you can type your question instead.",
+      "silence": "We ended the call because it went quiet. You can type your question below."
     },
     "source": {
       "from": "From {org}",

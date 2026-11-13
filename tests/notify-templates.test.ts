@@ -71,6 +71,7 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "google_calendar.reconnect_required": { provider_profile_id: ID },
   "payment.refunded": { payment_id: ID, appointment_id: ID, reason: "slot_unavailable" },
   "appointment.rate_prompt": { appointment_id: ID, provider_name: "Dr Synthetic Rao" },
+  "voice.budget_alert": { level: 80, period: "day" },
   "series.created": SERIES,
   "series.changed": { ...SERIES, change: "time_changed", date: "2026-11-30" },
 };
@@ -129,6 +130,7 @@ describe("topic registry", () => {
         "google_calendar.reconnect_required",
         "payment.refunded",
         "appointment.rate_prompt",
+        "voice.budget_alert",
         "series.created",
         "series.changed",
       ].sort(),

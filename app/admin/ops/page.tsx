@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { VoiceCapsForm } from "@/components/admin/VoiceCapsForm";
 import { requirePlatformAdminPage } from "@/lib/authz";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { opsOverview } from "@/lib/privacy/ops";
+import { VOICE_AGENTS } from "@/lib/voice/constants";
+import { voiceUsageOverview } from "@/lib/voice/usage";
 
 export const dynamic = "force-dynamic";
 
@@ -12,10 +15,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // 041 FR-12: operations status for platform admins (counts and ids only). Other roles: 404.
+// 051 FR-10: plus the voice usage card (minutes per agent, estimated cost, top users by id and role, blocked starts)
+// and the runtime voice budget caps.
 export default async function AdminOpsPage() {
   await requirePlatformAdminPage();
   const [t, format] = [await getT("privacy.admin.ops"), await getFormatter()];
-  const o = await opsOverview();
+  const [o, v] = await Promise.all([opsOverview(), voiceUsageOverview()]);
   const card = "space-y-2 rounded border border-slate-200 bg-white p-4";
   const row = (label: string, value: string | number, testId: string) => (
     <div key={testId} className="flex justify-between gap-4 text-sm">
@@ -64,6 +69,63 @@ export default async function AdminOpsPage() {
               ))}
             </ul>
           ) : null}
+        </section>
+        <section aria-labelledby="ops-voice" className={`${card} md:col-span-2`} data-testid="ops-voice">
+          <h2 id="ops-voice" className="font-semibold text-slate-900">{t("voiceTitle")}</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm">
+              <thead className="text-slate-700">
+                <tr>
+                  <th scope="col" className="py-1 pr-4">{t("voiceAgent")}</th>
+                  <th scope="col" className="py-1 pr-4 text-right">{t("voiceToday")}</th>
+                  <th scope="col" className="py-1 text-right">{t("voiceMonth")}</th>
+                </tr>
+              </thead>
+              <tbody className="font-mono tabular-nums">
+                {VOICE_AGENTS.map((a) => (
+                  <tr key={a} className="border-t border-slate-100">
+                    <th scope="row" className="py-1 pr-4 font-sans font-normal text-slate-700">{t(`voiceAgents.${a}`)}</th>
+                    <td className="py-1 pr-4 text-right" data-testid={`ops-voice-today-${a}`}>{v.today[a].minutes}</td>
+                    <td className="py-1 text-right" data-testid={`ops-voice-month-${a}`}>{v.month[a].minutes}</td>
+                  </tr>
+                ))}
+                <tr className="border-t border-slate-300 font-semibold">
+                  <th scope="row" className="py-1 pr-4 font-sans text-slate-900">{t("voiceTotal")}</th>
+                  <td className="py-1 pr-4 text-right" data-testid="ops-voice-today-total">{v.totals.todayMinutes}</td>
+                  <td className="py-1 text-right" data-testid="ops-voice-month-total">{v.totals.monthMinutes}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <dl className="space-y-1">
+            {row(t("voiceCostToday"), t("voiceCostValue", { usd: v.cost.todayUsd.toFixed(2), inr: v.cost.todayInr.toFixed(2) }), "ops-voice-cost-today")}
+            {row(t("voiceCostMonth"), t("voiceCostValue", { usd: v.cost.monthUsd.toFixed(2), inr: v.cost.monthInr.toFixed(2) }), "ops-voice-cost-month")}
+            {row(t("voiceBlocked"), `${v.blocked.today} / ${v.blocked.month}`, "ops-voice-blocked")}
+          </dl>
+          <p className="text-xs text-slate-600">{t("voiceRate", { usd: v.cost.usdPerMinute, inr: v.cost.usdInr })}</p>
+          <h3 className="pt-2 text-sm font-semibold text-slate-900">{t("voiceTopUsers")}</h3>
+          {v.topUsers.length === 0 ? (
+            <p className="text-sm text-slate-700">{t("none")}</p>
+          ) : (
+            <ol className="space-y-1 font-mono text-xs text-slate-700" data-testid="ops-voice-top-users">
+              {v.topUsers.map((u) => (
+                <li key={u.user_id} className="flex justify-between gap-4">
+                  <span className="break-all">{u.user_id} ({u.role ?? "-"})</span>
+                  <span className="tabular-nums">{u.minutes}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+          <h3 className="pt-2 text-sm font-semibold text-slate-900">{t("voiceCaps")}</h3>
+          <p className="text-sm text-slate-700" data-testid="ops-voice-caps">
+            {t("voiceCapInUse", { daily: v.caps.dailyMinutes, monthly: v.caps.monthlyMinutes })}
+          </p>
+          <VoiceCapsForm
+            dailyOverride={v.caps.overridden.daily ? v.caps.dailyMinutes : null}
+            monthlyOverride={v.caps.overridden.monthly ? v.caps.monthlyMinutes : null}
+            envDaily={v.caps.envDailyMinutes}
+            envMonthly={v.caps.envMonthlyMinutes}
+          />
         </section>
         <section aria-labelledby="ops-stuck" className={card}>
           <h2 id="ops-stuck" className="font-semibold text-slate-900">{t("stuck")}</h2>

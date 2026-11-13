@@ -11,11 +11,19 @@ import { screenClientTools, TOOL_REPLIES } from "@/lib/screen/client";
 import { redFlagResult, URGENT_MESSAGE } from "@/lib/screen/questions";
 import { withI18n } from "./helpers/i18n";
 import { ALL_NO_RED_FLAGS, answerSet, nextIp, screenFetch, toList } from "./helpers/screen";
+import { closeOpenVoiceCalls, stubGenerousVoiceLimits } from "./helpers/voice";
+import { createWorld, type TestUser } from "./helpers/world";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
 const enabled = Boolean(process.env.DATABASE_URL) && process.env.SKIP_DB_TESTS !== "1";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }) }));
+// 051: voice check-ins need a signed-in user (tapping stays anonymous).
+const session = vi.hoisted(() => ({ user: null as null | { id: string; email: string } }));
+vi.mock("@/lib/auth", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/auth")>();
+  return { ...actual, getAuthenticatedUser: vi.fn(async () => session.user) };
+});
 vi.mock("@elevenlabs/react", () => ({
   ConversationProvider: ({ children }: { children: unknown }) => children,
   useConversation: () => ({ status: "disconnected", isSpeaking: false, startSession: vi.fn(), endSession: vi.fn() }),
@@ -83,17 +91,24 @@ describe("red-flag view (FR-7, E-2)", () => {
 
 describe.skipIf(!enabled)("red flags stop the check-in (database)", { timeout: 120_000 }, () => {
   let sql: Sql;
+  let world: ReturnType<typeof createWorld>;
+  let voiceUser: TestUser;
   const sessions: string[] = [];
   const fetchFn = screenFetch();
   const post = (url: string, body?: unknown) =>
     fetchFn(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
 
   async function start(mode: "form" | "voice" = "form") {
+    if (mode === "voice") {
+      await closeOpenVoiceCalls(sql, voiceUser.id);
+      session.user = voiceUser;
+    }
     const res = await fetchFn("/api/screen/sessions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-forwarded-for": nextIp() },
       body: JSON.stringify({ age_band: "3-5y", mode }),
     });
+    session.user = null;
     const body = await res.json();
     sessions.push(body.session_id);
     return body.session_id as string;
@@ -114,15 +129,20 @@ describe.skipIf(!enabled)("red flags stop the check-in (database)", { timeout: 1
     expect(await more.json()).toEqual({ error: "This check-in was stopped" });
   }
 
-  beforeAll(() => {
+  beforeAll(async () => {
     sql = postgres(process.env.DATABASE_URL as string, { max: 2, prepare: false, onnotice: () => {} });
+    world = createWorld(sql, (await import("@/lib/db")).supabaseAdmin(), "t033rf");
+    voiceUser = await world.user("voice", "guardian");
   });
   beforeEach(async () => {
     (await import("@/lib/screen/rate-limit")).screenSessionLimiter.reset();
+    stubGenerousVoiceLimits();
   });
   afterAll(async () => {
+    vi.unstubAllEnvs();
     if (!sql) return;
     if (sessions.length) await sql`delete from screen_sessions where id in ${sql(sessions)}`;
+    await world.cleanup();
     await sql.end();
   });
 

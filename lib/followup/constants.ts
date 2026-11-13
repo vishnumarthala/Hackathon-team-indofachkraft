@@ -13,8 +13,8 @@ export const DAILY_QUESTION_LIMIT = 30;
 export const AGENT_SESSION_TTL_MS = 15 * 60_000;
 /** Tool calls per voice session (the daily limit applies as well). */
 export const MAX_TOOL_CALLS = 20;
-/** The live call is ended by the page after this long (the agent is configured with the same limit). */
-export const VOICE_MAX_MINUTES = 15;
+/** The live call is ended by the page after this long (the agent is configured with the same limit). 051 FR-6: was 15. */
+export const VOICE_MAX_MINUTES = 10;
 /** FR-6: stored questions are deleted after 90 days (lib/privacy/retention.ts, overridable). */
 export const FOLLOWUP_RETENTION_DAYS = 90;
 /** NFR-2: the model call is abandoned after this long (the route then answers 502). */

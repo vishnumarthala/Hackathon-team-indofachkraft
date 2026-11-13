@@ -15,6 +15,7 @@ import { isProtectedPath } from "@/lib/auth-access";
 import { FAMILY_CSP_EXCEPTIONS } from "@/lib/csp";
 import { allowedOriginsFor } from "@/lib/privacy/third-party-allowlist";
 import { bookingWorld, futureSlot, sessionHash, type TestProvider } from "./helpers/booking";
+import { closeOpenVoiceCalls, stubGenerousVoiceLimits } from "./helpers/voice";
 import { ctx, post, type TestUser } from "./helpers/world";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
@@ -97,7 +98,8 @@ describe("booking agent: schemas, helpers and access lists", () => {
     expect(guide).toMatch(/phone number/);
     expect(guide).toMatch(/date of birth/);
     for (const tool of ["search_providers", "get_slots", "hold_slot", "record_red_flag", "{{booking_session}}", "X-Agent-Secret"]) expect(guide).toContain(tool);
-    expect(guide).toMatch(/360/);
+    // 051 FR-6: max 4 minutes (240 s), silence timeout 30 s.
+    expect(guide).toMatch(/`240` seconds/);
     expect(guide).toMatch(/sign in and (tap )?confirm/i);
   });
 
@@ -175,6 +177,8 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
   let mainClinic: string;
   let guardianA: { user: TestUser; childId: string };
   let guardianB: { user: TestUser; childId: string };
+  // 051: voice needs a signed-in user; this one starts every voice session (closed before the next start).
+  let voiceUser: TestUser;
   const tokens: string[] = [];
   let routes: {
     session: typeof import("@/app/api/agents/booking/session/route");
@@ -191,11 +195,24 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
   // Shamshabad (bundled geocoder table): far from the other suites' synthetic clinics.
   const AREA = "Shamshabad";
 
+  /** Starts a voice session as the signed-in voice user (051), then continues as an anonymous browser. */
+  async function asVoiceUser<T>(fn: () => Promise<T>): Promise<T> {
+    await closeOpenVoiceCalls(sql, voiceUser.id);
+    session.user = voiceUser;
+    try {
+      return await fn();
+    } finally {
+      session.user = null;
+    }
+  }
+
   /** A fresh browser: empty cookie jar, then POST /api/agents/booking/session. */
   async function startSession(): Promise<{ token: string; owner: string; res: Res }> {
     session.user = null;
     session.cookies.clear();
-    const res = await call(routes.session.POST, new Request("http://localhost/api/agents/booking/session", { method: "POST", headers: { "x-forwarded-for": `10.34.${tokens.length}.1` } }));
+    const res = await asVoiceUser(() =>
+      call(routes.session.POST, new Request("http://localhost/api/agents/booking/session", { method: "POST", headers: { "x-forwarded-for": `10.34.${tokens.length}.1` } })),
+    );
     expect(res.status, JSON.stringify(res.json)).toBe(201);
     keepCookies(res.res);
     const token = res.json.booking_session as string;
@@ -214,6 +231,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     vi.stubEnv("GOOGLE_MAPS_SERVER_KEY", "");
     vi.stubEnv("SHOW_SYNTHETIC_LISTINGS", "true");
     vi.stubEnv("RAZORPAY_KEY_ID", "");
+    stubGenerousVoiceLimits();
     sql = postgres(process.env.DATABASE_URL as string, { max: 4, prepare: false, onnotice: () => {} });
     const db = (await import("@/lib/db")).supabaseAdmin();
     world = bookingWorld(sql, db, "t034");
@@ -230,6 +248,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     online600 = await world.service(providers[6], { duration: 30, payment: "online", fee: 600, name: "Online assessment (synthetic)" });
     guardianA = await world.guardian("ga");
     guardianB = await world.guardian("gb");
+    voiceUser = (await world.guardian("voice")).user;
     routes = {
       session: await import("@/app/api/agents/booking/session/route"),
       search: await import("@/app/api/agents/booking/tools/search_providers/route"),
@@ -302,7 +321,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     const statuses: number[] = [];
     for (let i = 0; i < 6; i++) {
       session.cookies.clear();
-      const r = await call(routes.session.POST, req());
+      const r = await asVoiceUser(() => call(routes.session.POST, req()));
       if (r.status === 201) tokens.push(r.json.booking_session as string);
       statuses.push(r.status);
     }
@@ -322,7 +341,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
       const fetchMock = vi.fn(async () => Response.json({ token: "conv-token-synthetic" }));
       vi.stubGlobal("fetch", fetchMock);
       session.cookies.clear();
-      const r = await call(routes.session.POST, new Request("http://localhost/x", { method: "POST" }));
+      const r = await asVoiceUser(() => call(routes.session.POST, new Request("http://localhost/x", { method: "POST" })));
       expect(r.status).toBe(201);
       tokens.push(r.json.booking_session as string);
       expect(r.json).toMatchObject({ conversation_token: "conv-token-synthetic", agent_id: "agent_booking_test" });

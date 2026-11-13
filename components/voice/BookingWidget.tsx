@@ -5,12 +5,15 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { upsertLine, type Line } from "@/components/landing/VoiceDemo";
 import { UrgentNotice } from "@/components/screen/UrgentNotice";
+import { useTurnstile } from "@/components/security/Turnstile";
 import { primaryButton, secondaryButton } from "@/components/screen/view";
 import type { AgentTool } from "@/lib/agents/booking/constants";
 import { runDemoScript } from "@/lib/agents/booking/demo-script";
 import { formatDateTime, formatInr } from "@/lib/i18n/format";
 import { useLocale, useT, useTimeZone } from "@/lib/i18n/client";
-import type { LiveTarget } from "./LiveBookingCall";
+import { callSeconds, reportVoiceEnd, voiceStartHeaders } from "@/lib/voice/client";
+import { voiceRefusal, voiceSignInHref } from "@/lib/voice/constants";
+import type { EndedCall, LiveTarget } from "./LiveBookingCall";
 
 const LiveBookingCall = dynamic(() => import("./LiveBookingCall"), { ssr: false });
 
@@ -20,6 +23,9 @@ type Session = {
   agent_id?: string;
   demo?: boolean;
   dynamic_variables: Record<string, string>;
+  /** 051 FR-7: the usage row the widget reports the end against. */
+  voice_usage_id?: string;
+  max_seconds?: number;
 };
 
 export type WidgetHold = {
@@ -101,8 +107,11 @@ function HoldCard({ hold }: { hold: WidgetHold }) {
 // Ticket 034 FR-4: `Book by voice` on /find. Disclosure -> Start -> live captions -> a hold card with `Sign in and
 // confirm` (the 030 booking page attaches the hold after sign-in). DEMO_MODE runs a scripted conversation against the
 // same tool handlers. Any failure leaves the normal /find search below untouched.
-export function BookingWidget() {
+// 051: voice needs a free sign-in (anonymous visitors get a sign-in link that returns to `/find?voice=1`); quota,
+// budget and bot-check refusals point to the search below; the end of every call is reported (FR-7).
+export function BookingWidget({ signedIn = true, turnstileSiteKey = null }: { signedIn?: boolean; turnstileSiteKey?: string | null }) {
   const t = useT("voiceBooking");
+  const turnstile = useTurnstile(signedIn ? turnstileSiteKey : null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -132,10 +141,12 @@ export function BookingWidget() {
     setError(null);
     setLines([]);
     setHold(null);
-    const res = await fetch("/api/agents/booking/session", { method: "POST" }).catch(() => null);
+    const res = await fetch("/api/agents/booking/session", { method: "POST", headers: voiceStartHeaders(turnstile.token, false) }).catch(() => null);
+    turnstile.reset();
     const json = (await res?.json().catch(() => null)) as Session | null;
     if (!res || res.status !== 201 || !json) {
-      setError(res?.status === 429 ? t("errors.busy") : t("errors.unavailable"));
+      const refusal = res ? voiceRefusal(res.status, json) : null;
+      setError(refusal && refusal !== "notAllowed" ? t(`errors.${refusal}`) : res?.status === 429 ? t("errors.busy") : t("errors.unavailable"));
       setPhase("idle");
       return;
     }
@@ -146,6 +157,7 @@ export function BookingWidget() {
 
   async function runDemo(s: Session) {
     setStatus("speaking");
+    const startedAt = Date.now();
     const outcome = await runDemoScript({
       bookingSession: s.booking_session,
       today: s.dynamic_variables.today ?? "",
@@ -166,6 +178,7 @@ export function BookingWidget() {
     });
     if (outcome.kind === "held") await refreshHold();
     await endServerSession();
+    await reportVoiceEnd(fetch, s.voice_usage_id, callSeconds(startedAt, Date.now()));
     setPhase("ended");
   }
 
@@ -174,14 +187,17 @@ export function BookingWidget() {
     setPhase("stopped");
     void endServerSession();
   }, []);
+  const usageId = session?.voice_usage_id;
   const onEnded = useCallback(
-    (failed: boolean) => {
+    (failed: boolean, call: EndedCall) => {
       void endServerSession();
+      void reportVoiceEnd(fetch, usageId, call.seconds, call.conversationId);
       void refreshHold();
       setPhase((p) => (p === "stopped" ? p : "ended"));
-      if (failed) setError(t("errors.connect"));
+      if (call.silence) setError(t("errors.silence"));
+      else if (failed) setError(t("errors.connect"));
     },
-    [refreshHold, t],
+    [refreshHold, t, usageId],
   );
 
   const target: LiveTarget | null = session && !session.demo
@@ -205,7 +221,16 @@ export function BookingWidget() {
 
       {phase === "stopped" ? <UrgentNotice /> : null}
 
-      {phase === "idle" ? (
+      {phase === "idle" && !signedIn ? (
+        <div className="space-y-1" data-testid="voice-booking-sign-in">
+          <Link href={voiceSignInHref("/find?voice=1")} className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline underline-offset-4">
+            {t("signIn")}
+          </Link>
+          <p className="text-sm text-slate-700">{t("signInNote")}</p>
+        </div>
+      ) : null}
+
+      {phase === "idle" && signedIn ? (
         <button
           ref={startRef}
           type="button"
@@ -226,13 +251,14 @@ export function BookingWidget() {
           </p>
           <p className="text-sm text-slate-700">{t("privacy")}</p>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <button type="button" className={primaryButton} onClick={() => void start()} disabled={phase === "starting"}>
+            <button type="button" className={primaryButton} onClick={() => void start()} disabled={phase === "starting" || !turnstile.ready}>
               {phase === "starting" ? t("starting") : t("start")}
             </button>
             <button type="button" className={secondaryButton} onClick={() => setPhase("idle")} disabled={phase === "starting"}>
               {t("cancel")}
             </button>
           </div>
+          {turnstile.widget}
         </div>
       ) : null}
 

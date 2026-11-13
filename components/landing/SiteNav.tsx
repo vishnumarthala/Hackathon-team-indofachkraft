@@ -6,20 +6,49 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useT } from "@/lib/i18n/client";
 import { Arrow, Logo } from "./ui";
 
-const LINKS = [
-  { href: "/#problem", label: "problem" },
-  { href: "/#voice-demo", label: "intakeCall" },
-  { href: "/#how", label: "howItWorks" },
-  { href: "/#who", label: "whoFor" },
-  { href: "/#faq", label: "faq" },
-] as const;
+export type NavVariant = "parents" | "centres";
 
-export function SiteNav({ overDark = false }: { overDark?: boolean }) {
+type NavLink = { href: string; label: string; current?: boolean; desktop: boolean };
+
+/**
+ * 050: `/` is the parents' home; `/for-centres` keeps the therapist / centre landing and its section links.
+ * The desktop bar shows a short list (it must fit one line in en/hi/te at 1280 px); the mobile menu shows all.
+ */
+function navLinks(variant: NavVariant, t: ReturnType<typeof useT<"nav">>, find: string, checkIn: string): NavLink[] {
+  const forCentres = { href: "/for-centres", label: t("forCentres"), current: variant === "centres", desktop: true };
+  if (variant === "parents") {
+    return [
+      { href: "/#how-it-works", label: t("howItWorks"), desktop: true },
+      { href: "/find", label: find, desktop: true },
+      // The bar's call to action is the check-in, so the desktop list leaves it out.
+      { href: "/screen", label: checkIn, desktop: false },
+      forCentres,
+    ];
+  }
+  return [
+    { href: "/for-centres#problem", label: t("problem"), desktop: false },
+    { href: "/for-centres#voice-demo", label: t("intakeCall"), desktop: true },
+    { href: "/for-centres#how", label: t("howItWorks"), desktop: true },
+    { href: "/for-centres#who", label: t("whoFor"), desktop: false },
+    { href: "/for-centres#faq", label: t("faq"), desktop: true },
+    { href: "/find", label: find, desktop: false },
+    { href: "/screen", label: checkIn, desktop: false },
+    forCentres,
+    { href: "/", label: t("forParents"), desktop: true },
+  ];
+}
+
+export function SiteNav({ overDark = false, variant = "parents" }: { overDark?: boolean; variant?: NavVariant }) {
   const ref = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const t = useT("nav");
   const td = useT("directory.landing");
   const ts = useT("screen.landing");
+  const centres = variant === "centres";
+  const links = navLinks(variant, t, td("find"), ts("navLink"));
+  // Parents sign in to the family portal; centres to the provider workspace.
+  const logInHref = centres ? "/login" : "/family/login";
+  const cta = centres ? { href: "/book-demo", label: t("bookDemo") } : { href: "/screen", label: t("startCheckIn") };
 
   // Solid background once the page scrolls (class toggle, no re-render on scroll).
   useEffect(() => {
@@ -45,39 +74,35 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
           <Logo />
         </Link>
 
-        <ul className="hidden items-center gap-7 xl:flex">
-          {LINKS.map((l) => (
-            <li key={l.href}>
-              <a href={l.href} className="lp-underline text-[0.92rem] font-medium opacity-80 transition-opacity hover:opacity-100">
-                {t(l.label)}
-              </a>
-            </li>
-          ))}
-          <li>
-            <Link href="/find" className="lp-underline text-[0.92rem] font-medium opacity-80 transition-opacity hover:opacity-100">
-              {td("find")}
-            </Link>
-          </li>
-          <li>
-            <Link href="/screen" className="lp-underline text-[0.92rem] font-medium opacity-80 transition-opacity hover:opacity-100">
-              {ts("navLink")}
-            </Link>
-          </li>
+        <ul className="hidden items-center gap-6 xl:flex">
+          {links
+            .filter((l) => l.desktop)
+            .map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  aria-current={l.current ? "page" : undefined}
+                  className="lp-underline whitespace-nowrap text-[0.92rem] font-medium opacity-80 transition-opacity hover:opacity-100 aria-[current=page]:opacity-100"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
         </ul>
 
         <div className="ml-auto flex items-center gap-2">
           <LanguageSwitcher selectClassName="max-w-[7.5rem]" />
           <Link
-            href="/login"
-            className="lp-nav-ghost hidden rounded-full px-4 py-2 text-[0.92rem] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30 sm:inline-flex"
+            href={logInHref}
+            className="lp-nav-ghost hidden whitespace-nowrap rounded-full px-4 py-2 text-[0.92rem] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30 md:inline-flex"
           >
             {t("logIn")}
           </Link>
           <Link
-            href="/book-demo"
+            href={cta.href}
             className="lp-btn lp-nav-cta hidden min-h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-5 py-2 text-[0.92rem] font-semibold focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/40 sm:inline-flex"
           >
-            {t("bookDemo")}
+            {cta.label}
             <Arrow className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -103,30 +128,25 @@ export function SiteNav({ overDark = false }: { overDark?: boolean }) {
         }`}
       >
         <ul className="divide-y divide-[#0b1f1d]/10">
-          {LINKS.map((l) => (
+          {links.map((l) => (
             <li key={l.href}>
-              <a href={l.href} onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base font-medium text-[#0b1f1d]">
-                {t(l.label)}
-              </a>
+              <Link
+                href={l.href}
+                aria-current={l.current ? "page" : undefined}
+                onClick={() => setOpen(false)}
+                className="flex min-h-12 items-center text-base font-medium text-[#0b1f1d]"
+              >
+                {l.label}
+              </Link>
             </li>
           ))}
-          <li>
-            <Link href="/find" onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base font-medium text-[#0b1f1d]">
-              {td("find")}
-            </Link>
-          </li>
-          <li>
-            <Link href="/screen" onClick={() => setOpen(false)} className="flex min-h-12 items-center text-base font-medium text-[#0b1f1d]">
-              {ts("navLink")}
-            </Link>
-          </li>
         </ul>
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <Link href="/login" className="lp-btn flex min-h-12 items-center justify-center rounded-full border border-[#0b1f1d]/15 bg-white px-2 text-center font-semibold text-[#0b1f1d]">
+          <Link href={logInHref} className="lp-btn flex min-h-12 items-center justify-center rounded-full border border-[#0b1f1d]/15 bg-white px-2 text-center font-semibold text-[#0b1f1d]">
             {t("logIn")}
           </Link>
-          <Link href="/book-demo" className="lp-btn flex min-h-12 items-center justify-center rounded-full bg-[#0b1f1d] px-2 text-center font-semibold text-white">
-            {t("bookDemo")}
+          <Link href={cta.href} className="lp-btn flex min-h-12 items-center justify-center rounded-full bg-[#0b1f1d] px-2 text-center font-semibold text-white">
+            {cta.label}
           </Link>
         </div>
       </div>

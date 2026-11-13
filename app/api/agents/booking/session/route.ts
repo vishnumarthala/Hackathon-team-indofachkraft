@@ -9,6 +9,7 @@ import { isDemoMode } from "@/lib/demo";
 import { startAgentSession, type AgentStart } from "@/lib/elevenlabs/agent";
 import { env } from "@/lib/env";
 import { fail, ok } from "@/lib/http";
+import { voiceGate } from "@/lib/voice/gate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,19 +30,26 @@ function todayLabel(now = new Date()): string {
 // conversation token for the private booking agent and the random `booking_session` the agent sends with every tool
 // call. DEMO_MODE never contacts ElevenLabs (`demo: true`, the widget runs a scripted conversation). Holds are owned
 // by this browser's 030 booking session (`dnm_booking` cookie), so the normal confirm flow attaches them after sign-in.
+// 051: voice needs a signed-in user, the Turnstile check (when configured) and room in the user's `booking` quota and
+// the platform budget (lib/voice/gate.ts), before ElevenLabs is contacted. Searching and booking by tapping on /find
+// stay anonymous. The widget reports the end of the call (POST /api/voice/usage/:id/end).
 export async function POST(req: Request) {
   if (!agentSessionLimiter.allow(rateKey(req))) {
     return NextResponse.json({ error: RATE_LIMITED }, { status: 429, headers: { "Retry-After": "3600" } });
   }
   const demo = isDemoMode();
+  const agentId = env.ELEVENLABS_BOOKING_AGENT_ID;
+  // Without the tool secret every tool call would be refused: do not start a call that cannot work.
+  if (!demo && (!agentId || !env.ELEVENLABS_TOOL_SECRET)) return fail(503, VOICE_BOOKING_UNAVAILABLE);
+  const gate = await voiceGate(req, "booking", { turnstile: true });
+  if ("response" in gate) return gate.response;
+
   let voice: AgentStart | null = null;
   if (!demo) {
-    const agentId = env.ELEVENLABS_BOOKING_AGENT_ID;
-    // Without the tool secret every tool call would be refused: do not start a call that cannot work.
-    if (!agentId || !env.ELEVENLABS_TOOL_SECRET) return fail(503, VOICE_BOOKING_UNAVAILABLE);
     try {
-      voice = await startAgentSession(agentId);
+      voice = await startAgentSession(agentId as string);
     } catch (err) {
+      await gate.release();
       console.error(`booking voice start failed: ${err instanceof Error ? err.message : String(err)}`);
       return fail(502, VOICE_BOOKING_UNAVAILABLE);
     }
@@ -56,6 +64,8 @@ export async function POST(req: Request) {
       conversation_token: voice?.conversation_token ?? null,
       ...(voice ? { agent_id: voice.agent_id } : {}),
       ...(demo ? { demo: true } : {}),
+      voice_usage_id: gate.usageId,
+      max_seconds: gate.maxSeconds,
       // FR-1: the only values the agent receives. No names, no contact details.
       dynamic_variables: { booking_session: token, today: todayLabel() },
     },

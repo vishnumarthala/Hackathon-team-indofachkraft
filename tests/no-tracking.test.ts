@@ -63,6 +63,7 @@ describe("third-party allowlist (D-6)", () => {
       "ElevenLabs SDK (voice agent)",
       "ElevenLabs SDK (developmental check-in)",
       "ElevenLabs SDK (voice booking)",
+      "Cloudflare Turnstile (bot check)",
       "Razorpay checkout",
     ]);
     for (const entry of THIRD_PARTY_ALLOWLIST) {
@@ -124,6 +125,26 @@ function moduleGraph(entries: string[]): Set<string> {
   return seen;
 }
 
+/** External <script>, next/script, injected script tags or tracker code in a module graph. */
+function scriptProblems(graph: Set<string>): string[] {
+  const problems: string[] = [];
+  for (const file of graph) {
+    const rel = path.relative(ROOT, file);
+    if (rel === "lib/privacy/third-party-allowlist.ts") continue;
+    // 051: the one approved loader for the allowlisted Cloudflare Turnstile script (only /family/login renders it).
+    if (rel === "components/security/Turnstile.tsx") continue;
+    const source = readFileSync(file, "utf8");
+    if (/from\s+["']next\/script["']/.test(source)) problems.push(`${rel}: next/script`);
+    if (/<script[^>]*\bsrc\s*=\s*\{?["'`]https?:/i.test(source)) problems.push(`${rel}: external <script src>`);
+    if (/createElement\(\s*["']script["']\s*\)/.test(source)) problems.push(`${rel}: injected <script>`);
+    if (/\b(gtag|fbq|dataLayer|_hsq|mixpanel|amplitude)\s*[.(]/.test(source)) problems.push(`${rel}: tracker call`);
+    // Tracker hosts in browser code (server modules may call APIs such as graph.facebook.com for WhatsApp).
+    const client = /^\s*["']use client["']/m.test(source);
+    if (client) for (const host of BANNED_SCRIPT_HOSTS) if (source.includes(host)) problems.push(`${rel}: ${host}`);
+  }
+  return problems;
+}
+
 describe("static scan of /family/** modules (FR-13)", () => {
   const entries = [...FAMILY_PAGES, ...walk(path.join(ROOT, "app", "family")).filter((f) => /layout\.tsx$/.test(f)), path.join(ROOT, "app", "layout.tsx")];
   const graph = moduleGraph(entries);
@@ -134,20 +155,17 @@ describe("static scan of /family/** modules (FR-13)", () => {
   });
 
   it("no external <script>, next/script, injected script tags or tracker code", () => {
-    const problems: string[] = [];
-    for (const file of graph) {
-      const rel = path.relative(ROOT, file);
-      if (rel === "lib/privacy/third-party-allowlist.ts") continue;
-      const source = readFileSync(file, "utf8");
-      if (/from\s+["']next\/script["']/.test(source)) problems.push(`${rel}: next/script`);
-      if (/<script[^>]*\bsrc\s*=\s*\{?["'`]https?:/i.test(source)) problems.push(`${rel}: external <script src>`);
-      if (/createElement\(\s*["']script["']\s*\)/.test(source)) problems.push(`${rel}: injected <script>`);
-      if (/\b(gtag|fbq|dataLayer|_hsq|mixpanel|amplitude)\s*[.(]/.test(source)) problems.push(`${rel}: tracker call`);
-      // Tracker hosts in browser code (server modules may call APIs such as graph.facebook.com for WhatsApp).
-      const client = /^\s*["']use client["']/m.test(source);
-      if (client) for (const host of BANNED_SCRIPT_HOSTS) if (source.includes(host)) problems.push(`${rel}: ${host}`);
-    }
-    expect(problems).toEqual([]);
+    expect(scriptProblems(graph)).toEqual([]);
+  });
+});
+
+// 050 FR-5: the parents' home page and the centres page add no third-party scripts either.
+describe("static scan of / and /for-centres (050 FR-5)", () => {
+  const graph = moduleGraph([path.join(ROOT, "app", "page.tsx"), path.join(ROOT, "app", "for-centres", "page.tsx")]);
+
+  it("no external <script>, next/script, injected script tags or tracker code", () => {
+    expect(graph.size).toBeGreaterThan(10);
+    expect(scriptProblems(graph)).toEqual([]);
   });
 });
 
