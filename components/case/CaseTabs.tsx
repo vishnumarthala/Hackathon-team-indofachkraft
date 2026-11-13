@@ -10,6 +10,7 @@ const TABS = [
   { key: "sessions", segment: "sessions" },
   { key: "report", segment: "report" },
   { key: "referral", segment: "referral" },
+  { key: "documents", segment: "documents" },
   { key: "team", segment: "team" },
   { key: "health", segment: "health" },
   { key: "shared", segment: "shared" },

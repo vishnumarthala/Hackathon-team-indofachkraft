@@ -14,7 +14,13 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
   await requireGuardianPage();
   const { id } = await params;
   const { child, session } = await requireChildGuardianPage(id);
-  const [t, tc, th, locale] = [await getT("family.children"), await getT("consent"), await getT("health"), await getLocale()];
+  const [t, tc, th, td, locale] = [
+    await getT("family.children"),
+    await getT("consent"),
+    await getT("health"),
+    await getT("documents"),
+    await getLocale(),
+  ];
   const [state, docs] = await Promise.all([getConsentState(child.id), currentDocuments(locale)]);
 
   const views: PermissionView[] = CONSENT_FEATURES.map((feature) => {
@@ -42,18 +48,26 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
         <h1 className="text-2xl font-bold break-words text-slate-900 sm:text-3xl">{child.display_name}</h1>
         <p className="text-slate-600">{ageLabel(t, child.date_of_birth)}</p>
       </header>
-      <Link
-        href={`/family/children/${child.id}/team`}
-        className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
-      >
-        {t("team.link")}
-      </Link>
-      <Link
-        href={`/family/children/${child.id}/health`}
-        className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
-      >
-        {th("link")}
-      </Link>
+      <div className="flex flex-wrap gap-x-6">
+        <Link
+          href={`/family/children/${child.id}/team`}
+          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+        >
+          {t("team.link")}
+        </Link>
+        <Link
+          href={`/family/children/${child.id}/documents`}
+          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+        >
+          {td("link")}
+        </Link>
+        <Link
+          href={`/family/children/${child.id}/health`}
+          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+        >
+          {th("link")}
+        </Link>
+      </div>
       <section aria-labelledby="permissions-heading" className="space-y-3">
         <h2 id="permissions-heading" className="text-xl font-semibold text-slate-900">
           {t("overview.permissions")}

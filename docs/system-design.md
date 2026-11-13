@@ -121,6 +121,11 @@ flowchart LR
   `/dashboard` list and RLS. A child's records reach another organisation only through a guardian's
   scoped, read-only, revocable `sharing_grants` row (`requireSharedAccess(childId, scope)`); features
   register what each scope shows in `lib/sharing/registry.ts`. See `docs/sharing.md`.
+- **Document vault (ticket 023).** Per-child files in the private `documents` bucket (20 MB; PDF, JPEG,
+  PNG, HEIC checked by magic bytes). Two-step signed upload + `complete`; every read goes through the SQL
+  rule `document_access` (linked guardian, case providers, orgs a guardian shared the file with, `documents`
+  sharing grants) and downloads are a 302 to a 300 s signed URL minted only after a strict
+  `document.downloaded` audit row. See `docs/documents.md`.
 - **Child health profile (ticket 021).** One profile per child (`child_health_profiles`: allergies,
   medicines, conditions, birth/developmental history, emergency contact, blood group), edited only by a
   linked guardian with optimistic concurrency (`version`, 409 on a stale save) and an append-only
@@ -197,6 +202,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
+          documents.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -511,6 +517,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/cases/:id/assignments`, `PATCH\|DELETE /api/cases/:id/assignments/:assignmentId` | 022 | `{ user_id, care_role?, discipline_label? }` | 201 `{ assignment }`; 422 not in org; 409 duplicate / last lead (`docs/sharing.md`) |
 | `GET\|POST /api/family/children/:id/sharing-grants`, `POST .../sharing-grants/:grantId/revoke` | 022 | `{ source_org_id, grantee_org_id, scopes, expires_in_days?: 90 \| 365 \| null }` | 201 `{ grant }`; 422 org not treating the child (`docs/sharing.md`) |
 | `GET\|PUT /api/family/children/:id/health`, `GET /api/cases/:id/health` | 021 | PUT: full profile + `version` | 200 `{ profile }`; 409 stale version; 400 `details` by field path; case route 404 without profile (`docs/health-profile.md`) |
+| `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
@@ -665,6 +672,8 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   and whose `intake_token` dynamic variable equals the URL token. Webhook (when used): HMAC verified;
   unknown tokens return 200 `{ received: true, ignored: "unknown token" }` and are audited.
 - Audio: private bucket, signed URLs valid 1 hour for playback.
+- Documents (023): private bucket, signed URLs valid 300 s, minted only after the access check and the
+  strict `document.downloaded` audit row; never logged (`docs/documents.md`).
 - Consent: intake page requires a consent checkbox before Start. Since 020 every gated step also needs the
   guardian's recorded consent for that feature (server-side; a client `parent_consent` flag is ignored);
   see `docs/consent.md`.

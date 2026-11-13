@@ -72,3 +72,15 @@ export async function activeGrantRecipients(sql: Queryable, grantId: string): Pr
     where g.id = ${grantId} and g.revoked_at is null and (g.expires_at is null or g.expires_at > now())`;
   return rows.map((r) => r.user_id);
 }
+
+/** 023: active guardians of the child, only while the document is still a `ready`, guardian-visible provider upload
+ * of that child. Document and child come from the database; a hidden or deleted document yields nobody. */
+export async function visibleDocumentGuardians(sql: Queryable, documentId: string, childId: string): Promise<string[]> {
+  const rows = await sql<{ user_id: string }[]>`
+    select gl.user_id from public.documents d
+    join public.children c on c.id = d.child_id and c.deleted_at is null
+    join public.guardian_links gl on gl.child_id = d.child_id and gl.status = 'active'
+    where d.id = ${documentId} and d.child_id = ${childId} and d.status = 'ready'
+      and d.uploader_kind = 'provider' and d.visible_to_guardian`;
+  return rows.map((r) => r.user_id);
+}

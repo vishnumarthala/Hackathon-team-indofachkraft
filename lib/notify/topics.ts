@@ -12,6 +12,7 @@ import {
   childAccessFilter,
   existingUser,
   profileOwner,
+  visibleDocumentGuardians,
 } from "./recipients";
 import type { TemplateName } from "./templates";
 import type { Channel, OutboxEventRow } from "./types";
@@ -37,6 +38,8 @@ function topic<S extends z.ZodType>(def: TopicDefinition<S>): TopicDefinition<S>
 
 const GUARDIAN_CHANNELS = ["in_app", "email", "whatsapp"] as const;
 const PROVIDER_CHANNELS = ["in_app", "email"] as const;
+// Guardian topics without a WhatsApp message (023 documents).
+const GUARDIAN_IN_APP_EMAIL = ["in_app", "email"] as const;
 
 export const TOPICS = {
   // Dev/ops check. aggregate = the user to ping (`aggregate_type` 'user').
@@ -62,12 +65,14 @@ export const TOPICS = {
     recipients: async (p, { sql }) =>
       p.child_id && p.recipient_user_ids ? childAccessFilter(sql, p.child_id, p.recipient_user_ids) : [],
   }),
-  // 023: guardian-visible document uploaded by a provider.
+  // 023: a provider document became visible to the guardians (enqueued by `complete_document` /
+  // `set_document_visibility`). In-app + email only. At fan-out: active guardians, and only while the document is
+  // still a ready, guardian-visible provider upload of that child (hidden or deleted again -> nobody).
   "document.shared_with_guardian": topic({
     payload: z.object({ document_id: uuid, child_id: uuid }).strict(),
-    channels: GUARDIAN_CHANNELS,
+    channels: GUARDIAN_IN_APP_EMAIL,
     template: "document_shared",
-    recipients: (p, { sql }) => activeGuardians(sql, p.child_id),
+    recipients: (p, { sql }) => visibleDocumentGuardians(sql, p.document_id, p.child_id),
   }),
   // 025
   "iep.published": topic({
@@ -151,6 +156,11 @@ export const PROVIDER_TOPICS = {
 
 export const SHARING_TOPICS = {
   granted: "sharing.granted",
+} as const satisfies Record<string, Topic>;
+
+// 023 FR-9: enqueued by `complete_document` / `set_document_visibility` (migration 20261113002300).
+export const DOCUMENT_TOPICS = {
+  sharedWithGuardian: "document.shared_with_guardian",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

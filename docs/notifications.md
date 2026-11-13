@@ -125,7 +125,7 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 |-------|------------------------------------|----------|----------|
 | `test.ping` (dev / DEMO_MODE only) | the user `aggregate_id` | in-app, email, WhatsApp | `test_ping` (optional `ics_start` adds an invite) |
 | `message.created` (027) | `recipient_user_ids` still able to reach `child_id` (027 replaces this with thread participants who have not read the thread) | in-app, email, WhatsApp | `message_created` |
-| `document.shared_with_guardian` (023) | active guardians of the child | in-app, email, WhatsApp | `document_shared` |
+| `document.shared_with_guardian` (023, enqueued by `complete_document` / `set_document_visibility` in the same transaction) | active guardians of the child, only while the document is still a ready, guardian-visible provider upload of that child | in-app, email | `document_shared` |
 | `iep.published` (025) | active guardians of the child | in-app, email, WhatsApp | `iep_published` |
 | `home_program.published` (026) | active guardians of the child | in-app, email, WhatsApp | `home_program_published` |
 | `assessment.assigned` (024) | active guardians of the child | in-app, email, WhatsApp | `assessment_assigned` |
@@ -215,7 +215,7 @@ for the text; for example:
 | Template name | Category | Params | English body |
 |---------------|----------|--------|--------------|
 | `message_created` | UTILITY | `{{1}}` app link | You have a new message on DoctorNearMe. Open: {{1}} |
-| `document_shared` | UTILITY | `{{1}}` app link | Your child's care team shared a document with you. Open: {{1}} |
+| `document_shared` (not used yet: 023 sends in-app + email only) | UTILITY | `{{1}}` app link | Your child's care team shared a document with you. Open: {{1}} |
 | `iep_published` | UTILITY | `{{1}}` app link | Your child's therapist shared a new plan. Open: {{1}} |
 | `home_program_published` | UTILITY | `{{1}}` app link | Your child's care team shared new activities to do at home. Open: {{1}} |
 | `assessment_assigned` | UTILITY | `{{1}}` app link | Your child's care team sent you a questionnaire to fill in. Open: {{1}} |
