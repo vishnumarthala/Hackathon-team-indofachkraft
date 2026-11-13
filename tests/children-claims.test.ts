@@ -95,7 +95,8 @@ describe.skipIf(!enabled)("claim codes and child links (database)", { timeout: 9
     expect(decodeURIComponent(created.whatsapp_url)).toContain(created.code);
     const hours = (Date.parse(created.expires_at) - Date.now()) / 3_600_000;
     expect(hours).toBeGreaterThan(71.9);
-    expect(hours).toBeLessThanOrEqual(72);
+    // expires_at comes from the database clock; allow a little skew against the test runner's clock.
+    expect(hours).toBeLessThanOrEqual(72.01);
     const rows = await sql`select * from child_claim_codes where case_id = ${c.caseId}`;
     expect(rows).toHaveLength(1);
     expect(rows[0].code_hash).toBe(hashClaimCode(normalizeClaimCode(created.code) as string));
