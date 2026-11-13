@@ -143,8 +143,13 @@ same calendar entry across reschedules.
   refund paid cancellations (provider/system always, guardian >= 24 h before) and move the payment with a reschedule.
   `Continue to payment` opens `/book/<profileId>/pay/<appointmentId>`; `/family/appointments` keeps expired bookings
   whose late payment is being refunded.
-- **034 voice agent:** call `holdSlot(input, { sessionHash: hashBookingSession(<agent session id>) })` and
-  `getSlots()`; confirmation still needs a signed-in guardian.
+- **034 voice agent (done):** `lib/agents/booking/tools.ts` calls `getSlots()` and `holdSlot(input, { sessionHash })`
+  where the owner is the **browser's** booking session (`dnm_booking` cookie hash, stored per agent session), not the
+  agent's token, so the normal confirm flow attaches the hold after sign-in. `/book/<profileId>?appointment=<id>` is an
+  alias of `?hold=`. Confirmation still needs a signed-in guardian; for online services that confirm leads to 031's
+  payment page like any other hold. 037's video rule refuses agent holds (no Google identity) as `{ held: false,
+  reason: "google_account_required" }`. See `docs/elevenlabs-booking-agent.md` and
+  `docs/system-design.md` section 13b.
 - **035 intake:** `services.intake_kind`, `appointments.case_id`, `service_snapshot.intake_kind`.
 - **037 Meet (done) / 042 demo safeguard:** `lib/booking/hooks.ts` `checkHoldPreconditions()` runs before every hold and
   `checkConfirmPreconditions()` before confirming an owned hold. 037: a `video` service needs a signed-in guardian with a

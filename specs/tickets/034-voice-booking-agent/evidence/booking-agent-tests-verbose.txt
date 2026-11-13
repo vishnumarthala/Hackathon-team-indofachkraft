@@ -1,0 +1,23 @@
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > NFR-2: payload keys outside the schema are rejected (no PII can reach a tool) 4ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > normalises what an LLM says into the directory vocabulary 1ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > helpers: part of day, confirm URL, demo date 0ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > routes: public (self-authenticating), no confirm tool exists; CSP + allowlist list ElevenLabs for /find 2ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > E-4: the agent guide has the red-flag message, the no-PII rules and no confirm tool 0ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > NFR-3: the demo script stops cleanly when nothing is bookable 0ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-2: session -> 201 { conversation_token, booking_session }, cookies set, only the hash stored 21ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-2: 5 sessions per IP per hour, then 429 8ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > live mode: no agent/secret -> 503; agent + secret -> conversation token from ElevenLabs (mocked) 2ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-3 / D-4: secret missing or wrong -> 401; unknown, expired or ended session -> 401 40ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > NFR-2 / E-4: payload keys outside the schema -> 400 (child_name, phone); bad JSON -> 400 7ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-3: the 21st tool call in a session -> 429 17ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > search_providers: geocoded server-side, top 5 bookable results with the FR-3 fields 53ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > get_slots: max 6 slots, part_of_day respected, unknown provider 404 57ms
+[034 NFR-1] p95 ms {"search_providers":23,"get_slots":20,"hold_slot":9}
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > E-1 / FR-5: hold_slot -> held, owned by the browser session (sha256 of the cookie), audit actor ai with the session hash only 16ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-3: a second hold in the session releases the first (one hold per session) 16ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-3: slot_taken -> { held: false, reason: 'slot_taken' }; mismatched provider/service -> 404 18ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > E-2 / E-3: confirm needs a signed-in guardian (401); another browser's cookie -> 404; the holding browser -> confirmed 24ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > NFR-3: the DEMO_MODE script holds a slot through the cookie-bound demo route (same handlers) 25ms
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > NFR-1: tool calls answer well under 1.5 s p95 locally 392ms
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
