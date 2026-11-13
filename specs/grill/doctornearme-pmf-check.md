@@ -35,7 +35,7 @@ directory as the acquisition channel.
 | | Who | Pays? | What they want |
 |---|---|---|---|
 | **Buyer** | Owner of an independent child-development centre in Hyderabad (3–15 staff: speech, OT, special educator, sometimes a visiting psychologist), or a solo therapist | Yes, monthly SaaS | Full schedule, fewer dropouts, less paperwork, parents who practise at home, proof of progress for parents, more referrals, look as professional as the chains |
-| **User (family)** | Mother of a child aged 1.5–6 with speech or social concerns. Uses an Android phone and WhatsApp, speaks Telugu or Urdu (English for some), and is often sent by a paediatrician | No (pays the centre ₹500–2,500 per session, 2–4 times a week) | "Will my child talk?", a trusted and affordable place near home, what to do at home, no stigma, the disability certificate (UDID) later |
+| **User (family)** | Mother of a child aged 1.5–8 with speech or social concerns. Uses an Android phone and WhatsApp, speaks Telugu (some Urdu or Hindi, English for some), and is often sent by a paediatrician | No (pays the centre ₹500–2,500 per session, 2–4 times a week) | "Will my child talk?", a trusted and affordable place near home, what to do at home, no stigma, the disability certificate (UDID) later |
 | **Gatekeeper** | Paediatrician or GP (74% of families go to them first in one study) | No | A place to send worried parents, and getting feedback on the child |
 
 The product has no journey for the gatekeeper today.
@@ -47,7 +47,7 @@ The product has no journey for the gatekeeper today.
 | Step | Parent's thought | Fit | Why |
 |---|---|---|---|
 | Lands on `/` | "This is for therapists, not me." | ✗ | The hero says "For early intervention therapists" and quotes US and German statistics. Parents only find `/find` and `/screen` in the nav and one lower button. |
-| Voice check-in `/screen` | "I don't want to talk about my child out loud in English; my mother-in-law is in the room." | ✗ | The agent is English only. There's no tap-through text version. The questions are based on ISAA, which is poor under age 5. Pinnacle Blooms already offers a free online "AbilityScore". |
+| Voice check-in `/screen` | "I don't want to talk about my child out loud in English; my mother-in-law is in the room." | ✗ | The agent is English only. (A tap-through version already exists, so parents can answer silently.) The questions are based on ISAA, which is poor under age 5. Pinnacle Blooms already offers a free online "AbilityScore". |
 | Red flag → 108/112 | "Good, it's safe." | ✓ | Keep. |
 | Result → `/find` | "Do I need a speech therapist, an OT or a doctor?" | ~ | The result should recommend the kind of professional, not just send the parent to a list. |
 | Directory | "Who are these people? Are they real?" | ~ | Parents mostly come through referrals and word of mouth. A thin directory with "Demo profile" badges lowers trust. Supply density decides whether this step works. |
@@ -95,7 +95,7 @@ product is an add-on, not the centre's system, and add-ons are easy to drop.
 
 ### 3d. Paediatrician (missing)
 
-There's no journey for them. A low-cost version: a printable Telugu/Urdu/English QR poster for the
+There's no journey for them. A low-cost version: a printable Telugu/Hindi/English QR poster for the
 waiting room that links to the check-in with "referred by Dr X". Later, a feedback note back to the
 paediatrician.
 
@@ -117,12 +117,12 @@ paediatrician.
 1. **Pick one buyer and one journey.** Centres are the paying customer, and the centre-invited parent
    journey is the main one. Redraw the FigJam board with that journey first.
 2. **Split the landing page.** A "For centres" page (as now, with Indian statistics: INCLEN 1 in 100
-   under 10, diagnosis at about 4.6 years in India) and a "For parents" page in Telugu, Urdu and English.
-3. **Change the UI languages to en / te / ur** (Urdu, right-to-left) before adding more Hindi work.
-   Turn on Telugu and Urdu for the parent check-in and intake agents. That's ElevenLabs configuration,
+   under 10, diagnosis at about 4.6 years in India) and a "For parents" page in Telugu, Hindi and English.
+3. **Give the voice agents Telugu (and Hindi).** *Decided 2026-11-13: no Urdu; languages stay en / hi / te.*
+   Turn on Telugu and Hindi for the parent check-in, booking, intake and follow-up agents. That's mostly ElevenLabs configuration,
    not code.
 4. **Fix the check-in tool.** Base the parent check-in for ages 16–30 months on M-CHAT-R/F (check the
-   licence for commercial digital use first). Add a **tap-through text version**. Keep ISAA for
+   licence for commercial digital use first). Keep the existing tap-through choice. Keep ISAA for
    clinicians (age 3+, certification support), and add INDT-ASD as the diagnosis tool in the instrument
    list.
 5. **Add the minimum "centre's daily system":** recurring weekly sessions per child, attendance,
@@ -161,11 +161,17 @@ from the original telemedicine plan.
 - What do you send parents between sessions?
 - Would you pay ₹X a month, and who decides?
 
-## 7. Open questions for the product owner
-1. Is the paying customer the centre (recommended), the parent, or both?
-2. Do you accept dropping Hindi in favour of Urdu for the Hyderabad pilot?
-3. Should recurring sessions, packages and attendance become tickets before the pilot (recommended)?
-4. Is the target age group 1.5–6 (early intervention) or up to 8? That decides ISAA versus M-CHAT/INDT-ASD.
+## 7. Product owner answers (2026-11-13)
+1. **Who pays: both.** The parent pays the centre or therapist, and the centre or therapist pays
+   DoctorNearMe a platform fee for each consultation, as part of the main fee. → tickets 045, 046.
+2. **No Urdu.** Languages stay en / hi / te. → 049 adds hi and te to the new voice agents.
+3. **Yes** to recurring sessions, packages and attendance before the pilot. → 043, 044, 045, plus 047 (import).
+4. **Up to 8 years.** → 048: age-aware check-in (M-CHAT-R/F for toddlers once licensed, ISAA-derived for
+   2½–8), concern-based advice, free options.
+
+Recorded in the [decision record](doctornearme-mvp.md) (decisions 8–11) and on the
+[board](../tickets/BOARD.md) (M4). Still open: the platform fee rate and the tax treatment, which needs a CA
+(see 046).
 
 ## Sources
 - INCLEN neurodevelopmental prevalence (includes a Hyderabad site): https://pmc.ncbi.nlm.nih.gov/articles/PMC6057634/

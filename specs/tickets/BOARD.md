@@ -102,7 +102,21 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 039 | E-prescriptions for verified prescribers | done | solo | waits for 021, 028, 038 |
 | 040 | Follow-up agent ("ask about my child's plan") | done | solo | waits for 026, 033, 039 |
 
+## M4 - Pilot readiness (from the [PMF check](../grill/doctornearme-pmf-check.md), 2026-11-13)
+
+| # | Title | Status | Mode | Runs |
+|---|-------|--------|------|------|
+| 043 | Recurring therapy sessions (weekly series) | ready | solo | alongside |
+| 044 | Attendance register | ready | solo | waits for 043 |
+| 045 | Packages, family fee ledger and receipts | ready | solo | waits for 043, 044 |
+| 046 | Platform fee per consultation (Route split + monthly statement) | ready | solo | waits for 044, 045 |
+| 047 | Import existing children from a spreadsheet | ready | solo | alongside |
+| 048 | Parent check-in up to 8 (age-aware, concern-based advice, free options) | draft | solo | alongside |
+| 049 | Telugu and Hindi for the new voice agents | draft | solo | alongside |
+| 050 | Parent-first home page and Indian statistics | draft | solo | alongside |
+
 ## Critical path (DoctorNearMe)
 
 017 -> 019 -> 020 -> 022 -> 023 -> 041, and 020 -> 032 -> 041 -> 030 (booking) -> 034/035.
 Real child data needs 020 (consent) and 041 (privacy/audit) on `main` first.
+M4: 043 -> 044 -> 045 -> 046 (the business model needs all four); 047-050 run alongside.

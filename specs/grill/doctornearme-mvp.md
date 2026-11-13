@@ -116,6 +116,18 @@ plans in M1; M2/M3 tickets that touch real child data wait for the 041 privacy b
 | 7 | Every-minute scheduler | Vercel Pro cron (already paid) + immediate `after()` drain; Supabase pg_cron as free fallback | 032 |
 | - | Care-team discipline before 028 | Free text in M1 | 022 |
 
+### Product decisions from the PMF check on 2026-11-13 ([report](doctornearme-pmf-check.md))
+| # | Question | Decision | Tickets |
+|---|---|---|---|
+| 8 | Who pays | Both: the parent pays the centre/therapist; the centre/therapist pays DoctorNearMe a platform fee for each consultation, as part of the main fee | 045, 046 |
+| 9 | Urdu | No. UI and voice languages stay en / hi / te; the new voice agents gain hi and te | 049 |
+| 10 | Recurring sessions, packages, attendance before the pilot | Yes | 043, 044, 045, 047 |
+| 11 | Target age | Up to 8 years | 048 |
+
+This supersedes "Booking: one-off only (no recurring series/packages)" in §2. Parents still book one-off visits
+themselves, while centres set weekly series (043). It also supersedes 031's "Out of scope: payouts (Razorpay
+Route)" (046).
+
 ## 7. Status of this record
 
 Confirmed by the product owner on 2026-11-12. M1 tickets start with 016 (rebrand) and 017 (orgs, roles, authz).
