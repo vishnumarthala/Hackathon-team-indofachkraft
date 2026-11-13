@@ -365,6 +365,14 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "moderateRating",
     impl: { kind: "auditStrict", module: "lib/ratings/store.ts" },
   },
+  // ---------- 051 voice cost guard ----------
+  {
+    action: "voice.caps_updated",
+    description: "Platform admin changes the voice budget caps at runtime",
+    routes: ["app/api/admin/voice-settings/route.ts"],
+    call: "setVoiceCaps",
+    impl: { kind: "auditStrict", module: "lib/voice/usage.ts" },
+  },
   // ---------- 047 import children ----------
   {
     action: "children.imported",

@@ -11,6 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
+Rows: 2547. Not yet approved: 2547.
 Rows: 2570. Not yet approved: 2570.
 Rows: 2588. Not yet approved: 2588.
 
@@ -384,6 +385,12 @@ Rows: 2588. Not yet approved: 2588.
 | `landing.demo.speaking` | Assistant is speaking | सहायक बोल रहा है | సహాయకుడు మాట్లాడుతున్నారు |  | pending |
 | `landing.demo.listening` | Listening… you are the parent of Ravi | सुन रहा है… आप रवि के माता-पिता हैं | వింటోంది… మీరు రవి తల్లిదండ్రులు |  | pending |
 | `landing.demo.ended` | Demo call ended. In the product, this call becomes the pre-session brief below. | डेमो कॉल ख़त्म हुई। प्रोडक्ट में यह कॉल नीचे दिया गया सेशन से पहले का ब्रीफ़ बन जाती है। | డెమో కాల్ ముగిసింది. ప్రోడక్ట్‌లో ఈ కాల్ కింద ఉన్న సెషన్ ముందు బ్రీఫ్‌గా మారుతుంది. |  | pending |
+| `landing.demo.liveOnly` | The live demo is for clinics: sign in to your provider account, or book a demo and sign in with that email. | लाइव डेमो क्लीनिकों के लिए है: अपने प्रोवाइडर खाते में साइन इन करें, या डेमो बुक करें और उसी ईमेल से साइन इन करें। | లైవ్ డెమో క్లినిక్‌ల కోసం: మీ ప్రొవైడర్ ఖాతాలో సైన్ ఇన్ చేయండి, లేదా డెమో బుక్ చేసి అదే ఇమెయిల్‌తో సైన్ ఇన్ చేయండి. |  | pending |
+| `landing.demo.quota` | You've used today's live demo. Listen to the sample call, or try again tomorrow. | आपने आज का लाइव डेमो इस्तेमाल कर लिया है। सैंपल कॉल सुनें, या कल फिर कोशिश करें। | మీరు ఈ రోజు లైవ్ డెమో వాడేశారు. నమూనా కాల్ వినండి, లేదా రేపు మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `landing.demo.paused` | Voice is resting right now. Please listen to the sample call. | आवाज़ अभी आराम कर रही है। कृपया सैंपल कॉल सुनें। | వాయిస్ ప్రస్తుతం విశ్రాంతిలో ఉంది. దయచేసి నమూనా కాల్ వినండి. |  | pending |
+| `landing.demo.notAllowed` | The live demo is for clinics and booked demos. Please listen to the sample call. | लाइव डेमो क्लीनिकों और बुक किए गए डेमो के लिए है। कृपया सैंपल कॉल सुनें। | లైవ్ డెమో క్లినిక్‌లు, బుక్ చేసిన డెమోల కోసం. దయచేసి నమూనా కాల్ వినండి. |  | pending |
+| `landing.demo.concurrent` | You already have a voice call open. End it first. | आपकी एक आवाज़ कॉल पहले से चल रही है। पहले उसे खत्म करें। | మీకు ఇప్పటికే ఒక వాయిస్ కాల్ తెరిచి ఉంది. ముందు దాన్ని ముగించండి. |  | pending |
+| `landing.demo.silence` | We ended the call because it went quiet. | कॉल शांत हो गई थी, इसलिए हमने उसे खत्म कर दिया। | కాల్ నిశ్శబ్దంగా మారడంతో మేము దాన్ని ముగించాం. |  | pending |
 | `landing.therapistView.ended` | Your demo call has ended. This is how an intake call reaches the therapist (example case, synthetic data). | आपकी डेमो कॉल ख़त्म हो गई है। इनटेक कॉल थेरेपिस्ट तक ऐसे पहुँचती है (उदाहरण केस, नकली डेटा)। | మీ డెమో కాల్ ముగిసింది. ఇన్‌టేక్ కాల్ థెరపిస్ట్‌కు ఇలా చేరుతుంది (ఉదాహరణ కేసు, కృత్రిమ డేటా). |  | pending |
 | `landing.therapistView.childName` | Ravi (synthetic) | रवि (नकली) | రవి (కృత్రిమ) |  | pending |
 | `landing.therapistView.childMeta` | 40 months · Telugu · Therapist: Demo Therapist | 40 महीने · तेलुगु · थेरेपिस्ट: डेमो थेरेपिस्ट | 40 నెలలు · తెలుగు · థెరపిస్ట్: డెమో థెరపిస్ట్ |  | pending |
@@ -666,6 +673,7 @@ Rows: 2588. Not yet approved: 2588.
 | `family.login.oauthFailed` | Google sign-in did not work. Please try again. | Google से साइन इन नहीं हो सका। कृपया फिर से कोशिश करें। | Google సైన్ ఇన్ పని చేయలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `family.login.clinician` | Are you a clinician? Sign in here | क्या आप क्लिनिशियन हैं? यहां साइन इन करें | మీరు క్లినీషియనా? ఇక్కడ సైన్ ఇన్ చేయండి |  | pending |
 | `family.login.privacy` | We use your number only to sign you in and send appointment updates. | हम आपका नंबर सिर्फ़ साइन इन कराने और अपॉइंटमेंट की जानकारी भेजने के लिए इस्तेमाल करते हैं। | మీ నంబర్‌ను సైన్ ఇన్ కోసం మరియు అపాయింట్‌మెంట్ సమాచారం పంపడానికి మాత్రమే ఉపయోగిస్తాము. |  | pending |
+| `family.login.botCheck` | Please complete the quick check, then send the code again. | कृपया छोटी जाँच पूरी करें, फिर कोड दोबारा भेजें। | దయచేసి చిన్న తనిఖీ పూర్తి చేసి, ఆపై కోడ్‌ను మళ్ళీ పంపండి. |  | pending |
 | `family.shell.navLabel` | Family account | परिवार खाता | కుటుంబ ఖాతా |  | pending |
 | `family.shell.home` | Home | होम | హోమ్ |  | pending |
 | `family.shell.children` | Children | बच्चे | పిల్లలు |  | pending |
@@ -1497,6 +1505,7 @@ Rows: 2588. Not yet approved: 2588.
 | `privacy.notice.collect.payments` | Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them. | जिन अपॉइंटमेंट का आप ऑनलाइन भुगतान करते हैं उनके भुगतान: राशि, स्थिति, रिफ़ंड और Razorpay संदर्भ संख्या। आपके कार्ड या UPI विवरण Razorpay संभालता है; हम उन्हें कभी नहीं देखते या रखते। | మీరు ఆన్‌లైన్‌లో చెల్లించే అపాయింట్‌మెంట్ల చెల్లింపులు: మొత్తం, స్థితి, రీఫండ్‌లు, Razorpay రిఫరెన్స్ నంబర్లు. మీ కార్డ్ లేదా UPI వివరాలను Razorpay నిర్వహిస్తుంది; మేము వాటిని ఎప్పుడూ చూడము, నిల్వ చేయము. |  | pending |
 | `privacy.notice.collect.ratings` | Ratings you give after a completed visit: stars and an optional comment. They are shown without your name; only DoctorNearMe admins can see who wrote them. | पूरी हुई विज़िट के बाद आपकी दी गई रेटिंग: स्टार और एक वैकल्पिक टिप्पणी। ये आपके नाम के बिना दिखाई जाती हैं; केवल DoctorNearMe एडमिन देख सकते हैं कि इन्हें किसने लिखा। | పూర్తయిన సందర్శన తర్వాత మీరు ఇచ్చే రేటింగ్‌లు: స్టార్‌లు మరియు ఐచ్ఛిక వ్యాఖ్య. ఇవి మీ పేరు లేకుండా చూపబడతాయి; వాటిని ఎవరు రాశారో DoctorNearMe అడ్మిన్‌లు మాత్రమే చూడగలరు. |  | pending |
 | `privacy.notice.collect.followUp` | Questions to the AI follow-up assistant (only with your permission): your questions about your child's shared plans and the answers, kept for 90 days. If you ask by voice, the call is processed by ElevenLabs. | AI फ़ॉलो-अप सहायक से प्रश्न (केवल आपकी अनुमति से): आपके बच्चे की साझा योजनाओं के बारे में आपके प्रश्न और उत्तर, 90 दिनों तक रखे जाते हैं। यदि आप आवाज़ से पूछते हैं, तो कॉल ElevenLabs द्वारा संसाधित की जाती है। | AI ఫాలో-అప్ సహాయకుడికి ప్రశ్నలు (మీ అనుమతితో మాత్రమే): మీ పిల్లల పంచుకున్న ప్లాన్‌ల గురించి మీ ప్రశ్నలు మరియు సమాధానాలు, 90 రోజులు ఉంచబడతాయి. మీరు గొంతుతో అడిగితే, కాల్‌ను ElevenLabs ప్రాసెస్ చేస్తుంది. |  | pending |
+| `privacy.notice.collect.voiceUsage` | Voice usage: when you use voice (check-in, booking, follow-up questions), we record that your account had a voice call, with which assistant and for how long. Nothing about your child, no recording and no transcript. We use it to keep voice free and fair. | आवाज़ का इस्तेमाल: जब आप आवाज़ इस्तेमाल करते हैं (जाँच, बुकिंग, फ़ॉलो-अप सवाल), हम दर्ज करते हैं कि आपके खाते से एक आवाज़ कॉल हुई, किस असिस्टेंट के साथ और कितनी देर। आपके बच्चे के बारे में कुछ नहीं, कोई रिकॉर्डिंग नहीं और कोई ट्रांसक्रिप्ट नहीं। हम इसका इस्तेमाल आवाज़ को मुफ़्त और सबके लिए उचित रखने के लिए करते हैं। | వాయిస్ వినియోగం: మీరు వాయిస్ వాడినప్పుడు (పరిశీలన, బుకింగ్, ఫాలో-అప్ ప్రశ్నలు), మీ ఖాతా నుండి ఒక వాయిస్ కాల్ జరిగిందని, ఏ అసిస్టెంట్‌తో, ఎంతసేపు అని నమోదు చేస్తాం. మీ బిడ్డ గురించి ఏమీ లేదు, రికార్డింగ్ లేదు, ట్రాన్స్‌క్రిప్ట్ లేదు. వాయిస్‌ను ఉచితంగా, అందరికీ న్యాయంగా ఉంచడానికి దీన్ని వాడతాం. |  | pending |
 | `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
 | `privacy.notice.purposes` | To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising. | आपका पारिवारिक खाता और आपके चुने विशेषज्ञों के साथ बच्चे की देखभाल चलाने के लिए; इनटेक सारांश, लिखित रूप और मसौदा रिपोर्ट तैयार करने के लिए जिन्हें एक विशेषज्ञ जाँचता है; आपको रिमाइंडर और अपडेट भेजने के लिए; कानून द्वारा ज़रूरी रिकॉर्ड रखने के लिए; और सेवा को सुरक्षित रखने के लिए। हम डेटा कभी नहीं बेचते और विज्ञापन के लिए कभी उपयोग नहीं करते। | మీ కుటుంబ ఖాతాను మరియు మీరు ఎంచుకున్న నిపుణులతో మీ పిల్లల సంరక్షణను నడపడానికి; ఒక నిపుణుడు తనిఖీ చేసే ఇన్‌టేక్ సారాంశాలు, లిఖిత రూపాలు మరియు ముసాయిదా రిపోర్టులు సిద్ధం చేయడానికి; మీకు రిమైండర్లు మరియు అప్‌డేట్లు పంపడానికి; చట్టం కోరే రికార్డులను ఉంచడానికి; మరియు సేవను సురక్షితంగా ఉంచడానికి. మేము డేటాను ఎప్పుడూ అమ్మము, ప్రకటనల కోసం ఎప్పుడూ ఉపయోగించము. |  | pending |
 | `privacy.notice.processorsTitle` | Who processes it for us, and where | हमारे लिए इसे कौन प्रोसेस करता है, और कहाँ | మా కోసం దీన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎక్కడ |  | pending |
@@ -1524,6 +1533,9 @@ Rows: 2588. Not yet approved: 2588.
 | `privacy.notice.processors.razorpay.name` | Razorpay | Razorpay | Razorpay |  | pending |
 | `privacy.notice.processors.razorpay.purpose` | Online payments and refunds for appointments | अपॉइंटमेंट के ऑनलाइन भुगतान और रिफ़ंड | అపాయింట్‌మెంట్ల ఆన్‌లైన్ చెల్లింపులు, రీఫండ్‌లు |  | pending |
 | `privacy.notice.processors.razorpay.location` | India | भारत | భారతదేశం |  | pending |
+| `privacy.notice.processors.cloudflare.name` | Cloudflare Turnstile | Cloudflare Turnstile | Cloudflare Turnstile |  | pending |
+| `privacy.notice.processors.cloudflare.purpose` | Bot check before sign-in codes and voice calls (anti-abuse; no tracking or advertising) | साइन-इन कोड और आवाज़ कॉल से पहले बॉट जाँच (दुरुपयोग रोकने के लिए; कोई ट्रैकिंग या विज्ञापन नहीं) | సైన్-ఇన్ కోడ్‌లు, వాయిస్ కాల్స్ ముందు బాట్ తనిఖీ (దుర్వినియోగం నివారణకు; ట్రాకింగ్ లేదా ప్రకటనలు లేవు) |  | pending |
+| `privacy.notice.processors.cloudflare.location` | Global (USA) | वैश्विक (अमेरिका) | ప్రపంచవ్యాప్తం (అమెరికా) |  | pending |
 | `privacy.notice.crossBorder` | AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time. | AI सुविधाएँ आपके बच्चे का डेटा भारत के बाहर भेजती हैं। वे तभी चलती हैं जब आप उस बच्चे के लिए अनुमति देते हैं, और आप कभी भी अनुमति वापस ले सकते हैं। | AI సౌకర్యాలు మీ పిల్లల డేటాను భారతదేశం బయటకు పంపుతాయి. ఆ పిల్లల కోసం మీరు అనుమతించిన తర్వాతే అవి పనిచేస్తాయి, మరియు మీరు ఎప్పుడైనా ఉపసంహరించుకోవచ్చు. |  | pending |
 | `privacy.notice.retentionTitle` | How long we keep it | हम इसे कितने समय तक रखते हैं | మేము దీన్ని ఎంతకాలం ఉంచుతాము |  | pending |
 | `privacy.notice.retentionWhat` | Data | डेटा | డేటా |  | pending |
@@ -1556,6 +1568,8 @@ Rows: 2588. Not yet approved: 2588.
 | `privacy.notice.retention.payments.how` | Kept as a financial record (period pending legal review), also after deletion; no card or UPI details | वित्तीय रिकॉर्ड के रूप में रखा जाता है (अवधि कानूनी समीक्षा के अधीन), हटाने के बाद भी; कोई कार्ड या UPI विवरण नहीं | ఆర్థిక రికార్డుగా ఉంచబడుతుంది (కాలం న్యాయ సమీక్షలో ఉంది), తొలగించిన తర్వాత కూడా; కార్డ్ లేదా UPI వివరాలు ఉండవు |  | pending |
 | `privacy.notice.retention.ratings.what` | Ratings and comments | रेटिंग और टिप्पणियाँ | రేటింగ్‌లు మరియు వ్యాఖ్యలు |  | pending |
 | `privacy.notice.retention.ratings.how` | While your account is active; deleted with your account, or with your child's data when you ask us to delete everything | जब तक आपका खाता सक्रिय है; आपके खाते के साथ, या सब कुछ हटाने के अनुरोध पर आपके बच्चे के डेटा के साथ हटा दी जाती हैं | మీ ఖాతా సక్రియంగా ఉన్నంత వరకు; మీ ఖాతాతో పాటు, లేదా అన్నీ తొలగించమని మీరు అడిగినప్పుడు మీ పిల్లల డేటాతో పాటు తొలగించబడతాయి |  | pending |
+| `privacy.notice.retention.voiceUsage.what` | Voice usage records (account, assistant, minutes) | आवाज़ इस्तेमाल के रिकॉर्ड (खाता, असिस्टेंट, मिनट) | వాయిస్ వినియోగ రికార్డులు (ఖాతా, అసిస్టెంట్, నిమిషాలు) |  | pending |
+| `privacy.notice.retention.voiceUsage.how` | {days} days | {days} दिन | {days} రోజులు |  | pending |
 | `privacy.notice.rightsTitle` | Your rights | आपके अधिकार | మీ హక్కులు |  | pending |
 | `privacy.notice.rights.access` | Access: download a copy of your child's data from the child's Privacy page in the app. | पहुँच: ऐप में बच्चे के गोपनीयता पेज से बच्चे के डेटा की कॉपी डाउनलोड करें। | యాక్సెస్: యాప్‌లో పిల్లల గోప్యతా పేజీ నుండి పిల్లల డేటా కాపీని డౌన్‌లోడ్ చేయండి. |  | pending |
 | `privacy.notice.rights.correction` | Correction: change details in the app, or ask the clinic to correct a record. | सुधार: ऐप में विवरण बदलें, या क्लिनिक से रिकॉर्ड ठीक करने को कहें। | సవరణ: యాప్‌లో వివరాలు మార్చండి, లేదా రికార్డును సరిచేయమని క్లినిక్‌ను అడగండి. |  | pending |
@@ -1672,6 +1686,31 @@ Rows: 2588. Not yet approved: 2588.
 | `privacy.admin.ops.stuck` | Recordings stuck for more than 30 minutes | 30 मिनट से ज़्यादा अटकी रिकॉर्डिंग | 30 నిమిషాలకు పైగా నిలిచిపోయిన రికార్డింగ్‌లు |  | pending |
 | `privacy.admin.ops.none` | None. | कोई नहीं। | ఏవీ లేవు. |  | pending |
 | `privacy.admin.ops.minutes` | {count} min | {count} मिनट | {count} ని. |  | pending |
+| `privacy.admin.ops.voiceTitle` | Voice usage | वॉइस इस्तेमाल | వాయిస్ వినియోగం |  | pending |
+| `privacy.admin.ops.voiceAgent` | Agent | एजेंट | ఏజెంట్ |  | pending |
+| `privacy.admin.ops.voiceToday` | Today (min) | आज (मिनट) | ఈ రోజు (నిమి) |  | pending |
+| `privacy.admin.ops.voiceMonth` | This month (min) | इस महीने (मिनट) | ఈ నెల (నిమి) |  | pending |
+| `privacy.admin.ops.voiceTotal` | Total | कुल | మొత్తం |  | pending |
+| `privacy.admin.ops.voiceAgents.screen` | Check-in | जाँच | పరిశీలన |  | pending |
+| `privacy.admin.ops.voiceAgents.booking` | Booking | बुकिंग | బుకింగ్ |  | pending |
+| `privacy.admin.ops.voiceAgents.followup` | Follow-up | फ़ॉलो-अप | ఫాలో-అప్ |  | pending |
+| `privacy.admin.ops.voiceAgents.intake_demo` | Landing demo | लैंडिंग डेमो | ల్యాండింగ్ డెమో |  | pending |
+| `privacy.admin.ops.voiceCostToday` | Estimated cost today | आज का अनुमानित खर्च | ఈ రోజు అంచనా ఖర్చు |  | pending |
+| `privacy.admin.ops.voiceCostMonth` | Estimated cost this month | इस महीने का अनुमानित खर्च | ఈ నెల అంచనా ఖర్చు |  | pending |
+| `privacy.admin.ops.voiceCostValue` | US${usd} (₹{inr}) | US${usd} (₹{inr}) | US${usd} (₹{inr}) |  | pending |
+| `privacy.admin.ops.voiceRate` | At US${usd} per minute and ₹{inr} per US$. | US${usd} प्रति मिनट और ₹{inr} प्रति US$ के हिसाब से। | నిమిషానికి US${usd}, US$కు ₹{inr} లెక్కన. |  | pending |
+| `privacy.admin.ops.voiceBlocked` | Blocked starts (today / this month) | रोकी गई शुरुआतें (आज / इस महीने) | ఆపిన ప్రారంభాలు (ఈ రోజు / ఈ నెల) |  | pending |
+| `privacy.admin.ops.voiceTopUsers` | Top users this month (minutes) | इस महीने के सबसे ज़्यादा इस्तेमाल करने वाले (मिनट) | ఈ నెల ఎక్కువగా వాడినవారు (నిమిషాలు) |  | pending |
+| `privacy.admin.ops.voiceCaps` | Budget | बजट | బడ్జెట్ |  | pending |
+| `privacy.admin.ops.voiceDailyCap` | Daily cap (minutes) | रोज़ की सीमा (मिनट) | రోజువారీ పరిమితి (నిమిషాలు) |  | pending |
+| `privacy.admin.ops.voiceMonthlyCap` | Monthly cap (minutes) | महीने की सीमा (मिनट) | నెలవారీ పరిమితి (నిమిషాలు) |  | pending |
+| `privacy.admin.ops.voiceCapDefault` | Default: {minutes} | डिफ़ॉल्ट: {minutes} | డిఫాల్ట్: {minutes} |  | pending |
+| `privacy.admin.ops.voiceCapHelp` | Leave empty to use the default. 0 pauses voice; pages fall back to tapping. | डिफ़ॉल्ट के लिए खाली छोड़ें। 0 से आवाज़ रुक जाती है; पेज टैप करने पर लौट आते हैं। | డిఫాల్ట్ కోసం ఖాళీగా వదిలేయండి. 0 అయితే వాయిస్ ఆగిపోతుంది; పేజీలు ట్యాప్ చేయడానికి మారతాయి. |  | pending |
+| `privacy.admin.ops.voiceCapSave` | Save caps | सीमाएँ सेव करें | పరిమితులు సేవ్ చేయండి |  | pending |
+| `privacy.admin.ops.voiceCapSaving` | Saving... | सेव हो रहा है... | సేవ్ అవుతోంది... |  | pending |
+| `privacy.admin.ops.voiceCapSaved` | Saved. | सेव हो गया। | సేవ్ అయింది. |  | pending |
+| `privacy.admin.ops.voiceCapFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `privacy.admin.ops.voiceCapInUse` | In use: {daily} per day, {monthly} per month | लागू: {daily} प्रति दिन, {monthly} प्रति माह | అమలులో: రోజుకు {daily}, నెలకు {monthly} |  | pending |
 | `booking.book` | Book | बुक करें | బుక్ చేయండి |  | pending |
 | `booking.modes.in_clinic` | In clinic | क्लिनिक में | క్లినిక్‌లో |  | pending |
 | `booking.modes.video` | Video consultation | वीडियो परामर्श | వీడియో సంప్రదింపు |  | pending |
@@ -2133,7 +2172,7 @@ Rows: 2588. Not yet approved: 2588.
 | `screen.ageBands.y10plus` | 10+ years | 10+ साल | 10+ సంవత్సరాలు |  | pending |
 | `screen.agree` | I understand this is not a diagnosis and agree to talk to an AI assistant. | मैं समझता/समझती हूँ कि यह निदान नहीं है और AI सहायक से बात करने के लिए सहमत हूँ। | ఇది నిర్ధారణ కాదు అని నేను అర్థం చేసుకున్నాను, AI సహాయకుడితో మాట్లాడటానికి అంగీకరిస్తున్నాను. |  | pending |
 | `screen.startVoice` | Start voice check-in | आवाज़ से जाँच शुरू करें | మాట ద్వారా పరిశీలన ప్రారంభించండి |  | pending |
-| `screen.startForm` | Answer by tapping instead | इसके बजाय टैप करके जवाब दें | బదులుగా ట్యాప్ చేసి సమాధానం ఇవ్వండి |  | pending |
+| `screen.startForm` | Start free check-in | मुफ़्त जाँच शुरू करें | ఉచిత పరిశీలన ప్రారంభించండి |  | pending |
 | `screen.startHint` | Choose your child's age and tick the box to start. | शुरू करने के लिए बच्चे की उम्र चुनें और बॉक्स पर टिक करें। | ప్రారంభించడానికి బిడ్డ వయస్సు ఎంచుకుని బాక్స్‌ను టిక్ చేయండి. |  | pending |
 | `screen.starting` | Starting... | शुरू हो रहा है... | ప్రారంభమవుతోంది... |  | pending |
 | `screen.englishOnly` | The questions are in English for now. | अभी सवाल अंग्रेज़ी में हैं। | ప్రస్తుతం ప్రశ్నలు ఇంగ్లీష్‌లో ఉన్నాయి. |  | pending |
@@ -2144,6 +2183,13 @@ Rows: 2588. Not yet approved: 2588.
 | `screen.errors.failed` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `screen.errors.expired` | This check-in has expired. Please start a new one. | इस जाँच का समय खत्म हो गया है। कृपया नई जाँच शुरू करें। | ఈ పరిశీలన గడువు ముగిసింది. దయచేసి కొత్తది ప్రారంభించండి. |  | pending |
 | `screen.errors.voiceFailed` | The voice call stopped. You can continue by tapping. | वॉइस कॉल रुक गई। आप टैप करके जारी रख सकते हैं। | వాయిస్ కాల్ ఆగిపోయింది. మీరు ట్యాప్ చేసి కొనసాగించవచ్చు. |  | pending |
+| `screen.errors.signIn` | Please sign in to use voice. It is free. You can also continue by tapping. | आवाज़ इस्तेमाल करने के लिए कृपया साइन इन करें। यह मुफ़्त है। आप टैप करके भी आगे बढ़ सकते हैं। | వాయిస్ వాడటానికి దయచేసి సైన్ ఇన్ చేయండి. ఇది ఉచితం. మీరు ట్యాప్ చేసి కూడా కొనసాగవచ్చు. |  | pending |
+| `screen.errors.quotaDay` | You've used today's voice check-ins. You can finish by tapping, or talk again tomorrow. | आपने आज की आवाज़ वाली जाँचें इस्तेमाल कर ली हैं। आप टैप करके पूरा कर सकते हैं, या कल फिर बात करें। | మీరు ఈ రోజు వాయిస్ పరిశీలనలు వాడేశారు. మీరు ట్యాప్ చేసి పూర్తి చేయవచ్చు, లేదా రేపు మళ్ళీ మాట్లాడండి. |  | pending |
+| `screen.errors.quotaMonth` | You've used this month's voice check-ins. You can finish by tapping. | आपने इस महीने की आवाज़ वाली जाँचें इस्तेमाल कर ली हैं। आप टैप करके पूरा कर सकते हैं। | మీరు ఈ నెల వాయిస్ పరిశీలనలు వాడేశారు. మీరు ట్యాప్ చేసి పూర్తి చేయవచ్చు. |  | pending |
+| `screen.errors.concurrent` | You already have a voice call open. End it first, or continue by tapping. | आपकी एक आवाज़ कॉल पहले से चल रही है। पहले उसे खत्म करें, या टैप करके आगे बढ़ें। | మీకు ఇప్పటికే ఒక వాయిస్ కాల్ తెరిచి ఉంది. ముందు దాన్ని ముగించండి, లేదా ట్యాప్ చేసి కొనసాగండి. |  | pending |
+| `screen.errors.paused` | Voice is resting right now – you can continue by tapping | आवाज़ अभी आराम कर रही है – आप टैप करके आगे बढ़ सकते हैं | వాయిస్ ప్రస్తుతం విశ్రాంతిలో ఉంది – మీరు ట్యాప్ చేసి కొనసాగవచ్చు |  | pending |
+| `screen.errors.botCheck` | Please complete the quick check and try again, or continue by tapping. | कृपया छोटी जाँच पूरी करें और फिर से कोशिश करें, या टैप करके आगे बढ़ें। | దయచేసి చిన్న తనిఖీ పూర్తి చేసి మళ్ళీ ప్రయత్నించండి, లేదా ట్యాప్ చేసి కొనసాగండి. |  | pending |
+| `screen.errors.silence` | We ended the call because it went quiet. You can continue by tapping. | कॉल शांत हो गई थी, इसलिए हमने उसे खत्म कर दिया। आप टैप करके आगे बढ़ सकते हैं। | కాల్ నిశ్శబ్దంగా మారడంతో మేము దాన్ని ముగించాం. మీరు ట్యాప్ చేసి కొనసాగవచ్చు. |  | pending |
 | `screen.voice.connecting` | Connecting... | कनेक्ट हो रहा है... | కనెక్ట్ అవుతోంది... |  | pending |
 | `screen.voice.listening` | Listening... answer in your own words | सुन रहा है... अपने शब्दों में जवाब दें | వింటోంది... మీ మాటల్లో సమాధానం ఇవ్వండి |  | pending |
 | `screen.voice.speaking` | Assistant is speaking | सहायक बोल रहा है | సహాయకుడు మాట్లాడుతున్నారు |  | pending |
@@ -2226,6 +2272,9 @@ Rows: 2588. Not yet approved: 2588.
 | `screen.landing.title` | Worried about your child's development? | अपने बच्चे के विकास को लेकर चिंतित हैं? | మీ బిడ్డ అభివృద్ధి గురించి ఆందోళనగా ఉందా? |  | pending |
 | `screen.landing.text` | Answer a few short questions by voice or by tapping. About 5 minutes and free. A developmental check-in, not a diagnosis, with specialists near you. | आवाज़ से या टैप करके कुछ छोटे सवालों के जवाब दें। लगभग 5 मिनट, मुफ़्त: विकास की एक जाँच, निदान नहीं, और आपके पास के विशेषज्ञ। | మాట ద్వారా లేదా ట్యాప్ చేసి కొన్ని చిన్న ప్రశ్నలకు సమాధానం ఇవ్వండి. సుమారు 5 నిమిషాలు, ఉచితం: అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు, మీ దగ్గరి నిపుణులతో. |  | pending |
 | `screen.landing.cta` | Start the developmental check-in | विकास जाँच शुरू करें | అభివృద్ధి పరిశీలన ప్రారంభించండి |  | pending |
+| `screen.voiceSignIn` | Prefer to talk? Sign in to use voice (free) | बात करना पसंद है? आवाज़ इस्तेमाल करने के लिए साइन इन करें (मुफ़्त) | మాట్లాడటం ఇష్టమా? వాయిస్ వాడటానికి సైన్ ఇన్ చేయండి (ఉచితం) |  | pending |
+| `screen.voicePrompt` | Prefer to talk? | बात करना पसंद है? | మాట్లాడటం ఇష్టమా? |  | pending |
+| `screen.voiceSignedIn` | You are signed in. Choose your child's age, tick the box and start the voice check-in. | आप साइन इन हैं। अपने बच्चे की उम्र चुनें, बॉक्स पर टिक करें और आवाज़ से जाँच शुरू करें। | మీరు సైన్ ఇన్ అయ్యారు. మీ బిడ్డ వయస్సు ఎంచుకుని, బాక్స్ టిక్ చేసి, మాట ద్వారా పరిశీలన ప్రారంభించండి. |  | pending |
 | `payments.labels.paid` | Paid | भुगतान हो गया | చెల్లించారు |  | pending |
 | `payments.labels.paidOnline` | Paid online | ऑनलाइन भुगतान हुआ | ఆన్‌లైన్‌లో చెల్లించారు |  | pending |
 | `payments.labels.pending` | Payment pending | भुगतान बाकी | చెల్లింపు పెండింగ్ |  | pending |
@@ -2296,6 +2345,15 @@ Rows: 2588. Not yet approved: 2588.
 | `voiceBooking.errors.busy` | Too many voice bookings were started from this connection. Please try again in an hour. | इस कनेक्शन से बहुत सारी वॉइस बुकिंग शुरू की गईं। कृपया एक घंटे बाद फिर कोशिश करें। | ఈ కనెక్షన్ నుండి చాలా వాయిస్ బుకింగ్‌లు ప్రారంభించబడ్డాయి. దయచేసి ఒక గంట తర్వాత మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `voiceBooking.errors.unavailable` | Voice booking is not available right now. Please use the search below. | आवाज़ से बुकिंग अभी उपलब्ध नहीं है। कृपया नीचे खोज का उपयोग करें। | వాయిస్ బుకింగ్ ఇప్పుడు అందుబాటులో లేదు. దయచేసి కింద ఉన్న శోధనను ఉపయోగించండి. |  | pending |
 | `voiceBooking.errors.connect` | The call could not connect. Please use the search below. | कॉल कनेक्ट नहीं हो सकी। कृपया नीचे खोज का उपयोग करें। | కాల్ కనెక్ట్ కాలేదు. దయచేసి కింద ఉన్న శోధనను ఉపయోగించండి. |  | pending |
+| `voiceBooking.errors.signIn` | Please sign in to use voice. It is free. You can also search and book by tapping below. | आवाज़ इस्तेमाल करने के लिए कृपया साइन इन करें। यह मुफ़्त है। आप नीचे टैप करके भी खोज और बुक कर सकते हैं। | వాయిస్ వాడటానికి దయచేసి సైన్ ఇన్ చేయండి. ఇది ఉచితం. మీరు కింద ట్యాప్ చేసి కూడా వెతికి బుక్ చేయవచ్చు. |  | pending |
+| `voiceBooking.errors.quotaDay` | You've used today's voice bookings. You can search and book by tapping below, or talk again tomorrow. | आपने आज की आवाज़ वाली बुकिंग इस्तेमाल कर ली हैं। आप नीचे टैप करके खोज और बुक कर सकते हैं, या कल फिर बात करें। | మీరు ఈ రోజు వాయిస్ బుకింగ్‌లు వాడేశారు. మీరు కింద ట్యాప్ చేసి వెతికి బుక్ చేయవచ్చు, లేదా రేపు మళ్ళీ మాట్లాడండి. |  | pending |
+| `voiceBooking.errors.quotaMonth` | You've used this month's voice bookings. You can search and book by tapping below. | आपने इस महीने की आवाज़ वाली बुकिंग इस्तेमाल कर ली हैं। आप नीचे टैप करके खोज और बुक कर सकते हैं। | మీరు ఈ నెల వాయిస్ బుకింగ్‌లు వాడేశారు. మీరు కింద ట్యాప్ చేసి వెతికి బుక్ చేయవచ్చు. |  | pending |
+| `voiceBooking.errors.concurrent` | You already have a voice call open. End it first, or search by tapping below. | आपकी एक आवाज़ कॉल पहले से चल रही है। पहले उसे खत्म करें, या नीचे टैप करके खोजें। | మీకు ఇప్పటికే ఒక వాయిస్ కాల్ తెరిచి ఉంది. ముందు దాన్ని ముగించండి, లేదా కింద ట్యాప్ చేసి వెతకండి. |  | pending |
+| `voiceBooking.errors.paused` | Voice is resting right now – you can continue by tapping. Use the search below. | आवाज़ अभी आराम कर रही है – आप टैप करके आगे बढ़ सकते हैं। नीचे खोज का इस्तेमाल करें। | వాయిస్ ప్రస్తుతం విశ్రాంతిలో ఉంది – మీరు ట్యాప్ చేసి కొనసాగవచ్చు. కింద ఉన్న శోధనను వాడండి. |  | pending |
+| `voiceBooking.errors.botCheck` | Please complete the quick check and try again, or use the search below. | कृपया छोटी जाँच पूरी करें और फिर से कोशिश करें, या नीचे खोज का इस्तेमाल करें। | దయచేసి చిన్న తనిఖీ పూర్తి చేసి మళ్ళీ ప్రయత్నించండి, లేదా కింద ఉన్న శోధనను వాడండి. |  | pending |
+| `voiceBooking.errors.silence` | We ended the call because it went quiet. You can continue by tapping below. | कॉल शांत हो गई थी, इसलिए हमने उसे खत्म कर दिया। आप नीचे टैप करके आगे बढ़ सकते हैं। | కాల్ నిశ్శబ్దంగా మారడంతో మేము దాన్ని ముగించాం. మీరు కింద ట్యాప్ చేసి కొనసాగవచ్చు. |  | pending |
+| `voiceBooking.signIn` | Prefer to talk? Sign in to use voice (free) | बात करना पसंद है? आवाज़ इस्तेमाल करने के लिए साइन इन करें (मुफ़्त) | మాట్లాడటం ఇష్టమా? వాయిస్ వాడటానికి సైన్ ఇన్ చేయండి (ఉచితం) |  | pending |
+| `voiceBooking.signInNote` | Searching and booking by tapping below works without signing in. | नीचे टैप करके खोजना और बुक करना बिना साइन इन के भी काम करता है। | కింద ట్యాప్ చేసి వెతకడం, బుక్ చేయడం సైన్ ఇన్ లేకుండానే పనిచేస్తుంది. |  | pending |
 | `rx.title` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
 | `rx.intro` | Only verified prescribers see this tab. AI drafts are suggestions: review every item before you sign. | यह टैब केवल सत्यापित पर्चा लिखने वाले डॉक्टर देखते हैं। AI ड्राफ़्ट केवल सुझाव हैं: साइन करने से पहले हर दवा जाँचें। | ఈ ట్యాబ్ ధృవీకరించబడిన ప్రిస్క్రైబర్లకు మాత్రమే కనిపిస్తుంది. AI డ్రాఫ్ట్‌లు సూచనలు మాత్రమే: సంతకం చేసే ముందు ప్రతి మందును తనిఖీ చేయండి. |  | pending |
 | `rx.aiLabel` | Suggested by DoctorNearMe - the clinician decides | DoctorNearMe का सुझाव - फ़ैसला क्लिनिशियन करते हैं | DoctorNearMe సూచన - నిర్ణయం క్లినీషియన్‌దే |  | pending |
@@ -2495,6 +2553,11 @@ Rows: 2588. Not yet approved: 2588.
 | `followup.voice.demoSay` | Say it | कहें | చెప్పండి |  | pending |
 | `followup.voice.agent` | Assistant | सहायक | సహాయకుడు |  | pending |
 | `followup.voice.parent` | You | आप | మీరు |  | pending |
+| `followup.voice.quotaDay` | You've used today's voice questions. You can type your question, or talk again tomorrow. | आपने आज के आवाज़ वाले सवाल इस्तेमाल कर लिए हैं। आप अपना सवाल लिख सकते हैं, या कल फिर बात करें। | మీరు ఈ రోజు వాయిస్ ప్రశ్నలు వాడేశారు. మీరు మీ ప్రశ్నను టైప్ చేయవచ్చు, లేదా రేపు మళ్ళీ మాట్లాడండి. |  | pending |
+| `followup.voice.quotaMonth` | You've used this month's voice questions. You can type your question. | आपने इस महीने के आवाज़ वाले सवाल इस्तेमाल कर लिए हैं। आप अपना सवाल लिख सकते हैं। | మీరు ఈ నెల వాయిస్ ప్రశ్నలు వాడేశారు. మీరు మీ ప్రశ్నను టైప్ చేయవచ్చు. |  | pending |
+| `followup.voice.concurrent` | You already have a voice call open. End it first, or type your question. | आपकी एक आवाज़ कॉल पहले से चल रही है। पहले उसे खत्म करें, या अपना सवाल लिखें। | మీకు ఇప్పటికే ఒక వాయిస్ కాల్ తెరిచి ఉంది. ముందు దాన్ని ముగించండి, లేదా మీ ప్రశ్నను టైప్ చేయండి. |  | pending |
+| `followup.voice.paused` | Voice is resting right now – you can type your question instead. | आवाज़ अभी आराम कर रही है – आप इसके बजाय अपना सवाल लिख सकते हैं। | వాయిస్ ప్రస్తుతం విశ్రాంతిలో ఉంది – బదులుగా మీ ప్రశ్నను టైప్ చేయవచ్చు. |  | pending |
+| `followup.voice.silence` | We ended the call because it went quiet. You can type your question below. | कॉल शांत हो गई थी, इसलिए हमने उसे खत्म कर दिया। आप नीचे अपना सवाल लिख सकते हैं। | కాల్ నిశ్శబ్దంగా మారడంతో మేము దాన్ని ముగించాం. మీరు కింద మీ ప్రశ్నను టైప్ చేయవచ్చు. |  | pending |
 | `followup.source.from` | From {org} | {org} से | {org} నుండి |  | pending |
 | `followup.source.sharedOn` | Shared on {date} | {date} को साझा किया गया | {date} న పంచుకున్నారు |  | pending |
 | `followup.source.version` | Version {version} | संस्करण {version} | వెర్షన్ {version} |  | pending |

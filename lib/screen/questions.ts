@@ -33,8 +33,8 @@ export const SCREEN_SESSION_TTL_MS = 2 * 60 * 60 * 1000;
 export const UNSAVED_RETENTION_DAYS = 30;
 /** FR-4: new sessions per IP per hour. */
 export const SESSIONS_PER_HOUR = 5;
-/** FR-3: the voice agent's maximum conversation length. */
-export const VOICE_MAX_MINUTES = 8;
+/** FR-3, lowered by 051 FR-6 (was 8): the voice agent's maximum conversation length (= the reserved minutes). */
+export const VOICE_MAX_MINUTES = 6;
 
 /** FR-7: the only thing shown after a red flag (no band, no providers, no booking). */
 export const URGENT_MESSAGE =

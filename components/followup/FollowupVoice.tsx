@@ -5,6 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { upsertLine, type Line } from "@/components/landing/VoiceDemo";
 import { primaryButton, secondaryButton } from "@/components/screen/view";
 import { useT } from "@/lib/i18n/client";
+import { callSeconds, reportVoiceEnd } from "@/lib/voice/client";
+import { voiceRefusal } from "@/lib/voice/constants";
 import type { ChatItem } from "./AnswerCard";
 import type { LiveTarget } from "./LiveFollowupCall";
 
@@ -16,6 +18,8 @@ type Session = {
   agent_id?: string;
   demo?: boolean;
   dynamic_variables: Record<string, string>;
+  /** 051 FR-7: the usage row this call reports its end against. */
+  voice_usage_id?: string;
 };
 
 type Phase = "idle" | "starting" | "live" | "ended";
@@ -50,6 +54,7 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
   const [busy, setBusy] = useState(false);
   const endRef = useRef<(() => void) | null>(null);
   const conversationId = useRef<string | null>(null);
+  const demoStartedAt = useRef<number | null>(null);
   const seq = useRef(0);
 
   const endServerSession = useCallback(async (token: string | undefined) => {
@@ -63,6 +68,12 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
 
   useEffect(() => () => window.speechSynthesis?.cancel?.(), []);
 
+  // 051 FR-7: a DEMO_MODE session (End, a red flag or an expired session) reports its end once; live calls report in onEnded.
+  useEffect(() => {
+    if (phase !== "ended" || !session?.demo) return;
+    void reportVoiceEnd(fetch, session.voice_usage_id, callSeconds(demoStartedAt.current, Date.now()));
+  }, [phase, session]);
+
   async function start() {
     setPhase("starting");
     setError(null);
@@ -75,10 +86,14 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
     }).catch(() => null);
     const json = (await res?.json().catch(() => null)) as Session | null;
     if (!res || res.status !== 201 || !json) {
-      setError(t("unavailable"));
+      // 051: quota / budget / one-call-at-a-time refusals say so; the text chat below always works.
+      const refusal = res ? voiceRefusal(res.status, json) : null;
+      const key = refusal === "quotaDay" || refusal === "quotaMonth" || refusal === "concurrent" || refusal === "paused" ? refusal : "unavailable";
+      setError(t(key));
       setPhase("idle");
       return;
     }
+    demoStartedAt.current = json.demo ? Date.now() : null;
     setSession(json);
     setPhase("live");
   }
@@ -121,12 +136,14 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
 
   const onLine = useCallback((role: "user" | "agent", eventId: number, text: string) => setLines((prev) => upsertLine(prev, role, eventId, text)), []);
   const onEnded = useCallback(
-    (failed: boolean) => {
+    (failed: boolean, call: { seconds: number; silence: boolean }) => {
       void endServerSession(session?.followup_session).then(onCallEnded);
+      void reportVoiceEnd(fetch, session?.voice_usage_id, call.seconds, conversationId.current);
       setPhase("ended");
-      if (failed) setError(t("failed"));
+      if (call.silence) setError(t("silence"));
+      else if (failed) setError(t("failed"));
     },
-    [endServerSession, onCallEnded, session?.followup_session, t],
+    [endServerSession, onCallEnded, session?.followup_session, session?.voice_usage_id, t],
   );
 
   const target: LiveTarget | null =

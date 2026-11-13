@@ -8,6 +8,7 @@ import { logger } from "@/lib/log";
 import { pg, type Queryable, type Sql } from "@/lib/pg";
 import { UNSAVED_RETENTION_DAYS } from "@/lib/screen/questions";
 import { FOLLOWUP_RETENTION_DAYS } from "@/lib/followup/constants";
+import { VOICE_USAGE_RETENTION_DAYS } from "@/lib/voice/constants";
 
 const log = logger("retention");
 
@@ -255,6 +256,13 @@ export async function runRetention(opts: RetentionOptions = {}): Promise<Retenti
 
   // 040 FR-6: follow-up questions after 90 days (registry `followup_questions`).
   counts.followup_questions = await purgeFollowupQuestions(sql, now);
+
+  // 051 FR-3: voice usage records after 180 days (registry `voice_usage`).
+  counts.voice_usage = (
+    await sql`
+      delete from public.voice_usage
+      where started_at < ${now}::timestamptz - ${days(VOICE_USAGE_RETENTION_DAYS)}::interval and status <> 'started'`
+  ).count;
 
   // FR-6: website sign-ups after 24 months; audit events after 7 years (maintenance function).
   counts.pilot_signups = (

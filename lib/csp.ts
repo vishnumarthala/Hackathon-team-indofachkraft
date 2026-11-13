@@ -20,16 +20,27 @@ const ELEVENLABS_CONNECT = [
   "wss://livekit.rtc.in.residency.elevenlabs.io",
 ];
 
+// 051 FR-8: Cloudflare Turnstile (bot check, not analytics; decision 3 of 2026-11-12) on the pages that render it: the
+// guardian sign-in (phone codes), /screen and /find (voice starts). Script, its challenge iframe and its API calls.
+// The widget only loads when TURNSTILE_SITE_KEY / TURNSTILE_SECRET_KEY are set (lib/turnstile.ts).
+const TURNSTILE: Required<CspAllowance> = {
+  scriptSrc: ["https://challenges.cloudflare.com"],
+  connectSrc: ["https://challenges.cloudflare.com"],
+  frameSrc: ["https://challenges.cloudflare.com"],
+};
+
 /**
  * Route prefix -> extra sources (approved exceptions only). A `*` segment matches one path segment (the payment page
  * key below). Every script origin must also be in lib/privacy/third-party-allowlist.ts for that route
  * (tests/no-tracking.test.ts).
  */
 export const FAMILY_CSP_EXCEPTIONS: Record<string, CspAllowance> = {
-  "/screen": { connectSrc: ELEVENLABS_CONNECT },
+  "/screen": { ...TURNSTILE, connectSrc: [...ELEVENLABS_CONNECT, ...TURNSTILE.connectSrc] },
   // 034: the voice booking widget on /find (approved 2026-11-13). /find is not under the strict family policy today
   // (029 loads Google Maps there), so this applies once it is.
-  "/find": { connectSrc: ELEVENLABS_CONNECT },
+  "/find": { ...TURNSTILE, connectSrc: [...ELEVENLABS_CONNECT, ...TURNSTILE.connectSrc] },
+  // 051: the guardian sign-in page (phone sign-in codes).
+  "/family/login": TURNSTILE,
   // 040: `Ask by voice` on the follow-up page (and its document viewer under it); allowlist entry "ElevenLabs SDK
   // (voice agent)". The SDK is bundled, so no script-src exception.
   "/family/children/*/ask": { connectSrc: ELEVENLABS_CONNECT },

@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import Link from "next/link";
+import { useEffect, useId, useRef, useState } from "react";
+import { useTurnstile } from "@/components/security/Turnstile";
 import { useT } from "@/lib/i18n/client";
 import { SESSION_STORAGE_KEY, startScreen, type StartError, type StartedSession } from "@/lib/screen/client";
 import { SCREEN_AGE_BANDS, type ScreenAgeBand, type ScreenMode, type ScreenQuestion, type ScreenResult } from "@/lib/screen/questions";
+import { voiceSignInHref } from "@/lib/voice/constants";
 import type { LocalityOption } from "./NearbyProviders";
 import { QuestionForm } from "./QuestionForm";
 import { ResultView } from "./ResultView";
@@ -12,7 +15,7 @@ import { UrgentNotice } from "./UrgentNotice";
 import { VoiceCheckin } from "./VoiceCheckin";
 import { AGE_BAND_KEYS, primaryButton, secondaryButton } from "./view";
 
-type Notice = "demo" | "mic" | "voiceFailed" | null;
+type Notice = "demo" | "mic" | "voiceFailed" | "silence" | null;
 type Step =
   | { kind: "intro" }
   | {
@@ -20,6 +23,7 @@ type Step =
       session: StartedSession;
       target: { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
       dynamicVariables: Record<string, string>;
+      usageId: string | null;
     }
   | { kind: "form"; sessionId: string; questions: ScreenQuestion[]; answers: Record<string, string>; notice: Notice }
   | { kind: "result"; sessionId: string; result: ScreenResult }
@@ -57,16 +61,29 @@ const storage = {
   },
 };
 
+/** 051: refusals after which the voice button stays off for this visit (the tap path is the way on). */
+const VOICE_OFF_ERRORS = new Set(["quotaDay", "quotaMonth", "paused"]);
+/** 051: cost-guard refusals are a friendly note (the tap path is right above), not an error. */
+const GUARD_ERRORS = new Set(["quotaDay", "quotaMonth", "paused", "concurrent", "signIn", "botCheck"]);
+
 // Ticket 033 FR-2: the public check-in. Only the age band and the answers are sent before sign-in (rule 6); the
 // browser keeps just the session id (sessionStorage) so the result survives a reload or signing in to save it.
+// 051 FR-1: tapping is the primary, anonymous path ("Start free check-in"); voice needs a free sign-in and returns
+// here with `?voice=1`. Quota, budget and bot-check refusals keep the tap option on screen.
 export function ScreenFlow({
   viewer,
   localities,
   voiceAvailable,
+  turnstileSiteKey = null,
+  voiceIntent = false,
 }: {
   viewer: SaveViewer;
   localities: LocalityOption[];
   voiceAvailable: boolean;
+  /** 051 FR-8: Cloudflare Turnstile site key (null = no bot check). */
+  turnstileSiteKey?: string | null;
+  /** 051: back from signing in to use voice (`/screen?voice=1`). */
+  voiceIntent?: boolean;
 }) {
   const t = useT("screen");
   const id = useId();
@@ -75,10 +92,18 @@ export function ScreenFlow({
   const [agreed, setAgreed] = useState(false);
   const [starting, setStarting] = useState<ScreenMode | null>(null);
   const [error, setError] = useState<StartError | "expired" | null>(null);
+  const signedIn = viewer.kind !== "anonymous";
+  const turnstile = useTurnstile(signedIn && voiceAvailable ? turnstileSiteKey : null);
+  const voiceButton = useRef<HTMLButtonElement>(null);
 
-  // Resume a check-in of this browser tab (reload, or back from signing in to save the result).
   useEffect(() => {
-    const saved = storage.get();
+    if (voiceIntent && signedIn) voiceButton.current?.scrollIntoView({ block: "center" });
+  }, [voiceIntent, signedIn]);
+
+  // Resume a check-in of this browser tab (reload, or back from signing in to save the result). Back from signing in
+  // to use voice (051, `?voice=1`) starts at the voice step instead.
+  useEffect(() => {
+    const saved = voiceIntent ? null : storage.get();
     if (!saved) return;
     let cancelled = false;
     void (async () => {
@@ -96,7 +121,7 @@ export function ScreenFlow({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [voiceIntent]);
 
   async function start(mode: ScreenMode) {
     if (!ageBand || !agreed) return;
@@ -105,7 +130,9 @@ export function ScreenFlow({
     const outcome = await startScreen(ageBand, mode, {
       fetchFn: (input, init) => fetch(input, init),
       getMicrophone: () => navigator.mediaDevices.getUserMedia({ audio: true }),
+      turnstileToken: turnstile.token,
     });
+    if (mode === "voice") turnstile.reset();
     setStarting(null);
     if (outcome.kind === "error") return setError(outcome.error);
     storage.set(outcome.session.session_id);
@@ -114,7 +141,13 @@ export function ScreenFlow({
     if (outcome.kind === "form") return form(null);
     if (outcome.kind === "demo") return form("demo");
     if (outcome.kind === "micDenied") return form("mic");
-    setStep({ kind: "voice", session: outcome.session, target: outcome.target, dynamicVariables: outcome.dynamicVariables });
+    setStep({
+      kind: "voice",
+      session: outcome.session,
+      target: outcome.target,
+      dynamicVariables: outcome.dynamicVariables,
+      usageId: outcome.usage.id,
+    });
   }
 
   const stop = () => setStep({ kind: "urgent" });
@@ -185,22 +218,45 @@ export function ScreenFlow({
             </label>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              className={primaryButton}
-              disabled={!ageBand || !agreed || starting !== null || !voiceAvailable}
-              onClick={() => void start("voice")}
-            >
-              {starting === "voice" ? t("starting") : t("startVoice")}
-            </button>
-            <button type="submit" className={secondaryButton} disabled={!ageBand || !agreed || starting !== null}>
+            <button type="submit" className={primaryButton} disabled={!ageBand || !agreed || starting !== null}>
               {starting === "form" ? t("starting") : t("startForm")}
             </button>
           </div>
           {!ageBand || !agreed ? <p className="text-sm text-slate-600">{t("startHint")}</p> : null}
-          {!voiceAvailable ? <p className="text-sm text-slate-600">{t("errors.voiceUnavailable")}</p> : null}
+          {voiceAvailable ? (
+            <div className="space-y-3 rounded-2xl border border-slate-200 p-4" data-testid="screen-voice-option">
+              {signedIn ? (
+                <>
+                  <p className="font-medium text-slate-900">{voiceIntent ? t("voiceSignedIn") : t("voicePrompt")}</p>
+                  <button
+                    ref={voiceButton}
+                    type="button"
+                    className={secondaryButton}
+                    disabled={!ageBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
+                    onClick={() => void start("voice")}
+                  >
+                    {starting === "voice" ? t("starting") : t("startVoice")}
+                  </button>
+                  {turnstile.widget}
+                </>
+              ) : (
+                <Link href={voiceSignInHref("/screen?voice=1")} className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline underline-offset-4">
+                  {t("voiceSignIn")}
+                </Link>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-slate-600">{t("errors.voiceUnavailable")}</p>
+          )}
           {error ? (
-            <p role="alert" className="text-sm font-medium text-red-700">
+            <p
+              role="alert"
+              className={
+                GUARD_ERRORS.has(error)
+                  ? "rounded-2xl bg-amber-50 p-4 text-sm font-medium text-amber-900"
+                  : "text-sm font-medium text-red-700"
+              }
+            >
               {t(`errors.${error}`)}
             </p>
           ) : null}
@@ -214,13 +270,14 @@ export function ScreenFlow({
           dynamicVariables={step.dynamicVariables}
           onStopped={stop}
           onFinished={showResult(step.session.session_id)}
-          onContinueByTapping={(answers, failed) =>
+          usageId={step.usageId}
+          onContinueByTapping={(answers, reason) =>
             setStep({
               kind: "form",
               sessionId: step.session.session_id,
               questions: step.session.questions,
               answers,
-              notice: failed ? "voiceFailed" : null,
+              notice: reason,
             })
           }
         />

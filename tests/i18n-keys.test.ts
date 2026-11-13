@@ -110,8 +110,8 @@ describe("English defaults in client modules match en.json", () => {
   });
 
   it("voice demo messages", () => {
-    const { mic, busy, unavailable, failed, connecting, speaking, listening, ended } = en.landing.demo;
-    expect(LIVE_MESSAGES).toEqual({ mic, busy, unavailable, failed, connecting, speaking, listening, ended });
+    const { mic, busy, unavailable, failed, connecting, speaking, listening, ended, quota, paused, notAllowed, concurrent, silence } = en.landing.demo;
+    expect(LIVE_MESSAGES).toEqual({ mic, busy, unavailable, failed, connecting, speaking, listening, ended, quota, paused, notAllowed, concurrent, silence });
     expect(DEMO_CONSENT).toBe(en.landing.demo.consent);
   });
 

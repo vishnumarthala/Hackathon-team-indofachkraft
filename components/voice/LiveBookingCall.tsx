@@ -3,8 +3,11 @@
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef } from "react";
 import { VOICE_MAX_MINUTES } from "@/lib/agents/booking/constants";
+import { useVoiceCallGuard } from "./useVoiceCallGuard";
 
 export type LiveTarget = { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
+
+export type EndedCall = { seconds: number; conversationId: string | null; silence: boolean };
 
 export type LiveCallProps = {
   target: LiveTarget;
@@ -13,7 +16,8 @@ export type LiveCallProps = {
   onStatus: (status: "connecting" | "listening" | "speaking") => void;
   /** The agent reported a red flag (client tool `record_red_flag`). */
   onRedFlag: () => void;
-  onEnded: (failed: boolean) => void;
+  /** 051: `call` carries the connected seconds and the conversation id for the usage report, and whether silence ended it. */
+  onEnded: (failed: boolean, call: EndedCall) => void;
   /** Set by the parent to end the call from outside (End call button, red flag). */
   endRef: { current: (() => void) | null };
 };
@@ -27,18 +31,28 @@ function LiveCall({ target, dynamicVariables, onLine, onStatus, onRedFlag, onEnd
   const connected = useRef(false);
   const failed = useRef(false);
   const ended = useRef(false);
+  const conversationId = useRef<string | null>(null);
 
   const finish = () => {
     if (ended.current) return;
     ended.current = true;
-    onEnded(failed.current || !connected.current);
+    onEnded(failed.current || !connected.current, {
+      seconds: guard.seconds(),
+      conversationId: conversationId.current,
+      silence: guard.endedBySilence(),
+    });
   };
 
   const conversation = useConversation({
-    onConnect: () => {
+    onConnect: ({ conversationId: id }) => {
       connected.current = true;
+      conversationId.current = id || null;
+      guard.connected();
     },
-    onMessage: ({ message, role, event_id }) => onLine(role, event_id, message ?? ""),
+    onMessage: ({ message, role, event_id }) => {
+      if (role === "user" && message?.trim()) guard.heard();
+      onLine(role, event_id, message ?? "");
+    },
     onDisconnect: () => finish(),
     onError: () => {
       failed.current = true;
@@ -46,6 +60,8 @@ function LiveCall({ target, dynamicVariables, onLine, onStatus, onRedFlag, onEnd
   });
   const { startSession, endSession } = conversation;
   const status = conversation.status as "disconnected" | "connecting" | "connected" | "error";
+  // 051 FR-6: 30 seconds without speech from the parent ends the call.
+  const guard = useVoiceCallGuard({ live: status === "connected", isSpeaking: conversation.isSpeaking, onSilence: () => endSession() });
 
   useEffect(() => {
     endRef.current = () => endSession();
@@ -77,7 +93,7 @@ function LiveCall({ target, dynamicVariables, onLine, onStatus, onRedFlag, onEnd
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // FR-1: the agent is capped at 6 minutes; the widget enforces the same limit.
+  // FR-1: the agent is capped at 4 minutes (051 FR-6, was 6); the widget enforces the same limit.
   useEffect(() => {
     if (status !== "connected") return;
     const timer = setTimeout(() => endSession(), VOICE_MAX_MINUTES * 60_000);

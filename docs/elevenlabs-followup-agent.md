@@ -30,7 +30,7 @@ signed-in guardian, who must own the session) and the browser reads the answer a
   get 401).
 - **No medicine changes, no diagnosis.** The tool already answers these with fixed sentences
   (`Please don't change any medicine without talking to the prescriber.`); the agent must not add advice of its own.
-- English only. Max 15 minutes. No names: the agent receives only the session token, never the child's or guardian's
+- English only. Max 10 minutes (ticket 051; was 15). No names: the agent receives only the session token, never the child's or guardian's
   name.
 
 Fixed safety message (identical to the check-in, `lib/screen/questions.ts` `URGENT_MESSAGE`):
@@ -62,7 +62,11 @@ Agent > **Security**:
 
 Agent > **Advanced**:
 
-- **Max conversation duration:** `900` seconds (15 minutes, the session lifetime). The page also ends the call then.
+- **Max conversation duration:** `600` seconds (10 minutes, ticket 051 FR-6; was 15). The page also ends the call
+  then. The session token stays valid for 15 minutes. 600 seconds are reserved against the guardian's voice quota and
+  the platform budget (`docs/voice-cost-guard.md`).
+- **Silence end call timeout:** `30` seconds (ticket 051 FR-6). The page also ends the call after 30 seconds without
+  speech from the guardian.
 - **Conversation retention:** the shortest retention the plan allows (zero-retention if available), audio saving
   **off**. DoctorNearMe keeps the questions and answers for 90 days (`followup_questions`, the guardian's history) and
   the conversation id so erasure can delete the ElevenLabs copy (041). Record the chosen value in
@@ -105,7 +109,7 @@ If the tool fails or returns an error, say: "Sorry, I could not answer that. Ple
 
 Safety rule (always, at any point, even before calling the tool): if the parent describes an emergency, a seizure, breathing trouble, a child who is unconscious or will not wake, an overdose, self-harm, a child in danger, or not eating or drinking, say exactly: "Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today." and end the call.
 
-Never give medical advice, never diagnose, never say whether a child has a condition, and never suggest changing, stopping or adding any medicine or dose. Never ask for or repeat names, phone numbers or addresses. Keep the call under 15 minutes.
+Never give medical advice, never diagnose, never say whether a child has a condition, and never suggest changing, stopping or adding any medicine or dose. Never ask for or repeat names, phone numbers or addresses. Keep the call under 10 minutes.
 ```
 
 ## 8. Tools

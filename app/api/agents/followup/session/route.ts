@@ -7,6 +7,7 @@ import { env } from "@/lib/env";
 import { createFollowupSession, endFollowupSession } from "@/lib/followup/session";
 import { fail, ok, parseJson } from "@/lib/http";
 import { logger } from "@/lib/log";
+import { voiceGate } from "@/lib/voice/gate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,14 +39,18 @@ export async function POST(req: Request) {
   if (denied) return denied;
 
   const demo = isDemoMode();
+  const agentId = env.ELEVENLABS_FOLLOWUP_AGENT_ID;
+  // Without the tool secret every tool call would be refused: do not start a call that cannot work.
+  if (!demo && (!agentId || !env.ELEVENLABS_TOOL_SECRET)) return fail(503, VOICE_UNAVAILABLE);
+  // 051: the guardian's `followup` voice quota and the platform budget, before ElevenLabs is contacted.
+  const gate = await voiceGate(req, "followup", { user: session.user });
+  if ("response" in gate) return gate.response;
   let voice: AgentStart | null = null;
   if (!demo) {
-    const agentId = env.ELEVENLABS_FOLLOWUP_AGENT_ID;
-    // Without the tool secret every tool call would be refused: do not start a call that cannot work.
-    if (!agentId || !env.ELEVENLABS_TOOL_SECRET) return fail(503, VOICE_UNAVAILABLE);
     try {
-      voice = await startAgentSession(agentId);
+      voice = await startAgentSession(agentId as string);
     } catch (err) {
+      await gate.release();
       log.error("voice start failed", { error: err instanceof Error ? err.message : String(err) });
       return fail(502, VOICE_UNAVAILABLE);
     }
@@ -59,6 +64,8 @@ export async function POST(req: Request) {
       conversation_token: voice?.conversation_token ?? null,
       ...(voice ? { agent_id: voice.agent_id } : {}),
       ...(demo ? { demo: true } : {}),
+      voice_usage_id: gate.usageId,
+      max_seconds: gate.maxSeconds,
       // The only value the agent receives: no child or guardian names.
       dynamic_variables: { followup_session: token },
     },

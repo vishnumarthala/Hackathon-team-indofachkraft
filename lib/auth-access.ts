@@ -111,8 +111,12 @@ export function postSignInPath(role: AppRole, next: string | null | undefined): 
   if (!safe) return homeForRole(role);
   const path = safe.split(/[?#]/)[0];
   if (isProviderOnboardingPath(path)) return safe;
-  // 033: a guardian who signs in to save a check-in result comes back to `/screen`.
-  if (role === "guardian") return isFamilyPortalPath(path) || isBookingPath(path) || underPrefix(path, "/screen") ? safe : homeForRole(role);
+  // 033: a guardian who signs in to save a check-in result comes back to `/screen`. 051: one who signs in to use voice
+  // comes back to the same step (`/screen?voice=1`, `/find?voice=1`).
+  if (role === "guardian") {
+    const back = isFamilyPortalPath(path) || isBookingPath(path) || underPrefix(path, "/screen") || underPrefix(path, "/find");
+    return back ? safe : homeForRole(role);
+  }
   return isFamilyPath(path) ? homeForRole(role) : safe;
 }
 

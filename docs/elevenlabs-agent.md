@@ -151,8 +151,11 @@ English / Hindi / Telugu, consent-first AI disclosure). Put the ID in `.env.loca
   the agent lives in a teammate's workspace) or no key is set, it returns the agent ID and the browser
   starts the **public** agent by ID. Once authentication is turned on for the agent, the server key must
   belong to the agent's workspace.
-- **Landing page live demo:** limited to 3 starts per visitor per 10 minutes and 30 per hour per server
-  instance, with an automatic end after 3 minutes. It spends credits from the agent owner's account.
+- **Landing page live demo (ticket 051):** anonymous visitors only hear the recorded sample. The live demo is for
+  signed-in provider / platform admin accounts and demo leads signed in with the verified email they booked the demo
+  with, 1 per user per day (`intake_demo` quota), within the platform voice budget, and ends after 3 minutes or 30
+  seconds of silence. The per-IP limit (3 per visitor per 10 minutes, 30 per hour per server instance) stays as a
+  first filter. It spends credits from the agent owner's account (`docs/voice-cost-guard.md`).
 - **Follow-up:** the agent's data-collection identifiers (`child_age`, `speech_regression`,
   `self_injury_details`, …) differ from `schemas/case-sheet.json` (`child_age_months`, `lost_speech`, …).
   Until they match, a real call stores mostly empty case-sheet facts. Either rename the agent's fields to

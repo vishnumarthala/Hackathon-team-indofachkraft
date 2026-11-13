@@ -17,7 +17,8 @@
 import type { Queryable, Tx } from "@/lib/pg";
 
 export type DataOwner = "child" | "case" | "user";
-export type Processor = "elevenlabs" | "gemini" | "resend" | "whatsapp" | "supabase" | "razorpay" | "google";
+// 051: "cloudflare" = Cloudflare Turnstile (bot check on sign-in codes and voice starts; stores nothing for us).
+export type Processor = "elevenlabs" | "gemini" | "resend" | "whatsapp" | "supabase" | "razorpay" | "google" | "cloudflare";
 export type DeletionScope = "all_ai_processing" | "everything";
 
 export type ExportContext = { sql: Queryable; childId: string; guardianUserId: string };
@@ -733,6 +734,16 @@ export const REGISTRY: PrivacyCategory[] = [
     tables: ["credential_submissions"],
     buckets: ["credentials"],
     retention: "Kept while the provider is listed; uploads that were never submitted are removed after 24 hours.",
+    processors: ["supabase"],
+  },
+  {
+    // 051 FR-3 / NFR-3: the voice usage ledger (cost guard). Account id, agent, seconds and the ElevenLabs conversation
+    // id only: nothing about the child, no transcript. Deleted with the account (cascade) or after 180 days.
+    key: "voice_usage",
+    label: "Voice usage records (account, assistant, minutes)",
+    owner: "user",
+    tables: ["voice_usage"],
+    retention: "Deleted after 180 days, or when the account is deleted. Holds no child data and no transcripts.",
     processors: ["supabase"],
   },
   {

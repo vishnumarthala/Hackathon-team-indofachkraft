@@ -4,6 +4,7 @@ import { FindFilters, type FindState } from "@/components/directory/FindFilters"
 import { ResultList } from "@/components/directory/ResultList";
 import { ResultsLayout } from "@/components/directory/ResultsLayout";
 import { BookingWidget } from "@/components/voice/BookingWidget";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { isDemoMode } from "@/lib/demo";
 import { env } from "@/lib/env";
 import { DIRECTORY_TYPES, findHref, isInIndia, typeSlug, type FindQuery } from "@/lib/geo/constants";
@@ -11,6 +12,7 @@ import { getGeocoder, KNOWN_LOCALITIES } from "@/lib/geo/geocode";
 import { parseSearchQuery } from "@/lib/geo/params";
 import { searchProviders, type DirectoryPage } from "@/lib/geo/search";
 import { getT } from "@/lib/i18n/server";
+import { turnstileSiteKey } from "@/lib/turnstile";
 
 // Public "near me" directory (ticket 029 FR-5). Server-rendered from the URL (shareable, works without
 // JavaScript); the map and Places suggestions are progressive enhancements that need the browser key.
@@ -90,6 +92,8 @@ export default async function FindPage({ searchParams }: Props) {
   const browserKey = env.NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY;
   // 034: the voice booking widget only when it can work (agent + tool secret, or the DEMO_MODE script).
   const voiceBooking = isDemoMode() || Boolean(env.ELEVENLABS_BOOKING_AGENT_ID && env.ELEVENLABS_TOOL_SECRET);
+  // 051: voice needs a sign-in (searching and booking by tapping do not).
+  const signedIn = voiceBooking ? Boolean(await getAuthenticatedUser().catch(() => null)) : false;
   const message = (text: string, role: "status" | "alert" = "status") => (
     <p role={role} className="rounded border border-slate-200 bg-slate-50 p-4 text-slate-800">
       {text}
@@ -159,7 +163,7 @@ export default async function FindPage({ searchParams }: Props) {
         <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
         <p className="text-slate-700">{t("intro")}</p>
       </header>
-      {voiceBooking ? <BookingWidget /> : null}
+      {voiceBooking ? <BookingWidget signedIn={signedIn} turnstileSiteKey={turnstileSiteKey()} /> : null}
       <FindFilters
         key={JSON.stringify(initial)}
         initial={initial}
