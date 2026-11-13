@@ -1,0 +1,44 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/027
+
+ ✓ tests/messaging-api.test.ts > every messaging handler passes a gate first (static scan) > finds the routes 1ms
+ ✓ tests/messaging-api.test.ts > every messaging handler passes a gate first (static scan) > app/api/threads/[id]/archive/route.ts 0ms
+ ✓ tests/messaging-api.test.ts > every messaging handler passes a gate first (static scan) > app/api/threads/[id]/messages/route.ts 0ms
+ ✓ tests/messaging-api.test.ts > every messaging handler passes a gate first (static scan) > app/api/threads/[id]/read/route.ts 0ms
+ ✓ tests/messaging-api.test.ts > every messaging handler passes a gate first (static scan) > app/api/threads/route.ts 0ms
+ ✓ tests/messaging-api.test.ts > every messaging handler passes a gate first (static scan) > app/api/messages/[id]/route.ts 0ms
+ ✓ tests/messaging-api.test.ts > FR-5 live updates: Realtime first, polling every 15 s as the fallback > polls every 15 s when Realtime is not available (no client) 2ms
+ ✓ tests/messaging-api.test.ts > FR-5 live updates: Realtime first, polling every 15 s as the fallback > CHANNEL_ERROR (local stack without Realtime): checks access at once, unsubscribes, then polls 0ms
+ ✓ tests/messaging-api.test.ts > FR-5 live updates: Realtime first, polling every 15 s as the fallback > no answer from Realtime within 10 s -> polling 0ms
+ ✓ tests/messaging-api.test.ts > FR-5 live updates: Realtime first, polling every 15 s as the fallback > SUBSCRIBED: changes refresh through the API, no 15 s polling, a 60 s access check 0ms
+ ✓ tests/messaging-api.test.ts > FR-5 live updates: Realtime first, polling every 15 s as the fallback > revocation: a 404 on any refresh shows `lost` and stops polling and the channel 0ms
+ ✓ tests/messaging-api.test.ts > FR-5 live updates: Realtime first, polling every 15 s as the fallback > maps API errors to translated keys and merges pages by id 6ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > E-1: a guardian starts a thread; the outbox event and audit rows are written with ids only 83ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > FR-2: access matrix for list and read (404 for everyone outside the thread) 91ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > FR-2: provider reply, role label data, read marker and unread counts 40ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > FR-2: a case without a linked parent -> 422; validation -> 400 12ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > E-4: the same client_id stores one message (thread and message create) 47ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > FR-2: 30 messages per user per 5 minutes -> 429 (replays still answer 200) 45ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > FR-2: concurrent senders in one thread all succeed (no lock-order deadlock) 23ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > FR-2: delete own message within 15 minutes; body replaced for everyone; notification cancelled 53ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > FR-6: owners/admins archive; archived threads are read-only (409) 49ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > E-4: attachments must be readable by every participant (023 rules) 88ms
+stderr | tests/messaging-api.test.ts > messaging API (database) > FR-3: message insert and outbox event are atomic (forced enqueue failure rolls the message back)
+[messaging] send message failed: P0001
+
+ ✓ tests/messaging-api.test.ts > messaging API (database) > FR-3: message insert and outbox event are atomic (forced enqueue failure rolls the message back) 30ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > E-2 / FR-3: fan-out after 2 minutes to participants who have not read, with generic text only 127ms
+ ✓ tests/messaging-api.test.ts > messaging API (database) > E-5 / NFR-3: audit rows and logs never contain message text 1ms
+ ✓ tests/messaging-rls.test.ts > messaging RLS and Realtime authorisation (database, real JWTs) > participants read the thread with their own JWT; outsiders and anon read nothing 108ms
+ ✓ tests/messaging-rls.test.ts > messaging RLS and Realtime authorisation (database, real JWTs) > nobody writes through the API with anon or user JWTs (server routes only) 26ms
+ ✓ tests/messaging-rls.test.ts > messaging RLS and Realtime authorisation (database, real JWTs) > Realtime: an insert is delivered only to subscribers who may read it 10ms
+ ✓ tests/messaging-rls.test.ts > messaging RLS and Realtime authorisation (database, real JWTs) > NFR-2: revoking the guardian link, the assignment or the membership cuts API reads and Realtime at once 20ms
+
+ Test Files  2 passed (2)
+      Tests  29 passed (29)
+   Start at  03:03:30
+   Duration  1.81s (transform 166ms, setup 0ms, import 130ms, tests 2.97s, environment 0ms)
+

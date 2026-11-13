@@ -16,7 +16,7 @@ const APP = "https://app.doctornearme.test";
 // A valid sample payload per topic.
 const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "test.ping": { ics_start: "2026-11-20T10:00:00+05:30" },
-  "message.created": { message_id: ID, child_id: CHILD, case_id: CASE, recipient_user_ids: [USER] },
+  "message.created": { message_id: ID },
   "document.shared_with_guardian": { document_id: ID, child_id: CHILD },
   "iep.published": { plan_id: ID, child_id: CHILD, case_id: CASE },
   "home_program.published": { program_id: ID, child_id: CHILD },
@@ -116,8 +116,9 @@ describe("templates", () => {
           event: { id: "1", aggregate_type: "thread", aggregate_id: ID },
         }).link,
     );
-    expect(guardian).toBe("/family/messages");
-    expect(provider).toBe(`/cases/${CASE}`);
+    // 027: straight to the thread (the event's aggregate), never naming the child or sender.
+    expect(guardian).toBe(`/family/messages/${ID}`);
+    expect(provider).toBe(`/dashboard/messages/${ID}`);
   });
 
   it("sharing_granted links grantee admins to the case's Shared with us tab", () => {

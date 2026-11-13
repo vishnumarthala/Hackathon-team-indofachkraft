@@ -158,6 +158,14 @@ flowchart LR
   `/api/cron/outbox`, `CRON_SECRET`) plus an immediate `after()` drain (`drainSoon`); locally
   `npm run outbox:run`. Bell + `/notifications`, preferences in settings, `/admin/notifications`.
   See `docs/notifications.md`.
+- **Secure messaging (ticket 027).** Case-scoped threads between a child's guardians and the care team of
+  one organisation (`message_threads`, `messages`, `thread_reads`). Access is one SQL rule
+  (`thread_access_level`: linked guardian, or 022 case access) used by the routes and by RLS
+  (`can_access_thread`), which is the browser's only path: `messages` is in the `supabase_realtime`
+  publication and pages fall back to polling every 15 s without Realtime. Writes are security-definer
+  functions (message + `message.created` outbox event 2 min later + strict audit, ids only); notifications
+  never carry message text. Attachments must be readable by every participant under 023's rule. See
+  `docs/messaging.md`.
 
 ## 3. Repo layout
 
@@ -202,7 +210,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
-          documents.md
+          documents.md  messaging.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -520,6 +528,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
+| `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 
@@ -674,6 +683,9 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
 - Audio: private bucket, signed URLs valid 1 hour for playback.
 - Documents (023): private bucket, signed URLs valid 300 s, minted only after the access check and the
   strict `document.downloaded` audit row; never logged (`docs/documents.md`).
+- Messaging (027): RLS select policies are the browser's path to `message_threads` / `messages` /
+  `thread_reads` (also for Realtime); message text is never logged, audited or put in notifications
+  (`docs/messaging.md`).
 - Consent: intake page requires a consent checkbox before Start. Since 020 every gated step also needs the
   guardian's recorded consent for that feature (server-side; a client `parent_consent` flag is ignored);
   see `docs/consent.md`.

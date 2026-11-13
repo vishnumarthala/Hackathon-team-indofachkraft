@@ -1,0 +1,42 @@
+027 acceptance run 2026-11-13T01:50:16.784Z
+PASS NFR-4 no third-party scripts on /family/messages - 19 scripts, all same-origin; CSP script-src: script-src 'self' 'nonce-KK9W7aSinSE/Iohbs2uCww==' 'strict-dynamic' 'unsafe-eval'
+PASS NFR-4 375 px no horizontal scroll (/family/messages)
+PASS E-1 guardian starts thread (201) - thread f7a643ac-22f4-415f-a2b5-bcb99890f74e
+PASS E-1 provider sees the new thread on the case Messages tab without reload - 14971 ms after send (sync mode: polling; Realtime is not running locally, polling every 15 s)
+PASS FR-4 sender name + role label - Meera (synthetic) · Parent · 13 Nov 2026, 2:50 am GMT+1
+PASS E-1 banner on provider thread
+PASS E-1 banner on guardian thread
+PASS FR-4 Enter sends on desktop (201)
+PASS E-1 guardian sees the reply live without reload - 785 ms after send
+PASS FR-4 provider label = care-team discipline - Dr Kavya (synthetic) · Speech therapist · 13 Nov 2026, 2:50 am GMT+1
+PASS NFR-4 375 px no horizontal scroll (guardian thread)
+PASS FR-4 attach picker marks provider-only document - English | हिन्दी | తెలుగు | No document | m027 Internal note ro21oe (not visible to everyone) [disabled] | m027 Sleep diary template ro21oe | m027 Internal note ksfb8w (not visible to everyone) [disabled] | m027 Sleep diary template ksfb8w
+PASS E-4 attach a document visible to both (201)
+PASS E-4 guardian opens the attachment - /api/documents/587b4823-af29-4778-b289-294f7d08ee49/download -> 302 -> 200 application/pdf
+PASS E-4 provider-only document -> 422 - {"error":"Everyone in this conversation must be able to see this document"}
+PASS E-4 same client_id -> one message - 201 then 200, rows 1
+E-2 step 1: provider sent bf7bea76-9bd6-40cb-b517-5d8d45263828 at 2026-11-13T01:50:49.772Z while the guardian is on /family; waiting 2 min + cron
+E-2 step 1 notifications: ["org_admin_a:email:sent","org_admin_a:in_app:sent","org_admin_a:whatsapp:sent","guardian_a:email:sent","guardian_a:in_app:sent","guardian_a:whatsapp:sent"]
+PASS E-2 guardian gets in-app `You have a new message on DoctorNearMe.` after 2 min + cron - deliver_after - created_at = 00:02:00
+PASS E-2 email body contains no message text - mock log lines: 32
+E-2 step 2: provider sent 6b20c11f-0e8c-464d-ace1-b0e54088ed9e; guardian page showed it live (read marker updated); waiting 2 min + cron
+PASS E-2 thread open (read) -> no notification for the guardian - event fanned_out, rows: 3 (org_admin_a, the case lead, still notified: true)
+PASS E-3 provider page shows `You no longer have access to this conversation.` - 51 ms after removing the assignment
+PASS E-3 provider never received the new message
+PASS E-3 provider refresh -> 404
+PASS E-3 provider_a direct API -> 404 - GET 404 POST 404
+PASS E-3 provider_a2 direct API -> 404 - GET 404 POST 404
+PASS E-3 provider_b direct API -> 404 - GET 404 POST 404
+PASS E-3 guardian_b direct API -> 404 - GET 404 POST 404
+PASS NFR-4 Telugu thread chrome
+PASS NFR-4 Hindi provider inbox
+PASS E-5 audit rows carry ids only - 20 rows, keys: org_id,child_id,thread_id,document_id
+PASS E-5 server log has no message text - 7 synthetic texts grepped in 374 log lines
+console (guardian): 8 failed WebSocket handshakes to <supabase>/realtime/v1/websocket (Realtime not running locally; then polling); these were the captured console errors (first 8 kept).
+console (provider): 8 failed WebSocket handshakes to <supabase>/realtime/v1/websocket (Realtime not running locally; then polling); these were the captured console errors (first 8 kept).
+PASS CSP: no violations in the guardian page
+
+027 E-3 re-run with the provider page already polling 2026-11-13T01:55:20.127Z
+PASS E-3 (provider page polling) shows `You no longer have access to this conversation.` on its next check - 15412 ms after removing the assignment (page mode before: polling)
+PASS E-3 provider never received the new message
+PASS E-5 server log has no message text (E-3 run)
