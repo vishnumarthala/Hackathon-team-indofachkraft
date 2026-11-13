@@ -19,6 +19,7 @@ effect.
 | Website pilot sign-ups (`pilot_signups`) | Deleted after 24 months | `pilot_signups` | `RETENTION_PILOT_SIGNUP_MONTHS` (24) |
 | Audit events | Kept **7 years**, then deleted by `audit_purge_expired()` (refuses anything younger than 1 year) | `audit_events` | `RETENTION_AUDIT_YEARS` (7) |
 | Consent records (020) and signed paper forms | Kept (legal proof of consent), also after erasure, with free text stripped | - | - |
+| Messages with the care team (027: `message_threads`, `messages`, `thread_reads`) | Kept with the clinical record of the case; a deleted message's text is overwritten at once; removed with the child's threads (every organisation) and their outbox events on erasure | - | - |
 | Clinical records (cases, transcripts, confirmed facts, final reports) | Kept while the child is in care and as long as the law requires the clinic to keep them; erasure is reviewed (D-5) | - | - |
 
 Job: `GET|POST /api/cron/retention` with `Authorization: Bearer <CRON_SECRET>`, daily at 21:30 UTC (03:00 IST,
@@ -36,12 +37,14 @@ The privacy notice, the export, the erasure job and this document are driven by 
 
 Registered so far: child profile, case records, session audio, intake conversations, 024 `assessments` (guardian's own
 questionnaires + answers) and `published_versions` (latest guardian-visible versions), 025 `iep_plans` (published plan
-views; drafts and progress notes never exported), documents, health profile, consent records, sharing/care team,
+views; drafts and progress notes never exported), 026 `home_programs` (the current published programs plus the requesting
+guardian's own practice logs; drafts and other guardians' notes never exported; logs deleted on erasure), 027 `messages` (the conversations this guardian can open, with the text they see and
+their own read markers; attachments as document ids), documents, health profile, consent records, sharing/care team,
 notifications, exports, audit, provider credentials, pilot sign-ups. `published_versions` is append-only (024): rows with a
 case go with the case; case-less rows are removed only by `privacy_delete_published_versions()` (migration
 `20261113004102`).
 
-To add a category (026 home program, 027 messages, M2/M3 appointments, payments, Meet events, ratings, prescriptions,
+To add a category (026 home program, M2/M3 appointments, payments, Meet events, ratings, prescriptions,
 screen sessions):
 
 1. Append an entry to `REGISTRY` (or call `registerPrivacyCategory()` from your module at load time).

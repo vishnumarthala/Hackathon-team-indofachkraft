@@ -239,6 +239,35 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "deleteOwnLog",
     impl: { kind: "auditStrict", module: "lib/home-program/index.ts" },
   },
+  // ---------- 027 messaging (message + outbox event + audit row in one database function) ----------
+  {
+    action: "thread.created",
+    description: "Guardian or provider starts a conversation (first message included)",
+    routes: ["app/api/threads/route.ts"],
+    call: "createThread",
+    impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "create_message_thread", migration: "supabase/migrations/20261113002700_messaging.sql" },
+  },
+  {
+    action: "message.sent",
+    description: "Message sent in a conversation",
+    routes: ["app/api/threads/[id]/messages/route.ts"],
+    call: "sendMessage",
+    impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "send_thread_message", migration: "supabase/migrations/20261113002700_messaging.sql" },
+  },
+  {
+    action: "message.deleted",
+    description: "Sender deletes their message (text overwritten for everyone)",
+    routes: ["app/api/messages/[id]/route.ts"],
+    call: "deleteMessage",
+    impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "delete_thread_message", migration: "supabase/migrations/20261113002700_messaging.sql" },
+  },
+  {
+    action: "thread.archived",
+    description: "Owner/admin archives a conversation",
+    routes: ["app/api/threads/[id]/archive/route.ts"],
+    call: "archiveThread",
+    impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "archive_message_thread", migration: "supabase/migrations/20261113002700_messaging.sql" },
+  },
 ];
 
 export function strictAction(action: string): StrictAction | undefined {

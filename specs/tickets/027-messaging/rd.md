@@ -1,6 +1,6 @@
 # 027: Secure messaging (guardian <-> care team)
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 022, 023, 032: participants come from guardian links and case assignments; new-message alerts go through the outbox; message attachments use the document vault (023)
 

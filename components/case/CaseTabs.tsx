@@ -17,6 +17,7 @@ const TABS = [
   { key: "team", segment: "team" },
   { key: "health", segment: "health" },
   { key: "shared", segment: "shared" },
+  { key: "messages", segment: "messages" },
 ] as const;
 
 export function isTabActive(pathname: string, base: string, segment: string): boolean {

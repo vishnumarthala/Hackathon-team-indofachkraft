@@ -70,3 +70,34 @@ test command, 19 tests).
   (`homeProgram` namespace + `caseTabs.homeProgram`), docs.
 - No new env vars, no new dependencies. Docs: `docs/home-program.md` (new), `docs/system-design.md`, `docs/sharing.md`,
   `docs/notifications.md`.
+
+## Merge with main (041 privacy/audit baseline, 027 messaging)
+
+Merged local `main` twice (`git merge main`: first 041, then 027). Conflicts resolved keeping both sides: family child
+page (home program + privacy links), `messages/*.json` (`homeProgram`, `caseTabs.homeProgram`, 041 `privacy`, 027
+`messaging` namespaces; `messages/REVIEW.md` regenerated, 1786 rows), `app/privacy/page.tsx`, `lib/audit/strict-actions.ts`,
+`docs/system-design.md`. Follow-up changes for 041:
+
+- **Privacy registry** (`lib/privacy/registry.ts`, key `home_programs`): tables `home_programs`, `home_activities`,
+  `home_activity_logs`, `home_program_publications`; guardian export = `getGuardianHomePrograms` (current published
+  programs, snapshot wording) + the requesting guardian's OWN logs (activity titles from the published snapshots; other
+  guardians' notes and drafts never exported); erasure (`everything`) deletes the child's logs, then its programs
+  (activities and snapshots cascade); retention: with the clinical record of the case. Privacy notice: new
+  `collect.homeProgram` line (en/hi/te). `docs/privacy/retention.md` lists the category.
+- **Audit through 041's helpers**: every home program audit row is written with `auditStrict(event, tx)` in the change's
+  transaction, attributed to the session user (the database fills `actor_role`, `child_id`, `org_id`; no hard-coded
+  `therapist`/`parent`). Write routes answer 503 `Could not save. Please try again.` on `AuditWriteError` (nothing
+  saved). `home_program.published` and `home_program.log_deleted` are registered in `lib/audit/strict-actions.ts`
+  (static check in `tests/audit-hardening.test.ts` passes). The tests do not delete audit rows (they go with the
+  test cases), so `tests/helpers/audit.ts` was not needed.
+- New DB tests: strict-audit failure on log deletion -> 503 and the log is kept; session actor roles on the audit rows;
+  registry export contains only the requesting guardian's logs.
+
+Re-run on the merged tree (slot 4 after `db reset`, 21 migrations):
+
+| Check | Result | Evidence |
+|-------|--------|----------|
+| `npm run lint`, `npm run typecheck`, `npm run build` | PASS | exit 0 |
+| `npx vitest run` | PASS | 72 files, 1087 passed, 11 skipped (the opt-in `CT_DB_TESTS` block of 10 + 041's live crawl that needs `NO_TRACKING_BASE_URL`); every DB suite ran |
+| `tests/home-program.test.ts` | PASS | 20 passed (includes the new 041 test) |
+| E-1 / E-2 re-check (dev server, own headless Chromium) | PASS | `evidence/acceptance-post-merge.txt`, 10 checks: foreign goal 422, add + UI publish (strict audit row with `actor_role = provider`, child and org filled), guardian `0/5 this week`, `Done today`/`Okay`/`Save` at 375 px -> `1/5`, retry 200/200 one row, tomorrow / 20 days ago 400, provider `done 1 of 5 times in the last 7 days` + note, guardian export -> 202 and the export job finished `ready` |
