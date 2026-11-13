@@ -42,6 +42,12 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
         <h1 className="text-2xl font-bold break-words text-slate-900 sm:text-3xl">{child.display_name}</h1>
         <p className="text-slate-600">{ageLabel(t, child.date_of_birth)}</p>
       </header>
+      <Link
+        href={`/family/children/${child.id}/team`}
+        className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+      >
+        {t("team.link")}
+      </Link>
       <section aria-labelledby="permissions-heading" className="space-y-3">
         <h2 id="permissions-heading" className="text-xl font-semibold text-slate-900">
           {t("overview.permissions")}

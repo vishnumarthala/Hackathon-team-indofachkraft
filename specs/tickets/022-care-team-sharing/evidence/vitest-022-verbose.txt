@@ -1,0 +1,63 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/022
+
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > finds the routes 1ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/ask/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/assignments/[assignmentId]/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/assignments/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/brief/reviewed/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/claim-code/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/intake-link/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/paper-consents/[recordId]/scan/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/paper-consents/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/paper-consents/withdraw/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/refer/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/[id]/sessions/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/cases/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/bulk/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/extract/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/report/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/speakers/route.ts 0ms
+ ✓ tests/case-access.test.ts > every case and session route checks case access before reading data (static scan) > app/api/sessions/[id]/transcribe/route.ts 0ms
+ ✓ tests/case-access.test.ts > care team error messages > maps API statuses to the translated message keys 0ms
+ ✓ tests/sharing-grants.test.ts > grant request validation and helpers > accepts 90, 365 or no expiry and known scopes only 2ms
+ ✓ tests/sharing-grants.test.ts > grant request validation and helpers > registers the reports loader; other scopes register in their own tickets 0ms
+ ✓ tests/sharing-grants.test.ts > grant request validation and helpers > maps API statuses to translated guardian messages 0ms
+stderr | tests/sharing-grants.test.ts > sharing grants (database) > strict audit: a forced audit failure -> 503 and no grant
+create_sharing_grant failed: forced audit failure (test)
+
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > E-4: only a linked guardian may share (other guardian 404, provider 403, anonymous 401) 10ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > E-2.3: org without a case for the child -> 422, same org -> 400 26ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > strict audit: a forced audit failure -> 503 and no grant 11ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > grant states x requireSharedAccess: none, active, wrong scope, expired, revoked 156ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > owner: list yes, read 200, write 200 45ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > admin: list yes, read 200, write 200 17ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > assigned member: list yes, read 200, write 200 20ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > unassigned member: list no, read 404, write 404 10ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > removed member: list no, read 404, write 404 13ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > revoked member: list no, read 404, write 404 11ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > other-org provider: list no, read 404, write 404 19ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > platform_admin: list no, read 404, write 404 10ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > guardian: list no, read 403, write 403 6ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > access levels: owner/admin manage, assigned member assigned 5ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > access matrix: {role} x {list, read, write} > an unchanged case was not written by denied callers 1ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > a new grant for the same pair replaces the old one; a removed assignment or departed guardian ends access 63ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > guardian care team lists every treating organisation and its providers, without emails 4ms
+ ✓ tests/sharing-grants.test.ts > sharing grants (database) > RLS: guardians read their children's grants; other guardians and providers read none; no client writes 9ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > care team API (FR-3) > adds, rejects non-members and duplicates, keeps the last lead, removes and ends access 72ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > care team API (FR-3) > making someone lead hands the lead over; the lead may manage the team 29ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > care team API (FR-3) > concurrent lead hand-overs leave exactly one lead 14ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > care team API (FR-3) > membership revocation ends access on the next request (FR-7) 63ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > initial care team and backfill (FR-1) > new cases get their creator (or the earliest owner) as lead 105ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > initial care team and backfill (FR-1) > backfill assigns a lead to legacy cases once and audits it 9ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > initial care team and backfill (FR-1) > a case without a lead (org had no owner) gets the first owner who joins as lead 8ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > initial care team and backfill (FR-1) > one active lead per case and one active assignment per person are enforced by the schema 6ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > row level security (NFR-2) > cases and assignments follow the care team rule; no client writes 16ms
+ ✓ tests/case-access.test.ts > case access and care team (database) > row level security (NFR-2) > service-only functions are not executable by browser roles 1ms
+
+ Test Files  2 passed (2)
+      Tests  51 passed (51)
+   Start at  01:26:15
+   Duration  1.33s (transform 170ms, setup 0ms, import 226ms, tests 1.96s, environment 0ms)
+

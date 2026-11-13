@@ -4,13 +4,9 @@ import { isUuid } from "@/lib/cases/validation";
 
 export type SessionListItem = Pick<RecordingRow, "id" | "session_number" | "status" | "created_at">;
 
-export async function listCases(orgIds: string[]): Promise<CaseRow[]> {
-  if (orgIds.length === 0) return [];
-  const { data, error } = await supabaseAdmin()
-    .from("cases")
-    .select("*")
-    .in("org_id", orgIds)
-    .order("created_at", { ascending: false });
+// 022 FR-2: owners/admins see all their orgs' cases, members only cases they are assigned to (filtered in SQL).
+export async function listCases(userId: string): Promise<CaseRow[]> {
+  const { data, error } = await supabaseAdmin().rpc("accessible_cases", { p_user: userId });
   if (error) throw new Error(`Could not load cases: ${error.message}`);
   return (data ?? []) as CaseRow[];
 }

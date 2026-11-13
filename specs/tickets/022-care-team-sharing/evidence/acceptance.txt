@@ -1,0 +1,56 @@
+## setup: one child of guardian_a with a case in org A and a case in org B (020 claim flow)
+PASS org_admin_a creates case in org A :: 201
+PASS guardian_a claims org A case :: {"child":{"id":"03769f2e-958f-42a1-91a8-65c5fd0a7ebc","display_name":"Ravi (synthetic)","date_of_birth":null,"sex":null}}
+PASS guardian_a claims org B case into the same child :: {"child":{"id":"03769f2e-958f-42a1-91a8-65c5fd0a7ebc","display_name":"Ravi (synthetic)","date_of_birth":null,"sex":null}}
+PASS both cases share one child_id :: {"childId":"03769f2e-958f-42a1-91a8-65c5fd0a7ebc","caseA":"98b3648c-9cc4-4f13-b3d4-e7c6009fa329","caseB":"ce674bf8-a15b-4871-9192-429973b85a87"}
+
+## E-1 assignments (FR-1, FR-2, FR-3)
+PASS E-1.1 every case has >= 1 active lead :: 3 cases, 0 without a lead
+PASS E-1.2 provider_a2 (unassigned member): case missing from /dashboard :: 200
+PASS E-1.2 provider_a2 /cases/<id> -> 404 :: 404
+PASS E-1.2 provider_a2 PATCH /api/cases/:id -> 404 :: 404 {"error":"Case not found"}
+PASS E-1.3 org_admin_a adds provider_a2 as Member / Occupational therapist -> 201 :: {"assignment":{"assignment_id":"463d29c0-259c-46ea-a057-3e6452cb5f3e","user_id":"740be851-56b3-45b5-8075-7d1ee9ae9f90","care_role":"member","discipline_label":"Occupational therapist","assigned_at":"2026-11-13T00:23:50.9
+PASS E-1.3 audit case.assigned
+PASS E-1.3 provider_a2 now sees the case on /dashboard
+PASS E-1.3 provider_a2 opens /cases/<id> -> 200 :: 200
+PASS E-1.3 Team tab lists `<name> - Occupational therapist - Member` and the lead :: Care team Providers assigned to this case. Organisation owners and admins can open every case of the organisation; other members only the cases they are assigned to. acct-org-admin-a@example.test (you) - Lead Remove acct
+PASS E-1.4 remove the only lead -> 409 Assign another lead first :: 409 {"error":"Assign another lead first"}
+PASS E-1.4 add provider_b -> 422 This person is not in your organisation :: 422 {"error":"This person is not in your organisation"}
+PASS assigned non-lead member cannot change the team -> 403 :: {"error":"Only the case lead or an organisation owner or admin can change the care team"}
+PASS E-1.5 remove provider_a2 -> 200 :: {"removed":true,"assignment_id":"463d29c0-259c-46ea-a057-3e6452cb5f3e"}
+PASS E-1.5 audit case.unassigned
+PASS E-1.5 provider_a2's open case page returns 404 on refresh :: 404
+PASS E-1.5 ... also on the Team tab :: 404
+
+## E-2 guardian care team and grant (FR-4, FR-5)
+PASS E-2.1 /family/children/<id>/team lists org A and org B with their providers :: Care team The providers looking after Ravi (synthetic), by organisation. acct Centre A (synthetic) Dr Synthetic A - Lead acct Solo B (synthetic) Dr Synthetic B - Lead Sharing Share records between your providers Each org
+PASS E-2.1 Sharing section: Share records between your providers
+PASS E-2.2 share org A -> org B, Reports only, 3 months -> 201 :: {"grant":{"id":"b84a8d45-f90c-467c-9497-67cabb7d2d46","scopes":["reports"],"child_id":"03769f2e-958f-42a1-91a8-65c5fd0a7ebc","created_at":"2026-11-13T00:23:51.656316+00:00","expires_at":"2027-02-11T00:23:51.656316+00:00"
+PASS E-2.2 audit sharing.granted :: {"scopes":["reports"],"child_id":"03769f2e-958f-42a1-91a8-65c5fd0a7ebc","expires_at":"2027-02-11T00:23:51.656316+00:00","source_org_id":"e7470972-3844-45b9-b2c3-594d099e1b3b","grantee_org_id":"93b5dba4-b684-440d-8079-629
+PASS E-2.2 page shows the active grant with Stop sharing
+PASS E-2.3 grant to an org without a case -> 422 This organisation is not treating your child :: 422 {"error":"This organisation is not treating your child"}
+
+## E-3 shared access is scoped (FR-2, FR-6)
+PASS E-3.1 provider_b `Shared with us` lists org A with only the finalised report :: Shared with us Shared with us Records that the child&#x27;s parent has shared with your organisation from their other providers. Read only. From acct Centre A (synthetic) Shared until 11 February 2027 Reports Final asses
+PASS E-3.1 opening the report -> 200 read-only view :: 200
+PASS E-3.1 audit sharing.viewed { grant_id, scope, item_id } :: {"scope":"reports","item_id":"6bbe4487-69d0-4fba-9318-815b2a1b75a3","grant_id":"b84a8d45-f90c-467c-9497-67cabb7d2d46","source_org_id":"e7470972-3844-45b9-b2c3-594d099e1b3b"}
+PASS E-3.1 the draft report is not reachable -> 404 :: 404
+PASS E-3.2 documents scope for provider_b -> denied (404); requireSharedAccess matrix in tests/sharing-grants.test.ts :: 404
+PASS read only: provider_b still cannot open org A's case -> 404 :: 404
+PASS E-3.3 grant expired via SQL -> denied immediately (item 404, empty state) :: 404
+PASS E-3.4 setup: share again (until stopped)
+GRANT_FOR_BROWSER bb3c6652-092b-48dd-bd58-8f3fb4ea967a child=03769f2e-958f-42a1-91a8-65c5fd0a7ebc caseA=98b3648c-9cc4-4f13-b3d4-e7c6009fa329 caseB=ce674bf8-a15b-4871-9192-429973b85a87 final=6bbe4487-69d0-4fba-9318-815b2a1b75a3
+
+## E-4 platform admin and guardian negatives (D-3)
+PASS E-4.1 platform_admin /cases/<id> -> 404 :: 404
+PASS E-4.1 platform_admin PATCH /api/cases/:id -> 404 :: {"error":"Case not found"}
+PASS E-4.2 guardian_b grant on guardian_a's child -> 404 :: {"error":"Child not found"}
+PASS E-4.3 provider_a calls the grant API -> 403 :: {"error":"Not allowed"}
+PASS guardian_b /family/children/<other child>/team -> 404 :: 404
+
+ALL PASS
+
+## E-3.4 Stop sharing clicked in the guardian UI (browser, /family/children/<id>/team): POST .../revoke -> 200
+PASS E-3.4 after Stop sharing in the guardian UI: provider_b item -> 404, Shared with us empty state: true
+audit rows for the grant:
+[{"action":"sharing.granted","actor":"parent","reason":null},{"action":"sharing.viewed","actor":"therapist","reason":null},{"action":"sharing.revoked","actor":"parent","reason":"guardian"}]
