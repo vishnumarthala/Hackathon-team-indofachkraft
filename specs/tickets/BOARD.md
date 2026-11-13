@@ -71,7 +71,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 020 | Children, guardian links and consent gating | done | solo | waits for 019 |
 | 021 | Child health profile | done | solo | waits for 020 |
 | 022 | Care team, provider assignments and cross-org sharing grants | done | solo | waits for 020 |
-| 023 | Document vault | draft | solo | waits for 022 |
+| 023 | Document vault | done | solo | waits for 022 |
 | 024 | Assessment portal and shared clinical contracts | draft | solo | waits for 022 |
 | 025 | IEP plans, SMART goals and progress tracking | draft | solo | waits for 022, 024 |
 | 026 | Home program | draft | solo | waits for 023, 025 |
