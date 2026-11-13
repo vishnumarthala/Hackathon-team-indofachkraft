@@ -1,0 +1,72 @@
+Ticket 037 acceptance run - 2026-11-13T03:42:46.133Z - dev server http://localhost:3040 (slot 4), DEMO_MODE=true, demo Google backend
+(no GOOGLE_OAUTH_CLIENT_ID; TOKEN_ENCRYPTION_KEY = random test key), own headless Chromium 375x812, Asia/Kolkata. Synthetic data only.
+
+== E-1 Connect (demo Google) and create ==
+PASS integrations page: not connected
+PASS connected banner
+PASS connected as
+PASS integrations 375px no horizontal overflow
+PASS connection row - {"google_email":"calendar.demo@example.test","status":"active","scopes":["openid","email","https://www.googleapis.com/auth/calendar.events"],"n":90,"plain":0}
+
+== E-1a Google account required for video (FR-5a) ==
+PASS booking page shows Google text
+PASS booking page shows Connect Google
+PASS no slot picker before Google
+PASS video hold without Google -> 422 - {"status":422,"body":{"error":"Link your Google account to book a video consultation","code":"google_account_required"}}
+PASS in-clinic slot books normally - fd7e24a0-5478-4c1c-9fff-2f4ca3fb327e 8:00 am IST
+linked Google identity for guardian_a (auth.identities, as after 019 linkIdentity)
+PASS video hold + confirm succeed after linking Google - 22f4f2ba-c21e-4037-a2eb-6db1b1fd5674 8:00 am IST
+PASS meet_status created + meet_url stored (job drained by after()) - {"status":"confirmed","meet_status":"created","meet_url":"https://meet.google.com/zxu-msbm-zyd","google_event_id":"demo95736989c90ca9b7b26bb641","start":"2026-11-15T02:30:00.000Z"}
+meet jobs: [{"topic":"meet.create","status":"fanned_out","attempts":1}]
+cron: {"fanned_out":1,"sent":2,"failed":0,"skipped":2}
+meet_ready notifications: [["provider_a","email","sent","Google Meet link ready"],["provider_a","in_app","sent","Google Meet link ready"],["provider_a","whatsapp","skipped","Google Meet link ready"],["guardian_a","email","sent","Video call link ready"],["guardian_a","in_app","sent","Video call link ready"],["guardian_a","whatsapp","skipped","Video call link ready"]]
+PASS appointment.meet_ready to guardian and provider (in-app)
+PASS guardian before window: no Join link
+PASS guardian before window: hint
+PASS guardian Google hint
+PASS meet URL not in the page before the window
+time travel: appointment now starts in 5 minutes
+PASS guardian inside window: Join video call
+PASS family appointments 375px no overflow
+PASS provider agenda inside window: Join video call
+PASS provider hint (admit + no scribe)
+time travel: appointment ended 40 minutes ago
+PASS guardian after window: no Join link
+PASS provider after window: no Join link
+
+== E-2 Disconnect, failed, manual link ==
+PASS disconnected banner
+PASS connection row deleted
+audit: [{"action":"google_calendar.connected","by_a":true},{"action":"google_calendar.connected","by_a":true},{"action":"google_calendar.connected","by_a":true},{"action":"google_calendar.disconnected","by_a":true},{"action":"google_calendar.connected","by_a":true},{"action":"google_calendar.connected","by_a":true},{"action":"google_calendar.connected","by_a":true},{"action":"google_calendar.disconnected","by_a":true}]
+PASS booking without a connection -> failed - {"status":"confirmed","meet_status":"failed","meet_url":null,"google_event_id":null,"start":"2026-11-16T02:30:00.000Z"}
+PASS guardian sees 'Your provider will share the video link soon.'
+PASS provider sees failure
+PASS non-Meet URL rejected (400) with the error shown
+PASS API non-Meet URL -> 400 - 400
+PASS manual link saved
+PASS guardian sees the manual link (Join video call)
+
+== E-3 Authz and secrecy ==
+PASS provider_b reads provider_a's connection -> 404 - {"status":404,"text":"{\"error\":\"Profile not found\"}"}
+PASS provider_b sets a manual link on provider_a's appointment -> 404 - 404
+PASS link unchanged
+provider_a own connection API: {"available":true,"connection":{"provider_profile_id":"070781de-8799-4ead-bfe8-f1ae4cd61b82","google_email":"calendar.demo@example.test","scopes":["openid","email","https://www.googleapis.com/auth/calendar.events"],"status":"active","connected_at":"2026-11-13T03:42:59.725Z","last_refreshed_at":"2026-11-13T03:42:59.725Z"}}
+PASS browser responses (bodies + headers) contain no Google refresh token (51 responses scanned)
+PASS dev server log contains no Google refresh token - 217 lines
+
+ALL PASS
+
+== i18n / 375 px (hi, te) ==
+hi /dashboard/settings/integrations overflow=false h1="इंटीग्रेशन"
+hi /dashboard/settings overflow=false h1="सेटिंग्स"
+hi /book (anonymous, video) overflow=false notice="वीडियो परामर्श बुक करने के लिए अपना Google खाता जोड़ें /  / आप अपने Google खाते में साइन इन करके वीडियो कॉल से जुड़ते हैं, और प्रदाता आपको प्रतीक्षा कक्ष से अंदर लेते हैं। आपका ईमेल कभी प्रदाता के कैलेंडर में नहीं जोड़ा जाता। /  / साइन इन करें"
+te /dashboard/settings/integrations overflow=false h1="ఇంటిగ్రేషన్‌లు"
+te /dashboard/settings overflow=false h1="సెట్టింగ్స్"
+te /book (anonymous, video) overflow=false notice="వీడియో సంప్రదింపు బుక్ చేయడానికి మీ Google ఖాతాను లింక్ చేయండి /  / మీరు మీ Google ఖాతాలో సైన్ ఇన్ చేసి వీడియో కాల్‌లో చేరతారు, ప్రొవైడర్ మిమ్మల్ని వెయిటింగ్ రూమ్ నుండి లోపలికి అనుమతిస్తారు. మీ ఇమెయిల్ ఎప్పుడూ ప్రొవైడర్ క్యాలెండర్‌కు జోడించబడదు. /  / సైన్ ఇన్ చేయండి"
+
+== extra checks (curl) ==
+/privacy processor row: "Google Calendar and Google Meet" - "Video calls: an event on the provider's own Google calendar (time and an app link only, no child details)"
+anonymous GET /api/integrations/google/demo-authorize -> 401; anonymous GET /api/integrations/google/callback -> 401
+dev server log: 0 occurrences of "demo-refresh"
+Note: earlier runs of this script (before two selector fixes in the script itself) left appointments that were cancelled
+directly in SQL (`cancel_reason = 'e037 rerun cleanup'`) before this final run; they show as "Cancelled" in the screenshot.

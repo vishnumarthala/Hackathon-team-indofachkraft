@@ -17,7 +17,7 @@
 import type { Queryable, Tx } from "@/lib/pg";
 
 export type DataOwner = "child" | "case" | "user";
-export type Processor = "elevenlabs" | "gemini" | "resend" | "whatsapp" | "supabase" | "razorpay";
+export type Processor = "elevenlabs" | "gemini" | "resend" | "whatsapp" | "supabase" | "razorpay" | "google";
 export type DeletionScope = "all_ai_processing" | "everything";
 
 export type ExportContext = { sql: Queryable; childId: string; guardianUserId: string };
@@ -588,6 +588,30 @@ export const REGISTRY: PrivacyCategory[] = [
     retention: "Deleted after 24 months.",
     retentionEnv: "RETENTION_PILOT_SIGNUP_MONTHS",
     processors: ["supabase"],
+  },
+  {
+    // 037: Google Meet for video appointments. The provider's Google grant (refresh token, AES-256-GCM encrypted, never
+    // sent to a browser) and the Meet link / calendar event id on each video appointment. The calendar event holds
+    // the time, `DoctorNearMe video consultation` and an app link only: no child data, no guardian email (D-5).
+    key: "google_meet",
+    label: "Video calls: providers' Google Calendar connections and Google Meet links",
+    owner: "user",
+    tables: ["provider_google_connections", "appointments.meet_url", "appointments.google_event_id", "appointments.meet_status", "outbox_job_attempts"],
+    retention:
+      "A provider's Google connection is kept until they disconnect it (the token is then revoked at Google and deleted). Meet links stay with the appointment record; a cancelled video appointment's calendar event is deleted from the provider's calendar.",
+    processors: ["supabase", "google"],
+    export: async ({ sql, childId, guardianUserId }) => {
+      // The links the guardian can already see on /family/appointments.
+      const rows = await sql`
+        select id as appointment_id, meet_status, meet_url
+        from public.appointments
+        where child_id = ${childId} and guardian_user_id = ${guardianUserId} and service_snapshot ->> 'mode' = 'video'
+          and status not in ('held', 'expired')
+        order by lower(slot)`;
+      return { data: rowsJson(rows) };
+    },
+    // Erasure: the `appointments` category cancels the child's future appointments; their `appointment.cancelled`
+    // events enqueue `meet.delete`, which removes the calendar events. Links and event ids carry no child data.
   },
 ];
 

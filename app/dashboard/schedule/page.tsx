@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CancelAppointmentButton, CompleteButtons } from "@/components/booking/AppointmentActions";
 import { HoursEditor, OverridesEditor, ServicesEditor } from "@/components/booking/ScheduleEditors";
+import { MeetPanel } from "@/components/google/MeetPanel";
 import { requireProviderPage } from "@/lib/authz";
 import { hasStarted } from "@/lib/booking/display";
 import { getProviderContext, listAgenda, listOverrides, listRules, listServices } from "@/lib/booking/store";
 import { addDays, isValidDate, todayIn, wallToUtc, weekdayOf } from "@/lib/booking/time";
+import { getMeetInfo } from "@/lib/google/meet";
 import { ageLabel } from "@/lib/children/age";
 import { createFormatter } from "@/lib/i18n/format";
 import { getLocale, getT } from "@/lib/i18n/server";
@@ -57,6 +59,8 @@ export default async function SchedulePage({ searchParams }: Props) {
     listOverrides(ctx.profile.id, addDays(today, -1)),
     listAgenda(ctx.profile.id, from, to),
   ]);
+  // 037: Meet link state of the video appointments on the agenda (Join video call / Add a video link).
+  const meet = await getMeetInfo(agenda.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
   // 031 FR-8: `Paid online` / `Pay at clinic` on the agenda.
   const tpay = await getT("payments");
   const payments = await listPaymentsForAppointments(agenda.map((a) => a.id));
@@ -127,6 +131,7 @@ export default async function SchedulePage({ searchParams }: Props) {
                         {a.outside_availability ? (
                           <p role="note" className="rounded bg-amber-50 p-2 text-amber-900">{t("schedule.agenda.warning")}</p>
                         ) : null}
+                        {a.service_snapshot.mode === "video" ? <MeetPanel appointment={a} meet={meet.get(a.id)} side="provider" /> : null}
                         {a.status === "confirmed" ? (
                           <div className="flex flex-wrap items-center gap-2">
                             <CompleteButtons appointmentId={a.id} started={hasStarted(a.starts_at)} />

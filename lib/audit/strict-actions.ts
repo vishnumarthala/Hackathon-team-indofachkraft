@@ -291,6 +291,28 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "archiveThread",
     impl: { kind: "sql", module: "lib/messaging/store.ts", fn: "archive_message_thread", migration: "supabase/migrations/20261113002700_messaging.sql" },
   },
+  // ---------- 037 Google Meet (OAuth grants and links shown to families) ----------
+  {
+    action: "google_calendar.connected",
+    description: "Provider connects Google Calendar (encrypted refresh token stored)",
+    routes: ["app/api/integrations/google/callback/route.ts"],
+    call: "saveGoogleConnection",
+    impl: { kind: "auditStrict", module: "lib/google/connections.ts" },
+  },
+  {
+    action: "google_calendar.disconnected",
+    description: "Provider disconnects Google Calendar (token revoked at Google and deleted)",
+    routes: ["app/api/integrations/google/disconnect/route.ts"],
+    call: "disconnectGoogle",
+    impl: { kind: "auditStrict", module: "lib/google/connections.ts" },
+  },
+  {
+    action: "appointment.meet_link_set",
+    description: "Provider adds a video link by hand to a video appointment",
+    routes: ["app/api/appointments/[id]/meet-link/route.ts"],
+    call: "setManualMeetLink",
+    impl: { kind: "auditStrict", module: "lib/google/meet.ts" },
+  },
   // ---------- 031 payments ----------
   {
     action: "payment.captured",

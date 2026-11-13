@@ -144,4 +144,16 @@ export const env = {
   get AUDIT_FAIL_ACTIONS() {
     return read("AUDIT_FAIL_ACTIONS");
   },
+  // 037: Google Calendar / Meet for video appointments (docs/google-meet.md). Server-only. Without the client id and
+  // secret, DEMO_MODE uses a local fake Google; otherwise `Connect Google Calendar` is unavailable.
+  get GOOGLE_OAUTH_CLIENT_ID() {
+    return read("GOOGLE_OAUTH_CLIENT_ID");
+  },
+  get GOOGLE_OAUTH_CLIENT_SECRET() {
+    return read("GOOGLE_OAUTH_CLIENT_SECRET");
+  },
+  /** 32 random bytes, base64. Encrypts stored OAuth refresh tokens (AES-256-GCM). */
+  get TOKEN_ENCRYPTION_KEY() {
+    return read("TOKEN_ENCRYPTION_KEY");
+  },
 };

@@ -1716,6 +1716,7 @@
         "scribe": "AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you.",
         "homeProgram": "Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes).",
         "messages": "Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them.",
+        "videoCalls": "Video appointments: the Google Meet link. You join signed in to your own Google account; your email is never added to the provider's calendar.",
         "screen": "Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs.",
         "payments": "Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them."
       },
@@ -1750,6 +1751,11 @@
           "name": "Supabase",
           "purpose": "Database and file storage",
           "location": "{region}"
+        },
+        "google": {
+          "name": "Google Calendar and Google Meet",
+          "purpose": "Video calls: an event on the provider's own Google calendar (time and an app link only, no child details)",
+          "location": "Outside India (Google data centres)"
         },
         "razorpay": {
           "name": "Razorpay",
@@ -1989,7 +1995,8 @@
       "child_not_linked": "Choose one of your children.",
       "invalid_transition": "This appointment cannot be changed now.",
       "rate_limited": "Too many tries. Please wait a few minutes.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "google_account_required": "Link your Google account to book a video consultation"
     },
     "flow": {
       "metaTitle": "Book with {name}",
@@ -2022,7 +2029,10 @@
       "booked": "Your appointment is booked.",
       "bookedDetail": "We sent you a confirmation. You can cancel or move it up to 2 hours before it starts.",
       "pendingPayment": "Your booking is waiting for payment. Online payment opens soon; until then this booking is kept for 15 minutes.",
-      "viewAppointments": "My appointments"
+      "viewAppointments": "My appointments",
+      "googleRequired": "Link your Google account to book a video consultation",
+      "googleRequiredHint": "You join video calls signed in to your Google account, and the provider admits you from the waiting room. Your email is never added to the provider's calendar.",
+      "connectGoogle": "Connect Google"
     },
     "list": {
       "title": "Appointments",
@@ -2137,6 +2147,25 @@
         "notStarted": "You can mark this after the appointment starts."
       },
       "organisation": "Organisation"
+    },
+    "meet": {
+      "join": "Join video call",
+      "joinHint": "Join with your Google account. The provider will admit you from the waiting room.",
+      "opensSoon": "Join video call appears 10 minutes before the start.",
+      "linkSoon": "Your provider will share the video link soon.",
+      "pending": "Creating the Google Meet link…",
+      "ready": "Google Meet link ready.",
+      "failed": "We could not create a Google Meet link.",
+      "manual": "Video link added by you.",
+      "providerHint": "Admit the family from the Meet waiting room. The AI scribe is not available on video calls.",
+      "addLink": "Add a video link",
+      "changeLink": "Change video link",
+      "linkLabel": "Google Meet link",
+      "save": "Save link",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "invalidLink": "Paste a Google Meet link (https://meet.google.com/...).",
+      "saveFailed": "Could not save the link. Please try again."
     }
   },
   "messaging": {
@@ -2396,6 +2425,48 @@
       "empty": "No session notes have been shared with you yet.",
       "from": "From {org}",
       "sharedOn": "Shared on {date}"
+    }
+  },
+  "integrations": {
+    "title": "Integrations",
+    "settingsLink": "Google Calendar for video appointments",
+    "settingsIntro": "Connect Google Calendar so video appointments get a Google Meet link automatically.",
+    "noProfile": "Create your public profile first.",
+    "openProfile": "Open profile",
+    "google": {
+      "title": "Google Calendar and Google Meet",
+      "intro": "Connect your own Google account (free Gmail or Google Workspace). When a video appointment is confirmed, DoctorNearMe creates a Google Calendar event with a Google Meet link on your calendar.",
+      "privacy": "Families are never added as guests: they join from DoctorNearMe signed in to Google, and you admit them from the Meet waiting room. The event shows no child details.",
+      "scribeNote": "The AI scribe is not available on Google Meet calls.",
+      "connect": "Connect Google Calendar",
+      "reconnect": "Reconnect Google Calendar",
+      "disconnect": "Disconnect",
+      "disconnecting": "Disconnecting…",
+      "disconnectQuestion": "Disconnect Google Calendar? New video appointments will need a link added by hand.",
+      "keep": "Keep connected",
+      "connectedAs": "Connected as {email}",
+      "connectedOn": "Connected on {date}",
+      "status": {
+        "active": "Connected",
+        "expired": "Needs reconnecting",
+        "revoked": "Disconnected"
+      },
+      "expiredHelp": "Google stopped accepting DoctorNearMe's access. Reconnect to keep creating Meet links.",
+      "notConnected": "Not connected. Video appointments will need a link added by hand.",
+      "unavailable": "Google Calendar is not set up on this site yet.",
+      "demo": "Demo mode: no real Google account is used and the Meet links are not real.",
+      "connected": "Google Calendar connected.",
+      "disconnected": "Google Calendar disconnected.",
+      "revokeFailed": "Disconnected here, but Google could not be reached. Remove DoctorNearMe in your Google account's security settings to be sure.",
+      "errors": {
+        "state": "That Google sign-in was not valid or has expired. Please try again.",
+        "denied": "Google access was not allowed.",
+        "exchange": "Google sign-in failed. Please try again.",
+        "no_refresh_token": "Google did not allow offline access. Please try again and allow access.",
+        "scope": "Allow access to Google Calendar events so DoctorNearMe can create Meet links.",
+        "unavailable": "Google Calendar is not set up on this site yet.",
+        "generic": "Something went wrong. Please try again."
+      }
     }
   },
   "screen": {

@@ -20,6 +20,7 @@ import {
 import type { TemplateName } from "./templates";
 import type { Channel, OutboxEventRow } from "./types";
 import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
+import { meetFailedRecipients, meetReadyRecipients, reconnectRecipients } from "@/lib/google/recipients";
 import { refundedPaymentGuardian } from "@/lib/payments/recipients";
 
 const uuid = z.uuid();
@@ -222,6 +223,28 @@ export const TOPICS = {
     channels: GUARDIAN_CHANNELS,
     template: "appointment_rescheduled",
     recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"]),
+  }),
+  // 037: the Meet link exists (created by the `meet.create` job, or pasted by the provider). The link itself stays in
+  // the app (Join video call); notifications only point to the appointment page.
+  "appointment.meet_ready": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_meet_ready",
+    recipients: (p, { sql }) => meetReadyRecipients(sql, p.appointment_id),
+  }),
+  // 037 FR-4: no link after the retries (or no connected calendar): the provider adds one by hand.
+  "appointment.meet_failed": topic({
+    payload: appointmentPayload,
+    channels: PROVIDER_CHANNELS,
+    template: "appointment_meet_failed",
+    recipients: (p, { sql }) => meetFailedRecipients(sql, p.appointment_id),
+  }),
+  // 037 FR-2: `invalid_grant` on refresh (e.g. 7-day tokens of an unverified Google app).
+  "google_calendar.reconnect_required": topic({
+    payload: z.object({ provider_profile_id: uuid }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "google_calendar_reconnect",
+    recipients: (p, { sql }) => reconnectRecipients(sql, p.provider_profile_id),
   }),
   // 031: enqueued by payment_mark_refunded in the refunding transaction (dedup `payment:<id>:refunded`). The booking
   // guardian only, while the payment is refunded. In-app + email (no approved WhatsApp template yet).

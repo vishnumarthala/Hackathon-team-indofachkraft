@@ -1,6 +1,6 @@
 # 037: Google Meet for video appointments
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 030: creates Meet links for confirmed video appointments
 
