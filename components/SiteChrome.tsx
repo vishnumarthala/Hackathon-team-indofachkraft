@@ -7,7 +7,7 @@ import { isFamilyPath } from "@/lib/auth-access";
 import { useT } from "@/lib/i18n/client";
 
 // Marketing pages (landing, book a demo, login) have their own navigation and no app banner.
-const MARKETING_PATHS = new Set(["/", "/book-demo", "/login"]);
+const MARKETING_PATHS = new Set(["/", "/for-centres", "/book-demo", "/login"]);
 
 export function SiteChrome() {
   const pathname = usePathname();

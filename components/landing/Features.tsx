@@ -126,21 +126,10 @@ export async function LanguageRow() {
   return (
     <div className="flex flex-wrap items-center gap-2 text-sm">
       <span className="mr-1 text-slate-500">{t("parentsTalkIn")}</span>
-      {[
-        { l: "English", soon: false },
-        { l: "हिन्दी", soon: false },
-        { l: "తెలుగు", soon: false },
-        { l: t("german"), soon: true },
-      ].map(({ l, soon }) => (
-        <span
-          key={l}
-          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-medium ${
-            soon ? "border border-dashed border-[#0b1f1d]/20 text-slate-500" : "bg-white text-[#0b1f1d] ring-1 ring-[#0b1f1d]/10"
-          }`}
-        >
-          {!soon && <span className="h-1.5 w-1.5 rounded-full bg-teal-600" />}
+      {["English", "हिन्दी", "తెలుగు"].map((l) => (
+        <span key={l} className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 font-medium text-[#0b1f1d] ring-1 ring-[#0b1f1d]/10">
+          <span className="h-1.5 w-1.5 rounded-full bg-teal-600" />
           {l}
-          {soon && <span className="text-xs">{t("soon")}</span>}
         </span>
       ))}
     </div>
