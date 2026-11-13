@@ -25,7 +25,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   if (!appointment || appointment.guardian_user_id !== session.user.id) return paymentError("not_found");
 
   const snap = appointment.service_snapshot;
-  if (snap.payment_mode !== "online" || !(snap.fee_inr > 0)) return paymentError("not_payable");
+  // 042 FR-2a: demo bookings are never paid (the database also refuses a payment row for them).
+  if (appointment.is_demo || snap.payment_mode !== "online" || !(snap.fee_inr > 0)) return paymentError("not_payable");
   const expired =
     appointment.status === "expired" ||
     (appointment.status === "pending_payment" && (!appointment.hold_expires_at || Date.parse(appointment.hold_expires_at) <= Date.now()));

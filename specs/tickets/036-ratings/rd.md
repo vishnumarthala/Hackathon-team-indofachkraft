@@ -1,6 +1,6 @@
 # 036: Ratings for completed appointments
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 030: only guardians of completed appointments can rate
 

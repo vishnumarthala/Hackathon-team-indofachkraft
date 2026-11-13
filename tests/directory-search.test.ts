@@ -234,7 +234,7 @@ describe.skipIf(!enabled)("directory search (database)", { timeout: 90_000 }, ()
     const gachi = wide.find((r) => r.profile_id === ids.GachibowliSLP);
     expect(gachi?.distance_km).toBeGreaterThan(10);
     expect(gachi?.distance_km).toBeLessThan(12);
-    expect(gachi).toMatchObject({ locality: "GachibowliSLP", lat: GACHIBOWLI.lat, lng: GACHIBOWLI.lng, rating_avg: null, rating_count: null });
+    expect(gachi).toMatchObject({ locality: "GachibowliSLP", lat: GACHIBOWLI.lat, lng: GACHIBOWLI.lng, rating_avg: null, rating_count: 0 }); // 036: count of published ratings, average from 3
   });
 
   it("returns one row per profile, at its nearest location", async () => {

@@ -20,7 +20,9 @@
     "fixtures:scribe": "tsx scripts/make-scribe-fixture.ts",
     "db:push": "tsx scripts/db-apply.ts",
     "org:grant": "tsx scripts/org-grant.ts",
-    "outbox:run": "tsx scripts/outbox-run.ts"
+    "outbox:run": "tsx scripts/outbox-run.ts",
+    "seed:hyderabad": "tsx scripts/seed-hyderabad.ts",
+    "import:providers": "tsx scripts/import-providers.ts"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.77.0",

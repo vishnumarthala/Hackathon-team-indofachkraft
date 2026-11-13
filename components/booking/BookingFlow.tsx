@@ -24,7 +24,8 @@ export type FlowHold = { id: string; serviceId: string | null; start: string; en
 export type FlowChild = { id: string; name: string; age: string };
 
 type Props = {
-  profile: { id: string; name: string; slug: string };
+  /** `demo`: an is_synthetic profile (042 FR-2a): explicit acknowledgement, free, nothing sent outside the app. */
+  profile: { id: string; name: string; slug: string; demo?: boolean };
   services: FlowService[];
   viewer: { signedIn: boolean; isGuardian: boolean; hasGoogle: boolean; children: FlowChild[] };
   initialHold: FlowHold | null;
@@ -39,13 +40,14 @@ type ErrorCode =
   | "child_not_linked"
   | "invalid_transition"
   | "google_account_required"
+  | "demo_ack_required"
   | "rate_limited"
   | "generic";
 
 function errorCodeOf(status: number, json: Record<string, unknown>): ErrorCode {
   if (status === 429) return "rate_limited";
   const code = json.code;
-  const known: ErrorCode[] = ["slot_taken", "hold_expired", "slot_unavailable", "too_soon", "too_far", "child_not_linked", "invalid_transition", "google_account_required"];
+  const known: ErrorCode[] = ["slot_taken", "hold_expired", "slot_unavailable", "too_soon", "too_far", "child_not_linked", "invalid_transition", "google_account_required", "demo_ack_required"];
   return known.includes(code as ErrorCode) ? (code as ErrorCode) : "generic";
 }
 
@@ -81,6 +83,8 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<"confirmed" | "pending_payment" | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [demoAck, setDemoAck] = useState(false);
+  const demo = Boolean(profile.demo);
   const holdKey = useRef<{ slot: string; key: string } | null>(null);
   const left = useCountdown(hold?.expiresAt ?? null);
 
@@ -98,7 +102,12 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
     if (!holdKey.current || holdKey.current.slot !== `${service.id}|${picked.start}`) {
       holdKey.current = { slot: `${service.id}|${picked.start}`, key: newKey() };
     }
-    const res = await send("/api/appointments/hold", "POST", { service_id: service.id, start: picked.start, idempotency_key: holdKey.current.key });
+    const res = await send("/api/appointments/hold", "POST", {
+      service_id: service.id,
+      start: picked.start,
+      idempotency_key: holdKey.current.key,
+      ...(demo ? { demo_ack: demoAck } : {}),
+    });
     setBusy(false);
     if (res.ok && res.json.status === "held") {
       const id = res.json.appointment_id as string;
@@ -147,7 +156,9 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
   }
 
   const timeText = (start: string) => `${format.date(start, "long")}, ${slotTimeLabel(start, locale, viewerTz, clinicTz, (key, vars) => t(key, vars))}`;
-  const fee = feeLabel(service.fee_inr, service.payment_mode, format.inr);
+  // 042 FR-2a: demo bookings are never paid.
+  const paymentMode = demo ? "free" : service.payment_mode;
+  const fee = demo ? null : feeLabel(service.fee_inr, service.payment_mode, format.inr);
   const providerLabel = service.mode === "in_clinic" && service.location_name ? `${profile.name} (${service.location_name})` : profile.name;
   const errorBox = error ? (
     <p role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800">
@@ -160,7 +171,7 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
       <div className="space-y-4 rounded-2xl border border-teal-200 bg-teal-50 p-4 sm:p-6" role="status">
         <h2 className="text-xl font-semibold text-teal-900">{done === "confirmed" ? t("flow.booked") : t("status.pending_payment")}</h2>
         {hold ? <p className="text-slate-800">{timeText(hold.start)}</p> : null}
-        <p className="text-sm text-slate-700">{done === "confirmed" ? t("flow.bookedDetail") : t("flow.pendingPayment")}</p>
+        <p className="text-sm text-slate-700">{done === "confirmed" ? (demo ? t("flow.demoBookedDetail") : t("flow.bookedDetail")) : t("flow.pendingPayment")}</p>
         <Link href="/family/appointments" className={buttonClass}>
           {t("flow.viewAppointments")}
         </Link>
@@ -182,13 +193,14 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
       </div>
       <div>
         <dt className="font-semibold text-slate-900">{t("flow.fee")}</dt>
-        <dd className="text-slate-700">{fee ? `${fee} · ${t(`payment.${service.payment_mode}`)}` : t("payment.free")}</dd>
+        <dd className="text-slate-700">{demo ? t("flow.demoFee") : fee ? `${fee} · ${t(`payment.${paymentMode}`)}` : t("payment.free")}</dd>
       </div>
     </dl>
   );
 
   // 037 FR-5a: a video consultation needs a guardian with a linked Google account (shown before slot selection).
-  const needsGoogle = service.mode === "video" && !(viewer.isGuardian && viewer.hasGoogle);
+  // Demo bookings never get a video call (042), so they skip it.
+  const needsGoogle = !demo && service.mode === "video" && !(viewer.isGuardian && viewer.hasGoogle);
   const googleNotice = needsGoogle ? (
     <div className="space-y-3 rounded-lg border border-sky-200 bg-sky-50 p-4" role="note" data-testid="google-required">
       <p className="font-semibold text-sky-950">{t("flow.googleRequired")}</p>
@@ -263,7 +275,7 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
             ) : null}
             <div className="flex flex-wrap gap-3">
               <button type="button" className={buttonClass} disabled={!child || busy} aria-describedby={child ? "booking-disclosure" : undefined} onClick={confirm}>
-                {service.payment_mode === "online" ? t("flow.continueToPayment") : t("flow.confirm")}
+                {paymentMode === "online" ? t("flow.continueToPayment") : t("flow.confirm")}
               </button>
               <button type="button" className={secondaryButtonClass} disabled={busy} onClick={() => pickAgain()}>
                 {t("flow.changeTime")}
@@ -308,7 +320,16 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
       {googleNotice ?? (
         <>
           <SlotPicker profileId={profile.id} serviceId={service.id} clinicTimeZone={clinicTz} selected={picked} onSelect={setPicked} refreshKey={refreshKey} />
-          <button type="button" className={buttonClass} disabled={!picked || busy} onClick={continueWithSlot}>
+          {demo ? (
+            <div className="space-y-3 rounded-lg border border-violet-200 bg-violet-50 p-4" role="note" data-testid="demo-safeguard">
+              <p className="font-semibold text-violet-950">{t("flow.demoNotice")}</p>
+              <label className="flex min-h-11 items-center gap-3 text-sm text-violet-950">
+                <input type="checkbox" checked={demoAck} onChange={(e) => setDemoAck(e.target.checked)} className="h-5 w-5" />
+                <span>{t("flow.demoAck")}</span>
+              </label>
+            </div>
+          ) : null}
+          <button type="button" className={buttonClass} disabled={!picked || busy || (demo && !demoAck)} onClick={continueWithSlot}>
             {t("flow.continue")}
           </button>
         </>

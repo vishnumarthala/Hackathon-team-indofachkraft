@@ -168,6 +168,12 @@ flowchart LR
   `/find/hyderabad/<type>`, `Get directions` on `/p/<slug>`. Addresses are geocoded server-side when a
   location is created (Google with `GOOGLE_MAPS_SERVER_KEY`, else the bundled Hyderabad PIN code table).
   The searcher's location is never stored. See `docs/maps.md`.
+- **Pilot seeding (ticket 042).** `npm run -s seed:hyderabad` writes a deterministic fictional Hyderabad
+  directory (`is_synthetic`, verified + listed, services + weekly hours; local databases only unless
+  `ALLOW_SYNTHETIC_SEED=true`; `--reset-synthetic` removes it). Demo profiles stay visible with a `Demo profile`
+  badge; booking one needs `demo_ack: true` and creates an `appointments.is_demo` booking: free, no Meet, in-app
+  notifications only. `npm run -s import:providers -- --file <csv>` imports recruited providers as unclaimed,
+  unverified, unlisted profiles and prints claim links to stdout. See `docs/pilot-seeding.md`.
 - **Notifications (ticket 032).** Every user-facing notification goes through the transactional outbox:
   the domain write and `outbox_events` row commit together (`enqueue(tx, ...)` from `lib/notify/outbox.ts`
   inside `sql.begin`, or `public.outbox_enqueue(...)` from SQL; `enqueueEvent(...)` for supabase-js code).
@@ -251,6 +257,8 @@ demo/fixtures/ ...  demo/audio/sample-short.wav                                 
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
           documents.md  assessments.md  notifications.md  iep.md  home-program.md  messaging.md  prescriptions.md
+          pilot-seeding.md
+scripts/  seed-hyderabad.ts import-providers.ts data/{hyderabad-localities,demo-names}.json (042)
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -263,7 +271,8 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `NEXT_PUBLIC_APP_URL` | links in emails, WhatsApp text | `http://localhost:3000` locally |
 | | | The 4 Supabase variables below are written by `npm run db:env` from `npx supabase status -o env` (`API_URL`, `ANON_KEY`, `SERVICE_ROLE_KEY`, `DB_URL`) |
 | `DEMO_MODE` | all integrations | `true` = fixtures instead of external AI/email calls (section 9) |
-| `SHOW_SYNTHETIC_LISTINGS` | public provider pages (028) | default `true`: demo profiles shown with a `Demo profile` badge; `false` hides them |
+| `SHOW_SYNTHETIC_LISTINGS` | public provider pages (028), directory, booking | default `true`: demo profiles shown with a `Demo profile` badge; `false` hides them (kill switch, `docs/pilot-seeding.md`) |
+| `ALLOW_SYNTHETIC_SEED` | `npm run seed:hyderabad` (042) | unset: the synthetic seed only writes to a local Supabase/database; `true` allows a remote (staging demo) project |
 | `GOOGLE_MAPS_SERVER_KEY` | server geocoding (029) | optional; Geocoding API only, IP/API restricted, never sent to the browser; unset or `DEMO_MODE=true` -> bundled Hyderabad table (`docs/maps.md`) |
 | `NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY` / `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` | `/find` map + Places, `/p` static map (029) | optional; referrer restricted; passed to client components at request time; unset -> list only |
 | `NEXT_PUBLIC_SUPABASE_URL` | server + browser upload | |
@@ -447,7 +456,9 @@ named `<YYYYMMDDHHMMSS>_<name>.sql`, additive only, never edited after they reac
 `btree_gist`) and the append-only `appointment_events`; every transition is one security-definer SQL function
 (`booking_hold`, `booking_attach`, `booking_confirm`, `booking_cancel`, `booking_reschedule`, `booking_complete`,
 `booking_expire_stale`). Migration `20261113003000_booking.sql`; details, API and extension points for 031/034/035/037/042
-in `docs/booking.md`.
+in `docs/booking.md`. 042 adds `appointments.is_demo` (bookings on demo profiles; derived by a trigger, immutable) and
+`outbox_event_is_demo()`; triggers keep demo bookings free, without Meet and in-app only
+(`20261113004200_demo_appointments.sql`, `docs/pilot-seeding.md`).
 
 ### Google Meet (ticket 037)
 
@@ -468,6 +479,14 @@ allowlisted payload without card/UPI details). `payment_apply_captured` is the s
 webhook): confirms through 030's helpers, re-books a late payment's slot if still free, else refunds. Triggers on
 `appointments` apply the cancellation refund policy and move a payment with a reschedule. Migration
 `20261113003100_payments.sql`; details in `docs/payments.md`.
+
+### Ratings (ticket 036)
+
+`ratings` (one per completed appointment, written by its booking guardian within 30 days, editable for 7 days; 1-5
+stars, optional comment <= 500 screened for names/contact details; status `published` / `pending_review` / `hidden`)
+and the view `provider_rating_summary` (published only), which fills 029's `search_providers` `rating_avg` (from 3
+ratings) / `rating_count`. A trigger on `appointments` enqueues `appointment.rate_prompt` 2 h after completion. Migration
+`20261113003600_ratings.sql`; details in `docs/ratings.md`.
 
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
@@ -644,6 +663,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
 | `GET /api/integrations/google/{connect,callback,connection}`, `POST /api/integrations/google/disconnect`, `POST /api/appointments/:id/meet-link` | 037 | see `docs/google-meet.md` | 303 redirects (connect/callback, `?error=state` on a state mismatch); 404 other providers' profiles/appointments; 400 non-Meet link; 422 `Link your Google account to book a video consultation` on video holds/confirms |
 | `POST /api/appointments/:id/payment-order`, `POST /api/payments/verify`, `POST /api/payments/demo` (DEMO_MODE), `POST /api/webhooks/razorpay` (public, signed), `GET\|POST /api/cron/payments` | 031 | see `docs/payments.md` | 200 `{ key_id, order_id, amount_paise, currency, prefill }`; verify 400 signature mismatch; webhook 401 bad signature, 200 `{ received: true, duplicate: true }` on replay; 404 other owners; 409 nothing to pay / already paid; 410 hold expired |
+| `POST\|PATCH /api/appointments/:id/rating`, `POST /api/ratings/:id/report`, `POST /api/admin/ratings/:id` | 036 | see `docs/ratings.md` | 201 / 200; 403 `You can rate only your completed appointments`; 409 duplicate; 422 `Please remove names and contact details from your comment`; report: provider side only (404 otherwise); moderation: platform admin only (403) |
 | `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |

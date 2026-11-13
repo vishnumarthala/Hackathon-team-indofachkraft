@@ -1,0 +1,6 @@
+-- demo appointment booked in the browser (post-merge)
+[{"status":"confirmed","is_demo":true,"meet_status":"not_needed","payment_mode":"free","fee_inr":"0","payments":"0"}]
+-- outbox events and notification channels
+[{"topic":"appointment.confirmed","status":"fanned_out","channel":"in_app","count":"1"},{"topic":"appointment.reminder_two_hours","status":"pending","channel":null,"count":"0"}]
+-- email/whatsapp rows for any demo appointment
+[{"count":"0"}]

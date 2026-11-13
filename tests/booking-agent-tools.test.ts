@@ -113,6 +113,24 @@ describe("booking agent: schemas, helpers and access lists", () => {
     expect(said.at(-1)).toBe(DEMO_LINES.googleRequired);
   });
 
+  it("042: the demo script reads the demo notice, takes the spoken acknowledgement and holds", async () => {
+    const said: string[] = [];
+    const holds: Record<string, unknown>[] = [];
+    const callTool: ToolCaller = async (tool, args) => {
+      if (tool === "search_providers") return { status: 200, json: { results: [{ profile_id: "p", name: "Dr. (Demo) X (synthetic)", locality: null, distance_km: 1, modes: ["in_clinic"] }] } };
+      if (tool === "get_slots") return { status: 200, json: { slots: [{ service_id: "s", start: "2026-11-14T04:30:00.000Z", local_time: "Saturday, 14 November, 10:00 am" }] } };
+      holds.push(args);
+      return args.demo_acknowledged === true
+        ? { status: 200, json: { held: true, appointment_id: "a", payment_mode: "free", fee_inr: 0, demo: true } }
+        : { status: 200, json: { held: false, reason: "demo_ack_required" } };
+    };
+    const outcome = await runDemoScript({ bookingSession: VALID_TOKEN, today: "Friday 2026-11-13", callTool, say: (_r, t) => void said.push(t) });
+    expect(outcome).toEqual({ kind: "held", appointment_id: "a", profile_id: "p" });
+    expect(holds.map((h) => h.demo_acknowledged)).toEqual([undefined, true]);
+    expect(said).toContain(DEMO_LINES.demoNotice);
+    expect(said).toContain(DEMO_LINES.parentDemoAck);
+  });
+
   it("NFR-3: the demo script stops cleanly when nothing is bookable", async () => {
     const said: string[] = [];
     const callTool: ToolCaller = async () => ({ status: 200, json: { results: [] } });
@@ -494,6 +512,28 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     expect(agentSession.hold_appointment_id).toBeNull();
     const video = await tool("get_slots", { booking_session: token, profile_id: main.profileId, service_mode: "video", date_from: (await import("@/lib/booking/time")).todayIn("Asia/Kolkata") });
     expect(String(video.json.message)).toMatch(/sign in with Google/);
+  });
+
+  it("042 FR-2a: a demo profile is held only after demo_acknowledged: true; the hold is a free demo booking", async () => {
+    const demo = providers[3];
+    const service = (await sql<{ id: string }[]>`select id from services where provider_profile_id = ${demo.profileId} limit 1`)[0].id;
+    await sql`update provider_profiles set is_synthetic = true where id = ${demo.profileId}`;
+    try {
+      const { token } = await startSession();
+      const start = futureSlot(80);
+      const body = { booking_session: token, profile_id: demo.profileId, service_id: service, start: start.toISOString() };
+      const refused = await tool("hold_slot", body);
+      expect(refused.status).toBe(200);
+      expect(refused.json).toMatchObject({ held: false, reason: "demo_ack_required", booking_url: `/book/${demo.profileId}` });
+      expect(String(refused.json.message)).toMatch(/This is a demo profile\. No real consultation will take place\./);
+      expect(await sql`select 1 from appointments where provider_profile_id = ${demo.profileId} and lower(slot) = ${start}`).toHaveLength(0);
+      const held = await tool("hold_slot", { ...body, demo_acknowledged: true });
+      expect(held.json).toMatchObject({ held: true, demo: true, payment_mode: "free", fee_inr: 0 });
+      const [row] = await sql`select is_demo from appointments where id = ${held.json.appointment_id as string}`;
+      expect(row.is_demo).toBe(true);
+    } finally {
+      await sql`update provider_profiles set is_synthetic = false where id = ${demo.profileId}`;
+    }
   });
 
   it("E-2 / E-3: confirm needs a signed-in guardian (401); another browser's cookie -> 404; the holding browser -> confirmed", async () => {

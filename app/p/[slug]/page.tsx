@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DemoBadge, jsonLdScript, ProviderAvatar, VerifiedBadge } from "@/components/providers/PublicProfile";
+import { PublicRatings } from "@/components/ratings/PublicRatings";
+import { RatingBadge } from "@/components/ratings/RatingBadge";
 import { listServices } from "@/lib/booking/store";
 import { env } from "@/lib/env";
 import { directionsUrl, staticMapUrl } from "@/lib/geo/constants";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { PRESCRIBER_TYPES } from "@/lib/providers/constants";
 import { getPublicProfile } from "@/lib/providers/public";
+import { ratingBadge } from "@/lib/ratings/display";
+import { getRatingSummary, listPublicComments } from "@/lib/ratings/store";
 
 // Public provider profile (ticket 028 FR-7). Only verified + listed profiles exist here; everything else
 // (unverified, pending, rejected, suspended, unlisted, demo profiles when SHOW_SYNTHETIC_LISTINGS=false) 404s.
@@ -44,6 +48,10 @@ export default async function PublicProfilePage({ params }: Props) {
   const modes = [provider.offers_in_clinic ? td("modes.in_clinic") : null, provider.offers_video ? td("modes.video") : null].filter(Boolean);
   const appUrl = env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
   const bookable = (await listServices(provider.id, { activeOnly: true })).length > 0;
+  // 036 FR-5: published ratings only, read per request (moderation takes effect at once).
+  const tr = await getT("ratings");
+  const [summary, comments] = await Promise.all([getRatingSummary(provider.id), listPublicComments(provider.id)]);
+  const badge = ratingBadge(summary);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -82,6 +90,9 @@ export default async function PublicProfilePage({ params }: Props) {
           </h1>
           <p className="text-slate-700">{t(`types.${provider.provider_type}`)}</p>
           <VerifiedBadge provider={provider} t={t} format={format} />
+          <div>
+            <RatingBadge badge={badge} t={tr} />
+          </div>
         </div>
       </header>
 
@@ -193,6 +204,8 @@ export default async function PublicProfilePage({ params }: Props) {
           </p>
         </div>
       )}
+
+      <PublicRatings comments={comments} t={tr} locale={format.locale} timeZone={format.timeZone} />
     </article>
   );
 }

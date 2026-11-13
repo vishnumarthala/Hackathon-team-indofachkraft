@@ -27,6 +27,8 @@ export const DEMO_LINES = {
   noProviders: "I could not find a provider who takes bookings there. Please use the search on this page.",
   noSlots: "I could not find a free time in the next week. Please use the search on this page to see other providers.",
   error: "Sorry, something went wrong. Please use the search on this page.",
+  demoNotice: "This is a demo profile. No real consultation will take place. Do you understand this is a demo?",
+  parentDemoAck: "Yes, I understand this is a demo.",
   googleRequired:
     "Video consultations need your Google account, so I cannot hold this time. Please tap the provider in the search on this page, sign in with Google and book there.",
   held: (time: string, name: string, onlineFee?: number) =>
@@ -82,7 +84,14 @@ export async function runDemoScript(deps: { bookingSession: string; today: strin
 
       await say("agent", `${provider.name} has these times: ${slots.slice(0, 3).map((s) => s.local_time).join("; ")}. Which one should I hold?`);
       await say("parent", DEMO_LINES.parentPickTime);
-      const hold = await callTool("hold_slot", { booking_session, profile_id: provider.profile_id, service_id: slots[0].service_id, start: slots[0].start });
+      const holdArgs = { booking_session, profile_id: provider.profile_id, service_id: slots[0].service_id, start: slots[0].start };
+      let hold = await callTool("hold_slot", holdArgs);
+      // 042 FR-2a: demo profiles need the parent's spoken acknowledgement before the hold.
+      if (hold.status === 200 && hold.json.reason === "demo_ack_required") {
+        await say("agent", DEMO_LINES.demoNotice);
+        await say("parent", DEMO_LINES.parentDemoAck);
+        hold = await callTool("hold_slot", { ...holdArgs, demo_acknowledged: true });
+      }
       if (hold.status === 200 && hold.json.reason === "google_account_required") return stop(DEMO_LINES.googleRequired, { kind: "refused" });
       if (hold.status !== 200 || hold.json.held !== true) return stop(DEMO_LINES.error, { kind: "error" });
       const onlineFee = hold.json.payment_mode === "online" ? Number(hold.json.fee_inr) || undefined : undefined;

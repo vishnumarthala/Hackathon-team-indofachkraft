@@ -143,6 +143,7 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `google_calendar.reconnect_required` (037, `invalid_grant` on refresh) | profile provider while the connection is `expired` | in-app, email | `google_calendar_reconnect` |
 | `payment.refunded` (031, enqueued by `payment_mark_refunded` in the refunding transaction, dedup `payment:<id>:refunded`, payload `{ payment_id, appointment_id, reason }`) | the booking guardian, while the payment is refunded | in-app, email | `payment_refunded` (`Your payment was refunded because the time was no longer available.` for late payments; links to `/family/appointments`; see `docs/payments.md`) |
 | `privacy.deletion_completed` / `privacy.deletion_rejected` (041) | the requesting guardian (account only: the erasure revokes the link) | in-app, email | `privacy_deletion_completed` / `privacy_deletion_rejected` (reason shown in the app only) |
+| `appointment.rate_prompt` (036, enqueued by the `appointments_rate_prompt` trigger when an appointment becomes `completed`, dedup `appt:<id>:rate_prompt`, `deliver_after` = completion + 2 h, payload `{ appointment_id, provider_name }`) | the booking guardian, while the appointment is completed, not yet rated and within 30 days of completion | in-app, email | `rating_prompt` (`How was your visit?`, links to `/family/appointments/<id>/rate`; see `docs/ratings.md`) |
 
 Later tickets register their own (030 done: `appointment.*` with `.ics`; 031 payments; 037 done: Meet links). Topic names
 allow no digits (`outbox_events_topic_check`), so 030's 24 h / 2 h reminders are `appointment.reminder_day_before` /
@@ -288,3 +289,11 @@ claims, lease expiry, retry schedule, 200 notifications with two concurrent work
 triggers), `tests/notify-adapters.test.ts` (WhatsApp request/skip/error classes, email `.ics` + Resend
 `Idempotency-Key` through the real SDK with `fetch` mocked, retry policy), `tests/notify-templates.test.ts`
 (every template x locale x role, content rule).
+
+## Demo bookings (ticket 042)
+
+Events about a demo appointment (`appointments.is_demo`, booked on an `is_synthetic` profile) fan out to `in_app`
+only: the worker asks `outbox_event_is_demo(aggregate_type, aggregate_id, payload)` (appointment aggregate, or a
+`payload.appointment_id`) and the `notifications_demo_in_app_only` trigger drops email/WhatsApp rows from any writer.
+New topics about appointments should carry `appointment_id` in the payload so the rule applies. See
+`docs/pilot-seeding.md`.

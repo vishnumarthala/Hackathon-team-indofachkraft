@@ -24,7 +24,7 @@ export function bookingWorld(sql: Sql, db: Db, prefix: string) {
       returning id`;
     const [profile] = await sql<{ id: string }[]>`
       insert into provider_profiles (user_id, slug, display_name, provider_type, verification_status, verified_at, listed, claimed, is_synthetic)
-      values (${user.id}, ${slug}, ${`Dr ${name} (synthetic)`}, 'speech_language_pathologist', 'verified', now(), true, true, true)
+      values (${user.id}, ${slug}, ${`Dr ${name} (synthetic)`}, 'speech_language_pathologist', 'verified', now(), true, true, false)
       returning id`;
     profiles.push(profile.id);
     await sql`insert into provider_locations (provider_profile_id, location_id, org_id) values (${profile.id}, ${loc.id}, ${orgId})`;

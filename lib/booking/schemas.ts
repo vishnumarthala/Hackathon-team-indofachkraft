@@ -26,6 +26,8 @@ export const HoldSchema = z.object({
   service_id: uuid,
   start: isoInstant,
   idempotency_key: z.string().regex(/^[A-Za-z0-9_.:-]{8,200}$/, "8-200 letters, digits, _ . : -"),
+  /** 042 FR-2a: required (true) for demo profiles, checked in lib/booking/hooks.ts. */
+  demo_ack: z.boolean().optional(),
 });
 
 export const ConfirmSchema = z.object({ child_id: uuid });

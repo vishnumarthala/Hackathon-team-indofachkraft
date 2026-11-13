@@ -29,7 +29,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const sessionHash = await currentBookingSessionHash();
   // 037 FR-5a: a video hold the caller owns needs a linked Google account (someone else's hold stays a 404 below).
   const owned = await getOwnedHold(id, { userId: session.user.id, sessionHash });
-  const blocked = owned ? await checkConfirmPreconditions({ mode: owned.service_snapshot.mode, userId: session.user.id }) : null;
+  const blocked = owned ? await checkConfirmPreconditions({ mode: owned.service_snapshot.mode, userId: session.user.id, isDemo: owned.is_demo }) : null;
   if (blocked) return NextResponse.json({ error: blocked.error, code: blocked.code }, { status: blocked.status });
   const result = await withBookingErrors(() =>
     confirmHold({ appointmentId: id, guardianId: session.user.id, childId: parsed.data.child_id, sessionHash }),

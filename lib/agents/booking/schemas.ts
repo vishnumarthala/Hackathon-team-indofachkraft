@@ -92,6 +92,8 @@ export const HoldSlotSchema = z.strictObject({
   profile_id: uuid,
   service_id: uuid,
   start: z.iso.datetime({ offset: true, error: "start must be the exact start from get_slots" }),
+  /** 042 FR-2a: true only after the parent said they understand the provider is a demo profile. */
+  demo_acknowledged: z.boolean().optional(),
 });
 
 export const TOOL_SCHEMAS = {
