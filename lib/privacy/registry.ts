@@ -590,6 +590,23 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 035: appointment-bound pre-consult intake links. Calls and briefs are `case_records` / `intake_conversations`.
+    key: "intake_attempts",
+    label: "Pre-consult intake links of appointments (link hash, status, call reference)",
+    owner: "case",
+    tables: ["intake_attempts"],
+    retention:
+      "Kept with the case and deleted with it. Only a hash of the link is stored; the link stops working when the appointment starts or is cancelled.",
+    processors: ["supabase"],
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) => {
+        if (ctx.caseIds.length === 0) return 0;
+        return (await tx`delete from public.intake_attempts where case_id in ${tx(ctx.caseIds)}`).count;
+      },
+    },
+  },
+  {
     // 031 NFR-3: online prepayments. Amounts, statuses and Razorpay ids only; never card, UPI, bank or wallet details
     // (webhook payloads are allowlisted before storage, lib/payments/webhook.ts).
     key: "payments",

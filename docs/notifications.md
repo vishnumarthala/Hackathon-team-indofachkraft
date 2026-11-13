@@ -137,6 +137,7 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `privacy.export_ready` (041, enqueued with the export's `ready` update) | the requesting guardian, while still linked to the live child and the export is ready | in-app, email | `privacy_export_ready` (links to the child's Privacy page) |
 | `privacy.deletion_requested` (041) | platform admins | in-app, email | `privacy_deletion_requested` |
 | `appointment.confirmed` / `.reminder_day_before` / `.reminder_two_hours` / `.cancelled` / `.rescheduled` (030, enqueued by the booking SQL functions; dedup `appt:<id>:confirmed` / `:r24` / `:r2` / `:cancelled` / `:rescheduled`, cancelled with `outbox_cancel('appt:<id>:')`) | the booking guardian + the provider bound to the profile (reminders: guardian only), while the appointment is still in the matching status | in-app, email, WhatsApp | `appointment_*` (email `.ics` REQUEST / CANCEL; provider name, time in the clinic's zone, mode, place - never the child; see `docs/booking.md`) |
+| `appointment.intake_link` (035, enqueued by the `consent.granted` consumer when a guardian allows the AI intake call after booking; aggregate = the intake attempt, dedup `appt:<id>:intake_link:<attempt>`; payload = 030's appointment values + `intake_attempt_id`) | the booking guardian, while the appointment is confirmed and the attempt still active | in-app, email, WhatsApp | `appointment_intake_link` (in-app/email carry `<APP_URL>/intake/a/<token>`, re-derived from the attempt id; WhatsApp {{1}} = `/family/appointments`) |
 | `appointment.meet_ready` (037, enqueued by the `meet.create` job or a manual link; dedup `appt:<id>:meet_ready`) | booking guardian + profile provider while the appointment is confirmed and has a link | in-app, email, WhatsApp | `appointment_meet_ready` (app page only, never the Meet URL) |
 | `appointment.meet_failed` (037, final `meet.create` failure) | profile provider while still `failed` | in-app, email | `appointment_meet_failed` (`Add a video link`) |
 | `google_calendar.reconnect_required` (037, `invalid_grant` on refresh) | profile provider while the connection is `expired` | in-app, email | `google_calendar_reconnect` |
@@ -146,6 +147,19 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 Later tickets register their own (030 done: `appointment.*` with `.ics`; 031 payments; 037 done: Meet links). Topic names
 allow no digits (`outbox_events_topic_check`), so 030's 24 h / 2 h reminders are `appointment.reminder_day_before` /
 `appointment.reminder_two_hours`.
+
+## Consumers (035)
+
+Some events also drive domain work. `lib/notify/consumers.ts` maps a topic to consumers that run in the fan-out
+transaction **before** recipients and templates (`runConsumers` in `fanOutEvent`). A consumer may return an enriched
+payload (ids and small non-clinical values only); the worker stores it on the event, so later email/WhatsApp
+renders use the same values. A throwing consumer rolls back the event's savepoint: the event stays `pending` and is
+retried by the next run, so consumers must be idempotent.
+
+| Topic | Consumer | Work |
+|-------|----------|------|
+| `appointment.confirmed`, `appointment.rescheduled` | `appointment.link_case` | appointment -> org case + provider assignment + intake attempt; adds `intake` (`{ status: "link", attempt_id, agent_kind }` or `{ status: "consent_needed", agent_kind }`) so the guardian's confirmation carries the call link or the consent hint |
+| `consent.granted` (consumer-only, enqueued by a trigger on `consent_records` for `ai_intake_call` grants that can serve an upcoming appointment) | `appointment.intake_on_consent` | issues the missing intake attempts and enqueues `appointment.intake_link` |
 
 ## Job topics (037)
 
@@ -249,6 +263,9 @@ for the text; for example:
 | `appointment_reminder_2h` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment starts in 2 hours. Details: {{1}} |
 | `appointment_cancelled` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment was cancelled. Details: {{1}} |
 | `appointment_rescheduled` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment was moved to a new time. Details: {{1}} |
+| `appointment_confirmed_intake` (035: confirmation with an intake call link) | UTILITY | `{{1}}` app link, `{{2}}` intake call link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Before your visit, please take a short voice call with our AI assistant: {{2}} |
+| `appointment_confirmed_allow_intake` (035: the child has no AI intake consent yet) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Allow the AI intake call in your DoctorNearMe app to prepare for this visit. |
+| `appointment_intake_link` (035) | UTILITY | `{{1}}` app link | Prepare for your DoctorNearMe visit: take the short AI intake call. Open: {{1}} |
 | `appointment_meet_ready` (037) | UTILITY | `{{1}}` app link | The video call link for your DoctorNearMe appointment is ready. Join from: {{1}} |
 
 030 added `appointment_*` and 037 `appointment_meet_ready` (rows above); each later ticket adds its rows here. The

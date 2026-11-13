@@ -15,9 +15,10 @@ export async function simulateIntake(
   token: string,
   fetchFn: (input: string, init?: RequestInit) => Promise<Response>,
   messages: { failed: string; notFound?: string } = { failed: SIMULATE_FAILED },
+  path: string = `/api/dev/simulate-intake/${encodeURIComponent(token)}`,
 ): Promise<SimulateResult> {
   try {
-    const res = await fetchFn(`/api/dev/simulate-intake/${encodeURIComponent(token)}`, { method: "POST" });
+    const res = await fetchFn(path, { method: "POST" });
     const body = (await res.json().catch(() => ({}))) as { received?: boolean; ignored?: string; error?: string };
     if (res.ok && body.received === true && !body.ignored) return { ok: true };
     // Translated callers pass notFound and never see the (English) API text; the default keeps it.
@@ -28,7 +29,8 @@ export async function simulateIntake(
   }
 }
 
-export function SimulateCallButton({ token }: { token: string }) {
+/** `path`: 035 appointment intake simulator (`/api/dev/simulate-intake/a/<token>`); default the case-level one. */
+export function SimulateCallButton({ token, path }: { token: string; path?: string }) {
   const t = useT("intake");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -40,7 +42,7 @@ export function SimulateCallButton({ token }: { token: string }) {
     const result = await simulateIntake(token, (input, init) => fetch(input, init), {
       failed: t("simulate.failed"),
       notFound: t("status.notFound"),
-    });
+    }, path);
     if (result.ok) setDone(true);
     else setError(result.message);
     setBusy(false);

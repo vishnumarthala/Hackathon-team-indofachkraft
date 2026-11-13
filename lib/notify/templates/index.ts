@@ -2,6 +2,7 @@
 import type { Template } from "../types";
 import appointment_cancelled from "./appointment_cancelled";
 import appointment_confirmed from "./appointment_confirmed";
+import appointment_intake_link from "./appointment_intake_link";
 import appointment_meet_failed from "./appointment_meet_failed";
 import appointment_meet_ready from "./appointment_meet_ready";
 import appointment_reminder_24h from "./appointment_reminder_24h";
@@ -54,6 +55,7 @@ export const TEMPLATES = {
   appointment_reminder_2h,
   appointment_cancelled,
   appointment_rescheduled,
+  appointment_intake_link,
   appointment_meet_ready,
   appointment_meet_failed,
   google_calendar_reconnect,

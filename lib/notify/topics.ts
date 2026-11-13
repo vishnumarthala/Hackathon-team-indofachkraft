@@ -21,6 +21,7 @@ import {
 import type { TemplateName } from "./templates";
 import type { Channel, OutboxEventRow } from "./types";
 import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
+import { intakeLinkRecipients } from "@/lib/intake/attempts";
 import { meetFailedRecipients, meetReadyRecipients, reconnectRecipients } from "@/lib/google/recipients";
 import { refundedPaymentGuardian } from "@/lib/payments/recipients";
 
@@ -36,8 +37,17 @@ const appointmentPayload = z
     time_zone: z.string().min(1).max(64),
     location: z.string().max(300).nullable().optional(),
     cancelled_by: z.enum(["guardian", "provider", "system"]).optional(),
+    // 035: added by the `appointment.link_case` consumer (lib/notify/consumers.ts) before the confirmation is rendered.
+    intake: z
+      .discriminatedUnion("status", [
+        z.object({ status: z.literal("link"), attempt_id: uuid, agent_kind: z.enum(["child_dev", "generic"]) }).strict(),
+        z.object({ status: z.literal("consent_needed"), agent_kind: z.enum(["child_dev", "generic"]) }).strict(),
+      ])
+      .optional(),
   })
   .strict();
+// 035: the intake link issued after consent was granted (lib/booking/case-link.ts issueIntakeLinksForChild).
+const intakeLinkPayload = appointmentPayload.extend({ intake_attempt_id: uuid }).strict();
 const userList = z.array(uuid).min(1).max(100);
 
 export type RecipientContext = { sql: Queryable; event: OutboxEventRow };
@@ -239,6 +249,14 @@ export const TOPICS = {
     template: "appointment_rescheduled",
     recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"]),
   }),
+  // 035 FR-3: consent was granted after the booking; the guardian gets the appointment-bound call link (while the
+  // appointment is confirmed and the attempt still active).
+  "appointment.intake_link": topic({
+    payload: intakeLinkPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_intake_link",
+    recipients: (p, { sql }) => intakeLinkRecipients(sql, p.appointment_id, p.intake_attempt_id),
+  }),
   // 037: the Meet link exists (created by the `meet.create` job, or pasted by the provider). The link itself stays in
   // the app (Join video call); notifications only point to the appointment page.
   "appointment.meet_ready": topic({
@@ -329,6 +347,7 @@ export const APPOINTMENT_TOPICS = {
   reminder2h: "appointment.reminder_two_hours",
   cancelled: "appointment.cancelled",
   rescheduled: "appointment.rescheduled",
+  intakeLink: "appointment.intake_link",
 } as const satisfies Record<string, Topic>;
 
 // 031: payments (enqueued by the payment SQL functions).

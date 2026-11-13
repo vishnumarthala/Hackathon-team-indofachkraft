@@ -9,6 +9,8 @@ import { getProviderContext, listAgenda, listOverrides, listRules, listServices 
 import { addDays, isValidDate, todayIn, wallToUtc, weekdayOf } from "@/lib/booking/time";
 import { getMeetInfo } from "@/lib/google/meet";
 import { ageLabel } from "@/lib/children/age";
+import { agendaIntakeStatus } from "@/lib/intake/attempts";
+import { defaultIntakeKind } from "@/lib/booking/intake-defaults";
 import { createFormatter } from "@/lib/i18n/format";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { PAYMENT_LABEL_STYLE, paymentLabel } from "@/lib/payments/display";
@@ -59,6 +61,8 @@ export default async function SchedulePage({ searchParams }: Props) {
     listOverrides(ctx.profile.id, addDays(today, -1)),
     listAgenda(ctx.profile.id, from, to),
   ]);
+  // 035 FR-6: intake status per appointment, linking to the brief in the case.
+  const intakes = await agendaIntakeStatus(agenda.map((a) => a.id));
   // 037: Meet link state of the video appointments on the agenda (Join video call / Add a video link).
   const meet = await getMeetInfo(agenda.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
   // 031 FR-8: `Paid online` / `Pay at clinic` on the agenda.
@@ -128,6 +132,17 @@ export default async function SchedulePage({ searchParams }: Props) {
                             })()}
                           </div>
                         </div>
+                        {intakes.get(a.id) ? (
+                          <p className="flex flex-wrap items-center gap-2 text-slate-800" data-testid="agenda-intake">
+                            <span>{t(`schedule.agenda.intake.${intakes.get(a.id)!.status}`)}</span>
+                            <Link
+                              href={`/cases/${intakes.get(a.id)!.case_id}/brief#appointment-${a.id}`}
+                              className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+                            >
+                              {t("schedule.agenda.intake.openBrief")}
+                            </Link>
+                          </p>
+                        ) : null}
                         {a.outside_availability ? (
                           <p role="note" className="rounded bg-amber-50 p-2 text-amber-900">{t("schedule.agenda.warning")}</p>
                         ) : null}
@@ -151,7 +166,7 @@ export default async function SchedulePage({ searchParams }: Props) {
       <section aria-labelledby="services" className="space-y-3">
         <h2 id="services" className={h2}>{t("schedule.services.title")}</h2>
         {locations.length === 0 ? <p className="text-sm text-slate-600">{t("schedule.noLocations")}</p> : null}
-        <ServicesEditor services={services} locations={locations} orgs={ctx.orgs} />
+        <ServicesEditor services={services} locations={locations} orgs={ctx.orgs} defaultIntakeKind={defaultIntakeKind(ctx.profile.provider_type)} />
       </section>
 
       <section aria-labelledby="hours" className="space-y-3">

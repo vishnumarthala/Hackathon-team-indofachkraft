@@ -12,6 +12,8 @@ const USER = "44444444-4444-4444-8444-444444444444";
 const CHILD_NAME = "Asha Ramaswamy";
 const DENY = /autism|ISAA|diagnos|score/i;
 const APP = "https://app.doctornearme.test";
+// 035: appointment intake links are an HMAC of the attempt id.
+process.env.INTAKE_LINK_SECRET ??= "test-intake-link-secret";
 
 // 030: display values only (provider, time, mode, place) - never the child.
 const APPOINTMENT = {
@@ -50,6 +52,7 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "appointment.reminder_two_hours": APPOINTMENT,
   "appointment.cancelled": { ...APPOINTMENT, cancelled_by: "provider" },
   "appointment.rescheduled": APPOINTMENT,
+  "appointment.intake_link": { ...APPOINTMENT, intake_attempt_id: ID },
   "appointment.meet_ready": { ...APPOINTMENT, mode: "video", location: null },
   "appointment.meet_failed": { ...APPOINTMENT, mode: "video", location: null },
   "google_calendar.reconnect_required": { provider_profile_id: ID },
@@ -104,6 +107,7 @@ describe("topic registry", () => {
         "appointment.reminder_two_hours",
         "appointment.cancelled",
         "appointment.rescheduled",
+        "appointment.intake_link",
         "appointment.meet_ready",
         "appointment.meet_failed",
         "google_calendar.reconnect_required",
