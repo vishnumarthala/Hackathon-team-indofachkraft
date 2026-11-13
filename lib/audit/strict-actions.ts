@@ -8,7 +8,7 @@
 //   * `auditStrict`: TypeScript `sql.begin` transaction with `auditStrict(event, tx)` (lib/audit.ts);
 //   * `sql`: one security-definer database function that performs the change and inserts its audit row (020/022/023
 //     style). Strictly equivalent: the function is one transaction.
-// Later tickets add their actions here (039: `rx.signed`).
+// Later tickets add their actions here (039 added `rx.signed` and `rx.voided`).
 
 export type StrictActionImpl =
   | { kind: "auditStrict"; module: string }
@@ -261,6 +261,21 @@ export const STRICT_ACTIONS: StrictAction[] = [
     routes: ["app/api/family/home-activity-logs/[id]/route.ts"],
     call: "deleteOwnLog",
     impl: { kind: "auditStrict", module: "lib/home-program/index.ts" },
+  },
+  // ---------- 039 e-prescriptions (signature: immutable version + 024 published version + PDF; rule 9) ----------
+  {
+    action: "rx.signed",
+    description: "Verified prescriber signs a prescription (prescriber rule re-checked; published to the guardian)",
+    routes: ["app/api/prescriptions/[id]/sign/route.ts"],
+    call: "signPrescription",
+    impl: { kind: "auditStrict", module: "lib/rx/index.ts" },
+  },
+  {
+    action: "rx.voided",
+    description: "Prescriber cancels a signed prescription (reason required; guardians see it cancelled)",
+    routes: ["app/api/prescriptions/[id]/void/route.ts"],
+    call: "voidPrescription",
+    impl: { kind: "auditStrict", module: "lib/rx/index.ts" },
   },
   // ---------- 027 messaging (message + outbox event + audit row in one database function) ----------
   {

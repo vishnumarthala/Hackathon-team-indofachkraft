@@ -107,3 +107,12 @@ keys (`voiceBooking` + 035's `intake.appointment*` / `booking.*.intake`), `messa
 `docs/booking.md` keeps 034's voice-agent note and 035's intake pointer. After `$H 5 <worktree> reset` (30
 migrations): lint 0, typecheck 0, build 0, `npx vitest run` **83 files, 1351 passed, 11 skipped** (pre-existing
 opt-in skips; every DB suite ran), `tests/appointment-intake.test.ts` 15 passed.
+
+## Merge of main (039 e-prescriptions)
+
+Third `git merge main`: only `messages/REVIEW.md` conflicted (regenerated, 2351 rows); `lib/i18n/translate.ts` is
+main's. 039 keeps prescriptions in their own table and does not restate `reports.kind`; after a fresh reset the check
+holds every kind (`assessment`, `generic_intake_brief`, `parent_summary`, `pre_session_brief`, `rx_draft`,
+`session_note`). `npm install` added 039's `pdf-lib` (already in package.json/lockfile). After `$H 5 <worktree> reset`
+(32 migrations): lint 0, typecheck 0, build 0, `npx vitest run` **84 files, 1377 passed, 11 skipped** (pre-existing
+opt-in skips; every DB suite ran), `tests/appointment-intake.test.ts` 15 passed.

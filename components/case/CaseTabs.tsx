@@ -14,6 +14,8 @@ const TABS = [
   { key: "assessments", segment: "assessments" },
   { key: "goals", segment: "goals" },
   { key: "homeProgram", segment: "home-program" },
+  // 039: verified prescribers only (decided on the server, see app/cases/[id]/layout.tsx).
+  { key: "prescriptions", segment: "prescriptions", prescriberOnly: true },
   { key: "team", segment: "team" },
   { key: "health", segment: "health" },
   { key: "shared", segment: "shared" },
@@ -27,13 +29,13 @@ export function isTabActive(pathname: string, base: string, segment: string): bo
   return path === href || path.startsWith(`${href}/`);
 }
 
-export function CaseTabs({ caseId }: { caseId: string }) {
+export function CaseTabs({ caseId, showPrescriptions = false }: { caseId: string; showPrescriptions?: boolean }) {
   const t = useT("caseTabs");
   const pathname = usePathname() ?? "";
   const base = `/cases/${caseId}`;
   return (
     <nav aria-label={t("label")} className="-mb-px flex gap-1 overflow-x-auto border-b border-slate-200">
-      {TABS.map((tab) => {
+      {TABS.filter((tab) => showPrescriptions || !("prescriberOnly" in tab)).map((tab) => {
         const href = tab.segment ? `${base}/${tab.segment}` : base;
         const active = isTabActive(pathname, base, tab.segment);
         return (
