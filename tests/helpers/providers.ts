@@ -57,6 +57,8 @@ export function providerFixtures(prefix: string, getDb: () => SupabaseClient, ge
           }
         }
         await sql`delete from audit_events where entity_id in ${sql(profileIds)} or details ->> 'provider_profile_id' in ${sql(profileIds)}`;
+        // 032: provider decisions enqueue outbox events (notifications cascade).
+        await sql`delete from outbox_events where aggregate_type = 'provider_profile' and aggregate_id in ${sql(profileIds)}`;
         await sql`delete from provider_profiles where id in ${sql(profileIds)}`;
       }
       if (orgs.length) await sql`delete from organizations where id in ${sql(orgs.map((o) => o.id))}`;

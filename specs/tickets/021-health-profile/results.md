@@ -59,3 +59,18 @@ Synthetic data only.
   (`children`, `guardian_links`, `is_child_guardian`) and 022's `can_read_child_via_org` at policy evaluation
   time, so a fresh `db reset` applies cleanly. On a database that already has 022+ applied, run it with
   `supabase migration up --include-all`.
+
+## Merge of `main` (032 notifications outbox)
+
+- `git merge main` brought in 032 (`20261113003200_outbox.sql`, `20261113003201_sharing_outbox.sql`, outbox,
+  scheduler, adapters). Only conflict: `messages/REVIEW.md`, regenerated with `npx tsx scripts/i18n-review.ts`
+  (1084 rows); `messages/*.json`, docs and tests auto-merged keeping both sides.
+- `db reset` on slot 7 (all migrations, incl. 021 and 032), then: `npm run lint`, `npm run typecheck`,
+  `npm run build` exit 0; `npx vitest run` 58 files, 836 passed, 10 skipped (only the opt-in
+  `tests/intake-completion.test.ts` suite); `tests/health-profile.test.ts` + `tests/sharing-grants.test.ts`
+  29 passed.
+- Acceptance re-check on the dev server (fresh `seed:users`, case of org A claimed by `guardian_a`): save -> v1;
+  NKA + allergy 400; stale version 409 with the FR-3 message; `provider_a` case page shows
+  `Severe allergy: Peanut` and the Health tab, API 200; provider PUT 403; `provider_b` 404; `guardian_b` 404;
+  history lists v2, v1; audit details field names only. Health edits enqueue nothing: 0 `outbox_events` and
+  0 `notifications` rows (none containing `Peanut`) - the profile uses no notification topic (NFR-3).

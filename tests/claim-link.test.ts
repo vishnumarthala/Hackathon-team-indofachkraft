@@ -110,6 +110,10 @@ describe.skipIf(!enabled)("admin seeding and claim links (database)", { timeout:
     expect(claimed.status).toBe(200);
     expect(await claimed.json()).toMatchObject({ profile_id, redirect: "/dashboard/profile" });
     expect((await sql`select user_id, claimed from provider_profiles where id = ${profile_id}`)[0]).toEqual({ user_id: fresh.id, claimed: true });
+    // 032: the claim transaction enqueued exactly one provider.claimed event.
+    expect(await sql`select payload from outbox_events where topic = 'provider.claimed' and aggregate_id = ${profile_id}`).toEqual([
+      { payload: { provider_profile_id: profile_id } },
+    ]);
     expect(await sql`select org_role, status from org_members where org_id = ${org_id} and user_id = ${fresh.id}`).toEqual([{ org_role: "owner", status: "active" }]);
     expect((await sql`select role from user_profiles where id = ${fresh.id}`)[0].role).toBe("provider");
 

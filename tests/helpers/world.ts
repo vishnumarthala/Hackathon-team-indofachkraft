@@ -118,6 +118,8 @@ export function createWorld(sql: Sql, db: Db, prefix: string) {
       await sql`delete from cases where org_id in ${sql(orgs)}`;
       await sql`delete from organizations where id in ${sql(orgs)}`;
     }
+    // 032: grant notifications are outbox events keyed by the grant (notifications cascade).
+    if (childIds.length) await sql`delete from outbox_events where payload ->> 'child_id' in ${sql([...new Set(childIds)])}`;
     await purgeSyntheticChildren(sql, [...new Set(childIds)]);
     if (users.length) await sql`delete from child_claim_attempts where user_id in ${sql(users)}`;
     for (const id of users) await db.auth.admin.deleteUser(id);

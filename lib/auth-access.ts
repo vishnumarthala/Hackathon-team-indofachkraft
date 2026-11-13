@@ -19,6 +19,8 @@ export function isPublicApiPath(pathname: string): boolean {
     pathname === "/api/auth/phone/verify" ||
     /^\/api\/cases\/[^/]+\/ask$/.test(pathname) ||
     pathname.startsWith("/api/intake/") ||
+    // 032: cron workers authenticate with `Authorization: Bearer <CRON_SECRET>` inside the handler.
+    pathname.startsWith("/api/cron/") ||
     pathname.startsWith("/api/dev/simulate-intake/")
   );
 }

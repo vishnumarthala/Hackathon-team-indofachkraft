@@ -19,7 +19,8 @@
     "seed:users": "tsx scripts/seed-users.ts",
     "fixtures:scribe": "tsx scripts/make-scribe-fixture.ts",
     "db:push": "tsx scripts/db-apply.ts",
-    "org:grant": "tsx scripts/org-grant.ts"
+    "org:grant": "tsx scripts/org-grant.ts",
+    "outbox:run": "tsx scripts/outbox-run.ts"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.77.0",

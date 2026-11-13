@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { isUuid } from "@/lib/cases/validation";
 import { supabaseAdmin } from "@/lib/db";
-import { notifyLater, SHARING_TOPICS } from "@/lib/notify/topics";
+import { drainSoon } from "@/lib/notify/outbox";
 import type { Result } from "@/lib/orgs";
 import { SHARE_SCOPES, type ShareScope } from "@/lib/sharing/scopes";
 
@@ -66,12 +66,8 @@ export async function createSharingGrant(childId: string, userId: string, input:
       return { ok: false, status: 503, error: SAVE_FAILED };
     }
     const grant = data as SharingGrant;
-    // TODO(032): outbox event inside the grant transaction; until then notifyLater only logs ids.
-    await notifyLater(SHARING_TOPICS.granted, {
-      grant_id: grant.id,
-      source_org_id: grant.source_org_id,
-      grantee_org_id: grant.grantee_org_id,
-    });
+    // 032: the `sharing.granted` outbox event was enqueued by a trigger in the grant transaction; deliver it now.
+    drainSoon();
     return { ok: true, data: grant };
   } catch (err) {
     console.error(`create_sharing_grant failed: ${err instanceof Error ? err.message : String(err)}`);

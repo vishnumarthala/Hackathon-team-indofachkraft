@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { getUserRole, requirePageUser } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 
@@ -12,6 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const role = await getUserRole(user.id);
   if (role === "guardian") redirect("/family");
   const t = await getT("providers.nav");
+  const tn = await getT("notifications");
 
   return (
     <>
@@ -27,6 +29,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/profile">
               {t("profile")}
             </Link>
+            <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/settings">
+              {tn("settingsLink")}
+            </Link>
             {role === "platform_admin" ? (
               <>
                 <Link className="text-sm font-medium text-slate-700 underline" href="/admin/verifications">
@@ -38,8 +43,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 <Link className="text-sm font-medium text-slate-700 underline" href="/admin/users">
                   User accounts
                 </Link>
+                <Link className="text-sm font-medium text-slate-700 underline" href="/admin/notifications">
+                  {tn("title")}
+                </Link>
               </>
             ) : null}
+            <NotificationBell userId={user.id} href="/dashboard/notifications" />
             <SignOutButton />
           </div>
         </div>
