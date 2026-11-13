@@ -114,7 +114,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 048 | Parent check-in up to 8 (age-aware, concern-based advice, inline slots) | ready | solo | waits for 051 |
 | 049 | Telugu and Hindi for the new voice agents | ready | solo | waits for 048, 051 |
 | 050 | Parent-first home page and Indian statistics | ready | solo | waits for 051 |
-| 051 | Voice cost guard (no anonymous voice, quotas, platform budget) | ready | solo | alongside |
+| 051 | Voice cost guard (no anonymous voice, quotas, platform budget) | done | solo | alongside |
 | 052 | Clear next steps (family home, provider Today, what happens next) | ready | solo | waits for 043, 044, 045, 051 |
 | 053 | Design-system alignment (teal primary actions, shared UI primitives) | ready | solo | waits for 043-052 |
 
