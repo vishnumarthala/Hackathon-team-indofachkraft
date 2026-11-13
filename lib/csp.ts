@@ -2,7 +2,7 @@
 // ads, tag managers or social pixels, ever. Next.js reads the nonce from the request header and adds it
 // to its own scripts. Approved exceptions (product owner 2026-11-12) are added per route prefix below by the
 // ticket that needs them: the ElevenLabs SDK (033, 040) and Razorpay checkout (031). Nothing else.
-import { isFamilyPath } from "@/lib/auth-access";
+import { isBookingPath, isFamilyPath } from "@/lib/auth-access";
 
 type CspAllowance = { scriptSrc?: string[]; connectSrc?: string[]; frameSrc?: string[] };
 
@@ -10,7 +10,8 @@ type CspAllowance = { scriptSrc?: string[]; connectSrc?: string[]; frameSrc?: st
 export const FAMILY_CSP_EXCEPTIONS: Record<string, CspAllowance> = {};
 
 export function needsFamilyCsp(pathname: string): boolean {
-  return isFamilyPath(pathname);
+  // 030: the booking flow shows the guardian's children, so it gets the same no-third-party policy.
+  return isFamilyPath(pathname) || isBookingPath(pathname);
 }
 
 function exceptionsFor(pathname: string): Required<CspAllowance> {

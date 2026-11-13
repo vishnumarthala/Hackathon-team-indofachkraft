@@ -374,6 +374,34 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 030 NFR-4. Retention period pending legal review (rd.md open question): kept as the provider's schedule record.
+    key: "appointments",
+    label: "Appointments (booked time, provider, service, status history)",
+    owner: "child",
+    tables: ["appointments", "appointment_events"],
+    retention:
+      "Kept as the provider's appointment record (period pending legal review). On erasure, future appointments are cancelled and the child is removed from every appointment.",
+    processors: ["supabase", "resend", "whatsapp"],
+    export: async ({ sql, childId, guardianUserId }) => {
+      // Only the requesting guardian's own bookings (what /family/appointments shows them).
+      const rows = await sql`
+        select a.id, lower(a.slot) as starts_at, upper(a.slot) as ends_at, a.status, a.service_snapshot ->> 'name' as service,
+               a.service_snapshot ->> 'mode' as mode, a.service_snapshot -> 'location' ->> 'name' as location,
+               p.display_name as provider, a.cancelled_by, a.rescheduled_from, a.created_at
+        from public.appointments a join public.provider_profiles p on p.id = a.provider_profile_id
+        where a.child_id = ${childId} and a.guardian_user_id = ${guardianUserId} and a.status not in ('held', 'expired')
+        order by lower(a.slot)`;
+      return { data: rowsJson(rows) };
+    },
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) => {
+        const [row] = await tx<{ n: number }[]>`select public.booking_erase_child(${ctx.childId}) as n`;
+        return row.n;
+      },
+    },
+  },
+  {
     key: "audit_events",
     label: "Audit log",
     owner: "case",

@@ -19,6 +19,7 @@ effect.
 | Website pilot sign-ups (`pilot_signups`) | Deleted after 24 months | `pilot_signups` | `RETENTION_PILOT_SIGNUP_MONTHS` (24) |
 | Audit events | Kept **7 years**, then deleted by `audit_purge_expired()` (refuses anything younger than 1 year) | `audit_events` | `RETENTION_AUDIT_YEARS` (7) |
 | Consent records (020) and signed paper forms | Kept (legal proof of consent), also after erasure, with free text stripped | - | - |
+| Appointments (030: `appointments`, `appointment_events`) | Kept as the provider's appointment record (period pending legal review). Erasure (`everything`): future appointments cancelled (provider notified), the child removed from every appointment (`booking_erase_child`) | - | - |
 | Clinical records (cases, transcripts, confirmed facts, final reports) | Kept while the child is in care and as long as the law requires the clinic to keep them; erasure is reviewed (D-5) | - | - |
 
 Job: `GET|POST /api/cron/retention` with `Authorization: Bearer <CRON_SECRET>`, daily at 21:30 UTC (03:00 IST,
@@ -37,7 +38,8 @@ The privacy notice, the export, the erasure job and this document are driven by 
 Registered so far: child profile, case records, session audio, intake conversations, 024 `assessments` (guardian's own
 questionnaires + answers) and `published_versions` (latest guardian-visible versions), 025 `iep_plans` (published plan
 views; drafts and progress notes never exported), documents, health profile, consent records, sharing/care team,
-notifications, exports, audit, provider credentials, pilot sign-ups. `published_versions` is append-only (024): rows with a
+notifications, exports, audit, provider credentials, pilot sign-ups, 030 `appointments` (export: the requesting
+guardian's own bookings of the child; erase: `booking_erase_child`). `published_versions` is append-only (024): rows with a
 case go with the case; case-less rows are removed only by `privacy_delete_published_versions()` (migration
 `20261113004102`).
 

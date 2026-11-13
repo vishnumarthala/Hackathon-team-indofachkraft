@@ -1,0 +1,82 @@
+Ticket 030 acceptance run - 2026-11-13 ~08:20-08:30 IST (02:50-03:00 UTC), dev server :3050 (slot 5 stack),
+DEMO_MODE=true, CRON_SECRET=test-3050, own headless Chromium (playwright-core, 375x812, timezone Asia/Kolkata).
+Accounts: `npm run -s seed:users -- --prefix e030`; provider_a = "Dr Asha Rao (synthetic)" (verified, listed, org A
+"e030 Centre A Banjara Hills"), services "Speech assessment" in-clinic 30 min free and "Parent consultation (video)"
+45 min at_clinic Rs 800, hours Mon-Sat 10:00-13:00 IST; guardian_a + child "e030 Asha (synthetic)", guardian_b + child
+"e030 Bunty (synthetic)"; provider_b with its own verified profile. "Tomorrow" = Sat 14 Nov 2026. Synthetic data only.
+
+== E-1 Book in-clinic free service ==
+[E-1] book page http://localhost:3050/book/ee9bc230-22a5-4e08-9411-214da42789e0          (anonymous, from /p/e030-dr-a "Book")
+[E-1] times on 14 Nov 10:00 am IST | 10:30 am IST | 11:00 am IST | 11:30 am IST | 12:00 pm IST | 12:30 pm IST
+[E-1] held: We are holding 14 November 2026, 10:30 am IST for you.
+[E-1] countdown: Time left: 9:59 url .../book/ee9bc230-...?hold=110fcb7d-f1e7-45a2-b680-90e85c776feb
+[E-1] login url http://localhost:3050/family/login?next=%2Fbook%2Fee9bc230-...%3Fhold%3D110fcb7d-...
+[E-1] after sign-in .../book/ee9bc230-...?hold=110fcb7d-...                               (phone OTP 9000000001 / 123456)
+[E-1] disclosure: Booking shares e030 Asha (synthetic)'s name and age with Dr Asha Rao (synthetic) (e030 Centre A Banjara Hills).
+[E-1] done: Your appointment is booked. 14 November 2026, 10:30 am IST We sent you a confirmation. You can cancel or move it up to 2 hours before it starts. My appointments
+[E-1] horizontal overflow at 375px: false
+appointments: 110fcb7d-... | confirmed | 2026-11-14 05:00:00+00 | Speech assessment | free | e030 Centre A Banjara Hills | has_child t
+appointment_events: (null) -> held (anonymous); held -> confirmed (guardian)
+outbox_events:
+  appointment.confirmed           appt:110fcb7d-...:confirmed  fanned_out  2026-11-13 02:51:14Z (drained by after())
+  appointment.reminder_day_before appt:110fcb7d-...:r24        pending     2026-11-13 05:00:00Z (= start - 24 h)
+  appointment.reminder_two_hours  appt:110fcb7d-...:r2         pending     2026-11-14 03:00:00Z (= start - 2 h)
+notifications (confirmation):
+  guardian email sent | in_app sent | whatsapp skipped whatsapp_not_configured  "Appointment confirmed"
+  provider email sent | in_app sent | whatsapp skipped whatsapp_not_configured  "New appointment"
+Email body + .ics of a real confirmation event (rendered through lib/notify/email.ts deliverEmail, send mocked):
+  Appointment confirmed | Your appointment with Dr Asha Rao (synthetic) on 16 Nov 2026, 10:00 am IST is confirmed. In clinic: e030 Centre A Banjara Hills, Road 12 (synthetic), Banjara Hills, Hyderabad 500034.
+  BEGIN:VCALENDAR / METHOD:REQUEST / UID:appointment-d3d14751-bfac-4132-a53c-1a2e42927ae9@doctornearme / DTSTART:20261116T043000Z /
+  DTEND:20261116T050000Z / SUMMARY:Appointment with Dr Asha Rao (synthetic) (DoctorNearMe) / LOCATION:e030 Centre A ... / STATUS:CONFIRMED
+  (no child name in subject, body, WhatsApp params or .ics)
+
+== E-2 Conflict and expiry ==
+E-2.1 guardian_b hold same slot: {"status":409,"json":{"error":"This slot was just taken. Please pick another time.","code":"slot_taken"}}
+E-2.1 slot list for 14 Nov contains 10:30? false - 2026-11-14T04:30Z,05:30Z,06:00Z,06:30Z,07:00Z
+E-2.1 UI times 14 Nov: 10:00 am IST | 11:00 am IST | 11:30 am IST | 12:00 pm IST | 12:30 pm IST
+E-2.2 hold 11:30: 201 held   -> hold_expires_at set 1 minute in the past (SQL)
+E-2.2 cron without secret: 401 with secret: 200 {"expired":1}
+E-2.2 status after cron: expired
+E-2.2 confirm expired: {"status":410,"json":{"error":"Your hold expired. Please pick the time again.","code":"hold_expired"}}
+E-2.2 11:30 offered again: true
+
+== E-3 Cancel / reschedule ==
+E-3.1 (UI: /family/appointments -> Reschedule -> 14 Nov -> 11:00 am IST -> Move to this time) page: Your appointment was moved.
+E-3.1 rows: 110fcb7d-... cancelled 05:00Z cancel_reason=rescheduled; bb3614f5-... confirmed 05:30Z rescheduled_from=110fcb7d-...
+E-3.1 outbox: old r24/r2 -> cancelled; appointment.rescheduled appt:bb3614f5-...:rescheduled fanned_out;
+              new r24 (2026-11-13 05:30Z) and r2 (2026-11-14 03:30Z) pending
+E-3.2 guardian cancel within 2h (start moved to now + 90 min via SQL): {"status":409,"json":{"error":"It is too late to change this appointment. Please contact the provider.","code":"too_late"}}
+E-3.3 provider_a cancel: 200
+E-3.3 notifications (appt:bb3614f5-...:cancelled): guardian email sent / in_app sent / whatsapp skipped "Appointment cancelled - Your appointment with Dr Asha Rao (synthetic) on 13 Nov 2026, 9:52 am IST was cancelled."; provider in_app + email "The appointment on ... was cancelled."
+
+== E-4 Provider schedule ==
+E-4 booked 14 Nov 12:00 (guardian_a): 200 confirmed
+E-4 /dashboard/schedule -> Block a date 2026-11-14 (whole day) -> Saved
+E-4 slots on 14 Nov after block: []
+E-4 appointment status: confirmed
+E-4 agenda card: 12:00 pm IST - 12:30 pm IST · Speech assessment · In clinic · e030 Centre A Banjara Hills · e030 Asha (synthetic), 5 years, 7 months · Confirmed · "Outside your hours now (blocked or changed). Contact the family or cancel." · Mark completed · No-show · Cancel
+E-4 (16 Nov 10:00 booking) UI Mark completed before start: "You can mark this after the appointment starts." (API 409 not_started); status still confirmed
+E-4 after time travel (slot = now - 10 min): UI Mark completed -> completed
+E-4 history: null->held (guardian), held->confirmed (guardian), confirmed->completed (provider)
+
+== E-5 Authz negatives ==
+E-5 guardian_b confirm guardian_a's appointment: 404 {"error":"Appointment not found","code":"not_found"}
+E-5 guardian_b cancel guardian_a's appointment: 404 {"error":"Appointment not found","code":"not_found"}
+E-5 guardian_b confirm own hold with guardian_a's child: 422 {"error":"Choose one of your children.","code":"child_not_linked"}
+E-5 anonymous confirm: 401 {"error":"Authentication required"}
+E-5 provider_b delete provider_a's rule: 404 {"error":"Hours not found"}
+E-5 provider_b deactivate provider_a's service: 404 {"error":"Service not found"}
+E-5 provider_b add hours at provider_a's clinic: 400 {"error":"Invalid request","details":{"location_id":"Choose one of your locations"}}
+E-5 provider_b cancel guardian_a's appointment: 404
+E-5 rule still there: true, service still active: true
+
+== NFR-2 / NFR-3 ==
+London viewer (Europe/London), times 17 Nov: 4:30 am GMT+0 your time · 10:00 am IST at the clinic | 5:00 am GMT+0 your time · 10:30 am IST at the clinic | ...
+London viewer, video service: 4:30 am GMT+0 | 5:15 am GMT+0 | 6:00 am GMT+0 | 6:45 am GMT+0   (no clinic time for video)
+hi: अपॉइंटमेंट बुक करें | आगे बढ़ें ; te: అపాయింట్‌మెంట్ బుక్ చేయండి | కొనసాగించండి
+375 px horizontal overflow (document.scrollWidth > 375): /book, /p, /find, /dashboard/schedule, /family/appointments in en/hi/te -> none
+(after fixing a fieldset min-content width bug in the date strip found by this check)
+
+== No-tracking crawl (041 test, NO_TRACKING_BASE_URL=http://localhost:3050) ==
+13 passed; crawled 21 pages incl. /family/appointments and /family/appointments/<id>/reschedule (same-origin scripts only).
+/book/<id> response header: content-security-policy: default-src 'self'; script-src 'self' 'nonce-...' 'strict-dynamic' ... frame-src 'none' ...

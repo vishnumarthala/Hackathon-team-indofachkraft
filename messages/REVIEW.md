@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1610. Not yet approved: 1610.
+Rows: 1764. Not yet approved: 1764.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1467,6 +1467,7 @@ Rows: 1610. Not yet approved: 1610.
 | `privacy.notice.collect.plans` | Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you. | थेरेपी योजनाएँ (IEP): लक्ष्य, देखभाल टीम द्वारा दर्ज की गई प्रगति, और आपके लिए प्रकाशित योजना के संस्करण। | థెరపీ ప్రణాళికలు (IEP): లక్ష్యాలు, సంరక్షణ బృందం నమోదు చేసే పురోగతి, మరియు మీకు ప్రచురించిన ప్రణాళిక వెర్షన్లు. |  | pending |
 | `privacy.notice.collect.notifications` | Notifications we send you in the app, by email or WhatsApp. | ऐप में, ईमेल या WhatsApp पर हमारी भेजी सूचनाएँ। | యాప్‌లో, ఇమెయిల్ లేదా WhatsApp ద్వారా మేము పంపే నోటిఫికేషన్లు. |  | pending |
 | `privacy.notice.collect.website` | If you ask for a demo on our website: name, email, role and centre. | अगर आप हमारी वेबसाइट पर डेमो माँगते हैं: नाम, ईमेल, भूमिका और केंद्र। | మీరు మా వెబ్‌సైట్‌లో డెమో అడిగితే: పేరు, ఇమెయిల్, పాత్ర మరియు కేంద్రం. |  | pending |
+| `privacy.notice.collect.appointments` | Appointments you book: provider, service, time, place, status and changes. The provider sees your child's name and age. | आपके बुक किए अपॉइंटमेंट: प्रदाता, सेवा, समय, स्थान, स्थिति और बदलाव। प्रदाता आपके बच्चे का नाम और उम्र देखते हैं। | మీరు బుక్ చేసే అపాయింట్‌మెంట్‌లు: ప్రొవైడర్, సేవ, సమయం, స్థలం, స్థితి మరియు మార్పులు. ప్రొవైడర్ మీ పిల్లల పేరు, వయస్సు చూస్తారు. |  | pending |
 | `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
 | `privacy.notice.purposes` | To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising. | आपका पारिवारिक खाता और आपके चुने विशेषज्ञों के साथ बच्चे की देखभाल चलाने के लिए; इनटेक सारांश, लिखित रूप और मसौदा रिपोर्ट तैयार करने के लिए जिन्हें एक विशेषज्ञ जाँचता है; आपको रिमाइंडर और अपडेट भेजने के लिए; कानून द्वारा ज़रूरी रिकॉर्ड रखने के लिए; और सेवा को सुरक्षित रखने के लिए। हम डेटा कभी नहीं बेचते और विज्ञापन के लिए कभी उपयोग नहीं करते। | మీ కుటుంబ ఖాతాను మరియు మీరు ఎంచుకున్న నిపుణులతో మీ పిల్లల సంరక్షణను నడపడానికి; ఒక నిపుణుడు తనిఖీ చేసే ఇన్‌టేక్ సారాంశాలు, లిఖిత రూపాలు మరియు ముసాయిదా రిపోర్టులు సిద్ధం చేయడానికి; మీకు రిమైండర్లు మరియు అప్‌డేట్లు పంపడానికి; చట్టం కోరే రికార్డులను ఉంచడానికి; మరియు సేవను సురక్షితంగా ఉంచడానికి. మేము డేటాను ఎప్పుడూ అమ్మము, ప్రకటనల కోసం ఎప్పుడూ ఉపయోగించము. |  | pending |
 | `privacy.notice.processorsTitle` | Who processes it for us, and where | हमारे लिए इसे कौन प्रोसेस करता है, और कहाँ | మా కోసం దీన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎక్కడ |  | pending |
@@ -1510,6 +1511,8 @@ Rows: 1610. Not yet approved: 1610.
 | `privacy.notice.retention.consent.how` | Kept as proof of consent, also after deletion (without free text) | सहमति के प्रमाण के रूप में रखे जाते हैं, हटाने के बाद भी (बिना मुक्त पाठ के) | సమ్మతికి రుజువుగా ఉంచబడతాయి, తొలగించిన తర్వాత కూడా (స్వేచ్ఛా పాఠం లేకుండా) |  | pending |
 | `privacy.notice.retention.audit.what` | Security audit log | सुरक्षा ऑडिट लॉग | భద్రతా ఆడిట్ లాగ్ |  | pending |
 | `privacy.notice.retention.audit.how` | {years} years | {years} साल | {years} సంవత్సరాలు |  | pending |
+| `privacy.notice.retention.appointments.what` | Appointments (time, provider, service, status history) | अपॉइंटमेंट (समय, प्रदाता, सेवा, स्थिति का इतिहास) | అపాయింట్‌మెంట్‌లు (సమయం, ప్రొవైడర్, సేవ, స్థితి చరిత్ర) |  | pending |
+| `privacy.notice.retention.appointments.how` | Kept as the provider's appointment record (period pending legal review); on erasure future appointments are cancelled and your child is removed from them | प्रदाता के अपॉइंटमेंट रिकॉर्ड के रूप में रखे जाते हैं (अवधि कानूनी समीक्षा बाकी); मिटाने पर आने वाले अपॉइंटमेंट रद्द होते हैं और आपका बच्चा उनसे हटाया जाता है | ప్రొవైడర్ అపాయింట్‌మెంట్ రికార్డుగా ఉంచబడతాయి (వ్యవధి చట్టపరమైన సమీక్షలో ఉంది); తొలగింపులో రాబోయే అపాయింట్‌మెంట్‌లు రద్దవుతాయి, మీ పిల్ల వాటి నుండి తొలగించబడతారు |  | pending |
 | `privacy.notice.rightsTitle` | Your rights | आपके अधिकार | మీ హక్కులు |  | pending |
 | `privacy.notice.rights.access` | Access: download a copy of your child's data from the child's Privacy page in the app. | पहुँच: ऐप में बच्चे के गोपनीयता पेज से बच्चे के डेटा की कॉपी डाउनलोड करें। | యాక్సెస్: యాప్‌లో పిల్లల గోప్యతా పేజీ నుండి పిల్లల డేటా కాపీని డౌన్‌లోడ్ చేయండి. |  | pending |
 | `privacy.notice.rights.correction` | Correction: change details in the app, or ask the clinic to correct a record. | सुधार: ऐप में विवरण बदलें, या क्लिनिक से रिकॉर्ड ठीक करने को कहें। | సవరణ: యాప్‌లో వివరాలు మార్చండి, లేదా రికార్డును సరిచేయమని క్లినిక్‌ను అడగండి. |  | pending |
@@ -1625,3 +1628,154 @@ Rows: 1610. Not yet approved: 1610.
 | `privacy.admin.ops.stuck` | Recordings stuck for more than 30 minutes | 30 मिनट से ज़्यादा अटकी रिकॉर्डिंग | 30 నిమిషాలకు పైగా నిలిచిపోయిన రికార్డింగ్‌లు |  | pending |
 | `privacy.admin.ops.none` | None. | कोई नहीं। | ఏవీ లేవు. |  | pending |
 | `privacy.admin.ops.minutes` | {count} min | {count} मिनट | {count} ని. |  | pending |
+| `booking.book` | Book | बुक करें | బుక్ చేయండి |  | pending |
+| `booking.modes.in_clinic` | In clinic | क्लिनिक में | క్లినిక్‌లో |  | pending |
+| `booking.modes.video` | Video consultation | वीडियो परामर्श | వీడియో సంప్రదింపు |  | pending |
+| `booking.payment.free` | Free | निःशुल्क | ఉచితం |  | pending |
+| `booking.payment.at_clinic` | Pay at the clinic | क्लिनिक में भुगतान करें | క్లినిక్‌లో చెల్లించండి |  | pending |
+| `booking.payment.online` | Pay online | ऑनलाइन भुगतान करें | ఆన్‌లైన్‌లో చెల్లించండి |  | pending |
+| `booking.duration` | {minutes} min | {minutes} मिनट | {minutes} నిమి |  | pending |
+| `booking.status.held` | On hold | रोका गया | హోల్డ్‌లో ఉంది |  | pending |
+| `booking.status.pending_payment` | Waiting for payment | भुगतान की प्रतीक्षा | చెల్లింపు కోసం వేచి ఉంది |  | pending |
+| `booking.status.confirmed` | Confirmed | पक्का | ధృవీకరించబడింది |  | pending |
+| `booking.status.cancelled` | Cancelled | रद्द | రద్దయింది |  | pending |
+| `booking.status.expired` | Expired | समय समाप्त | గడువు ముగిసింది |  | pending |
+| `booking.status.completed` | Completed | पूरा हुआ | పూర్తయింది |  | pending |
+| `booking.status.no_show` | Missed | नहीं आए | హాజరు కాలేదు |  | pending |
+| `booking.yourTime` | {time} your time | आपके समय से {time} | మీ సమయం {time} |  | pending |
+| `booking.clinicTime` | {time} at the clinic | क्लिनिक में {time} | క్లినిక్‌లో {time} |  | pending |
+| `booking.errors.slot_taken` | This slot was just taken. Please pick another time. | यह समय अभी-अभी बुक हो गया। कृपया दूसरा समय चुनें। | ఈ సమయం ఇప్పుడే బుక్ అయింది. దయచేసి వేరే సమయం ఎంచుకోండి. |  | pending |
+| `booking.errors.hold_expired` | Your hold expired. Please pick the time again. | आपका रोका गया समय खत्म हो गया। कृपया फिर से समय चुनें। | మీ హోల్డ్ గడువు ముగిసింది. దయచేసి మళ్లీ సమయం ఎంచుకోండి. |  | pending |
+| `booking.errors.slot_unavailable` | This time is not available. Please pick another time. | यह समय उपलब्ध नहीं है। कृपया दूसरा समय चुनें। | ఈ సమయం అందుబాటులో లేదు. దయచేసి వేరే సమయం ఎంచుకోండి. |  | pending |
+| `booking.errors.too_soon` | Appointments must be booked at least 2 hours ahead. | अपॉइंटमेंट कम से कम 2 घंटे पहले बुक करें। | అపాయింట్‌మెంట్‌ను కనీసం 2 గంటల ముందు బుక్ చేయాలి. |  | pending |
+| `booking.errors.too_far` | Appointments can be booked up to 14 days ahead. | अपॉइंटमेंट 14 दिन पहले तक बुक हो सकते हैं। | అపాయింట్‌మెంట్‌లను 14 రోజుల ముందు వరకు బుక్ చేయవచ్చు. |  | pending |
+| `booking.errors.too_late` | It is too late to change this appointment. Please contact the provider. | इस अपॉइंटमेंट को बदलने में अब देर हो गई है। कृपया प्रदाता से संपर्क करें। | ఈ అపాయింట్‌మెంట్‌ను మార్చడానికి ఆలస్యమైంది. దయచేసి ప్రొవైడర్‌ను సంప్రదించండి. |  | pending |
+| `booking.errors.child_not_linked` | Choose one of your children. | अपने बच्चों में से एक चुनें। | మీ పిల్లల్లో ఒకరిని ఎంచుకోండి. |  | pending |
+| `booking.errors.invalid_transition` | This appointment cannot be changed now. | यह अपॉइंटमेंट अभी बदला नहीं जा सकता। | ఈ అపాయింట్‌మెంట్‌ను ఇప్పుడు మార్చలేరు. |  | pending |
+| `booking.errors.rate_limited` | Too many tries. Please wait a few minutes. | बहुत बार कोशिश हुई। कृपया कुछ मिनट रुकें। | చాలా ప్రయత్నాలు. దయచేసి కొన్ని నిమిషాలు ఆగండి. |  | pending |
+| `booking.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर से कोशिश करें। | ఏదో పొరపాటు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `booking.flow.metaTitle` | Book with {name} | {name} के साथ बुक करें | {name} తో బుక్ చేయండి |  | pending |
+| `booking.flow.title` | Book an appointment | अपॉइंटमेंट बुक करें | అపాయింట్‌మెంట్ బుక్ చేయండి |  | pending |
+| `booking.flow.with` | with {name} | {name} के साथ | {name} తో |  | pending |
+| `booking.flow.backToProfile` | Back to profile | प्रोफ़ाइल पर वापस | ప్రొఫైల్‌కు తిరిగి |  | pending |
+| `booking.flow.noServices` | This provider does not take online bookings yet. | यह प्रदाता अभी ऑनलाइन बुकिंग नहीं लेते। | ఈ ప్రొవైడర్ ఇంకా ఆన్‌లైన్ బుకింగ్‌లు తీసుకోవడం లేదు. |  | pending |
+| `booking.flow.service` | Service | सेवा | సేవ |  | pending |
+| `booking.flow.date` | Date | तारीख | తేదీ |  | pending |
+| `booking.flow.time` | Time | समय | సమయం |  | pending |
+| `booking.flow.loading` | Loading free times… | खाली समय लोड हो रहे हैं… | ఖాళీ సమయాలు లోడ్ అవుతున్నాయి… |  | pending |
+| `booking.flow.noSlots` | No free times in the next 14 days. | अगले 14 दिनों में कोई खाली समय नहीं। | తదుపరి 14 రోజుల్లో ఖాళీ సమయాలు లేవు. |  | pending |
+| `booking.flow.timeZoneNote` | Times are shown in your time zone ({zone}). | समय आपके टाइम ज़ोन ({zone}) में दिखाए गए हैं। | సమయాలు మీ టైమ్ జోన్ ({zone}) లో చూపబడ్డాయి. |  | pending |
+| `booking.flow.continue` | Continue | आगे बढ़ें | కొనసాగించండి |  | pending |
+| `booking.flow.held` | We are holding {time} for you. | हम आपके लिए {time} रोक रहे हैं। | మీ కోసం {time} ను హోల్డ్ చేస్తున్నాం. |  | pending |
+| `booking.flow.countdown` | Time left: {time} | बचा समय: {time} | మిగిలిన సమయం: {time} |  | pending |
+| `booking.flow.signInTitle` | Sign in to continue | आगे बढ़ने के लिए साइन इन करें | కొనసాగించడానికి సైన్ ఇన్ చేయండి |  | pending |
+| `booking.flow.signInHint` | Sign in with your family account. We keep this time for you while you sign in. | अपने परिवार खाते से साइन इन करें। साइन इन करते समय हम यह समय आपके लिए रोके रखेंगे। | మీ కుటుంబ ఖాతాతో సైన్ ఇన్ చేయండి. మీరు సైన్ ఇన్ చేసే వరకు ఈ సమయాన్ని మీ కోసం ఉంచుతాం. |  | pending |
+| `booking.flow.signIn` | Sign in | साइन इन करें | సైన్ ఇన్ చేయండి |  | pending |
+| `booking.flow.familyOnly` | Booking is for family accounts. Sign out and sign in with a family account to book. | बुकिंग परिवार खातों के लिए है। बुक करने के लिए साइन आउट करके परिवार खाते से साइन इन करें। | బుకింగ్ కుటుంబ ఖాతాల కోసం. బుక్ చేయడానికి సైన్ అవుట్ చేసి కుటుంబ ఖాతాతో సైన్ ఇన్ చేయండి. |  | pending |
+| `booking.flow.forWhichChild` | For which child? | किस बच्चे के लिए? | ఏ పిల్లల కోసం? |  | pending |
+| `booking.flow.addChild` | Add a child | बच्चा जोड़ें | పిల్లను జోడించండి |  | pending |
+| `booking.flow.noChildren` | Add your child first. We keep this time for you. | पहले अपना बच्चा जोड़ें। हम यह समय आपके लिए रोके रखेंगे। | ముందుగా మీ పిల్లను జోడించండి. ఈ సమయాన్ని మీ కోసం ఉంచుతాం. |  | pending |
+| `booking.flow.disclosure` | Booking shares {child}'s name and age with {provider}. | बुकिंग से {child} का नाम और उम्र {provider} के साथ साझा होती है। | బుకింగ్ చేస్తే {child} పేరు, వయస్సు {provider} తో పంచుకోబడతాయి. |  | pending |
+| `booking.flow.summary` | Summary | सारांश | సారాంశం |  | pending |
+| `booking.flow.fee` | Fee | फ़ीस | ఫీజు |  | pending |
+| `booking.flow.confirm` | Confirm booking | बुकिंग पक्की करें | బుకింగ్‌ను ధృవీకరించండి |  | pending |
+| `booking.flow.continueToPayment` | Continue to payment | भुगतान पर आगे बढ़ें | చెల్లింపుకు కొనసాగించండి |  | pending |
+| `booking.flow.changeTime` | Pick another time | दूसरा समय चुनें | వేరే సమయం ఎంచుకోండి |  | pending |
+| `booking.flow.booked` | Your appointment is booked. | आपका अपॉइंटमेंट बुक हो गया। | మీ అపాయింట్‌మెంట్ బుక్ అయింది. |  | pending |
+| `booking.flow.bookedDetail` | We sent you a confirmation. You can cancel or move it up to 2 hours before it starts. | हमने आपको पुष्टि भेजी है। आप शुरू होने से 2 घंटे पहले तक इसे रद्द कर सकते हैं या बदल सकते हैं। | మీకు ధృవీకరణ పంపాం. ఇది మొదలయ్యే 2 గంటల ముందు వరకు రద్దు చేయవచ్చు లేదా మార్చవచ్చు. |  | pending |
+| `booking.flow.pendingPayment` | Your booking is waiting for payment. Online payment opens soon; until then this booking is kept for 15 minutes. | आपकी बुकिंग भुगतान की प्रतीक्षा में है। ऑनलाइन भुगतान जल्द शुरू होगा; तब तक यह बुकिंग 15 मिनट रखी जाती है। | మీ బుకింగ్ చెల్లింపు కోసం వేచి ఉంది. ఆన్‌లైన్ చెల్లింపు త్వరలో వస్తుంది; అప్పటివరకు ఈ బుకింగ్ 15 నిమిషాలు ఉంచబడుతుంది. |  | pending |
+| `booking.flow.viewAppointments` | My appointments | मेरे अपॉइंटमेंट | నా అపాయింట్‌మెంట్‌లు |  | pending |
+| `booking.list.title` | Appointments | अपॉइंटमेंट | అపాయింట్‌మెంట్‌లు |  | pending |
+| `booking.list.upcoming` | Upcoming | आने वाले | రాబోయేవి |  | pending |
+| `booking.list.past` | Past and cancelled | पिछले और रद्द | గతవి మరియు రద్దయినవి |  | pending |
+| `booking.list.none` | No appointments yet. | अभी कोई अपॉइंटमेंट नहीं। | ఇంకా అపాయింట్‌మెంట్‌లు లేవు. |  | pending |
+| `booking.list.findProvider` | Find a provider | प्रदाता खोजें | ప్రొవైడర్‌ను కనుగొనండి |  | pending |
+| `booking.list.forChild` | For {child} | {child} के लिए | {child} కోసం |  | pending |
+| `booking.list.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `booking.list.cancelQuestion` | Cancel this appointment? | यह अपॉइंटमेंट रद्द करें? | ఈ అపాయింట్‌మెంట్‌ను రద్దు చేయాలా? |  | pending |
+| `booking.list.yesCancel` | Yes, cancel | हाँ, रद्द करें | అవును, రద్దు చేయండి |  | pending |
+| `booking.list.keep` | Keep it | रहने दें | ఉంచండి |  | pending |
+| `booking.list.reschedule` | Reschedule | समय बदलें | సమయం మార్చండి |  | pending |
+| `booking.list.addToCalendar` | Add to calendar | कैलेंडर में जोड़ें | క్యాలెండర్‌కు జోడించండి |  | pending |
+| `booking.list.cancelWindow` | You can cancel or move an appointment up to 2 hours before it starts. | आप अपॉइंटमेंट शुरू होने से 2 घंटे पहले तक रद्द कर सकते हैं या बदल सकते हैं। | అపాయింట్‌మెంట్ మొదలయ్యే 2 గంటల ముందు వరకు రద్దు చేయవచ్చు లేదా మార్చవచ్చు. |  | pending |
+| `booking.list.cancelledBy.guardian` | Cancelled by you | आपने रद्द किया | మీరు రద్దు చేశారు |  | pending |
+| `booking.list.cancelledBy.provider` | Cancelled by the provider | प्रदाता ने रद्द किया | ప్రొవైడర్ రద్దు చేశారు |  | pending |
+| `booking.list.cancelledBy.system` | Cancelled | रद्द | రద్దయింది |  | pending |
+| `booking.list.movedTo` | Moved to a new time | नए समय पर बदला गया | కొత్త సమయానికి మార్చబడింది |  | pending |
+| `booking.list.rescheduleTitle` | Choose a new time | नया समय चुनें | కొత్త సమయం ఎంచుకోండి |  | pending |
+| `booking.list.currentTime` | Current time: {time} | वर्तमान समय: {time} | ప్రస్తుత సమయం: {time} |  | pending |
+| `booking.list.moveHere` | Move to this time | इस समय पर बदलें | ఈ సమయానికి మార్చండి |  | pending |
+| `booking.list.rescheduled` | Your appointment was moved. | आपका अपॉइंटमेंट बदल दिया गया। | మీ అపాయింట్‌మెంట్ మార్చబడింది. |  | pending |
+| `booking.list.back` | Back to appointments | अपॉइंटमेंट पर वापस | అపాయింట్‌మెంట్‌లకు తిరిగి |  | pending |
+| `booking.list.cancelledDone` | The appointment was cancelled. | अपॉइंटमेंट रद्द हो गया। | అపాయింట్‌మెంట్ రద్దయింది. |  | pending |
+| `booking.schedule.nav` | Schedule | शेड्यूल | షెడ్యూల్ |  | pending |
+| `booking.schedule.title` | Schedule | शेड्यूल | షెడ్యూల్ |  | pending |
+| `booking.schedule.intro` | Set your services and weekly hours. Families book free times online; you see every booking here. | अपनी सेवाएँ और साप्ताहिक समय तय करें। परिवार खाली समय ऑनलाइन बुक करते हैं; हर बुकिंग यहाँ दिखती है। | మీ సేవలు, వారపు సమయాలు సెట్ చేయండి. కుటుంబాలు ఖాళీ సమయాలను ఆన్‌లైన్‌లో బుక్ చేస్తాయి; ప్రతి బుకింగ్ ఇక్కడ కనిపిస్తుంది. |  | pending |
+| `booking.schedule.noProfile` | Create your provider profile first. | पहले अपनी प्रदाता प्रोफ़ाइल बनाएँ। | ముందుగా మీ ప్రొవైడర్ ప్రొఫైల్‌ను సృష్టించండి. |  | pending |
+| `booking.schedule.openProfile` | Open my profile | मेरी प्रोफ़ाइल खोलें | నా ప్రొఫైల్ తెరవండి |  | pending |
+| `booking.schedule.notListed` | Families can book once your profile is verified and shown publicly. | प्रोफ़ाइल सत्यापित और सार्वजनिक होने के बाद परिवार बुक कर सकते हैं। | మీ ప్రొఫైల్ ధృవీకరించబడి పబ్లిక్‌గా చూపబడిన తర్వాత కుటుంబాలు బుక్ చేయగలవు. |  | pending |
+| `booking.schedule.timeZone` | Times are in {zone}. | समय {zone} में हैं। | సమయాలు {zone} లో ఉన్నాయి. |  | pending |
+| `booking.schedule.saved` | Saved | सहेजा गया | సేవ్ అయింది |  | pending |
+| `booking.schedule.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `booking.schedule.invalid` | Check the highlighted fields. | चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
+| `booking.schedule.remove` | Remove | हटाएँ | తొలగించండి |  | pending |
+| `booking.schedule.location` | Location | स्थान | స్థలం |  | pending |
+| `booking.schedule.noLocations` | Add a practice location in your profile for in-clinic visits. | क्लिनिक विज़िट के लिए अपनी प्रोफ़ाइल में स्थान जोड़ें। | క్లినిక్ సందర్శనల కోసం మీ ప్రొఫైల్‌లో ప్రాక్టీస్ స్థలాన్ని జోడించండి. |  | pending |
+| `booking.schedule.modes.in_clinic` | In clinic | क्लिनिक में | క్లినిక్‌లో |  | pending |
+| `booking.schedule.modes.video` | Video | वीडियो | వీడియో |  | pending |
+| `booking.schedule.modes.both` | Clinic and video | क्लिनिक और वीडियो | క్లినిక్ మరియు వీడియో |  | pending |
+| `booking.schedule.weekdays.0` | Monday | सोमवार | సోమవారం |  | pending |
+| `booking.schedule.weekdays.1` | Tuesday | मंगलवार | మంగళవారం |  | pending |
+| `booking.schedule.weekdays.2` | Wednesday | बुधवार | బుధవారం |  | pending |
+| `booking.schedule.weekdays.3` | Thursday | गुरुवार | గురువారం |  | pending |
+| `booking.schedule.weekdays.4` | Friday | शुक्रवार | శుక్రవారం |  | pending |
+| `booking.schedule.weekdays.5` | Saturday | शनिवार | శనివారం |  | pending |
+| `booking.schedule.weekdays.6` | Sunday | रविवार | ఆదివారం |  | pending |
+| `booking.schedule.services.title` | Services | सेवाएँ | సేవలు |  | pending |
+| `booking.schedule.services.none` | No services yet. Add one so families can book. | अभी कोई सेवा नहीं। परिवार बुक कर सकें, इसके लिए एक जोड़ें। | ఇంకా సేవలు లేవు. కుటుంబాలు బుక్ చేయడానికి ఒకటి జోడించండి. |  | pending |
+| `booking.schedule.services.add` | Add service | सेवा जोड़ें | సేవను జోడించండి |  | pending |
+| `booking.schedule.services.name` | Name | नाम | పేరు |  | pending |
+| `booking.schedule.services.mode` | Mode | तरीका | విధానం |  | pending |
+| `booking.schedule.services.duration` | Duration | अवधि | వ్యవధి |  | pending |
+| `booking.schedule.services.fee` | Fee (₹) | फ़ीस (₹) | ఫీజు (₹) |  | pending |
+| `booking.schedule.services.payment` | Payment | भुगतान | చెల్లింపు |  | pending |
+| `booking.schedule.services.buffer` | Break after (minutes) | बाद में ब्रेक (मिनट) | తర్వాత విరామం (నిమిషాలు) |  | pending |
+| `booking.schedule.services.intake` | Pre-visit questions | विज़िट से पहले के प्रश्न | సందర్శనకు ముందు ప్రశ్నలు |  | pending |
+| `booking.schedule.services.intakeKinds.child_dev` | Child development intake | बाल विकास इनटेक | పిల్లల అభివృద్ధి ఇన్‌టేక్ |  | pending |
+| `booking.schedule.services.intakeKinds.generic` | General intake | सामान्य इनटेक | సాధారణ ఇన్‌టేక్ |  | pending |
+| `booking.schedule.services.intakeKinds.none` | None | कोई नहीं | ఏదీ లేదు |  | pending |
+| `booking.schedule.services.inactive` | Off | बंद | ఆఫ్ |  | pending |
+| `booking.schedule.services.turnOff` | Turn off | बंद करें | ఆఫ్ చేయండి |  | pending |
+| `booking.schedule.services.turnOn` | Turn on | चालू करें | ఆన్ చేయండి |  | pending |
+| `booking.schedule.hours.title` | Weekly hours | साप्ताहिक समय | వారపు సమయాలు |  | pending |
+| `booking.schedule.hours.none` | No hours yet. | अभी कोई समय नहीं। | ఇంకా సమయాలు లేవు. |  | pending |
+| `booking.schedule.hours.add` | Add hours | समय जोड़ें | సమయాలు జోడించండి |  | pending |
+| `booking.schedule.hours.weekday` | Day | दिन | రోజు |  | pending |
+| `booking.schedule.hours.from` | From | से | నుండి |  | pending |
+| `booking.schedule.hours.to` | To | तक | వరకు |  | pending |
+| `booking.schedule.hours.mode` | Mode | तरीका | విధానం |  | pending |
+| `booking.schedule.overrides.title` | Date changes | तारीख में बदलाव | తేదీ మార్పులు |  | pending |
+| `booking.schedule.overrides.none` | No date changes. | तारीख में कोई बदलाव नहीं। | తేదీ మార్పులు లేవు. |  | pending |
+| `booking.schedule.overrides.block` | Block a date | तारीख ब्लॉक करें | తేదీని బ్లాక్ చేయండి |  | pending |
+| `booking.schedule.overrides.extra` | Add extra hours | अतिरिक्त समय जोड़ें | అదనపు సమయాలు జోడించండి |  | pending |
+| `booking.schedule.overrides.date` | Date | तारीख | తేదీ |  | pending |
+| `booking.schedule.overrides.wholeDay` | Whole day | पूरा दिन | రోజంతా |  | pending |
+| `booking.schedule.overrides.note` | Note (only you see it) | नोट (सिर्फ़ आपको दिखेगा) | నోట్ (మీకు మాత్రమే కనిపిస్తుంది) |  | pending |
+| `booking.schedule.overrides.blocked` | Blocked | ब्लॉक | బ్లాక్ చేయబడింది |  | pending |
+| `booking.schedule.overrides.extraHours` | Extra hours | अतिरिक्त समय | అదనపు సమయాలు |  | pending |
+| `booking.schedule.agenda.title` | Agenda | एजेंडा | అజెండా |  | pending |
+| `booking.schedule.agenda.day` | Day | दिन | రోజు |  | pending |
+| `booking.schedule.agenda.week` | Week | सप्ताह | వారం |  | pending |
+| `booking.schedule.agenda.previous` | Previous | पिछला | మునుపటి |  | pending |
+| `booking.schedule.agenda.next` | Next | अगला | తదుపరి |  | pending |
+| `booking.schedule.agenda.today` | Today | आज | ఈరోజు |  | pending |
+| `booking.schedule.agenda.none` | No appointments. | कोई अपॉइंटमेंट नहीं। | అపాయింట్‌మెంట్‌లు లేవు. |  | pending |
+| `booking.schedule.agenda.child` | {child}, {age} | {child}, {age} | {child}, {age} |  | pending |
+| `booking.schedule.agenda.noChild` | Child not given | बच्चे की जानकारी नहीं | పిల్లల వివరాలు లేవు |  | pending |
+| `booking.schedule.agenda.markCompleted` | Mark completed | पूरा हुआ चिह्नित करें | పూర్తయినట్లు గుర్తించండి |  | pending |
+| `booking.schedule.agenda.noShow` | No-show | नहीं आए | హాజరు కాలేదు |  | pending |
+| `booking.schedule.agenda.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `booking.schedule.agenda.cancelQuestion` | Cancel this appointment? The family is told. | यह अपॉइंटमेंट रद्द करें? परिवार को बताया जाएगा। | ఈ అపాయింట్‌మెంట్‌ను రద్దు చేయాలా? కుటుంబానికి తెలియజేయబడుతుంది. |  | pending |
+| `booking.schedule.agenda.warning` | Outside your hours now (blocked or changed). Contact the family or cancel. | अब आपके समय से बाहर है (ब्लॉक या बदला गया)। परिवार से संपर्क करें या रद्द करें। | ఇప్పుడు మీ సమయాలకు బయట ఉంది (బ్లాక్ లేదా మార్చబడింది). కుటుంబాన్ని సంప్రదించండి లేదా రద్దు చేయండి. |  | pending |
+| `booking.schedule.agenda.notStarted` | You can mark this after the appointment starts. | अपॉइंटमेंट शुरू होने के बाद आप इसे चिह्नित कर सकते हैं। | అపాయింట్‌మెంట్ మొదలైన తర్వాత దీనిని గుర్తించవచ్చు. |  | pending |
+| `booking.schedule.organisation` | Organisation | संगठन | సంస్థ |  | pending |

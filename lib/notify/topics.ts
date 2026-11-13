@@ -7,6 +7,7 @@ import { env } from "@/lib/env";
 import type { Queryable } from "@/lib/pg";
 import {
   activeGrantRecipients,
+  appointmentParties,
   activeGuardians,
   assignedAssessmentGuardian,
   caseProviders,
@@ -21,6 +22,19 @@ import type { Channel, OutboxEventRow } from "./types";
 import { deletionRequester, exportRequester } from "@/lib/privacy/recipients";
 
 const uuid = z.uuid();
+// 030 appointment events (display values for the templates; no child data).
+const appointmentPayload = z
+  .object({
+    appointment_id: uuid,
+    starts_at: z.iso.datetime({ offset: true }),
+    ends_at: z.iso.datetime({ offset: true }),
+    provider_name: z.string().min(1).max(120),
+    mode: z.enum(["in_clinic", "video"]),
+    time_zone: z.string().min(1).max(64),
+    location: z.string().max(300).nullable().optional(),
+    cancelled_by: z.enum(["guardian", "provider", "system"]).optional(),
+  })
+  .strict();
 const userList = z.array(uuid).min(1).max(100);
 
 export type RecipientContext = { sql: Queryable; event: OutboxEventRow };
@@ -181,6 +195,38 @@ export const TOPICS = {
     template: "privacy_deletion_rejected",
     recipients: (p, { sql }) => deletionRequester(sql, p.request_id, "rejected"),
   }),
+  // 030: enqueued by the booking SQL functions in the same transaction (supabase/migrations/20261113003000_booking.sql).
+  // Payload: small display values only (provider name, time, mode, location) - never the child.
+  "appointment.confirmed": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_confirmed",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"]),
+  }),
+  "appointment.reminder_day_before": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_reminder_24h",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"], "guardian"),
+  }),
+  "appointment.reminder_two_hours": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_reminder_2h",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"], "guardian"),
+  }),
+  "appointment.cancelled": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_cancelled",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["cancelled"]),
+  }),
+  "appointment.rescheduled": topic({
+    payload: appointmentPayload,
+    channels: GUARDIAN_CHANNELS,
+    template: "appointment_rescheduled",
+    recipients: (p, { sql }) => appointmentParties(sql, p.appointment_id, ["confirmed"]),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -215,6 +261,15 @@ export const PRIVACY_TOPICS = {
   deletionRequested: "privacy.deletion_requested",
   deletionCompleted: "privacy.deletion_completed",
   deletionRejected: "privacy.deletion_rejected",
+} as const satisfies Record<string, Topic>;
+
+// 030: booking (enqueued by the SQL state machine; reminders cancelled with outbox_cancel('appt:<id>:')).
+export const APPOINTMENT_TOPICS = {
+  confirmed: "appointment.confirmed",
+  reminder24h: "appointment.reminder_day_before",
+  reminder2h: "appointment.reminder_two_hours",
+  cancelled: "appointment.cancelled",
+  rescheduled: "appointment.rescheduled",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

@@ -1,6 +1,6 @@
 # 030: Availability and atomic one-off booking
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 028, 032, 041: books against stable provider profiles/services (028); confirmations and reminders go through the outbox (032); real child data needs the privacy/audit baseline (041)
 
