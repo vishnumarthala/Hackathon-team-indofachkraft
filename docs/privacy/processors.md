@@ -5,7 +5,7 @@ Shown to families on `/privacy` and in every consent text (020 `consent_document
 
 | Processor | Used for | Personal data sent | Region | Deletion | Contract / terms status |
 |-----------|----------|--------------------|--------|----------|-------------------------|
-| ElevenLabs (Conversational AI, Speech-to-Text, TTS) | AI intake voice call (009/010), session transcription (005), parent voice summary (015) | Call audio and transcript (parent's voice, child's first name and development details), session audio, report summary text | USA | `DELETE /v1/convai/conversations/{conversation_id}` for every `recordings.external_id` on erasure (`lib/elevenlabs/conversations.ts`, `processor_deletions`). STT/TTS requests are not stored as conversations | Open: DPA, zero-retention mode for STT, data residency options |
+| ElevenLabs (Conversational AI, Speech-to-Text, TTS) | AI intake voice call (009/010), session transcription (005), parent voice summary (015), public developmental check-in voice call (033, English-only agent, no names asked) | Call audio and transcript (parent's voice, child's first name and development details), session audio, report summary text; check-in: the parent's voice and answers, no identifiers by design | USA | `DELETE /v1/convai/conversations/{conversation_id}` for every `recordings.external_id` and every saved check-in's `screen_sessions.conversation_id` on erasure (`lib/elevenlabs/conversations.ts`, `processor_deletions`). Unsaved check-in calls: the agent's shortest conversation retention, no audio storage (`docs/elevenlabs-screen-agent.md`; value to record here when configured). STT/TTS requests are not stored as conversations | Open: DPA, zero-retention mode for STT and the check-in agent, data residency options |
 | Google Gemini API | Fact extraction, report drafts, intake briefs, Ask-the-case answers | Transcripts, case sheet answers, facts | Outside India (Google data centres) | No deletion API: recorded as `not_applicable` per request. Rely on paid-tier terms (no training, no long-term retention) | Open: confirm paid-tier terms for the pilot project (rd open question) |
 | Resend | Transactional email (invitations, intake links, notifications) | Recipient email, subject and text (no child name or clinical content in notifications, 032 D-5) | USA | Delivery log rows stripped after 90 days (`delivery_content`); provider logs per Resend retention | Open: DPA |
 | Meta WhatsApp Cloud API | Optional notifications (opt-in) | Recipient phone number, approved template parameters (a link only) | Outside India (Meta data centres) | Delivery log rows stripped after 90 days | Open: business verification, template approval (032) |
@@ -17,8 +17,8 @@ Notes
 - Google Maps / Places (029) receive only the searcher's typed text or coordinates (not stored) and provider addresses;
   no child data.
 - No analytics, advertising, tag manager or social pixel runs on any page for families (D-6, `tests/no-tracking.test.ts`).
-  Approved third-party scripts on child pages: ElevenLabs SDK (voice agent routes) and Razorpay checkout (payment
-  routes), declared per route in `lib/privacy/third-party-allowlist.ts`.
+  Approved third-party scripts on child pages: ElevenLabs SDK (voice agent routes, including the public check-in
+  `/screen`, 033) and Razorpay checkout (payment routes), declared per route in `lib/privacy/third-party-allowlist.ts`.
 - Adding a processor: add it here, to the privacy notice (`privacy.notice.processors.*`), to the consent texts of the
   features that use it (new consent document version), to `Processor` in `lib/privacy/registry.ts`, and, if it has a
   deletion API, to the erasure job.

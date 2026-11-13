@@ -22,6 +22,13 @@ export const THIRD_PARTY_ALLOWLIST: ThirdPartyEntry[] = [
     ticket: "040",
   },
   {
+    // 033 NFR-1: the public developmental check-in (a page about a child, same no-tracking rule).
+    name: "ElevenLabs SDK (developmental check-in)",
+    origins: ["https://elevenlabs.io", "https://api.elevenlabs.io"],
+    routes: ["/screen"],
+    ticket: "033",
+  },
+  {
     name: "Razorpay checkout",
     origins: ["https://checkout.razorpay.com"],
     // 031: the checkout page is `/book/<profileId>/pay/<appointmentId>` (lib/csp.ts FAMILY_CSP_EXCEPTIONS).

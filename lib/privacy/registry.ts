@@ -232,6 +232,39 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 033: public developmental check-ins. Anonymous rows (no child link, no IP, no free text) are deleted after 30
+    // days by the retention job; a check-in the guardian saved to a child (020 consent `screen_result_save`) stays
+    // with the child until erasure. Voice check-ins have an ElevenLabs conversation id (processor copy).
+    key: "screen_results",
+    label: "Developmental check-ins from the public check-in page (033)",
+    owner: "child",
+    tables: ["screen_sessions"],
+    retention: "Check-ins that were not saved to a child are deleted after 30 days; saved check-ins stay with the child until erasure.",
+    processors: ["supabase", "elevenlabs"],
+    // Exactly the portal's `Check-ins` list (date, age band, result band).
+    export: async ({ sql, childId }) => {
+      const rows = await sql`
+        select id, created_at, age_band, mode, result_band from public.screen_sessions
+        where saved_child_id = ${childId} order by created_at`;
+      return { data: rowsJson(rows) };
+    },
+    erase: {
+      scopes: AI_SCOPES,
+      externalRefs: async (sql, ctx) => {
+        const rows = await sql<{ conversation_id: string }[]>`
+          select conversation_id from public.screen_sessions where saved_child_id = ${ctx.childId} and conversation_id is not null`;
+        return rows.map((r) => ({ processor: "elevenlabs", ref: r.conversation_id }));
+      },
+      rows: async (tx, ctx) => {
+        if (ctx.scope === "everything") return (await tx`delete from public.screen_sessions where saved_child_id = ${ctx.childId}`).count;
+        // all_ai_processing: the voice conversation goes (above); the tap/voice answers and the band stay.
+        return (
+          await tx`update public.screen_sessions set conversation_id = null where saved_child_id = ${ctx.childId} and conversation_id is not null`
+        ).count;
+      },
+    },
+  },
+  {
     key: "ai_scribe",
     label: "AI scribe drafts: session notes, goal-progress suggestions and prescription drafts (038)",
     owner: "case",

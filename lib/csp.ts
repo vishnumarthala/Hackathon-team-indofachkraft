@@ -6,11 +6,27 @@ import { isBookingPath, isFamilyPath } from "@/lib/auth-access";
 
 type CspAllowance = { scriptSrc?: string[]; connectSrc?: string[]; frameSrc?: string[] };
 
+// 033: the ElevenLabs SDK is bundled (no external <script>, so no script-src exception); the voice check-in needs
+// its API and WebRTC (LiveKit) endpoints: US plus the data-residency hosts the SDK may pick. The SDK's audio
+// worklets are loaded by bundled code, which 'strict-dynamic' allows. Vendor listed in third-party-allowlist.ts.
+const ELEVENLABS_CONNECT = [
+  "https://api.elevenlabs.io",
+  "wss://api.elevenlabs.io",
+  "https://livekit.rtc.elevenlabs.io",
+  "wss://livekit.rtc.elevenlabs.io",
+  "wss://api.eu.residency.elevenlabs.io",
+  "wss://livekit.rtc.eu.residency.elevenlabs.io",
+  "wss://api.in.residency.elevenlabs.io",
+  "wss://livekit.rtc.in.residency.elevenlabs.io",
+];
+
 /**
- * Route prefix -> extra sources. A `*` segment matches one path segment (the payment page key below). Every script origin
- * must also be in lib/privacy/third-party-allowlist.ts for that route (tests/no-tracking.test.ts).
+ * Route prefix -> extra sources (approved exceptions only). A `*` segment matches one path segment (the payment page
+ * key below). Every script origin must also be in lib/privacy/third-party-allowlist.ts for that route
+ * (tests/no-tracking.test.ts).
  */
 export const FAMILY_CSP_EXCEPTIONS: Record<string, CspAllowance> = {
+  "/screen": { connectSrc: ELEVENLABS_CONNECT },
   // 031: Razorpay Checkout on the payment page only (script, its API iframe and telemetry endpoint).
   "/book/*/pay/*": {
     scriptSrc: ["https://checkout.razorpay.com"],
@@ -26,9 +42,14 @@ function underRoutePrefix(pathname: string, prefix: string): boolean {
   return have.length >= want.length && want.every((seg, i) => seg === "*" || seg === have[i]);
 }
 
+/** 033 NFR-1: the public check-in gets the same strict CSP as child pages (no analytics, ElevenLabs only). */
+export function isScreenPath(pathname: string): boolean {
+  return pathname === "/screen" || pathname.startsWith("/screen/");
+}
+
 export function needsFamilyCsp(pathname: string): boolean {
   // 030: the booking flow shows the guardian's children, so it gets the same no-third-party policy.
-  return isFamilyPath(pathname) || isBookingPath(pathname);
+  return isFamilyPath(pathname) || isBookingPath(pathname) || isScreenPath(pathname);
 }
 
 function exceptionsFor(pathname: string): Required<CspAllowance> {

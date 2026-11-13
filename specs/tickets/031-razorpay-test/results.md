@@ -93,3 +93,21 @@ Evidence: `evidence/acceptance.txt`, `evidence/payments-tests-verbose.txt`, scre
   payment records.
 - The E2E data (`e031-*` accounts, `e031` clinic, their appointments/payments) is left in the slot 6 database; the test
   suites clean up after themselves.
+
+## Merge with `main` (033 voice screen)
+
+- `git merge main`. Conflicts resolved keeping both sides: `lib/csp.ts` (033's `/screen` ElevenLabs `connect-src`
+  exception and `isScreenPath` + 031's `/book/*/pay/*` Razorpay exception and the `*`-segment matcher
+  `underRoutePrefix`), `tests/no-tracking.test.ts` (allowlist routes: `/family/**`, 033's `/screen`, 031's
+  `/book/*/pay/*`; three vendor entries), `app/privacy/page.tsx` (collect rows `screen` + `payments`, processor
+  `razorpay`), `messages/{en,hi,te}.json` (deep-merged, no value clashes), `messages/REVIEW.md` (regenerated with
+  `npx tsx scripts/i18n-review.ts`, 2157 rows). `lib/privacy/registry.ts` (`screen_results` + `payments`),
+  `lib/audit/strict-actions.ts` (`screen.result_saved` + `payment.captured`), `lib/auth-access.ts`, `lib/env.ts`,
+  `lib/privacy/third-party-allowlist.ts`, `vercel.json` and the docs merged automatically.
+- `dnm-db.sh 6 <worktree> reset`: all 26 migrations apply cleanly (`...3100_payments` before 033's `...3300_screen`).
+- After the reset: `npm run lint` exit 0, `npm run typecheck` exit 0, `npx vitest run` **80 files, 1278 passed,
+  11 skipped** (the opt-in `CT_DB_TESTS` block of 10 + the live no-tracking crawl; every DB suite ran, incl. 033's),
+  `npm run build` exit 0; `tests/razorpay-signature.test.ts` + `tests/payments-flow.test.ts` 2 files, 43 passed.
+  One earlier full run had a single failure in 041's `tests/privacy-export-deletion.test.ts` (export job result
+  `ready: 1`), which passed alone (5/5) and in the next full run: a cross-suite timing race in the shared database.
+  031 code does not run privacy jobs.

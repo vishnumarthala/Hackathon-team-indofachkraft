@@ -41,6 +41,11 @@ export const env = {
   get ELEVENLABS_AGENT_ID() {
     return required("ELEVENLABS_AGENT_ID");
   },
+  // 033: the English-only public developmental check-in agent (docs/elevenlabs-screen-agent.md). Optional: without
+  // it (and outside DEMO_MODE) `/screen` offers only the tap-through form.
+  get ELEVENLABS_SCREEN_AGENT_ID() {
+    return read("ELEVENLABS_SCREEN_AGENT_ID");
+  },
   get ELEVENLABS_WEBHOOK_SECRET() {
     return required("ELEVENLABS_WEBHOOK_SECRET");
   },

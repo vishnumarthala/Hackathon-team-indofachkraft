@@ -1716,6 +1716,7 @@
         "scribe": "AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you.",
         "homeProgram": "Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes).",
         "messages": "Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them.",
+        "screen": "Developmental check-in from our public check-in page: your child's age band and your answers, without any name. If you use voice, the call is processed by ElevenLabs.",
         "payments": "Payments for appointments you pay online: amount, status, refunds and Razorpay reference numbers. Razorpay handles your card or UPI details; we never see or store them."
       },
       "purposesTitle": "Why we use it",
@@ -1804,6 +1805,10 @@
         "messages": {
           "what": "Messages with the care team",
           "how": "While your child is in care, with the clinical record; a deleted message's text is removed at once"
+        },
+        "screen": {
+          "what": "Check-ins from the public check-in page that you did not save",
+          "how": "{days} days"
         },
         "payments": {
           "what": "Payments (amount, status, refunds)",
@@ -2134,58 +2139,6 @@
       "organisation": "Organisation"
     }
   },
-  "payments": {
-    "labels": {
-      "paid": "Paid",
-      "paidOnline": "Paid online",
-      "pending": "Payment pending",
-      "refundPending": "Refund in progress",
-      "refunded": "Refunded",
-      "notRefunded": "Paid, not refunded",
-      "atClinic": "Pay at clinic"
-    },
-    "list": {
-      "payNow": "Pay now"
-    },
-    "pay": {
-      "metaTitle": "Pay for your appointment",
-      "title": "Pay for your appointment",
-      "with": "with {name}",
-      "service": "Service",
-      "when": "When",
-      "amount": "Amount",
-      "countdown": "Pay within {time} to keep this time.",
-      "policyTitle": "Cancellation and refunds",
-      "policy": "Cancel 24 hours or more before the appointment and you get a full refund. If you cancel later, the payment is not refunded. If the provider cancels, you always get a full refund. Refunds reach your account in 5-7 working days.",
-      "secure": "Payments are processed by Razorpay. We never see or store your card or UPI details.",
-      "testMode": "Test mode: no real money moves. Use Razorpay test cards only.",
-      "payNow": "Pay now",
-      "opening": "Opening payment…",
-      "confirming": "Confirming your payment…",
-      "paid": "Payment received. Your appointment is booked.",
-      "paidDetail": "We sent you a confirmation. You can see it in My appointments.",
-      "refundStarted": "This time was no longer available, so we are refunding your payment in full.",
-      "failed": "The payment did not go through. You can try again.",
-      "dismissed": "Payment not finished. You can try again while the time is held.",
-      "expired": "The time to pay has run out and this time was released.",
-      "pickAgain": "Pick a time again",
-      "cancelled": "This appointment was cancelled.",
-      "nothingToPay": "There is nothing to pay online for this appointment.",
-      "viewAppointments": "My appointments",
-      "demoTitle": "Demo payment",
-      "demoNote": "Demo mode: nobody is charged. Choose what happens.",
-      "demoSuccess": "Simulate successful payment",
-      "demoFailure": "Simulate failed payment",
-      "errors": {
-        "not_configured": "Online payment is not available right now. Please try again later.",
-        "gateway_error": "The payment could not be started. Please try again.",
-        "invalid_signature": "We could not verify the payment. If money was taken, it will be refunded automatically.",
-        "hold_expired": "The time to pay has run out. Please pick the time again.",
-        "already_paid": "This appointment is already paid.",
-        "generic": "Something went wrong. Please try again."
-      }
-    }
-  },
   "messaging": {
     "title": "Messages",
     "navLink": "Messages",
@@ -2443,6 +2396,190 @@
       "empty": "No session notes have been shared with you yet.",
       "from": "From {org}",
       "sharedOn": "Shared on {date}"
+    }
+  },
+  "screen": {
+    "metaTitle": "Developmental check-in for parents",
+    "metaDescription": "A free 5-minute developmental check-in for parents in Hyderabad, by voice or by tapping. This is a developmental check-in, not a diagnosis.",
+    "title": "Developmental check-in",
+    "intro": "About 5 minutes. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child.",
+    "aiDisclosure": "You will talk to an AI assistant. It speaks English. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
+    "noPersonal": "Please do not say or type your child's name, your name or contact details. We keep only your answers, without any name, and delete them after 30 days unless you save them to your child's profile.",
+    "ageLabel": "Child's age",
+    "ageBands": {
+      "m18to36": "18-36 months",
+      "y3to5": "3-5 years",
+      "y6to9": "6-9 years",
+      "y10plus": "10+ years"
+    },
+    "agree": "I understand this is not a diagnosis and agree to talk to an AI assistant.",
+    "startVoice": "Start voice check-in",
+    "startForm": "Answer by tapping instead",
+    "startHint": "Choose your child's age and tick the box to start.",
+    "starting": "Starting...",
+    "englishOnly": "The questions are in English for now.",
+    "demo": "Demo mode: no live voice call. Please answer by tapping.",
+    "errors": {
+      "busy": "Too many check-ins were started from this connection. Please try again in an hour.",
+      "voiceUnavailable": "Voice check-in is not available right now. Please answer by tapping instead.",
+      "mic": "Microphone access was not allowed. You can answer by tapping instead.",
+      "failed": "Something went wrong. Please try again.",
+      "expired": "This check-in has expired. Please start a new one.",
+      "voiceFailed": "The voice call stopped. You can continue by tapping."
+    },
+    "voice": {
+      "connecting": "Connecting...",
+      "listening": "Listening... answer in your own words",
+      "speaking": "Assistant is speaking",
+      "end": "End call",
+      "switchToForm": "Continue by tapping",
+      "progress": "{answered} of {total} questions answered",
+      "transcript": "Conversation",
+      "speakerAi": "AI assistant",
+      "speakerYou": "You",
+      "finishing": "Getting your result..."
+    },
+    "form": {
+      "safetyQuestion": "Safety question {n} of {total}",
+      "questionOf": "Question {n} of {total}",
+      "back": "Back",
+      "next": "Next",
+      "finish": "See my result",
+      "missing": "Please answer every question.",
+      "saving": "Saving..."
+    },
+    "urgent": "Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today.",
+    "result": {
+      "label": "Your check-in result",
+      "headlines": {
+        "noStrongSigns": "No strong signs from this check-in",
+        "discussWithProfessional": "Some areas are worth discussing with a professional",
+        "seeProfessionalSoon": "Please see a professional soon"
+      },
+      "notDiagnosis": "This is a developmental check-in, not a diagnosis.",
+      "domainsTitle": "What your answers show",
+      "domains": {
+        "social": "Social connection",
+        "emotional": "Feelings and safety awareness",
+        "speech": "Speech and communication",
+        "behaviour": "Behaviour and routines",
+        "sensory": "Senses (sounds, lights, touch)",
+        "cognitive": "Attention"
+      },
+      "levels": {
+        "fewSigns": "Few signs in your answers.",
+        "someSigns": "Some signs worth mentioning to a professional.",
+        "moreSigns": "Several signs worth discussing with a professional."
+      },
+      "startAgain": "Start a new check-in"
+    },
+    "find": {
+      "title": "Find a specialist near you",
+      "intro": "Specialists who can assess your child's development: developmental paediatricians, child psychologists, speech-language therapists and occupational therapists.",
+      "locality": "Your locality",
+      "chooseLocality": "Choose a locality",
+      "useMyLocation": "Use my location",
+      "locating": "Finding your location...",
+      "locationDenied": "We could not get your location. Choose a locality instead.",
+      "search": "Show specialists",
+      "searching": "Searching...",
+      "resultsLabel": "Specialists near you",
+      "empty": "No specialists listed near you yet. Try the full directory.",
+      "error": "Could not load specialists. Please try the full directory.",
+      "kmAway": "{distance} km away",
+      "videoAnywhere": "Video consultation",
+      "seeAll": "See all near you: {type}",
+      "openDirectory": "Open the full directory"
+    },
+    "save": {
+      "title": "Save this result",
+      "intro": "Keep this result in your child's profile so you can show it to a professional later. We save it only after you allow it for that child.",
+      "signIn": "Sign in to save",
+      "notGuardian": "Only a parent account can save check-ins.",
+      "child": "Child",
+      "saveTo": "Save this result to {child}",
+      "saving": "Saving...",
+      "saved": "Saved to {child}'s profile.",
+      "viewChild": "Open {child}'s profile",
+      "noChildren": "Add your child in your DoctorNearMe account first, then come back to this page.",
+      "addChild": "Add a child",
+      "consentTitle": "Allow saving check-ins for {child}",
+      "consentAgree": "I have read this and allow it.",
+      "allow": "Allow and save",
+      "cancel": "Cancel",
+      "readFull": "Read the full text",
+      "verifyPhone": "Verify your mobile number before giving permission.",
+      "verifyLink": "Verify now",
+      "outdated": "The permission text was updated. Please reload the page.",
+      "expired": "This check-in has expired and can no longer be saved.",
+      "notSavable": "This check-in cannot be saved.",
+      "failed": "Could not save. Please try again."
+    },
+    "checkins": {
+      "title": "Check-ins",
+      "intro": "Developmental check-ins you saved from the check-in page. This is a developmental check-in, not a diagnosis.",
+      "empty": "No saved check-ins yet.",
+      "take": "Take a developmental check-in",
+      "age": "Age {age}"
+    },
+    "landing": {
+      "navLink": "Developmental check-in",
+      "eyebrow": "For parents",
+      "title": "Worried about your child's development?",
+      "text": "Answer a few short questions by voice or by tapping. About 5 minutes and free. A developmental check-in, not a diagnosis, with specialists near you.",
+      "cta": "Start the developmental check-in"
+    }
+  },
+  "payments": {
+    "labels": {
+      "paid": "Paid",
+      "paidOnline": "Paid online",
+      "pending": "Payment pending",
+      "refundPending": "Refund in progress",
+      "refunded": "Refunded",
+      "notRefunded": "Paid, not refunded",
+      "atClinic": "Pay at clinic"
+    },
+    "list": {
+      "payNow": "Pay now"
+    },
+    "pay": {
+      "metaTitle": "Pay for your appointment",
+      "title": "Pay for your appointment",
+      "with": "with {name}",
+      "service": "Service",
+      "when": "When",
+      "amount": "Amount",
+      "countdown": "Pay within {time} to keep this time.",
+      "policyTitle": "Cancellation and refunds",
+      "policy": "Cancel 24 hours or more before the appointment and you get a full refund. If you cancel later, the payment is not refunded. If the provider cancels, you always get a full refund. Refunds reach your account in 5-7 working days.",
+      "secure": "Payments are processed by Razorpay. We never see or store your card or UPI details.",
+      "testMode": "Test mode: no real money moves. Use Razorpay test cards only.",
+      "payNow": "Pay now",
+      "opening": "Opening payment…",
+      "confirming": "Confirming your payment…",
+      "paid": "Payment received. Your appointment is booked.",
+      "paidDetail": "We sent you a confirmation. You can see it in My appointments.",
+      "refundStarted": "This time was no longer available, so we are refunding your payment in full.",
+      "failed": "The payment did not go through. You can try again.",
+      "dismissed": "Payment not finished. You can try again while the time is held.",
+      "expired": "The time to pay has run out and this time was released.",
+      "pickAgain": "Pick a time again",
+      "cancelled": "This appointment was cancelled.",
+      "nothingToPay": "There is nothing to pay online for this appointment.",
+      "viewAppointments": "My appointments",
+      "demoTitle": "Demo payment",
+      "demoNote": "Demo mode: nobody is charged. Choose what happens.",
+      "demoSuccess": "Simulate successful payment",
+      "demoFailure": "Simulate failed payment",
+      "errors": {
+        "not_configured": "Online payment is not available right now. Please try again later.",
+        "gateway_error": "The payment could not be started. Please try again.",
+        "invalid_signature": "We could not verify the payment. If money was taken, it will be refunded automatically.",
+        "hold_expired": "The time to pay has run out. Please pick the time again.",
+        "already_paid": "This appointment is already paid.",
+        "generic": "Something went wrong. Please try again."
+      }
     }
   }
 }

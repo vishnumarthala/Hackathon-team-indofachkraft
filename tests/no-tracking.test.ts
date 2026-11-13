@@ -58,12 +58,17 @@ describe("third-party allowlist (D-6)", () => {
     for (const route of ["/family", "/family/appointments", "/family/children/x/ask"]) expect(scriptAllowed(src, route, APP)).toBe(false);
   });
 
-  it("allowlist entries are approved vendors, scoped to /family routes (031: + the payment page), and never trackers", () => {
-    expect(THIRD_PARTY_ALLOWLIST.map((e) => e.name)).toEqual(["ElevenLabs SDK (voice agent)", "Razorpay checkout"]);
+  it("allowlist entries are approved vendors, scoped to /family routes (or 033's /screen, 031's payment page), and never trackers", () => {
+    expect(THIRD_PARTY_ALLOWLIST.map((e) => e.name)).toEqual([
+      "ElevenLabs SDK (voice agent)",
+      "ElevenLabs SDK (developmental check-in)",
+      "Razorpay checkout",
+    ]);
     for (const entry of THIRD_PARTY_ALLOWLIST) {
       expect(entry.routes.length).toBeGreaterThan(0);
       // 031: Razorpay Checkout runs on the booking payment page `/book/<profileId>/pay/<appointmentId>` (rd FR-4).
-      for (const route of entry.routes) expect(route.startsWith("/family/") || (entry.name === "Razorpay checkout" && route === "/book/*/pay/*")).toBe(true);
+      for (const route of entry.routes)
+        expect(route.startsWith("/family/") || route === "/screen" || (entry.name === "Razorpay checkout" && route === "/book/*/pay/*")).toBe(true);
       for (const origin of entry.origins) {
         expect(new URL(origin).origin).toBe(origin);
         expect(isBannedHost(new URL(origin).hostname)).toBe(false);
@@ -194,6 +199,11 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
                 ${userId}, ${childId}, tstzrange(now() + interval '3 days', now() + interval '3 days 30 minutes', '[)'), 'confirmed')
         returning id`;
 
+      // 027: a conversation on the guardian's case, so /family/messages/[threadId] renders (removed with the case).
+      const [thread] = await sql<{ id: string }[]>`
+        insert into message_threads (case_id, org_id, child_id, subject, created_by)
+        values (${caseId}, '00000000-0000-4000-8000-00000000a001', ${childId}, 'Crawl thread (synthetic)', ${userId}) returning id`;
+
       const jar: { name: string; value: string }[] = [];
       const ssr = createServerClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string, {
         cookies: { getAll: () => jar, setAll: (cookies) => cookies.forEach((c) => jar.push({ name: c.name, value: c.value })) },
@@ -205,7 +215,8 @@ describe.skipIf(!crawl)("rendered /family/** pages load no third-party scripts (
       const routes = FAMILY_PAGES.map(routeOf).map((r) =>
         r
           .replace("[id]", r.startsWith("/family/assessments/") ? assessment.id : r.startsWith("/family/appointments/") ? appointment.id : (childId as string))
-          .replace("[version]", "1"),
+          .replace("[version]", "1")
+          .replace("[threadId]", thread.id),
       );
       const failures: string[] = [];
       const checked: string[] = [];
