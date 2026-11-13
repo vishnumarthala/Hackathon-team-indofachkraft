@@ -5,7 +5,7 @@ import { getFormatter, getT } from "@/lib/i18n/server";
 import { getImport, listImportedChildren } from "@/lib/import/store";
 import { formatWeekdays } from "@/lib/import/timetable";
 import { canManage, getMembershipRole } from "@/lib/orgs";
-import { RegenerateCodes, UndoButton } from "../ImportClient";
+import { RegenerateCodes, SchedulePendingButton, UndoButton } from "../ImportClient";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +32,11 @@ export default async function ImportDetailPage({ params }: { params: Promise<{ i
           {t("resultCounts", { imported: record.imported_count, skipped: record.skipped_count, failed: record.failed_count })}
         </p>
         {record.timetable_pending_count > 0 && !record.undone_at ? (
-          <p className="text-sm text-slate-700">{t("timetableSaved", { count: record.timetable_pending_count })}</p>
+          <div className="space-y-2">
+            <p className="text-sm text-slate-700">{t("timetableSaved", { count: record.timetable_pending_count })}</p>
+            {/* 044: weekly series (043) exist now; schedule the timetables this import could not book yet. */}
+            <SchedulePendingButton importId={record.id} />
+          </div>
         ) : null}
       </header>
 

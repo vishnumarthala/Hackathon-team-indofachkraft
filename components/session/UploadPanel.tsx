@@ -54,14 +54,21 @@ const deps: FlowDeps = {
 /** 038: appointment choices for the `Appointment` select (video ones are shown but cannot be chosen). */
 export type AppointmentOption = { id: string; starts_at: string | null; mode: "in_clinic" | "video" | "unknown" };
 
-export type ScribeUploadOptions = { defaultTemplate: ScribeTemplate; appointments: AppointmentOption[] };
+export type ScribeUploadOptions = {
+  defaultTemplate: ScribeTemplate;
+  appointments: AppointmentOption[];
+  /** 044 `Write note` from the attendance register: the appointment chosen up front. */
+  initialAppointmentId?: string;
+};
 
 export function UploadPanel({ caseId, scribe }: { caseId: string; scribe?: ScribeUploadOptions }) {
   const router = useRouter();
   const ts = useT("scribe");
   const format = useFormatter();
   const [template, setTemplate] = useState<ScribeTemplate>(scribe?.defaultTemplate ?? "child_dev_isaa");
-  const [appointmentId, setAppointmentId] = useState("");
+  const [appointmentId, setAppointmentId] = useState(
+    scribe?.appointments.some((a) => a.id === scribe.initialAppointmentId && a.mode !== "video") ? (scribe.initialAppointmentId as string) : "",
+  );
   const progress = useRef<FlowProgress>(newProgress());
   const [file, setFile] = useState<File | null>(null);
   const [consent, setConsent] = useState(false);

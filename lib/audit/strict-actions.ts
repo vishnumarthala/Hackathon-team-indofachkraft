@@ -388,6 +388,35 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "undoImport",
     impl: { kind: "auditStrict", module: "lib/import/store.ts" },
   },
+  {
+    action: "children.import_timetables_scheduled",
+    description: "Owner/admin (or the catch-up script) creates the weekly series of an import's saved timetables (counts only)",
+    routes: ["app/api/org/import/[id]/schedule/route.ts"],
+    call: "schedulePendingTimetables",
+    impl: { kind: "auditStrict", module: "lib/import/schedule.ts" },
+  },
+  // ---------- 044 attendance register (fees depend on it) ----------
+  {
+    action: "appointment.attendance_marked",
+    description: "Staff mark a session present, absent, late cancel (family) or centre cancelled",
+    routes: ["app/api/appointments/[id]/attendance/route.ts", "app/api/attendance/mark-all/route.ts"],
+    call: "markAttendance",
+    impl: { kind: "auditStrict", module: "lib/booking/attendance.ts" },
+  },
+  {
+    action: "appointment.attendance_corrected",
+    description: "Staff correct a marked session (reason required; members within 7 days, owner/admin any time)",
+    routes: ["app/api/appointments/[id]/attendance/route.ts"],
+    call: "markAttendance",
+    impl: { kind: "auditStrict", module: "lib/booking/attendance.ts" },
+  },
+  {
+    action: "org.attendance_policy_changed",
+    description: "Owner/admin changes which absences and late cancellations are billable",
+    routes: ["app/api/orgs/[id]/attendance-policy/route.ts"],
+    call: "setAttendancePolicy",
+    impl: { kind: "auditStrict", module: "lib/booking/attendance.ts" },
+  },
 ];
 
 export function strictAction(action: string): StrictAction | undefined {

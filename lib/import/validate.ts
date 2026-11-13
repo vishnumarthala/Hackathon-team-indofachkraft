@@ -5,7 +5,7 @@ import { ageParts } from "@/lib/children/codes";
 import { normalizeIndianMobile } from "@/lib/family/phone";
 import { createTranslator } from "@/lib/i18n/translate";
 import { CsvSyntaxError, MAX_ROWS, parseCsv } from "./csv";
-import { parseTime, parseWeekdays, type Timetable } from "./timetable";
+import { parseBillingMode, parseTime, parseWeekdays, type ImportBillingMode, type Timetable } from "./timetable";
 
 export const REQUIRED_COLUMNS = ["child_first_name", "date_of_birth", "guardian_name"] as const;
 export const OPTIONAL_COLUMNS = [
@@ -15,7 +15,8 @@ export const OPTIONAL_COLUMNS = [
   "therapist_email",
   "notes",
 ] as const;
-export const TIMETABLE_COLUMNS = ["weekdays", "time", "service_name"] as const;
+/** `billing_mode` (044): 043's package / per_session / free, empty = per_session. */
+export const TIMETABLE_COLUMNS = ["weekdays", "time", "service_name", "billing_mode"] as const;
 /** Template order (FR-1). */
 export const TEMPLATE_COLUMNS = [
   "child_first_name",
@@ -67,6 +68,7 @@ export type IssueCode =
   | "weekdays_invalid"
   | "time_invalid"
   | "service_unknown"
+  | "billing_mode_invalid"
   // row warnings
   | "age_over_8"
   | "phone_missing"
@@ -102,7 +104,7 @@ export type ValidationContext = {
   seriesAvailable: boolean;
 };
 
-export type RowTimetable = Timetable & { service_id: string; service_name: string };
+export type RowTimetable = Timetable & { service_id: string; service_name: string; billing_mode: ImportBillingMode };
 
 export type ImportRow = {
   /** Spreadsheet row number (header = 1). */
@@ -325,19 +327,21 @@ export function validateRows(parsed: ParsedFile, ctx: ValidationContext): Import
     if (notes.length > NOTES_MAX) errors.push(issue("notes_too_long", { row, max: NOTES_MAX }));
 
     let timetable: RowTimetable | null = null;
-    const [weekdaysRaw, timeRaw, serviceRaw] = [get("weekdays"), get("time"), get("service_name")];
-    if (weekdaysRaw || timeRaw || serviceRaw) {
+    const [weekdaysRaw, timeRaw, serviceRaw, billingRaw] = [get("weekdays"), get("time"), get("service_name"), get("billing_mode")];
+    if (weekdaysRaw || timeRaw || serviceRaw || billingRaw) {
       if (!weekdaysRaw || !timeRaw || !serviceRaw) errors.push(issue("timetable_incomplete", { row }));
       else {
         const weekdays = parseWeekdays(weekdaysRaw);
         const time = parseTime(timeRaw);
+        const billing = parseBillingMode(billingRaw);
         if (!weekdays) errors.push(issue("weekdays_invalid", { row, value: weekdaysRaw }));
         if (!time) errors.push(issue("time_invalid", { row, value: timeRaw }));
+        if (!billing) errors.push(issue("billing_mode_invalid", { row, value: billingRaw }));
         if (!emailRaw) errors.push(issue("timetable_needs_therapist", { row }));
         const service = pickService(ctx.services, serviceRaw, therapist?.user_id ?? null);
         if (!service) errors.push(issue("service_unknown", { row, value: serviceRaw }));
-        if (weekdays && time && service) {
-          timetable = { weekdays, time, service_id: service.id, service_name: service.name };
+        if (weekdays && time && service && billing) {
+          timetable = { weekdays, time, service_id: service.id, service_name: service.name, billing_mode: billing };
         }
       }
     }

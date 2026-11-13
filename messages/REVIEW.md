@@ -11,6 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
+Rows: 2763. Not yet approved: 2763.
 Rows: 2760. Not yet approved: 2760.
 
 | key | en | hi | te | reviewer | status |
@@ -1080,6 +1081,7 @@ Rows: 2760. Not yet approved: 2760.
 | `caseTabs.messages` | Messages | संदेश | సందేశాలు |  | pending |
 | `caseTabs.homeProgram` | Home program | घर का कार्यक्रम | ఇంటి కార్యక్రమం |  | pending |
 | `caseTabs.prescriptions` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
+| `caseTabs.attendance` | Attendance | उपस्थिति | హాజరు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -2678,7 +2680,7 @@ Rows: 2760. Not yet approved: 2760.
 | `childImport.onlyManagers` | Only organisation owners and admins can import children. | केवल संगठन के मालिक और एडमिन बच्चों को इम्पोर्ट कर सकते हैं। | సంస్థ యజమానులు మరియు అడ్మిన్‌లు మాత్రమే పిల్లలను ఇంపోర్ట్ చేయగలరు. |  | pending |
 | `childImport.templateTitle` | 1. Download the template | 1. टेम्पलेट डाउनलोड करें | 1. టెంప్లేట్ డౌన్‌లోడ్ చేయండి |  | pending |
 | `childImport.templateLink` | Download the template (CSV) | टेम्पलेट डाउनलोड करें (CSV) | టెంప్లేట్ డౌన్‌లోడ్ చేయండి (CSV) |  | pending |
-| `childImport.templateHelp` | Required columns: child_first_name, date_of_birth (YYYY-MM-DD or DD/MM/YYYY) and guardian_name. Optional: child_last_name, guardian_phone (10-digit Indian mobile), preferred_language (en, hi or te), therapist_email, notes, and a timetable: weekdays (for example Mon;Wed;Fri), time and service_name. In Excel use Save As > CSV UTF-8. Telugu and Hindi names are fine. | ज़रूरी कॉलम: child_first_name, date_of_birth (YYYY-MM-DD या DD/MM/YYYY) और guardian_name। वैकल्पिक: child_last_name, guardian_phone (10 अंकों का भारतीय मोबाइल), preferred_language (en, hi या te), therapist_email, notes, और समय-सारणी: weekdays (जैसे Mon;Wed;Fri), time और service_name। Excel में Save As > CSV UTF-8 चुनें। तेलुगु और हिंदी नाम चलेंगे। | తప్పనిసరి కాలమ్‌లు: child_first_name, date_of_birth (YYYY-MM-DD లేదా DD/MM/YYYY) మరియు guardian_name. ఐచ్ఛికం: child_last_name, guardian_phone (10 అంకెల భారతీయ మొబైల్), preferred_language (en, hi లేదా te), therapist_email, notes, మరియు టైమ్‌టేబుల్: weekdays (ఉదా. Mon;Wed;Fri), time మరియు service_name. Excel లో Save As > CSV UTF-8 ఎంచుకోండి. తెలుగు, హిందీ పేర్లు సరే. |  | pending |
+| `childImport.templateHelp` | Required columns: child_first_name, date_of_birth (YYYY-MM-DD or DD/MM/YYYY) and guardian_name. Optional: child_last_name, guardian_phone (10-digit Indian mobile), preferred_language (en, hi or te), therapist_email, notes, and a timetable: weekdays (for example Mon;Wed;Fri), time, service_name and billing_mode (package, per_session or free; empty = per_session). In Excel use Save As > CSV UTF-8. Telugu and Hindi names are fine. | ज़रूरी कॉलम: child_first_name, date_of_birth (YYYY-MM-DD या DD/MM/YYYY) और guardian_name। वैकल्पिक: child_last_name, guardian_phone (10 अंकों का भारतीय मोबाइल), preferred_language (en, hi या te), therapist_email, notes, और समय-सारणी: weekdays (जैसे Mon;Wed;Fri), time, service_name और billing_mode (package, per_session या free; खाली = per_session)। Excel में Save As > CSV UTF-8 चुनें। तेलुगु और हिंदी नाम चलेंगे। | తప్పనిసరి కాలమ్‌లు: child_first_name, date_of_birth (YYYY-MM-DD లేదా DD/MM/YYYY) మరియు guardian_name. ఐచ్ఛికం: child_last_name, guardian_phone (10 అంకెల భారతీయ మొబైల్), preferred_language (en, hi లేదా te), therapist_email, notes, మరియు టైమ్‌టేబుల్: weekdays (ఉదా. Mon;Wed;Fri), time, service_name మరియు billing_mode (package, per_session లేదా free; ఖాళీ = per_session). Excel లో Save As > CSV UTF-8 ఎంచుకోండి. తెలుగు, హిందీ పేర్లు సరే. |  | pending |
 | `childImport.uploadTitle` | 2. Upload your CSV | 2. अपनी CSV अपलोड करें | 2. మీ CSV అప్‌లోడ్ చేయండి |  | pending |
 | `childImport.orgLabel` | Organisation | संगठन | సంస్థ |  | pending |
 | `childImport.fileLabel` | CSV file | CSV फ़ाइल | CSV ఫైల్ |  | pending |
@@ -2720,8 +2722,8 @@ Rows: 2760. Not yet approved: 2760.
 | `childImport.given` | Given | दी गई | ఇచ్చారు |  | pending |
 | `childImport.expires` | Expires {date} | {date} को समाप्त | {date} న ముగుస్తుంది |  | pending |
 | `childImport.openImport` | Open the import page | इम्पोर्ट पेज खोलें | ఇంపోర్ట్ పేజీ తెరవండి |  | pending |
-| `childImport.timetableSaved_one` | {count} timetable saved, waiting for weekly sessions. | {count} समय-सारणी सहेजी गई, साप्ताहिक सत्रों का इंतज़ार है। | {count} టైమ్‌టేబుల్ భద్రపరచబడింది, వారపు సెషన్‌ల కోసం వేచి ఉంది. |  | pending |
-| `childImport.timetableSaved_other` | {count} timetables saved, waiting for weekly sessions. | {count} समय-सारणियाँ सहेजी गईं, साप्ताहिक सत्रों का इंतज़ार है। | {count} టైమ్‌టేబుల్‌లు భద్రపరచబడ్డాయి, వారపు సెషన్‌ల కోసం వేచి ఉన్నాయి. |  | pending |
+| `childImport.timetableSaved_one` | {count} timetable saved but not scheduled yet. | {count} समय-सारणी सहेजी गई, अभी तय नहीं हुई। | {count} టైమ్‌టేబుల్ భద్రపరచబడింది, ఇంకా షెడ్యూల్ కాలేదు. |  | pending |
+| `childImport.timetableSaved_other` | {count} timetables saved but not scheduled yet. | {count} समय-सारणियाँ सहेजी गईं, अभी तय नहीं हुईं। | {count} టైమ్‌టేబుల్‌లు భద్రపరచబడ్డాయి, ఇంకా షెడ్యూల్ కాలేదు. |  | pending |
 | `childImport.historyTitle` | Recent imports | हाल के इम्पोर्ट | ఇటీవలి ఇంపోర్ట్‌లు |  | pending |
 | `childImport.historyNone` | No imports yet. | अभी कोई इम्पोर्ट नहीं। | ఇంకా ఇంపోర్ట్‌లు లేవు. |  | pending |
 | `childImport.historyRow` | {date}: {imported} imported, {skipped} skipped, {failed} failed | {date}: {imported} इम्पोर्ट, {skipped} छोड़े गए, {failed} असफल | {date}: {imported} ఇంపోర్ట్, {skipped} వదిలేసినవి, {failed} విఫలం |  | pending |
@@ -2770,8 +2772,97 @@ Rows: 2760. Not yet approved: 2760.
 | `childImport.issues.weekdays_invalid` | Row {row}: weekdays "{value}" not understood (for example Mon;Wed;Fri, at most 4 days) | पंक्ति {row}: weekdays "{value}" समझ नहीं आया (जैसे Mon;Wed;Fri, अधिकतम 4 दिन) | వరుస {row}: weekdays "{value}" అర్థం కాలేదు (ఉదా. Mon;Wed;Fri, గరిష్ఠంగా 4 రోజులు) |  | pending |
 | `childImport.issues.time_invalid` | Row {row}: time "{value}" not understood (for example 10:00 or 16:30) | पंक्ति {row}: time "{value}" समझ नहीं आया (जैसे 10:00 या 16:30) | వరుస {row}: time "{value}" అర్థం కాలేదు (ఉదా. 10:00 లేదా 16:30) |  | pending |
 | `childImport.issues.service_unknown` | Row {row}: no service called "{value}" in your organisation | पंक्ति {row}: आपके संगठन में "{value}" नाम की कोई सेवा नहीं है | వరుస {row}: మీ సంస్థలో "{value}" అనే సేవ లేదు |  | pending |
+| `childImport.issues.billing_mode_invalid` | Row {row}: billing_mode "{value}" must be package, per_session or free | पंक्ति {row}: billing_mode "{value}" package, per_session या free होना चाहिए | వరుస {row}: billing_mode "{value}" package, per_session లేదా free అయి ఉండాలి |  | pending |
 | `childImport.issues.age_over_8` | Row {row}: the child is {years} years old (above 8) | पंक्ति {row}: बच्चा {years} साल का है (8 से ऊपर) | వరుస {row}: పిల్ల వయస్సు {years} సంవత్సరాలు (8 కంటే ఎక్కువ) |  | pending |
 | `childImport.issues.phone_missing` | Row {row}: no guardian phone, so share the code in person | पंक्ति {row}: अभिभावक का फ़ोन नहीं है, इसलिए कोड आमने-सामने दें | వరుస {row}: సంరక్షకుల ఫోన్ లేదు, కాబట్టి కోడ్‌ను నేరుగా ఇవ్వండి |  | pending |
 | `childImport.issues.duplicate_existing` | Row {row}: looks like a child already in your organisation (same first name, date of birth and phone) | पंक्ति {row}: यह बच्चा शायद आपके संगठन में पहले से है (वही पहला नाम, जन्म तिथि और फ़ोन) | వరుస {row}: ఈ పిల్ల మీ సంస్థలో ఇప్పటికే ఉన్నట్లుంది (అదే మొదటి పేరు, పుట్టిన తేదీ, ఫోన్) |  | pending |
 | `childImport.issues.duplicate_in_file` | Row {row}: same child as row {other} of this file | पंक्ति {row}: इस फ़ाइल की पंक्ति {other} वाला ही बच्चा | వరుస {row}: ఈ ఫైల్‌లోని వరుస {other} లోని పిల్లే |  | pending |
 | `childImport.issues.timetable_pending` | Row {row}: timetable saved; it is scheduled once weekly sessions are switched on | पंक्ति {row}: समय-सारणी सहेजी गई; साप्ताहिक सत्र चालू होने पर तय होगी | వరుస {row}: టైమ్‌టేబుల్ భద్రపరచబడింది; వారపు సెషన్‌లు ప్రారంభమైనప్పుడు షెడ్యూల్ అవుతుంది |  | pending |
+| `childImport.schedulePending` | Schedule saved timetables | सहेजी गई समय-सारणियाँ तय करें | భద్రపరచిన టైమ్‌టేబుల్‌లను షెడ్యూల్ చేయండి |  | pending |
+| `childImport.schedulePendingHelp` | Creates the weekly series for the timetables that are still saved (for example from an import made before weekly sessions were switched on). Running it again does nothing twice. | जो समय-सारणियाँ अभी सिर्फ सहेजी हैं (जैसे साप्ताहिक सत्र शुरू होने से पहले के इम्पोर्ट से), उनके लिए साप्ताहिक सीरीज़ बनाता है। दोबारा चलाने पर कुछ दो बार नहीं बनता। | ఇంకా భద్రపరచి మాత్రమే ఉన్న టైమ్‌టేబుల్‌లకు (ఉదాహరణకు వారపు సెషన్‌లు ప్రారంభం కాకముందు చేసిన ఇంపోర్ట్ నుండి) వారపు సిరీస్‌ను సృష్టిస్తుంది. మళ్లీ నడిపినా ఏదీ రెండుసార్లు సృష్టించబడదు. |  | pending |
+| `childImport.schedulePendingDone` | Weekly series created: {scheduled}. Still saved: {pending}. | साप्ताहिक सीरीज़ बनीं: {scheduled}। अभी भी सहेजी: {pending}। | సృష్టించిన వారపు సిరీస్‌లు: {scheduled}. ఇంకా భద్రపరచినవి: {pending}. |  | pending |
+| `attendance.nav` | Register | रजिस्टर | రిజిస్టర్ |  | pending |
+| `attendance.values.present` | Present | उपस्थित | హాజరు |  | pending |
+| `attendance.values.absent` | Absent | अनुपस्थित | గైర్హాజరు |  | pending |
+| `attendance.values.late_cancel_family` | Late cancel | देर से रद्द | ఆలస్యంగా రద్దు |  | pending |
+| `attendance.values.cancelled_centre` | Centre cancelled | केंद्र ने रद्द किया | కేంద్రం రద్దు చేసింది |  | pending |
+| `attendance.register.title` | Attendance register | उपस्थिति रजिस्टर | హాజరు రిజిస్టర్ |  | pending |
+| `attendance.register.intro` | Mark each session with one tap. Present and absent can be marked from the start time; cancellations at any time. | हर सत्र को एक टैप से दर्ज करें। उपस्थित और अनुपस्थित शुरू होने के समय से दर्ज हो सकते हैं; रद्द करना कभी भी। | ప్రతి సెషన్‌ను ఒక్క ట్యాప్‌తో నమోదు చేయండి. హాజరు, గైర్హాజరు ప్రారంభ సమయం నుండి నమోదు చేయవచ్చు; రద్దు ఎప్పుడైనా. |  | pending |
+| `attendance.register.org` | Organisation | संगठन | సంస్థ |  | pending |
+| `attendance.register.date` | Date | तारीख | తేదీ |  | pending |
+| `attendance.register.show` | Show | दिखाएँ | చూపించు |  | pending |
+| `attendance.register.today` | Today | आज | ఈరోజు |  | pending |
+| `attendance.register.previousDay` | Previous day | पिछला दिन | ముందు రోజు |  | pending |
+| `attendance.register.allSessions` | All sessions of {org} | {org} के सभी सत्र | {org} యొక్క అన్ని సెషన్‌లు |  | pending |
+| `attendance.register.yourSessions` | Your sessions at {org} | {org} में आपके सत्र | {org}లో మీ సెషన్‌లు |  | pending |
+| `attendance.register.memberWindow` | You can mark and correct your sessions of the last 7 days. Older sessions need an owner or admin. | आप पिछले 7 दिनों के अपने सत्र दर्ज और ठीक कर सकते हैं। पुराने सत्रों के लिए मालिक या एडमिन चाहिए। | గత 7 రోజుల మీ సెషన్‌లను మీరు నమోదు చేసి సరిచేయవచ్చు. పాత సెషన్‌లకు యజమాని లేదా అడ్మిన్ కావాలి. |  | pending |
+| `attendance.register.none` | No sessions on this day. | इस दिन कोई सत्र नहीं। | ఈ రోజు సెషన్‌లు లేవు. |  | pending |
+| `attendance.register.noOrg` | You are not in an organisation yet. Create your practice or accept an invitation on the Team page. | आप अभी किसी संगठन में नहीं हैं। टीम पेज पर अपनी प्रैक्टिस बनाएँ या निमंत्रण स्वीकार करें। | మీరు ఇంకా ఏ సంస్థలోనూ లేరు. టీమ్ పేజీలో మీ ప్రాక్టీస్‌ను సృష్టించండి లేదా ఆహ్వానాన్ని అంగీకరించండి. |  | pending |
+| `attendance.register.counts` | Present: {present} · Absent: {absent} · Cancelled: {cancelled} · Not marked: {unmarked} | उपस्थित: {present} · अनुपस्थित: {absent} · रद्द: {cancelled} · दर्ज नहीं: {unmarked} | హాజరు: {present} · గైర్హాజరు: {absent} · రద్దు: {cancelled} · నమోదు కాలేదు: {unmarked} |  | pending |
+| `attendance.register.markAll` | Mark all remaining present | बाकी सभी को उपस्थित दर्ज करें | మిగిలినవన్నీ హాజరుగా నమోదు చేయండి |  | pending |
+| `attendance.register.markAllDone_one` | {count} session marked present. | {count} सत्र उपस्थित दर्ज हुआ। | {count} సెషన్ హాజరుగా నమోదైంది. |  | pending |
+| `attendance.register.markAllDone_other` | {count} sessions marked present. | {count} सत्र उपस्थित दर्ज हुए। | {count} సెషన్‌లు హాజరుగా నమోదయ్యాయి. |  | pending |
+| `attendance.register.markAllNone` | No started sessions are left to mark. | दर्ज करने के लिए कोई शुरू हुआ सत्र बाकी नहीं। | నమోదు చేయడానికి ప్రారంభమైన సెషన్‌లు ఏవీ మిగలలేదు. |  | pending |
+| `attendance.register.writeNote` | Write note | नोट लिखें | నోట్ రాయండి |  | pending |
+| `attendance.register.openCase` | Open case | केस खोलें | కేసు తెరవండి |  | pending |
+| `attendance.register.notStarted` | Starts at {time}. Present and absent can be marked from then. | {time} पर शुरू होगा। उपस्थित और अनुपस्थित तब से दर्ज हो सकते हैं। | {time}కి ప్రారంభం. హాజరు, గైర్హాజరు అప్పటి నుండి నమోదు చేయవచ్చు. |  | pending |
+| `attendance.register.marked` | Marked: {value} | दर्ज: {value} | నమోదు: {value} |  | pending |
+| `attendance.register.billable` | Billable | शुल्क लगेगा | రుసుము వర్తిస్తుంది |  | pending |
+| `attendance.register.notBillable` | Not billable | शुल्क नहीं | రుసుము లేదు |  | pending |
+| `attendance.register.weekly` | Weekly | साप्ताहिक | వారపు |  | pending |
+| `attendance.register.video` | Video | वीडियो | వీడియో |  | pending |
+| `attendance.register.noChild` | No child linked | कोई बच्चा जुड़ा नहीं | పిల్లలు ఎవరూ జోడించబడలేదు |  | pending |
+| `attendance.register.outsideWindow` | Older than 7 days: an owner or admin can change it. | 7 दिन से पुराना: मालिक या एडमिन इसे बदल सकते हैं। | 7 రోజుల కంటే పాతది: యజమాని లేదా అడ్మిన్ మార్చగలరు. |  | pending |
+| `attendance.register.correctTitle` | Change to {value} | {value} में बदलें | {value}గా మార్చండి |  | pending |
+| `attendance.register.reasonLabel` | Reason for the change | बदलाव का कारण | మార్పుకు కారణం |  | pending |
+| `attendance.register.reasonHint` | For example: marked the wrong child. | उदाहरण: गलत बच्चा दर्ज हो गया। | ఉదాహరణకు: తప్పు పిల్లవాడిని నమోదు చేశాను. |  | pending |
+| `attendance.register.saveCorrection` | Save change | बदलाव सहेजें | మార్పును భద్రపరచండి |  | pending |
+| `attendance.register.keep` | Keep as it is | जैसा है रहने दें | అలాగే ఉంచండి |  | pending |
+| `attendance.register.cancelQuestion` | Cancel this session? The family is told that it was cancelled. | यह सत्र रद्द करें? परिवार को बताया जाएगा कि यह रद्द हुआ। | ఈ సెషన్‌ను రద్దు చేయాలా? రద్దయిందని కుటుంబానికి తెలియజేయబడుతుంది. |  | pending |
+| `attendance.register.yesCancel` | Yes, cancel it | हाँ, रद्द करें | అవును, రద్దు చేయండి |  | pending |
+| `attendance.register.saved` | Saved. | सहेजा गया। | భద్రపరచబడింది. |  | pending |
+| `attendance.register.errors.not_started` | Present and absent can be marked from the start time. | उपस्थित और अनुपस्थित शुरू होने के समय से दर्ज हो सकते हैं। | హాజరు, గైర్హాజరు ప్రారంభ సమయం నుండి నమోదు చేయవచ్చు. |  | pending |
+| `attendance.register.errors.reason_required` | Give a reason for the change. | बदलाव का कारण लिखें। | మార్పుకు కారణం ఇవ్వండి. |  | pending |
+| `attendance.register.errors.correction_window` | Sessions older than 7 days can only be changed by an owner or admin. | 7 दिन से पुराने सत्र सिर्फ मालिक या एडमिन बदल सकते हैं। | 7 రోజుల కంటే పాత సెషన్‌లను యజమాని లేదా అడ్మిన్ మాత్రమే మార్చగలరు. |  | pending |
+| `attendance.register.errors.invalid_transition` | This session cannot be marked any more. | यह सत्र अब दर्ज नहीं हो सकता। | ఈ సెషన్‌ను ఇక నమోదు చేయలేరు. |  | pending |
+| `attendance.register.errors.not_found` | Session not found. | सत्र नहीं मिला। | సెషన్ కనబడలేదు. |  | pending |
+| `attendance.register.errors.generic` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | భద్రపరచలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `attendance.policy.title` | Billing rules for attendance | उपस्थिति के लिए शुल्क नियम | హాజరు కోసం రుసుము నియమాలు |  | pending |
+| `attendance.policy.intro` | Present sessions with a fee are always billable. Sessions the centre cancels never are. | शुल्क वाले उपस्थित सत्रों पर हमेशा शुल्क लगता है। केंद्र द्वारा रद्द सत्रों पर कभी नहीं। | రుసుము ఉన్న హాజరు సెషన్‌లకు ఎప్పుడూ రుసుము వర్తిస్తుంది. కేంద్రం రద్దు చేసిన సెషన్‌లకు ఎప్పుడూ వర్తించదు. |  | pending |
+| `attendance.policy.billAbsent` | Charge for absences (no-shows) | अनुपस्थिति (नहीं आए) पर शुल्क लें | గైర్హాజరుకు (రాలేదు) రుసుము వసూలు చేయండి |  | pending |
+| `attendance.policy.billLateCancel` | Charge for late cancellations by the family | परिवार के देर से रद्द करने पर शुल्क लें | కుటుంబం ఆలస్యంగా రద్దు చేస్తే రుసుము వసూలు చేయండి |  | pending |
+| `attendance.policy.lateCancelHours` | A family cancellation is late within this many hours of the start | शुरू होने से इतने घंटे के अंदर परिवार का रद्द करना देर माना जाए | ప్రారంభానికి ఇన్ని గంటల లోపు కుటుంబం రద్దు చేస్తే ఆలస్యంగా పరిగణించండి |  | pending |
+| `attendance.policy.save` | Save rules | नियम सहेजें | నియమాలను భద్రపరచండి |  | pending |
+| `attendance.policy.saved` | Rules saved. | नियम सहेजे गए। | నియమాలు భద్రపరచబడ్డాయి. |  | pending |
+| `attendance.policy.readOnly` | Only owners and admins can change these rules. | ये नियम सिर्फ मालिक और एडमिन बदल सकते हैं। | ఈ నియమాలను యజమానులు, అడ్మిన్‌లు మాత్రమే మార్చగలరు. |  | pending |
+| `attendance.policy.summary` | Absences: {absent}. Late cancellations (within {hours} hours of the start): {late}. | अनुपस्थिति: {absent}। देर से रद्द (शुरू से {hours} घंटे के अंदर): {late}। | గైర్హాజరు: {absent}. ఆలస్యపు రద్దు (ప్రారంభానికి {hours} గంటల లోపు): {late}. |  | pending |
+| `attendance.policy.charged` | charged | शुल्क लगेगा | రుసుము వర్తిస్తుంది |  | pending |
+| `attendance.policy.notCharged` | not charged | शुल्क नहीं | రుసుము లేదు |  | pending |
+| `attendance.policy.failed` | Could not save the rules. Please try again. | नियम सहेजे नहीं जा सके। कृपया फिर से कोशिश करें। | నియమాలను భద్రపరచలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `attendance.needsAttention.title` | Needs attention | ध्यान दें | శ్రద్ధ అవసరం |  | pending |
+| `attendance.needsAttention.intro` | These sessions started more than 24 hours ago and were never marked. | ये सत्र 24 घंटे से पहले शुरू हुए थे और कभी दर्ज नहीं हुए। | ఈ సెషన్‌లు 24 గంటల కంటే ముందు ప్రారంభమయ్యాయి, కానీ ఎప్పుడూ నమోదు కాలేదు. |  | pending |
+| `attendance.needsAttention.item` | {child} · {service} with {therapist} | {child} · {therapist} के साथ {service} | {child} · {therapist}తో {service} |  | pending |
+| `attendance.needsAttention.open` | Mark on the register | रजिस्टर में दर्ज करें | రిజిస్టర్‌లో నమోదు చేయండి |  | pending |
+| `attendance.needsAttention.askAdmin` | Older than 7 days: an owner or admin can mark it. | 7 दिन से पुराना: मालिक या एडमिन इसे दर्ज कर सकते हैं। | 7 రోజుల కంటే పాతది: యజమాని లేదా అడ్మిన్ నమోదు చేయగలరు. |  | pending |
+| `attendance.needsAttention.more_one` | {count} more session not shown. | {count} और सत्र नहीं दिखाया गया। | మరో {count} సెషన్ చూపబడలేదు. |  | pending |
+| `attendance.needsAttention.more_other` | {count} more sessions not shown. | {count} और सत्र नहीं दिखाए गए। | మరో {count} సెషన్‌లు చూపబడలేదు. |  | pending |
+| `attendance.needsAttention.noChild` | No child linked | कोई बच्चा जुड़ा नहीं | పిల్లలు ఎవరూ జోడించబడలేదు |  | pending |
+| `attendance.caseTab.title` | Attendance | उपस्थिति | హాజరు |  | pending |
+| `attendance.caseTab.intro` | Sessions of this child in the month, as marked on the attendance register. | महीने में इस बच्चे के सत्र, जैसे उपस्थिति रजिस्टर में दर्ज हैं। | హాజరు రిజిస్టర్‌లో నమోదైనట్లు, ఈ నెలలో ఈ పిల్లల సెషన్‌లు. |  | pending |
+| `attendance.caseTab.previous` | Previous month | पिछला महीना | ముందు నెల |  | pending |
+| `attendance.caseTab.next` | Next month | अगला महीना | తర్వాతి నెల |  | pending |
+| `attendance.caseTab.counts` | Attended: {attended} · Absent: {absent} · Cancelled: {cancelled} · Not marked: {unmarked} | आए: {attended} · अनुपस्थित: {absent} · रद्द: {cancelled} · दर्ज नहीं: {unmarked} | హాజరు: {attended} · గైర్హాజరు: {absent} · రద్దు: {cancelled} · నమోదు కాలేదు: {unmarked} |  | pending |
+| `attendance.caseTab.export` | Download CSV | CSV डाउनलोड करें | CSV డౌన్‌లోడ్ చేయండి |  | pending |
+| `attendance.caseTab.none` | No sessions this month. | इस महीने कोई सत्र नहीं। | ఈ నెల సెషన్‌లు లేవు. |  | pending |
+| `attendance.caseTab.calendar` | Attendance calendar for {month} | {month} का उपस्थिति कैलेंडर | {month} హాజరు క్యాలెండర్ |  | pending |
+| `attendance.caseTab.notMarked` | Not marked | दर्ज नहीं | నమోదు కాలేదు |  | pending |
+| `attendance.caseTab.upcoming` | Upcoming | आने वाला | రాబోయేది |  | pending |
+| `attendance.caseTab.sessions` | Sessions | सत्र | సెషన్‌లు |  | pending |
+| `attendance.family.attended` | Attended | आए | హాజరయ్యారు |  | pending |
+| `attendance.family.missed` | Missed | छूट गया | రాలేదు |  | pending |
+| `attendance.family.cancelledByCentre` | Cancelled by centre | केंद्र ने रद्द किया | కేంద్రం రద్దు చేసింది |  | pending |
+| `attendance.family.cancelledLate` | Cancelled late | देर से रद्द | ఆలస్యంగా రద్దు |  | pending |
+| `attendance.family.monthly_one` | {attended} of {count} session attended in {month} | {month} में {count} में से {attended} सत्र में आए | {month}లో {count} సెషన్‌లో {attended}కి హాజరయ్యారు |  | pending |
+| `attendance.family.monthly_other` | {attended} of {count} sessions attended in {month} | {month} में {count} में से {attended} सत्रों में आए | {month}లో {count} సెషన్‌లలో {attended}కి హాజరయ్యారు |  | pending |
+| `attendance.family.monthlyChild_one` | {child}: {attended} of {count} session attended in {month} | {child}: {month} में {count} में से {attended} सत्र में आए | {child}: {month}లో {count} సెషన్‌లో {attended}కి హాజరయ్యారు |  | pending |
+| `attendance.family.monthlyChild_other` | {child}: {attended} of {count} sessions attended in {month} | {child}: {month} में {count} में से {attended} सत्रों में आए | {child}: {month}లో {count} సెషన్‌లలో {attended}కి హాజరయ్యారు |  | pending |

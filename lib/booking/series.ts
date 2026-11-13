@@ -230,17 +230,22 @@ export async function defaultGuardianFor(childId: string, sql?: Queryable): Prom
   return row?.user_id ?? null;
 }
 
-/** FR-2/FR-3: validates (in SQL), creates, materializes 8 weeks and enqueues one summary message - one transaction. */
-export async function createSeries(args: CreateArgs): Promise<CreateResult> {
-  const sql = await pg();
-  return sql.begin(async (tx) => {
-    const guardian = args.guardian === "auto" ? await defaultGuardianFor(args.childId, tx) : args.guardian;
-    const [row] = await tx<{ r: CreateResult }[]>`
+/**
+ * FR-2/FR-3: validates (in SQL), creates, materializes 8 weeks and enqueues one summary message - one transaction.
+ * `tx` (044, 047 import): run inside the caller's open transaction instead (the caller handles savepoints).
+ */
+export async function createSeries(args: CreateArgs, tx?: Queryable): Promise<CreateResult> {
+  const run = async (q: Queryable) => {
+    const guardian = args.guardian === "auto" ? await defaultGuardianFor(args.childId, q) : args.guardian;
+    const [row] = await q<{ r: CreateResult }[]>`
       select public.series_create(${args.actorUserId}::uuid, ${args.orgId}::uuid, ${args.profileId}::uuid, ${args.serviceId}::uuid,
         ${args.childId}::uuid, ${args.caseId}::uuid, ${guardian}::uuid, ${args.weekdays}::smallint[], ${args.startTime}::time,
         ${args.startsOn}::date, ${args.endsOn ?? null}::date, ${args.billingMode}) as r`;
     return row.r;
-  }) as Promise<CreateResult>;
+  };
+  if (tx) return run(tx);
+  const sql = await pg();
+  return sql.begin((t) => run(t)) as Promise<CreateResult>;
 }
 
 export type ChangeResult = CreateResult & { cancelled: number; replaced_series_id: string };
