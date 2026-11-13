@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1670. Not yet approved: 1670.
+Rows: 1846. Not yet approved: 1846.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1028,6 +1028,8 @@ Rows: 1670. Not yet approved: 1670.
 | `caseTabs.documents` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
 | `caseTabs.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `caseTabs.goals` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
+| `caseTabs.messages` | Messages | संदेश | సందేశాలు |  | pending |
+| `caseTabs.homeProgram` | Home program | घर का कार्यक्रम | ఇంటి కార్యక్రమం |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -1466,6 +1468,8 @@ Rows: 1670. Not yet approved: 1670.
 | `privacy.notice.collect.scribe` | AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you. | AI सत्र नोट (केवल आपकी अनुमति से): क्लिनिक में की गई रिकॉर्डिंग से AI द्वारा तैयार नोट, लक्ष्य की प्रगति और प्रिस्क्रिप्शन के मसौदे। क्लिनिशियन हर सुझाव की जाँच करते हैं; आप कोई नोट तभी देखते हैं जब क्लिनिशियन उसे आपके साथ साझा करें। | AI సెషన్ నోట్‌లు (మీ అనుమతితో మాత్రమే): క్లినిక్‌లో చేసిన రికార్డింగ్‌ల నుండి AI తయారు చేసిన నోట్‌లు, లక్ష్యాల పురోగతి మరియు ప్రిస్క్రిప్షన్ ముసాయిదాలు. క్లినిషియన్ ప్రతి సూచనను పరిశీలిస్తారు; క్లినిషియన్ మీతో పంచుకున్నప్పుడే మీరు నోట్‌ను చూస్తారు. |  | pending |
 | `privacy.notice.collect.assessments` | Questionnaires your care team sends you (for example the developmental check-in): your answers and the summary the team publishes. | आपकी देखभाल टीम द्वारा भेजी गई प्रश्नावली (जैसे विकास की जाँच): आपके जवाब और टीम द्वारा प्रकाशित सारांश। | మీ సంరక్షణ బృందం పంపే ప్రశ్నావళులు (ఉదాహరణకు అభివృద్ధి చెక్-ఇన్): మీ సమాధానాలు మరియు బృందం ప్రచురించే సారాంశం. |  | pending |
 | `privacy.notice.collect.plans` | Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you. | थेरेपी योजनाएँ (IEP): लक्ष्य, देखभाल टीम द्वारा दर्ज की गई प्रगति, और आपके लिए प्रकाशित योजना के संस्करण। | థెరపీ ప్రణాళికలు (IEP): లక్ష్యాలు, సంరక్షణ బృందం నమోదు చేసే పురోగతి, మరియు మీకు ప్రచురించిన ప్రణాళిక వెర్షన్లు. |  | pending |
+| `privacy.notice.collect.homeProgram` | Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes). | घर की गतिविधियाँ: आपकी देखभाल टीम घर पर अभ्यास के लिए जो गतिविधियाँ प्रकाशित करती है, और आप जो दर्ज करते हैं (किया, कैसा रहा, मिनट, नोट)। | ఇంటి కార్యకలాపాలు: ఇంట్లో సాధన కోసం మీ సంరక్షణ బృందం ప్రచురించే కార్యకలాపాలు, మీరు నమోదు చేసేవి (చేశాం, ఎలా జరిగింది, నిమిషాలు, గమనికలు). |  | pending |
+| `privacy.notice.collect.messages` | Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them. | देखभाल टीम के साथ संदेश: DoctorNearMe बातचीत में आप और देखभाल टीम जो लिखते हैं, जोड़े गए दस्तावेज़ों के लिंक, और आपने उन्हें आखिरी बार कब पढ़ा। | సంరక్షణ బృందంతో సందేశాలు: DoctorNearMe సంభాషణల్లో మీరు మరియు సంరక్షణ బృందం రాసేవి, జోడించిన పత్రాల లింకులు, మరియు మీరు వాటిని చివరిసారి ఎప్పుడు చదివారు. |  | pending |
 | `privacy.notice.collect.notifications` | Notifications we send you in the app, by email or WhatsApp. | ऐप में, ईमेल या WhatsApp पर हमारी भेजी सूचनाएँ। | యాప్‌లో, ఇమెయిల్ లేదా WhatsApp ద్వారా మేము పంపే నోటిఫికేషన్లు. |  | pending |
 | `privacy.notice.collect.website` | If you ask for a demo on our website: name, email, role and centre. | अगर आप हमारी वेबसाइट पर डेमो माँगते हैं: नाम, ईमेल, भूमिका और केंद्र। | మీరు మా వెబ్‌సైట్‌లో డెమో అడిగితే: పేరు, ఇమెయిల్, పాత్ర మరియు కేంద్రం. |  | pending |
 | `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
@@ -1507,6 +1511,8 @@ Rows: 1670. Not yet approved: 1670.
 | `privacy.notice.retention.signups.how` | {months} months | {months} महीने | {months} నెలలు |  | pending |
 | `privacy.notice.retention.clinical.what` | Clinical records (cases, transcripts, confirmed observations, reports) | क्लिनिकल रिकॉर्ड (केस, लिखित रूप, पुष्टि किए गए अवलोकन, रिपोर्ट) | క్లినికల్ రికార్డులు (కేసులు, లిఖిత రూపాలు, ధృవీకరించిన పరిశీలనలు, రిపోర్టులు) |  | pending |
 | `privacy.notice.retention.clinical.how` | While your child is in care, and as long as the law requires clinics to keep them | जब तक आपका बच्चा देखभाल में है, और जब तक कानून क्लिनिक से उन्हें रखने को कहता है | మీ పిల్లలు సంరక్షణలో ఉన్నంతకాలం, మరియు క్లినిక్‌లు వాటిని ఉంచాలని చట్టం కోరినంతకాలం |  | pending |
+| `privacy.notice.retention.messages.what` | Messages with the care team | देखभाल टीम के साथ संदेश | సంరక్షణ బృందంతో సందేశాలు |  | pending |
+| `privacy.notice.retention.messages.how` | While your child is in care, with the clinical record; a deleted message's text is removed at once | जब तक आपका बच्चा देखभाल में है, क्लिनिकल रिकॉर्ड के साथ; हटाए गए संदेश का पाठ तुरंत मिटा दिया जाता है | మీ పిల్లలు సంరక్షణలో ఉన్నంతకాలం, క్లినికల్ రికార్డుతో పాటు; తొలగించిన సందేశం యొక్క పాఠం వెంటనే తీసివేయబడుతుంది |  | pending |
 | `privacy.notice.retention.consent.what` | Consent records | सहमति के रिकॉर्ड | సమ్మతి రికార్డులు |  | pending |
 | `privacy.notice.retention.consent.how` | Kept as proof of consent, also after deletion (without free text) | सहमति के प्रमाण के रूप में रखे जाते हैं, हटाने के बाद भी (बिना मुक्त पाठ के) | సమ్మతికి రుజువుగా ఉంచబడతాయి, తొలగించిన తర్వాత కూడా (స్వేచ్ఛా పాఠం లేకుండా) |  | pending |
 | `privacy.notice.retention.audit.what` | Security audit log | सुरक्षा ऑडिट लॉग | భద్రతా ఆడిట్ లాగ్ |  | pending |
@@ -1626,6 +1632,176 @@ Rows: 1670. Not yet approved: 1670.
 | `privacy.admin.ops.stuck` | Recordings stuck for more than 30 minutes | 30 मिनट से ज़्यादा अटकी रिकॉर्डिंग | 30 నిమిషాలకు పైగా నిలిచిపోయిన రికార్డింగ్‌లు |  | pending |
 | `privacy.admin.ops.none` | None. | कोई नहीं। | ఏవీ లేవు. |  | pending |
 | `privacy.admin.ops.minutes` | {count} min | {count} मिनट | {count} ని. |  | pending |
+| `messaging.title` | Messages | संदेश | సందేశాలు |  | pending |
+| `messaging.navLink` | Messages | संदेश | సందేశాలు |  | pending |
+| `messaging.familyIntro` | Write to your child's care team. Their replies appear here. | अपने बच्चे की देखभाल टीम को लिखें। उनके जवाब यहाँ दिखेंगे। | మీ పిల్లల సంరక్షణ బృందానికి రాయండి. వారి జవాబులు ఇక్కడ కనిపిస్తాయి. |  | pending |
+| `messaging.providerIntro` | Conversations with the families of your cases. | आपके केस से जुड़े परिवारों के साथ बातचीत। | మీ కేసుల కుటుంబాలతో సంభాషణలు. |  | pending |
+| `messaging.caseIntro` | Conversations with this child's family. | इस बच्चे के परिवार के साथ बातचीत। | ఈ పిల్లల కుటుంబంతో సంభాషణలు. |  | pending |
+| `messaging.emergency` | Messages are not monitored for emergencies. In an emergency call 108 (ambulance) or 112. | संदेशों पर आपात स्थिति के लिए नज़र नहीं रखी जाती। आपात स्थिति में 108 (एम्बुलेंस) या 112 पर कॉल करें। | అత్యవసర పరిస్థితుల కోసం సందేశాలను ఎవరూ పర్యవేక్షించరు. అత్యవసరమైతే 108 (అంబులెన్స్) లేదా 112 కి కాల్ చేయండి. |  | pending |
+| `messaging.noThreads` | No messages yet. | अभी कोई संदेश नहीं। | ఇంకా సందేశాలు లేవు. |  | pending |
+| `messaging.noChildren` | Add a child first. Then you can write to their care team. | पहले एक बच्चा जोड़ें। फिर आप उसकी देखभाल टीम को लिख सकते हैं। | ముందుగా మీ పిల్లల వివరాలను జోడించండి. తర్వాత వారి సంరక్షణ బృందానికి రాయవచ్చు. |  | pending |
+| `messaging.noCareTeam` | {name} has no care team on DoctorNearMe yet. | DoctorNearMe पर अभी {name} की कोई देखभाल टीम नहीं है। | DoctorNearMe లో {name} కి ఇంకా సంరక్షణ బృందం లేదు. |  | pending |
+| `messaging.noGuardian` | No parent account is linked to this child yet. | इस बच्चे से अभी कोई माता-पिता खाता जुड़ा नहीं है। | ఈ పిల్లలకు ఇంకా తల్లిదండ్రుల ఖాతా అనుసంధానం కాలేదు. |  | pending |
+| `messaging.childTitle` | Messages about {name} | {name} के बारे में संदेश | {name} గురించి సందేశాలు |  | pending |
+| `messaging.newThread` | New message | नया संदेश | కొత్త సందేశం |  | pending |
+| `messaging.to` | To | किसे | ఎవరికి |  | pending |
+| `messaging.caseOption` | {org} ({date}) | {org} ({date}) | {org} ({date}) |  | pending |
+| `messaging.subject` | Subject | विषय | విషయం |  | pending |
+| `messaging.subjectHint` | A few words, for example: Sleep question | कुछ शब्द, जैसे: नींद के बारे में सवाल | కొన్ని పదాలు, ఉదా: నిద్ర గురించి ప్రశ్న |  | pending |
+| `messaging.body` | Write a message | संदेश लिखें | సందేశం రాయండి |  | pending |
+| `messaging.send` | Send | भेजें | పంపండి |  | pending |
+| `messaging.sending` | Sending... | भेजा जा रहा है... | పంపుతోంది... |  | pending |
+| `messaging.sendHint` | Press Enter to send. Shift+Enter adds a new line. | भेजने के लिए Enter दबाएँ। नई पंक्ति के लिए Shift+Enter दबाएँ। | పంపడానికి Enter నొక్కండి. కొత్త లైన్ కోసం Shift+Enter నొక్కండి. |  | pending |
+| `messaging.openThread` | Open conversation: {subject} | बातचीत खोलें: {subject} | సంభాషణ తెరవండి: {subject} |  | pending |
+| `messaging.lastMessage` | Last message {time} | आखिरी संदेश {time} | చివరి సందేశం {time} |  | pending |
+| `messaging.with` | With {org} | {org} के साथ | {org} తో |  | pending |
+| `messaging.about` | About {name} | {name} के बारे में | {name} గురించి |  | pending |
+| `messaging.unread_one` | {count} unread | {count} अपठित | {count} చదవనిది |  | pending |
+| `messaging.unread_other` | {count} unread | {count} अपठित | {count} చదవనివి |  | pending |
+| `messaging.archived` | Archived | संग्रहीत | ఆర్కైవ్ చేయబడింది |  | pending |
+| `messaging.archivedNotice` | This conversation is archived. You can read it but not reply. | यह बातचीत संग्रहीत है। आप इसे पढ़ सकते हैं, पर जवाब नहीं दे सकते। | ఈ సంభాషణ ఆర్కైవ్ చేయబడింది. మీరు చదవవచ్చు, కానీ జవాబు ఇవ్వలేరు. |  | pending |
+| `messaging.archive` | Archive thread | बातचीत संग्रहीत करें | సంభాషణను ఆర్కైవ్ చేయండి |  | pending |
+| `messaging.archiveConfirm` | Archive this conversation? Nobody can reply after that. | यह बातचीत संग्रहीत करें? इसके बाद कोई जवाब नहीं दे सकेगा। | ఈ సంభాషణను ఆర్కైవ్ చేయాలా? ఆ తర్వాత ఎవరూ జవాబు ఇవ్వలేరు. |  | pending |
+| `messaging.parent` | Parent | माता-पिता | తల్లిదండ్రులు |  | pending |
+| `messaging.careTeam` | Care team | देखभाल टीम | సంరక్షణ బృందం |  | pending |
+| `messaging.you` | You | आप | మీరు |  | pending |
+| `messaging.deleted` | This message was deleted. | यह संदेश हटा दिया गया। | ఈ సందేశం తొలగించబడింది. |  | pending |
+| `messaging.delete` | Delete | हटाएँ | తొలగించండి |  | pending |
+| `messaging.deleteConfirm` | Delete this message for everyone? | यह संदेश सबके लिए हटाएँ? | ఈ సందేశాన్ని అందరికీ తొలగించాలా? |  | pending |
+| `messaging.attach` | Attach document | दस्तावेज़ जोड़ें | పత్రాన్ని జోడించండి |  | pending |
+| `messaging.noAttachment` | No document | कोई दस्तावेज़ नहीं | పత్రం లేదు |  | pending |
+| `messaging.attachHint` | You can attach documents that the family and the care team can both see. | आप वे दस्तावेज़ जोड़ सकते हैं जिन्हें परिवार और देखभाल टीम दोनों देख सकते हैं। | కుటుంబం మరియు సంరక్షణ బృందం ఇద్దరూ చూడగలిగే పత్రాలను మాత్రమే జోడించవచ్చు. |  | pending |
+| `messaging.notVisibleToAll` | {title} (not visible to everyone) | {title} (सबको नहीं दिखता) | {title} (అందరికీ కనిపించదు) |  | pending |
+| `messaging.attachmentUnavailable` | Attachment no longer available | संलग्न दस्तावेज़ अब उपलब्ध नहीं है | జోడించిన పత్రం ఇప్పుడు అందుబాటులో లేదు |  | pending |
+| `messaging.openDocument` | Open document: {title} | दस्तावेज़ खोलें: {title} | పత్రం తెరవండి: {title} |  | pending |
+| `messaging.accessLost` | You no longer have access to this conversation. | अब आपके पास इस बातचीत की पहुँच नहीं है। | ఈ సంభాషణకు మీకు ఇక యాక్సెస్ లేదు. |  | pending |
+| `messaging.older` | Show older messages | पुराने संदेश दिखाएँ | పాత సందేశాలు చూపించండి |  | pending |
+| `messaging.loading` | Loading... | लोड हो रहा है... | లోడ్ అవుతోంది... |  | pending |
+| `messaging.statusLive` | Live updates on | लाइव अपडेट चालू हैं | లైవ్ అప్‌డేట్‌లు ఆన్‌లో ఉన్నాయి |  | pending |
+| `messaging.statusPolling` | Checking for new messages every 15 seconds | हर 15 सेकंड में नए संदेश देखे जा रहे हैं | ప్రతి 15 సెకన్లకు కొత్త సందేశాల కోసం చూస్తోంది |  | pending |
+| `messaging.statusConnecting` | Connecting... | जुड़ रहा है... | కనెక్ట్ అవుతోంది... |  | pending |
+| `messaging.messagesLabel` | Messages in this conversation | इस बातचीत के संदेश | ఈ సంభాషణలోని సందేశాలు |  | pending |
+| `messaging.threadsLabel` | Conversations | बातचीत | సంభాషణలు |  | pending |
+| `messaging.backFamily` | All messages | सभी संदेश | అన్ని సందేశాలు |  | pending |
+| `messaging.backProvider` | All conversations | सभी बातचीत | అన్ని సంభాషణలు |  | pending |
+| `messaging.errors.tooFast` | You're sending messages too fast. Please wait a few minutes. | आप बहुत तेज़ी से संदेश भेज रहे हैं। कृपया कुछ मिनट रुकें। | మీరు చాలా వేగంగా సందేశాలు పంపుతున్నారు. దయచేసి కొన్ని నిమిషాలు ఆగండి. |  | pending |
+| `messaging.errors.archived` | This conversation is archived. | यह बातचीत संग्रहीत है। | ఈ సంభాషణ ఆర్కైవ్ చేయబడింది. |  | pending |
+| `messaging.errors.notAttachable` | Everyone in this conversation must be able to see this document. | इस बातचीत में सभी लोगों को यह दस्तावेज़ दिखना चाहिए। | ఈ సంభాషణలోని అందరూ ఈ పత్రాన్ని చూడగలగాలి. |  | pending |
+| `messaging.errors.noGuardian` | No parent account is linked to this child yet. | इस बच्चे से अभी कोई माता-पिता खाता जुड़ा नहीं है। | ఈ పిల్లలకు ఇంకా తల్లిదండ్రుల ఖాతా అనుసంధానం కాలేదు. |  | pending |
+| `messaging.errors.tooLate` | Messages can only be deleted within 15 minutes. | संदेश केवल 15 मिनट के भीतर हटाए जा सकते हैं। | సందేశాలను 15 నిమిషాల్లోపు మాత్రమే తొలగించవచ్చు. |  | pending |
+| `messaging.errors.notOwn` | You can only delete your own messages. | आप केवल अपने संदेश हटा सकते हैं। | మీరు మీ సొంత సందేశాలను మాత్రమే తొలగించగలరు. |  | pending |
+| `messaging.errors.forbidden` | Only an organisation owner or admin can archive a conversation. | केवल संगठन के मालिक या एडमिन बातचीत संग्रहीत कर सकते हैं। | సంస్థ యజమాని లేదా అడ్మిన్ మాత్రమే సంభాషణను ఆర్కైవ్ చేయగలరు. |  | pending |
+| `messaging.errors.failed` | Could not send. Please try again. | भेजा नहीं जा सका। कृपया फिर से कोशिश करें। | పంపలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `messaging.errors.subjectRequired` | Enter a subject | विषय लिखें | విషయం రాయండి |  | pending |
+| `messaging.errors.bodyRequired` | Write a message | संदेश लिखें | సందేశం రాయండి |  | pending |
+| `messaging.errors.tooLong` | Messages can be up to 4,000 characters | संदेश 4,000 अक्षरों तक हो सकते हैं | సందేశాలు 4,000 అక్షరాల వరకు ఉండవచ్చు |  | pending |
+| `messaging.errors.chooseCase` | Choose who to message | चुनें कि किसे संदेश भेजना है | ఎవరికి సందేశం పంపాలో ఎంచుకోండి |  | pending |
+| `messaging.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `homeProgram.link` | Home activities | घर की गतिविधियाँ | ఇంటి కార్యకలాపాలు |  | pending |
+| `homeProgram.status.draft` | Draft | ड्राफ़्ट | డ్రాఫ్ట్ |  | pending |
+| `homeProgram.status.published` | Published | प्रकाशित | ప్రచురించబడింది |  | pending |
+| `homeProgram.status.archived` | Archived | संग्रहीत | ఆర్కైవ్ చేయబడింది |  | pending |
+| `homeProgram.difficulty.hard` | Hard | कठिन | కష్టం |  | pending |
+| `homeProgram.difficulty.okay` | Okay | ठीक | పరవాలేదు |  | pending |
+| `homeProgram.difficulty.easy` | Easy | आसान | సులభం |  | pending |
+| `homeProgram.provider.title` | Home program | घर का कार्यक्रम | ఇంటి కార్యక్రమం |  | pending |
+| `homeProgram.provider.intro` | Activities the family practises at home between sessions. The parent sees only what you publish. | सत्रों के बीच परिवार घर पर जो गतिविधियाँ करता है। माता-पिता केवल वही देखते हैं जो आप प्रकाशित करते हैं। | సెషన్‌ల మధ్య కుటుంబం ఇంట్లో సాధన చేసే కార్యకలాపాలు. మీరు ప్రచురించినది మాత్రమే తల్లిదండ్రులు చూస్తారు. |  | pending |
+| `homeProgram.provider.choose` | Program | कार्यक्रम | కార్యక్రమం |  | pending |
+| `homeProgram.provider.create` | Create a home program | घर का कार्यक्रम बनाएँ | ఇంటి కార్యక్రమం సృష్టించండి |  | pending |
+| `homeProgram.provider.programTitle` | Program title | कार्यक्रम का शीर्षक | కార్యక్రమం శీర్షిక |  | pending |
+| `homeProgram.provider.empty` | No home program yet. Create one to add activities. | अभी कोई घर का कार्यक्रम नहीं है। गतिविधियाँ जोड़ने के लिए एक बनाएँ। | ఇంకా ఇంటి కార్యక్రమం లేదు. కార్యకలాపాలు జోడించడానికి ఒకటి సృష్టించండి. |  | pending |
+| `homeProgram.provider.unpublished` | Unpublished changes | अप्रकाशित बदलाव | ప్రచురించని మార్పులు |  | pending |
+| `homeProgram.provider.publishedOn` | Version {version} shared on {date} | संस्करण {version} {date} को साझा किया गया | వెర్షన్ {version} {date}న పంచుకోబడింది |  | pending |
+| `homeProgram.provider.notPublished` | Not shared with the parent yet | अभी माता-पिता के साथ साझा नहीं किया गया | ఇంకా తల్లిదండ్రులతో పంచుకోలేదు |  | pending |
+| `homeProgram.provider.publish` | Publish to parent | माता-पिता को प्रकाशित करें | తల్లిదండ్రులకు ప్రచురించండి |  | pending |
+| `homeProgram.provider.publishChanges` | Publish changes | बदलाव प्रकाशित करें | మార్పులను ప్రచురించండి |  | pending |
+| `homeProgram.provider.publishing` | Publishing… | प्रकाशित हो रहा है… | ప్రచురిస్తోంది… |  | pending |
+| `homeProgram.provider.published` | Published. The parent can see it now. | प्रकाशित हो गया। माता-पिता अब इसे देख सकते हैं। | ప్రచురించబడింది. తల్లిదండ్రులు ఇప్పుడు చూడగలరు. |  | pending |
+| `homeProgram.provider.archive` | Archive | संग्रहीत करें | ఆర్కైవ్ చేయండి |  | pending |
+| `homeProgram.provider.rename` | Rename | नाम बदलें | పేరు మార్చండి |  | pending |
+| `homeProgram.provider.save` | Save | सहेजें | సేవ్ చేయండి |  | pending |
+| `homeProgram.provider.saving` | Saving… | सहेजा जा रहा है… | సేవ్ చేస్తోంది… |  | pending |
+| `homeProgram.provider.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `homeProgram.provider.readOnly` | This program is archived and can no longer be changed. | यह कार्यक्रम संग्रहीत है और अब बदला नहीं जा सकता। | ఈ కార్యక్రమం ఆర్కైవ్ చేయబడింది, ఇక మార్చలేరు. |  | pending |
+| `homeProgram.provider.activities` | Activities | गतिविधियाँ | కార్యకలాపాలు |  | pending |
+| `homeProgram.provider.noActivities` | No activities yet. Add the first one below. | अभी कोई गतिविधि नहीं है। नीचे पहली गतिविधि जोड़ें। | ఇంకా కార్యకలాపాలు లేవు. మొదటిది క్రింద జోడించండి. |  | pending |
+| `homeProgram.provider.addActivity` | Add activity | गतिविधि जोड़ें | కార్యకలాపం జోడించండి |  | pending |
+| `homeProgram.provider.edit` | Edit | बदलें | మార్చండి |  | pending |
+| `homeProgram.provider.stop` | Stop activity | गतिविधि रोकें | కార్యకలాపం ఆపండి |  | pending |
+| `homeProgram.provider.restart` | Restart activity | गतिविधि फिर शुरू करें | కార్యకలాపం మళ్ళీ ప్రారంభించండి |  | pending |
+| `homeProgram.provider.delete` | Delete | हटाएँ | తొలగించండి |  | pending |
+| `homeProgram.provider.stopped` | Stopped | रोकी गई | ఆపబడింది |  | pending |
+| `homeProgram.provider.stoppedHint` | Stopped activities are hidden from the parent at once. | रोकी गई गतिविधियाँ माता-पिता से तुरंत छिप जाती हैं। | ఆపిన కార్యకలాపాలు తల్లిదండ్రుల నుండి వెంటనే దాచబడతాయి. |  | pending |
+| `homeProgram.provider.summary_one` | {count} time a week, {minutes} min | हफ़्ते में {count} बार, {minutes} मिनट | వారానికి {count} సారి, {minutes} నిమి |  | pending |
+| `homeProgram.provider.summary_other` | {count} times a week, {minutes} min | हफ़्ते में {count} बार, {minutes} मिनट | వారానికి {count} సార్లు, {minutes} నిమి |  | pending |
+| `homeProgram.provider.goalLabel` | Goal: {goal} | लक्ष्य: {goal} | లక్ష్యం: {goal} |  | pending |
+| `homeProgram.provider.guideLabel` | Guide: {title} | गाइड: {title} | గైడ్: {title} |  | pending |
+| `homeProgram.provider.materialsLabel` | Materials: {materials} | सामग्री: {materials} | సామగ్రి: {materials} |  | pending |
+| `homeProgram.fields.activity` | Activity | गतिविधि | కార్యకలాపం |  | pending |
+| `homeProgram.fields.goal` | Linked goal | जुड़ा हुआ लक्ष्य | అనుసంధానించిన లక్ష్యం |  | pending |
+| `homeProgram.fields.noGoal` | No linked goal | कोई जुड़ा लक्ष्य नहीं | లక్ష్యం లేదు |  | pending |
+| `homeProgram.fields.noPlan` | This child has no active plan. Publish a plan in the Goals tab to link goals. | इस बच्चे की कोई सक्रिय योजना नहीं है। लक्ष्य जोड़ने के लिए लक्ष्य टैब में योजना प्रकाशित करें। | ఈ పిల్లలకు సక్రియ ప్రణాళిక లేదు. లక్ష్యాలను అనుసంధానించడానికి లక్ష్యాలు ట్యాబ్‌లో ప్రణాళికను ప్రచురించండి. |  | pending |
+| `homeProgram.fields.instructions` | How to do it | कैसे करें | ఎలా చేయాలి |  | pending |
+| `homeProgram.fields.instructionsHint` | Short steps the parent can follow. Lists are fine. | छोटे कदम जिन्हें माता-पिता अपना सकें। सूचियाँ ठीक हैं। | తల్లిదండ్రులు పాటించగల చిన్న దశలు. జాబితాలు సరే. |  | pending |
+| `homeProgram.fields.frequency` | Times per week | हफ़्ते में कितनी बार | వారానికి ఎన్ని సార్లు |  | pending |
+| `homeProgram.fields.duration` | Minutes | मिनट | నిమిషాలు |  | pending |
+| `homeProgram.fields.materials` | Materials | सामग्री | సామగ్రి |  | pending |
+| `homeProgram.fields.guide` | Attach guide | गाइड जोड़ें | గైడ్ జతచేయండి |  | pending |
+| `homeProgram.fields.noGuide` | No guide | कोई गाइड नहीं | గైడ్ లేదు |  | pending |
+| `homeProgram.fields.guideHint` | A picture or PDF from this case's Documents tab that the parent can see. | इस केस के दस्तावेज़ टैब से एक तस्वीर या PDF जिसे माता-पिता देख सकते हैं। | ఈ కేసు పత్రాలు ట్యాబ్ నుండి తల్లిదండ్రులు చూడగల చిత్రం లేదా PDF. |  | pending |
+| `homeProgram.adherence.title` | Adherence | पालन | పాటింపు |  | pending |
+| `homeProgram.adherence.last7` | done {done} of {expected} times in the last 7 days | पिछले 7 दिनों में {expected} में से {done} बार किया | గత 7 రోజుల్లో {expected}లో {done} సార్లు చేశారు |  | pending |
+| `homeProgram.adherence.weeks` | Last 4 weeks | पिछले 4 हफ़्ते | గత 4 వారాలు |  | pending |
+| `homeProgram.adherence.week` | Week of {date}: {done} of {expected} | {date} वाला हफ़्ता: {expected} में से {done} | {date} వారం: {expected}లో {done} |  | pending |
+| `homeProgram.adherence.notes` | Recent notes from the family | परिवार के हाल के नोट | కుటుంబం నుండి ఇటీవలి గమనికలు |  | pending |
+| `homeProgram.adherence.noNotes` | No notes yet. | अभी कोई नोट नहीं। | ఇంకా గమనికలు లేవు. |  | pending |
+| `homeProgram.adherence.noteMeta` | {date}, {difficulty} | {date}, {difficulty} | {date}, {difficulty} |  | pending |
+| `homeProgram.adherence.timeZone` | Weeks start on Monday in the family's time zone ({zone}). | हफ़्ते परिवार के समय क्षेत्र ({zone}) में सोमवार से शुरू होते हैं। | వారాలు కుటుంబం సమయ మండలంలో ({zone}) సోమవారం నుండి మొదలవుతాయి. |  | pending |
+| `homeProgram.family.back` | Back to {name} | {name} पर वापस जाएँ | {name}కి తిరిగి వెళ్ళండి |  | pending |
+| `homeProgram.family.title` | Home activities for {name} | {name} के लिए घर की गतिविधियाँ | {name} కోసం ఇంటి కార్యకలాపాలు |  | pending |
+| `homeProgram.family.intro` | Activities from your child's care team. Tap Done today after you practise. Instructions are shown as the care team wrote them. | आपके बच्चे की देखभाल टीम की गतिविधियाँ। अभ्यास के बाद आज हो गया दबाएँ। निर्देश वैसे ही दिखाए गए हैं जैसे देखभाल टीम ने लिखे हैं। | మీ పిల్లల సంరక్షణ బృందం ఇచ్చిన కార్యకలాపాలు. సాధన తర్వాత ఈరోజు చేశాం నొక్కండి. సూచనలు సంరక్షణ బృందం రాసినట్లే చూపబడతాయి. |  | pending |
+| `homeProgram.family.thisWeek` | This week | यह हफ़्ता | ఈ వారం |  | pending |
+| `homeProgram.family.weekRange` | {from} to {to} | {from} से {to} | {from} నుండి {to} |  | pending |
+| `homeProgram.family.from` | From {org} | {org} से | {org} నుండి |  | pending |
+| `homeProgram.family.empty` | Your child's care team has not shared home activities yet. | आपके बच्चे की देखभाल टीम ने अभी घर की गतिविधियाँ साझा नहीं की हैं। | మీ పిల్లల సంరక్షణ బృందం ఇంకా ఇంటి కార్యకలాపాలను పంచుకోలేదు. |  | pending |
+| `homeProgram.family.count` | {done}/{frequency} this week | इस हफ़्ते {done}/{frequency} | ఈ వారం {done}/{frequency} |  | pending |
+| `homeProgram.family.goal` | Goal: {goal} | लक्ष्य: {goal} | లక్ష్యం: {goal} |  | pending |
+| `homeProgram.family.otherActivities` | Other activities | अन्य गतिविधियाँ | ఇతర కార్యకలాపాలు |  | pending |
+| `homeProgram.family.howOften_one` | {count} time a week, {minutes} minutes each time | हफ़्ते में {count} बार, हर बार {minutes} मिनट | వారానికి {count} సారి, ప్రతిసారి {minutes} నిమిషాలు |  | pending |
+| `homeProgram.family.howOften_other` | {count} times a week, {minutes} minutes each time | हफ़्ते में {count} बार, हर बार {minutes} मिनट | వారానికి {count} సార్లు, ప్రతిసారి {minutes} నిమిషాలు |  | pending |
+| `homeProgram.family.materials` | Materials: {materials} | सामग्री: {materials} | సామగ్రి: {materials} |  | pending |
+| `homeProgram.family.guide` | Download guide | गाइड डाउनलोड करें | గైడ్ డౌన్‌లోడ్ చేయండి |  | pending |
+| `homeProgram.family.guideLabel` | Download guide: {title} | गाइड डाउनलोड करें: {title} | గైడ్ డౌన్‌లోడ్ చేయండి: {title} |  | pending |
+| `homeProgram.family.doneToday` | Done today | आज हो गया | ఈరోజు చేశాం |  | pending |
+| `homeProgram.family.doneAgain` | Change today's entry | आज की एंट्री बदलें | ఈరోజు ఎంట్రీ మార్చండి |  | pending |
+| `homeProgram.family.doneLabel` | Done today: {activity} | आज हो गया: {activity} | ఈరోజు చేశాం: {activity} |  | pending |
+| `homeProgram.family.sheetTitle` | How did it go? | कैसा रहा? | ఎలా జరిగింది? |  | pending |
+| `homeProgram.family.minutes` | Minutes | मिनट | నిమిషాలు |  | pending |
+| `homeProgram.family.note` | Note | नोट | గమనిక |  | pending |
+| `homeProgram.family.optional` | (optional) | (वैकल्पिक) | (ఐచ్ఛికం) |  | pending |
+| `homeProgram.family.save` | Save | सहेजें | సేవ్ చేయండి |  | pending |
+| `homeProgram.family.saving` | Saving… | सहेजा जा रहा है… | సేవ్ చేస్తోంది… |  | pending |
+| `homeProgram.family.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `homeProgram.family.saved` | Saved. | सहेज लिया गया। | సేవ్ అయింది. |  | pending |
+| `homeProgram.family.savedOffline` | No connection. It is saved on this phone and will be sent when you are online. | इंटरनेट नहीं है। यह इस फ़ोन पर सहेजा गया है और ऑनलाइन होने पर भेज दिया जाएगा। | ఇంటర్నెట్ లేదు. ఇది ఈ ఫోన్‌లో సేవ్ అయింది, మీరు ఆన్‌లైన్‌లోకి వచ్చినప్పుడు పంపబడుతుంది. |  | pending |
+| `homeProgram.family.yourEntries` | Your entries this week | इस हफ़्ते की आपकी एंट्री | ఈ వారం మీ ఎంట్రీలు |  | pending |
+| `homeProgram.family.remove` | Remove | हटाएँ | తొలగించండి |  | pending |
+| `homeProgram.family.removeLabel` | Remove your entry for {date} | {date} की अपनी एंट्री हटाएँ | {date} మీ ఎంట్రీని తొలగించండి |  | pending |
+| `homeProgram.family.removed` | Removed. | हटा दिया गया। | తొలగించబడింది. |  | pending |
+| `homeProgram.errors.stale` | This home program was changed by someone else. Reload to see the latest version. | किसी और ने यह घर का कार्यक्रम बदल दिया है। नया संस्करण देखने के लिए फिर से लोड करें। | ఈ ఇంటి కార్యక్రమాన్ని వేరొకరు మార్చారు. తాజా వెర్షన్ చూడటానికి మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `homeProgram.errors.archived` | This home program is archived and can no longer be changed. | यह घर का कार्यक्रम संग्रहीत है और अब बदला नहीं जा सकता। | ఈ ఇంటి కార్యక్రమం ఆర్కైవ్ చేయబడింది, ఇక మార్చలేరు. |  | pending |
+| `homeProgram.errors.tooManyActivities` | A home program can have at most 15 active activities. | एक घर के कार्यक्रम में ज़्यादा से ज़्यादा 15 सक्रिय गतिविधियाँ हो सकती हैं। | ఒక ఇంటి కార్యక్రమంలో గరిష్ఠంగా 15 సక్రియ కార్యకలాపాలు ఉండవచ్చు. |  | pending |
+| `homeProgram.errors.noActivities` | Add at least one activity before publishing. | प्रकाशित करने से पहले कम से कम एक गतिविधि जोड़ें। | ప్రచురించే ముందు కనీసం ఒక కార్యకలాపం జోడించండి. |  | pending |
+| `homeProgram.errors.nothingToPublish` | There are no changes to publish. | प्रकाशित करने के लिए कोई बदलाव नहीं है। | ప్రచురించడానికి మార్పులు లేవు. |  | pending |
+| `homeProgram.errors.goalNotInPlan` | Choose a goal from this child's plan. | इस बच्चे की योजना से एक लक्ष्य चुनें। | ఈ పిల్లల ప్రణాళిక నుండి ఒక లక్ష్యాన్ని ఎంచుకోండి. |  | pending |
+| `homeProgram.errors.guideNotInCase` | Choose a guide from this case's documents that the parent can see. | इस केस के दस्तावेज़ों से ऐसी गाइड चुनें जिसे माता-पिता देख सकें। | తల్లిదండ్రులు చూడగల ఈ కేసు పత్రాల నుండి గైడ్‌ను ఎంచుకోండి. |  | pending |
+| `homeProgram.errors.futureDate` | The date cannot be in the future. | तारीख भविष्य की नहीं हो सकती। | తేదీ భవిష్యత్తులో ఉండకూడదు. |  | pending |
+| `homeProgram.errors.tooOld` | You can only log the last 14 days. | आप केवल पिछले 14 दिनों की एंट्री कर सकते हैं। | మీరు గత 14 రోజులకు మాత్రమే నమోదు చేయగలరు. |  | pending |
+| `homeProgram.errors.notThisWeek` | Only this week's entries can be removed. | केवल इस हफ़्ते की एंट्री हटाई जा सकती हैं। | ఈ వారం ఎంట్రీలను మాత్రమే తొలగించగలరు. |  | pending |
+| `homeProgram.errors.notFound` | Not found. Reload the page. | नहीं मिला। पेज फिर से लोड करें। | కనుగొనబడలేదు. పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `homeProgram.errors.invalid` | Please check the highlighted fields. | कृपया चिह्नित फ़ील्ड जाँचें। | దయచేసి గుర్తించిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
+| `homeProgram.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `homeProgram.errors.reload` | Reload | फिर से लोड करें | మళ్ళీ లోడ్ చేయండి |  | pending |
 | `scribe.label` | Suggested by DoctorNearMe - the clinician decides | DoctorNearMe का सुझाव - फ़ैसला क्लिनिशियन का है | DoctorNearMe సూచన - నిర్ణయం క్లినిషియన్‌దే |  | pending |
 | `scribe.templates.child_dev_isaa` | Child Development (ISAA form) | बाल विकास (ISAA फ़ॉर्म) | పిల్లల అభివృద్ధి (ISAA ఫారం) |  | pending |
 | `scribe.templates.therapy_session_note` | Therapy session note | थेरेपी सत्र नोट | థెరపీ సెషన్ నోట్ |  | pending |

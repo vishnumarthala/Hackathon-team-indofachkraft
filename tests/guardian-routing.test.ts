@@ -155,7 +155,7 @@ describe("family CSP (NFR-2)", () => {
     const csp = familyCsp({ pathname: "/family", nonce: "abc", supabaseUrl: "https://x.supabase.co/", isDev: false });
     const script = csp.split("; ").find((d) => d.startsWith("script-src"))!;
     expect(script).toBe("script-src 'self' 'nonce-abc' 'strict-dynamic'");
-    expect(csp).toContain("connect-src 'self' https://x.supabase.co");
+    expect(csp).toContain("connect-src 'self' https://x.supabase.co wss://x.supabase.co");
     expect(csp).not.toMatch(/googletagmanager|google-analytics|facebook|doubleclick/);
   });
 });

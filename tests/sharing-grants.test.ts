@@ -42,7 +42,7 @@ describe("grant request validation and helpers", () => {
   });
 
   it("registers every scope's loader (022 reports, 021 health_profile, 023 documents, 024 assessments, 025 iep)", () => {
-    expect(Object.keys(SHARE_LOADERS).sort()).toEqual(["assessments", "documents", "health_profile", "iep", "reports"]);
+    expect(Object.keys(SHARE_LOADERS).sort()).toEqual(["assessments", "documents", "health_profile", "home_program", "iep", "reports"]);
     expect(reportTitle("# Assessment summary\n\ntext")).toBe("Assessment summary");
     expect(reportTitle("no heading")).toBe("Assessment report");
   });

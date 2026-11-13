@@ -14,6 +14,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (role === "guardian") redirect("/family");
   const t = await getT("providers.nav");
   const tn = await getT("notifications");
+  const tm = await getT("messaging");
 
   return (
     <>
@@ -25,6 +26,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <div className="flex flex-wrap items-center gap-3">
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/team">
               Team
+            </Link>
+            <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/messages">
+              {tm("navLink")}
             </Link>
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/profile">
               {t("profile")}

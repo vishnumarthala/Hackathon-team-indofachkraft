@@ -15,6 +15,6 @@ export default defineTemplate({
   },
   link: ({ payload }) => {
     const childId = idOf(payload, "child_id");
-    return childId ? `/family/children/${childId}` : "/family/children";
+    return childId ? `/family/children/${childId}/home-program` : "/family/children";
   },
 });

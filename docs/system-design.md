@@ -137,6 +137,13 @@ flowchart LR
   concurrency (`version`, 409). Publishing renders markdown and stores it with `publishVersion` (`iep_plan`,
   visible to guardians) plus a goal snapshot (`iep_publications`); guardians (`/family/children/[id]/plan`) and the
   `iep` share scope see only published text with live progress values. See `docs/iep.md`.
+- **Home program (ticket 026).** Case-scoped programs (`home_programs`, one `published` per case) of up to 15
+  active activities (`home_activities`, optionally linked to a goal of the case's active IEP plan and to a guide
+  document from the vault) and guardian practice logs (`home_activity_logs`, one per activity/day/guardian,
+  upserted). Publishing stores `publishVersion` (`home_program`) plus an activity snapshot
+  (`home_program_publications`); guardians (`/family/children/[id]/home-program`, `Done today`), the
+  `home_program` share scope and 040 (`getGuardianHomePrograms`) see only the published snapshot. Adherence weeks
+  start Monday in the guardian's time zone. See `docs/home-program.md`.
 - **Real patient data** still waits for the privacy/audit baseline (041) and legal review of the consent
   texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
@@ -163,6 +170,14 @@ flowchart LR
   `/api/cron/outbox`, `CRON_SECRET`) plus an immediate `after()` drain (`drainSoon`); locally
   `npm run outbox:run`. Bell + `/notifications`, preferences in settings, `/admin/notifications`.
   See `docs/notifications.md`.
+- **Secure messaging (ticket 027).** Case-scoped threads between a child's guardians and the care team of
+  one organisation (`message_threads`, `messages`, `thread_reads`). Access is one SQL rule
+  (`thread_access_level`: linked guardian, or 022 case access) used by the routes and by RLS
+  (`can_access_thread`), which is the browser's only path: `messages` is in the `supabase_realtime`
+  publication and pages fall back to polling every 15 s without Realtime. Writes are security-definer
+  functions (message + `message.created` outbox event 2 min later + strict audit, ids only); notifications
+  never carry message text. Attachments must be readable by every participant under 023's rule. See
+  `docs/messaging.md`.
 - **Privacy, audit and operations (ticket 041).** `audit_events` is append-only for every role, survives case
   deletion (`case_ref`, no FK) and is attributed (`actor_user_id` + `actor_role` from the session, `org_id`,
   `child_id`, `request_id`, `ip_hash`; a trigger fills them for every writer). `audit()` is best effort; security-critical
@@ -218,7 +233,7 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
-          documents.md  assessments.md  notifications.md  iep.md
+          documents.md  assessments.md  notifications.md  iep.md  home-program.md  messaging.md
 ```
 
 Rules: `lib/types.ts` is owned by 001. Later tickets add new types in their own module, not there.
@@ -529,6 +544,7 @@ The AI scribe (ticket 038, `docs/scribe.md`) generalises the session pipeline to
 'consult'`), and produce `session_note` / `rx_draft` reports and `goal_progress_suggestions`. Session notes are
 published by `finalizeSessionNote` (not by the `reports_publish_final` trigger, which skips both kinds) with the
 clinician's `visible_to_guardian` choice.
+Home programs publish with `entity_type = 'home_program'` (ticket 026, `docs/home-program.md`).
 
 ## 8. API contracts
 
@@ -566,8 +582,10 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|PUT /api/family/children/:id/health`, `GET /api/cases/:id/health` | 021 | PUT: full profile + `version` | 200 `{ profile }`; 409 stale version; 400 `details` by field path; case route 404 without profile (`docs/health-profile.md`) |
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
 | `GET\|POST /api/cases/:id/iep-plans`, `GET\|PATCH /api/iep-plans/:planId`, `POST /api/iep-plans/:planId/publish`, `GET\|POST /api/iep-plans/:planId/goals`, `PATCH\|DELETE /api/iep-goals/:goalId`, `GET\|POST /api/iep-goals/:goalId/progress`, `GET /api/family/children/:id/plan` | 025 | plan/goal writes carry the plan `version` | 201/200; 409 stale `This plan was changed by someone else. Reload to see the latest version.`; 400 field errors; 422 no goals / > 20 goals (`docs/iep.md`) |
+| `GET\|POST /api/cases/:id/home-programs`, `GET\|PATCH /api/home-programs/:pid`, `POST /api/home-programs/:pid/activities`, `POST /api/home-programs/:pid/publish`, `PATCH\|DELETE /api/home-activities/:aid`, `GET /api/family/children/:id/home-program`, `POST /api/family/home-activities/:aid/logs`, `DELETE /api/family/home-activity-logs/:id` | 026 | program PATCH / publish carry the program `version` | 201/200; 409 stale; 422 `Choose a goal from this child's plan` / > 15 active activities; guardian logs 201 new / 200 same day again, 400 future or > 14 days ago (`docs/home-program.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
+| `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |
 | `GET\|POST /api/family/children/:id/deletion-requests`, `POST /api/admin/privacy/requests/:id` | 041 | `{ scope: "all_ai_processing" \| "everything", reason? }`; admin `{ decision: "approve" \| "reject", note? }` | 201 `{ request }`; 409 open request; admin 200 `{ id, status }`, 403 non-admin, 400 rejection without a cited note |
@@ -728,6 +746,9 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
 - Audio: private bucket, signed URLs valid 1 hour for playback.
 - Documents (023): private bucket, signed URLs valid 300 s, minted only after the access check and the
   strict `document.downloaded` audit row; never logged (`docs/documents.md`).
+- Messaging (027): RLS select policies are the browser's path to `message_threads` / `messages` /
+  `thread_reads` (also for Realtime); message text is never logged, audited or put in notifications
+  (`docs/messaging.md`).
 - Consent: intake page requires a consent checkbox before Start. Since 020 every gated step also needs the
   guardian's recorded consent for that feature (server-side; a client `parent_consent` flag is ignored);
   see `docs/consent.md`.

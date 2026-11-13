@@ -78,3 +78,24 @@ Raw evidence in `evidence/`: `acceptance.txt` (scripted browser/API run, 30 chec
   `docs/privacy/retention.md`, `demo/README.md`.
 - The e038 acceptance data (accounts, the synthetic case and its sessions) is left in the slot 8 database; the stand-in
   `appointments` table was dropped after the run.
+
+## Merge with `main` (026 home program, 027 messaging)
+
+- `git merge main` (main at `1c51874`). Conflicts resolved keeping both sides: family child page (`Home program` and
+  `Session notes` links), `app/privacy/page.tsx` (collect list: `scribe` next to 026's `homeProgram` and 027's
+  `messages`), `lib/audit/strict-actions.ts` (038 scribe entries + 026/027 entries), `lib/privacy/registry.ts`
+  (`ai_scribe` + `home_programs`; 027's `messages` merged automatically), `docs/system-design.md`,
+  `docs/privacy/retention.md`, `messages/{en,hi,te}.json` (main's catalogue + the `scribe` namespace and
+  `privacy.notice.collect.scribe`; no key clashes), `messages/REVIEW.md` regenerated (`npx tsx scripts/i18n-review.ts`,
+  1846 rows). CaseTabs, `lib/notify/*`, tests and seed scripts merged automatically. Migration order:
+  `...002600_home_program`, `...002700_messaging`, `...003800_scribe`, then 041's `...0041xx`.
+- After `dnm-db.sh 8 <worktree> reset` (23 migrations): `npm run lint` and `npm run typecheck` exit 0; `npx vitest run`
+  73 files, 1114 passed, 11 skipped (the opt-in `CT_DB_TESTS` block of 10 + the live no-tracking crawl; every DB suite
+  ran, including 026/027's); `npm run build` exit 0; `npx vitest run tests/scribe.test.ts tests/regression-child-dev.test.ts
+  --reporter=verbose` 2 files, 25 passed (`evidence/vitest-038-verbose.txt` refreshed).
+- Live re-check on the merged code (fresh `seed:users --prefix e038`, dev server :3080, own headless Chromium): the whole
+  acceptance script again 25/25 PASS, the consent withdraw/re-grant check 5/5 PASS, and the guardian child page shows both
+  the 026 `Home program` and 038 `Session notes` links at 375 px (`evidence/post-merge-child-page-375.png`);
+  `evidence/acceptance.txt` 31 PASS, 0 FAIL. The stand-in `appointments` table was dropped afterwards.
+- Environment note: a dev server whose log file is written inside the worktree (`.tmp/`) recompiled in a loop and kept
+  reloading `/login`; the re-check wrote the log outside the worktree.
