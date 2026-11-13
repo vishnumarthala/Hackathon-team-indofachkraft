@@ -1,0 +1,46 @@
+PASS setup: provider_a creates an org A case - HTTP 201
+PASS setup: guardian_a claims the child - HTTP 201
+PASS setup: three documents (family, visible provider, provider-only)
+PASS E-1.1 audit rows after migration >= before; case_ref filled for old rows - before 6, after 6|5|5|5
+PASS E-1.2 provider_a confirms a fact: actor_user_id = provider_a, actor_role = provider (body actor ignored) - {"actor":"therapist","actor_user_id":"13ab1afc-79b4-404a-87b4-6c4619a1ec88","actor_role":"provider","child_id":"5c04bb04-5b22-4ade-b698-6225c307e240","org_id":"ecc4d98b-f452-4f8a-b44c-74cd3f3bb91f"}
+PASS E-1.3 case deleted via SQL: its audit rows still exist with case_ref - 3 rows: case.assignment_initial/system, case.created/provider, case.updated/provider
+PASS E-3 POST exports -> 202 { export_id } - HTTP 202
+PASS E-3 export built by the job right after the request (after()) - ready
+PASS E-3 guardian_a notified (in-app) - {"id":"973de849-3b7a-418d-b0fa-c1bd3d3ddc46","title":"Your data download is ready","body":"The copy of your child's data you asked for is ready. It can be downloaded for 7 days.","link":"/family/child
+PASS E-3 download -> 302 signed URL - HTTP 302
+PASS E-3 ZIP: child.json + documents/ (2 files) - child.json, documents/0d7ed9a2-35e0-46aa-be64-29bcd213aeb9-letter.pdf, documents/1ca95df0-d47f-48ed-a149-923c284597d2-plan.pdf
+PASS E-3 child.json has consents and the health profile
+PASS E-3 provider-only document absent; visible + family documents present - e041 School letter, e041 Therapy plan
+PASS E-3 published plans: section not present (024/025 not merged; registry hook documented)
+PASS E-3 guardian_b downloading the export -> 404 - HTTP 404
+PASS E-3 provider_a downloading the export -> 403 - HTTP 403
+PASS E-3 4th request in a day -> 429 - HTTP 429 {"error":"You can request 3 downloads per day. Please try again tomorrow."}
+PASS E-4 guardian_a requests `everything` -> 201 - HTTP 201
+PASS E-4.3 provider_a approving -> 403 - HTTP 403
+PASS E-4 /admin/privacy/requests lists the request with Approve/Reject - HTTP 200
+PASS E-4 platform_admin approves -> 200 - HTTP 200
+PASS E-4 job completed right after approval - completed
+PASS E-4 child pseudonymised - {"display_name":"Deleted child","date_of_birth":null,"deleted":true}
+PASS E-4 recordings, objects and documents removed - objects before 7, after 0; {"cases":0,"recordings":0,"documents":0,"health":0}
+PASS E-4 consents show appended `withdrawn` records - [{"action":"granted","n":7},{"action":"withdrawn","n":7}]
+PASS E-4 processor_deletions: ElevenLabs row per conversation (mock 200) + Gemini not_applicable - [{"processor":"elevenlabs","external_ref":"e041-conv-8dedcba1","status":"deleted","response_code":200},{"processor":"gemini","external_ref":"no-deletion-api","status":"not_applicable","response_code":null}]
+PASS E-4 guardian notified
+PASS E-4 audit rows retained - before 11, after 15
+PASS E-4.2 provider opening the case afterwards -> 404 - page 404, api 404
+PASS E-4 guardian's child page is gone (404) - HTTP 404
+PASS E-5 /privacy (en): draft badge, processors with locations, retention table - HTTP 200
+PASS E-5 /privacy (hi): draft badge, processors with locations, retention table - HTTP 200
+PASS E-5 /privacy (te): draft badge, processors with locations, retention table - HTTP 200
+PASS E-5 docs: incident response (72-hour timeline), processors, retention
+PASS E-5 GET /api/health -> 200 JSON (no secrets) - {"ok":true,"db":"ok","version":"0.1.0"}
+PASS FR-6 POST /api/cron/retention: 401 without secret, 200 with counts - {"counts":{"audio_after_transcription":0,"withdrawn_consent_audio":0,"pending_recordings":0,"pending_documents":0,"orphan_document_objects":0,"orphan_recording_objects":0,"orphan_consent_scans":0,"orphan_credentials":0,"orphan_export_objects":0,"expired_exports":0,"in_app_notifications":0,"delivery_content":0,"pilot_signups":0,"audit_events":0}}
+PASS FR-7/8 POST /api/cron/privacy with secret -> 200 - {"exports":{},"deletions":{}}
+PASS E-5 /admin/ops shows outbox and retention status - HTTP 200
+PASS E-5 /admin/ops as provider -> denied (404) - HTTP 404
+PASS FR-4 /admin/audit lists filtered events and is itself audited (audit.viewed) - HTTP 200
+PASS FR-4 /admin/audit for guardian/provider -> redirected/404 - guardian 307, provider 404
+ALL PASS (main)
+PASS E-2 AUDIT_FAIL_ACTIONS=consent.granted: grant -> 503 message, no consent_records row - HTTP 503 {"error":"Could not save. Please try again."}; rows 0
+ALL PASS (hook-on)
+PASS E-2 hook removed: grant works (201, one row) - HTTP 201; rows 1
+ALL PASS (hook-off)

@@ -1,0 +1,141 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/041
+
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > allows the app origin, and approved origins only on their routes 1ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.googletagmanager.com/gtm.js?id=GTM-X, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.google-analytics.com/analytics.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://connect.facebook.net/en_US/fbevents.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://static.hotjar.com/c/hotjar-1.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.clarity.ms/tag/abc, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://cdn.segment.com/analytics.js/v1/x/analytics.min.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > allowlist entries are approved vendors, scoped to /family routes, and never trackers 1ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > the family CSP allows only self (+nonce) and the route's allowlisted origins; lib/csp exceptions are allowlisted 0ms
+ ✓ tests/no-tracking.test.ts > static scan of /family/** modules (FR-13) > finds the family pages and their modules 0ms
+ ✓ tests/no-tracking.test.ts > static scan of /family/** modules (FR-13) > no external <script>, next/script, injected script tags or tracker code 8ms
+ ↓ tests/no-tracking.test.ts > rendered /family/** pages load no third-party scripts (live crawl) > every family page, signed in as a synthetic guardian with a child
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > consent.granted 1ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > consent.withdrawn 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > consent.paper_recorded 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > child.claimed 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > guardian.left_child 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > guardian.link_revoked 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > sharing.granted 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > sharing.revoked 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > case.assigned 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > case.unassigned 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > document.downloaded 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > document.deleted 1ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > org.invitation_created 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > org.invitation_revoked 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > org.invitation_accepted 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > org.member_revoked 1ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > provider.registered 1ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > privacy.export_requested 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > privacy.export_downloaded 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > privacy.deletion_requested 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > privacy.deletion_reviewed 0ms
+ ✓ tests/audit-hardening.test.ts > strict actions are implemented fail-closed (static, FR-2) > covers the FR-2 list 1ms
+ ✓ tests/audit-hardening.test.ts > log redaction (NFR-2) > masks emails, phones (last 4 kept) and tokens; keeps ids, dates and counts 0ms
+ ✓ tests/privacy-retention.test.ts > retention policy (FR-6) > defaults match FR-6 and the 023 hand-off; RETENTION_AUDIO_DAYS overrides; invalid values fall back 78ms
+ ✓ tests/privacy-retention.test.ts > health check (FR-12) > checkDatabase is false when the query fails or hangs 54ms
+ ✓ tests/privacy-retention.test.ts > health check (FR-12) > GET /api/health -> 503 { ok: false, db: 'unreachable' } without the database; never any secret 9ms
+ ✓ tests/privacy-retention.test.ts > health check (FR-12) > GET /api/health -> 200 { ok: true, db: 'ok', version } with the database 13ms
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > FR-1: update/delete/truncate on audit_events raise for every role (incl. the owner) 30ms
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > FR-1/FR-3: rows are attributed and survive case deletion (case_ref, child, org kept) 15ms
+stdout | tests/privacy-retention.test.ts > retention job (database) > deletes what is due (objects first), keeps transcripts and everything not due, audits counts; second run is a no-op
+[retention] run complete {"audio_after_transcription":1,"withdrawn_consent_audio":1,"pending_recordings":1,"pending_documents":1,"orphan_document_objects":1,"orphan_recording_objects":0,"orphan_consent_scans":0,"orphan_credentials":0,"orphan_export_objects":0,"expired_exports":1,"in_app_notifications":1,"delivery_content":1,"pilot_signups":1,"audit_events":1}
+
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: forced audit failure -> 503 and no state change (017 invitations and membership)
+[audit] Audit write failed for org.invitation_created: forced audit failure (test)
+
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: forced audit failure -> 503 and no state change (017 invitations and membership)
+[audit] Audit write failed for org.invitation_accepted: forced audit failure (test)
+
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: forced audit failure -> 503 and no state change (017 invitations and membership)
+[audit] Audit write failed for org.invitation_revoked: forced audit failure (test)
+
+stdout | tests/privacy-retention.test.ts > retention job (database) > deletes what is due (objects first), keeps transcripts and everything not due, audits counts; second run is a no-op
+[retention] run complete {"audio_after_transcription":0,"withdrawn_consent_audio":0,"pending_recordings":0,"pending_documents":0,"orphan_document_objects":0,"orphan_recording_objects":0,"orphan_consent_scans":0,"orphan_credentials":0,"orphan_export_objects":0,"expired_exports":0,"in_app_notifications":0,"delivery_content":0,"pilot_signups":0,"audit_events":0}
+
+ ✓ tests/privacy-retention.test.ts > retention job (database) > deletes what is due (objects first), keeps transcripts and everything not due, audits counts; second run is a no-op 154ms
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > E-1 step 2: confirming a fact is attributed to the signed-in provider 62ms
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: forced audit failure -> 503 and no state change (017 invitations and membership)
+[audit] Audit write failed for org.member_revoked: forced audit failure (test)
+
+stdout | tests/privacy-retention.test.ts > retention job (database) > cron route: 401 without the bearer secret, 200 with it
+[retention] run complete {"audio_after_transcription":0,"withdrawn_consent_audio":0,"pending_recordings":0,"pending_documents":0,"orphan_document_objects":0,"orphan_recording_objects":0,"orphan_consent_scans":0,"orphan_credentials":0,"orphan_export_objects":0,"expired_exports":0,"in_app_notifications":0,"delivery_content":0,"pilot_signups":0,"audit_events":0}
+
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: forced audit failure -> 503 and no state change (017 invitations and membership) 114ms
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: provider registration (role change) fails closed
+[audit] Audit write failed for provider.registered: forced audit failure (test)
+
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: guardian link changes fail closed (leave, admin revoke)
+[audit] Audit write failed for guardian.left_child: forced audit failure (test)
+
+ ✓ tests/privacy-retention.test.ts > retention job (database) > cron route: 401 without the bearer secret, 200 with it 53ms
+ ✓ tests/privacy-retention.test.ts > retention job (database) > FR-12: ops overview reports stuck recordings, failed processor deletions and the last retention run 16ms
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: guardian link changes fail closed (leave, admin revoke)
+[audit] Audit write failed for guardian.link_revoked: forced audit failure (test)
+
+stdout | tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > export (FR-7) > 202, one running per child (429), only guardian-visible content, notification, requester-only download
+[privacy.export] export ready {"export_id":"5e448532-10da-44a7-a0e0-8f8e8c9513a8","files":3,"bytes":1855}
+
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: consent (SQL function) fails closed; E-2 AUDIT_FAIL_ACTIONS hook -> 503, then works
+record_consent failed: forced audit failure (test)
+
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: provider registration (role change) fails closed 105ms
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: guardian link changes fail closed (leave, admin revoke) 46ms
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: export and deletion requests and reviews fail closed
+[audit] Audit write failed for privacy.export_requested: forced audit failure (test)
+
+stdout | tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > export (FR-7) > 202, one running per child (429), only guardian-visible content, notification, requester-only download
+[notify] run: fanned_out=1 sent=1 failed=0 skipped=0
+
+stdout | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: export and deletion requests and reviews fail closed
+[privacy.export] export ready {"export_id":"0352e8a7-a04c-498e-af6c-086e61ae293e","files":1,"bytes":728}
+
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: export and deletion requests and reviews fail closed
+[audit] Audit write failed for privacy.export_downloaded: forced audit failure (test)
+
+ ✓ tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > export (FR-7) > 202, one running per child (429), only guardian-visible content, notification, requester-only download 221ms
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: consent (SQL function) fails closed; E-2 AUDIT_FAIL_ACTIONS hook -> 503, then works 69ms
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: export and deletion requests and reviews fail closed
+[audit] Audit write failed for privacy.deletion_requested: forced audit failure (test)
+
+stderr | tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: export and deletion requests and reviews fail closed
+[audit] Audit write failed for privacy.deletion_reviewed: forced audit failure (test)
+
+stdout | tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > export (FR-7) > 3 per child per day, the 4th -> 429
+[privacy.export] export ready {"export_id":"25d769aa-4f6f-432c-83a1-0e31ac3aece4","files":3,"bytes":1855}
+
+stdout | tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > export (FR-7) > 3 per child per day, the 4th -> 429
+[privacy.export] export ready {"export_id":"4c995c91-5a6b-49f3-9dbd-f94057b097f3","files":3,"bytes":1855}
+
+ ✓ tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > export (FR-7) > 3 per child per day, the 4th -> 429 110ms
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > FR-2 runtime: export and deletion requests and reviews fail closed 138ms
+ ✓ tests/audit-hardening.test.ts > audit hardening (database) > FR-4: audit query filters (action, actor, child, case) and keyset pages; no details column 7ms
+stderr | tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > deletion requests (FR-8) > execution: processor failure recorded and retried, each conversation deleted once, child erased, audit kept; re-run no-op
+[privacy.deletion] processor deletions failing {"request_id":"a3220a88-37a0-4641-96c4-b6c1ea0b36fe","failing":1}
+
+stdout | tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > deletion requests (FR-8) > execution: processor failure recorded and retried, each conversation deleted once, child erased, audit kept; re-run no-op
+[privacy.deletion] deletion completed {"request_id":"a3220a88-37a0-4641-96c4-b6c1ea0b36fe","scope":"everything"}
+
+stdout | tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > deletion requests (FR-8) > execution: processor failure recorded and retried, each conversation deleted once, child erased, audit kept; re-run no-op
+[notify] run: fanned_out=1 sent=1 failed=0 skipped=0
+
+ ✓ tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > deletion requests (FR-8) > guardian requests (201, actor from the session), duplicate 409, provider 403, admin review rules 55ms
+ ✓ tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > deletion requests (FR-8) > execution: processor failure recorded and retried, each conversation deleted once, child erased, audit kept; re-run no-op 113ms
+stdout | tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > deletion requests (FR-8) > all_ai_processing: AI data and audio go, clinician-confirmed records and the child stay; rejection cites the obligation
+[privacy.deletion] deletion completed {"request_id":"3b6401fe-4cda-45c1-875e-46596949d45f","scope":"all_ai_processing"}
+
+ ✓ tests/privacy-export-deletion.test.ts > 041 export and deletion (database) > deletion requests (FR-8) > all_ai_processing: AI data and audio go, clinician-confirmed records and the child stay; rejection cites the obligation 53ms
+
+ Test Files  4 passed (4)
+      Tests  56 passed | 1 skipped (57)
+   Start at  03:02:47
+   Duration  1.54s (transform 573ms, setup 0ms, import 390ms, tests 3.26s, environment 0ms)
+

@@ -187,6 +187,14 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "revokeMember",
     impl: { kind: "auditStrict", module: "lib/orgs.ts" },
   },
+  // ---------- 028 role change (guardian account becomes a provider) ----------
+  {
+    action: "provider.registered",
+    description: "An account registers as a provider (role change)",
+    routes: ["app/api/providers/register/route.ts"],
+    call: "registerProvider",
+    impl: { kind: "auditStrict", module: "lib/providers/index.ts" },
+  },
   // ---------- 041 export and deletion ----------
   {
     action: "privacy.export_requested",

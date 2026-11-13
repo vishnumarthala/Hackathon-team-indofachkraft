@@ -1,0 +1,33 @@
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > allows the app origin, and approved origins only on their routes 1ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.googletagmanager.com/gtm.js?id=GTM-X, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.google-analytics.com/analytics.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://connect.facebook.net/en_US/fbevents.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://static.hotjar.com/c/hotjar-1.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://www.clarity.ms/tag/abc, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > never allows tracker https://cdn.segment.com/analytics.js/v1/x/analytics.min.js, on any route 0ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > allowlist entries are approved vendors, scoped to /family routes, and never trackers 1ms
+ ✓ tests/no-tracking.test.ts > third-party allowlist (D-6) > the family CSP allows only self (+nonce) and the route's allowlisted origins; lib/csp exceptions are allowlisted 0ms
+ ✓ tests/no-tracking.test.ts > static scan of /family/** modules (FR-13) > finds the family pages and their modules 0ms
+ ✓ tests/no-tracking.test.ts > static scan of /family/** modules (FR-13) > no external <script>, next/script, injected script tags or tracker code 5ms
+stdout | tests/no-tracking.test.ts > rendered /family/** pages load no third-party scripts (live crawl) > every family page, signed in as a synthetic guardian with a child
+[no-tracking] crawled 17 pages:
+/family/appointments (17 scripts)
+/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/documents (18 scripts)
+/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/health/history/1 (17 scripts)
+/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/health/history (17 scripts)
+/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/health (21 scripts)
+/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee (18 scripts)
+/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/privacy (18 scripts)
+/family/children/d46ff405-d7f2-4910-a74a-28351eae60ee/team (18 scripts)
+/family/children/claim (18 scripts)
+/family/children/new (18 scripts)
+/family/children (18 scripts)
+/family/documents (18 scripts)
+/family/messages (17 scripts)
+/family/notifications (18 scripts)
+/family (17 scripts)
+/family/settings (18 scripts)
+/family/login (17 scripts)
+ ✓ tests/no-tracking.test.ts > rendered /family/** pages load no third-party scripts (live crawl) > every family page, signed in as a synthetic guardian with a child 5077ms
+      Tests  13 passed (13)

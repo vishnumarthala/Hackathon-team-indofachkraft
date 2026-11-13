@@ -1,0 +1,8 @@
+child.json
+documents/0d7ed9a2-35e0-46aa-be64-29bcd213aeb9-letter.pdf
+documents/1ca95df0-d47f-48ed-a149-923c284597d2-plan.pdf
+
+sections: child_profile, documents, health_profile, consent_records, sharing_and_care_team
+consent_records: 7
+documents: e041 School letter, e041 Therapy plan
+health allergies: [{"reaction":"rash","severity":"severe","substance":"Peanut (synthetic)"}]

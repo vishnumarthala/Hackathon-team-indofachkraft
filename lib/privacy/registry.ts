@@ -204,7 +204,10 @@ export const REGISTRY: PrivacyCategory[] = [
     retention: "While the account is active; deleted on erasure.",
     processors: ["supabase"],
     export: async ({ sql, childId }) => {
-      const [current] = await sql`select * from public.child_health_profiles where child_id = ${childId}`;
+      const [current] = await sql`
+        select blood_group, allergies, medications, conditions, birth_history, developmental_history,
+               emergency_contact_name, emergency_contact_phone, version, updated_at
+        from public.child_health_profiles where child_id = ${childId}`;
       const history = await sql`
         select version, snapshot, changed_fields, changed_at from public.child_health_profile_history
         where child_id = ${childId} order by version`;

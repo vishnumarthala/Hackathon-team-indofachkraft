@@ -18,7 +18,7 @@ export default async function AdminOpsPage() {
   const o = await opsOverview();
   const card = "space-y-2 rounded border border-slate-200 bg-white p-4";
   const row = (label: string, value: string | number, testId: string) => (
-    <div className="flex justify-between gap-4 text-sm">
+    <div key={testId} className="flex justify-between gap-4 text-sm">
       <dt className="text-slate-700">{label}</dt>
       <dd className="font-mono tabular-nums" data-testid={testId}>
         {value}

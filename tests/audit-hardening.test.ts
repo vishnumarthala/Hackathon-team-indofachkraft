@@ -256,6 +256,18 @@ describe.skipIf(!enabled)("audit hardening (database)", { timeout: 120_000 }, ()
     expect((await sql`select status from org_members where org_id = ${orgA} and user_id = ${member.id}`)[0].status).toBe("active");
   });
 
+  it("FR-2 runtime: provider registration (role change) fails closed", async () => {
+    const newcomer = await world.user("newcomer", "guardian");
+    as(newcomer);
+    const register = await import("@/app/api/providers/register/route");
+    const undo = await failAudit("provider.registered", newcomer.id);
+    const res = await register.POST(post("http://localhost/x", { full_name: "t041 Newcomer (synthetic)", provider_type: "occupational_therapist" }));
+    expect(res.status).toBe(503);
+    await undo();
+    expect((await sql`select role from user_profiles where id = ${newcomer.id}`)[0].role).toBe("guardian");
+    expect(await sql`select 1 from provider_profiles where user_id = ${newcomer.id}`).toHaveLength(0);
+  });
+
   it("FR-2 runtime: guardian link changes fail closed (leave, admin revoke)", async () => {
     as(guardian);
     const leave = await import("@/app/api/family/children/[id]/leave/route");

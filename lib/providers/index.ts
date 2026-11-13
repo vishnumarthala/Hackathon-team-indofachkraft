@@ -3,7 +3,9 @@
 // verification status or listing flags.
 import { randomBytes } from "node:crypto";
 import type { z } from "zod";
+import { auditStrict } from "@/lib/audit";
 import { supabaseAdmin } from "@/lib/db";
+import { pg } from "@/lib/pg";
 import { slugify, type OrgRole } from "@/lib/orgs";
 import { canPrescribe, PHOTO_BUCKET, profileSlug, type ProviderType, type VerificationStatus } from "./constants";
 import type { LocationFields, OrgPublicSchema, ProfileUpdateSchema } from "./schemas";
@@ -106,20 +108,33 @@ export function newSlugSuffix(): string {
 }
 
 // FR-2: solo org + owner membership + role `provider` + draft profile, in one transaction.
+// 041 FR-2: registering promotes a guardian account to provider (a role change), so the change and its
+// `provider.registered` audit row are one transaction (strict: an audit failure saves nothing).
 export async function registerProvider(
   userId: string,
   input: { full_name: string; provider_type: ProviderType },
 ): Promise<Result<{ profileId: string; created: boolean }>> {
-  const { data, error } = await supabaseAdmin().rpc("register_provider", {
-    p_user: userId,
-    p_display_name: input.full_name,
-    p_provider_type: input.provider_type,
-    p_profile_slug: profileSlug(input.full_name, newSlugSuffix()),
-    p_org_name: input.full_name,
-    p_org_slug: slugify(input.full_name),
+  const sql = await pg();
+  const outcome = await sql.begin(async (tx) => {
+    const [row] = await tx<{ outcome: { result: "created" | "exists" | "forbidden"; profile_id?: string } }[]>`
+      select public.register_provider(
+        p_user => ${userId}::uuid, p_display_name => ${input.full_name}, p_provider_type => ${input.provider_type},
+        p_profile_slug => ${profileSlug(input.full_name, newSlugSuffix())}, p_org_name => ${input.full_name},
+        p_org_slug => ${slugify(input.full_name)}) as outcome`;
+    if (row.outcome.result === "created") {
+      await auditStrict(
+        {
+          actorUserId: userId,
+          action: "provider.registered",
+          entity: "provider_profile",
+          entityId: row.outcome.profile_id,
+          details: { provider_type: input.provider_type },
+        },
+        tx,
+      );
+    }
+    return row.outcome;
   });
-  if (error) throw new Error(`Could not register provider: ${error.message}`);
-  const outcome = data as { result: "created" | "exists" | "forbidden"; profile_id?: string };
   if (outcome.result === "forbidden") {
     return { ok: false, status: 403, error: "This account cannot register as a provider" };
   }

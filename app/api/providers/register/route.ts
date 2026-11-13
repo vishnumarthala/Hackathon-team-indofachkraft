@@ -1,4 +1,4 @@
-import { audit } from "@/lib/audit";
+import { auditFailure } from "@/lib/audit";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { fail, ok, parseJson } from "@/lib/http";
 import { registerProvider } from "@/lib/providers";
@@ -16,17 +16,14 @@ export async function POST(req: Request) {
   const parsed = await parseJson(req, RegisterSchema);
   if ("response" in parsed) return parsed.response;
 
-  const result = await registerProvider(user.id, parsed.data);
-  if (!result.ok) return fail(result.status, result.error);
-  if (result.data.created) {
-    await audit({
-      actorUserId: user.id,
-      action: "provider.registered",
-      entity: "provider_profile",
-      entityId: result.data.profileId,
-      details: { provider_type: parsed.data.provider_type },
-    });
-    invalidatePublicProviders();
+  let result: Awaited<ReturnType<typeof registerProvider>>;
+  try {
+    // 041: role change guardian -> provider, audited strictly in the same transaction.
+    result = await registerProvider(user.id, parsed.data);
+  } catch (err) {
+    return auditFailure(err);
   }
+  if (!result.ok) return fail(result.status, result.error);
+  if (result.data.created) invalidatePublicProviders();
   return ok({ profile_id: result.data.profileId, redirect: "/dashboard/profile" }, result.data.created ? 201 : 200);
 }
