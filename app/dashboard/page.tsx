@@ -2,7 +2,7 @@ import Link from "next/link";
 import { StatusBadge } from "@/components/case/StatusBadge";
 import { ageLabel, formatDateTime, languageName } from "@/lib/cases/format";
 import { getActiveOrgIds, requireProviderPage } from "@/lib/authz";
-import { getTimeZone } from "@/lib/i18n/server";
+import { getT, getTimeZone } from "@/lib/i18n/server";
 import { listCases } from "@/lib/queries/cases";
 
 export const dynamic = "force-dynamic";
@@ -12,14 +12,21 @@ export default async function DashboardPage() {
   const orgIds = await getActiveOrgIds(user.id);
   const cases = orgIds.length > 0 ? await listCases(user.id) : [];
   const timeZone = await getTimeZone();
+  const ti = await getT("childImport");
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Cases</h1>
-        <Link href="/cases/new" className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white">
-          New case
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* 047: bulk import; the page itself explains that only owners/admins can import. */}
+          <Link href="/dashboard/import" className="rounded border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-900">
+            {ti("nav")}
+          </Link>
+          <Link href="/cases/new" className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white">
+            New case
+          </Link>
+        </div>
       </div>
 
       {orgIds.length === 0 ? (
