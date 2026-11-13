@@ -1,8 +1,8 @@
 # 048: Parent check-in for children up to 8 (age-aware questions, concern-based advice, free options)
 
-**Status:** draft (proposed by the [PMF check](../../grill/doctornearme-pmf-check.md); needs product owner OK)
+**Status:** ready (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
 **Mode:** solo
-**Runs:** alongside
+**Runs:** waits for 051: same screen components (voice needs sign-in)
 
 ## Summary
 
@@ -57,6 +57,10 @@ The voice/tap choice already exists (033) and stays.
   phone and "check timings before you go". The content is static in `lib/screen/free-services.ts`, with a
   `last_checked` date that the admin updates.
 - **FR-8** – Red-flag handling stays unchanged and comes first (033 FR-7).
+- **FR-10** – Fewer steps to a visit: below the recommendation, show up to **3 matching providers**. Order them
+  by recommended type, then distance from the location the parent gives (or Hyderabad centre). Each shows
+  the next 2 free slots as chips (029/030 APIs). A chip goes straight to `/book/[profileId]?start=...` with
+  the slot pre-selected, so check-in → booking is one tap. `See more` opens `/find` with the filters set.
 - **FR-9** – en/hi/te strings for all new copy. The voice agent's `{{age_band}}` and question list follow
   the new bands (update `docs/elevenlabs-screen-agent.md`).
 

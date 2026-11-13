@@ -119,14 +119,16 @@ plans in M1; M2/M3 tickets that touch real child data wait for the 041 privacy b
 ### Product decisions from the PMF check on 2026-11-13 ([report](doctornearme-pmf-check.md))
 | # | Question | Decision | Tickets |
 |---|---|---|---|
-| 8 | Who pays | Both: the parent pays the centre/therapist; the centre/therapist pays DoctorNearMe a platform fee for each consultation, as part of the main fee | 045, 046 |
+| 8 | Who pays (corrected the same day) | The family pays **on DoctorNearMe**. DoctorNearMe pays the centre or therapist through Razorpay Route after each delivered consultation, keeping a platform fee per consultation. "Pay at clinic" is retired; the desk uses a payment link or QR | 045, 046 |
 | 9 | Urdu | No. UI and voice languages stay en / hi / te; the new voice agents gain hi and te | 049 |
 | 10 | Recurring sessions, packages, attendance before the pilot | Yes | 043, 044, 045, 047 |
 | 11 | Target age | Up to 8 years | 048 |
+| 12 | Anonymous voice use burning credits | No anonymous voice: tapping stays free and open; voice needs a free sign-in, has per-user quotas (DB-enforced), a platform daily and monthly minute budget with fallback to tapping, shorter calls, and an admin spend view. The landing live demo is only for providers and demo leads | 051 |
+| 13 | Target journey score | At least 9/10. Tickets 048-050 approved; 052 (next steps) and 053 (design alignment) added | 048-053 |
 
 This supersedes "Booking: one-off only (no recurring series/packages)" in §2. Parents still book one-off visits
 themselves, while centres set weekly series (043). It also supersedes 031's "Out of scope: payouts (Razorpay
-Route)" (046).
+Route)" (046), and 030's `at_clinic` payment mode (045).
 
 ## 7. Status of this record
 

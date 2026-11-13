@@ -20,7 +20,7 @@ Source: [PMF check](../../grill/doctornearme-pmf-check.md) §3c; product owner d
   `appointment_series(id, org_id, provider_profile_id, service_id, child_id, case_id null,
   guardian_user_id null, weekdays smallint[] (0–6, 1–4 entries), start_time time, time_zone text,
   starts_on date, ends_on date null, status check in ('active','paused','ended'), billing_mode check in
-  ('package','per_session_at_clinic','per_session_online','free'), created_by, created_at, updated_at)`.
+  ('package','per_session','free'), created_by, created_at, updated_at)`.
   Add `appointments.series_id null` (FK) and `appointments.series_occurrence_date date null`, with a unique
   constraint `(series_id, series_occurrence_date)`. Register both tables in the 041 privacy registry.
 - **FR-2** – Only org `owner`/`admin`, or the provider who owns the profile, can create, edit, pause or

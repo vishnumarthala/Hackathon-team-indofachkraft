@@ -108,15 +108,18 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 |---|-------|--------|------|------|
 | 043 | Recurring therapy sessions (weekly series) | ready | solo | alongside |
 | 044 | Attendance register | ready | solo | waits for 043 |
-| 045 | Packages, family fee ledger and receipts | ready | solo | waits for 043, 044 |
-| 046 | Platform fee per consultation (Route split + monthly statement) | ready | solo | waits for 044, 045 |
+| 045 | Packages and family payments on DoctorNearMe | ready | solo | waits for 043, 044 |
+| 046 | Payouts to centres and the platform fee (Razorpay Route) | ready | solo | waits for 044, 045 |
 | 047 | Import existing children from a spreadsheet | ready | solo | alongside |
-| 048 | Parent check-in up to 8 (age-aware, concern-based advice, free options) | draft | solo | alongside |
-| 049 | Telugu and Hindi for the new voice agents | draft | solo | alongside |
-| 050 | Parent-first home page and Indian statistics | draft | solo | alongside |
+| 048 | Parent check-in up to 8 (age-aware, concern-based advice, inline slots) | ready | solo | waits for 051 |
+| 049 | Telugu and Hindi for the new voice agents | ready | solo | waits for 048, 051 |
+| 050 | Parent-first home page and Indian statistics | ready | solo | waits for 051 |
+| 051 | Voice cost guard (no anonymous voice, quotas, platform budget) | ready | solo | alongside |
+| 052 | Clear next steps (family home, provider Today, what happens next) | ready | solo | waits for 043, 044, 045, 051 |
+| 053 | Design-system alignment (teal primary actions, shared UI primitives) | ready | solo | waits for 043-052 |
 
 ## Critical path (DoctorNearMe)
 
 017 -> 019 -> 020 -> 022 -> 023 -> 041, and 020 -> 032 -> 041 -> 030 (booking) -> 034/035.
 Real child data needs 020 (consent) and 041 (privacy/audit) on `main` first.
-M4: 043 -> 044 -> 045 -> 046 (the business model needs all four); 047-050 run alongside.
+M4: 043 -> 044 -> 045 -> 046 (business model) and 051 -> 048 -> 049, 051 -> 050; 052 after 045/051; 053 last.

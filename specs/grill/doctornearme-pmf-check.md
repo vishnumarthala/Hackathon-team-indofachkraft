@@ -162,14 +162,19 @@ from the original telemedicine plan.
 - Would you pay ₹X a month, and who decides?
 
 ## 7. Product owner answers (2026-11-13)
-1. **Who pays: both.** The parent pays the centre or therapist, and the centre or therapist pays
-   DoctorNearMe a platform fee for each consultation, as part of the main fee. → tickets 045, 046.
+1. **Who pays: both** (corrected later the same day). The family pays **on DoctorNearMe**, and DoctorNearMe
+   pays the centre or therapist after each consultation, keeping a platform fee (Razorpay Route). → 045, 046.
 2. **No Urdu.** Languages stay en / hi / te. → 049 adds hi and te to the new voice agents.
 3. **Yes** to recurring sessions, packages and attendance before the pilot. → 043, 044, 045, plus 047 (import).
 4. **Up to 8 years.** → 048: age-aware check-in (M-CHAT-R/F for toddlers once licensed, ISAA-derived for
    2½–8), concern-based advice, free options.
 
-Recorded in the [decision record](doctornearme-mvp.md) (decisions 8–11) and on the
+5. **Voice credits.** Anonymous visitors must not be able to burn voice minutes. → 051: voice needs sign-in,
+   per-user quotas, a platform budget, and tapping as the free default.
+6. **Target: a journey score of at least 9/10.** → 048-050 approved; 052 (next steps everywhere) and 053
+   (design alignment) added.
+
+Recorded in the [decision record](doctornearme-mvp.md) (decisions 8–13) and on the
 [board](../tickets/BOARD.md) (M4). Still open: the platform fee rate and the tax treatment, which needs a CA
 (see 046).
 

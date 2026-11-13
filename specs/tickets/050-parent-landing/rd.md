@@ -1,8 +1,8 @@
 # 050: Parent-first home page and Indian statistics
 
-**Status:** draft (proposed by the [PMF check](../../grill/doctornearme-pmf-check.md); needs product owner OK)
+**Status:** ready (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
 **Mode:** solo
-**Runs:** alongside
+**Runs:** waits for 051: the hero follows its voice rules
 
 ## Summary
 
@@ -35,6 +35,8 @@ This ticket:
 - **FR-4** – Metadata: `/` title "DoctorNearMe – child development check-in and therapists near you
   (Hyderabad)"; `/for-centres` keeps the current title. Add `hreflang` alternates for en/hi/te if 018
   supports them.
+- **FR-6** – Respect 051: the hero's main action is the **free tap check-in**; voice is the secondary
+  "Prefer to talk? Sign in to use voice". The landing intake demo plays the recorded sample for visitors.
 - **FR-5** – No new third-party scripts. The no-tracking rule applies (child-related page).
 
 ## Affected areas

@@ -1,8 +1,8 @@
 # 049: Telugu and Hindi for the new voice agents
 
-**Status:** draft (proposed by the [PMF check](../../grill/doctornearme-pmf-check.md); needs product owner OK)
+**Status:** ready (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
 **Mode:** solo
-**Runs:** alongside (048 changes the screen agent's questions; merge whichever lands second carefully)
+**Runs:** waits for 048 and 051: same voice components and screen agent
 
 ## Summary
 

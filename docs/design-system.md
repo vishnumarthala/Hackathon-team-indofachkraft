@@ -185,8 +185,8 @@ There are 66 screens, and every route below exists in `app/`.
 ## 6. How the product fits together
 
 The [FigJam board](https://www.figma.com/board/RfeKYhTAT8MDj5kMbG7hfy) has three diagrams: the family journey,
-the clinician workflow, and the **centre-invited family and money flow** (planned tickets 043–047; the parent
-pays the centre, and the centre pays DoctorNearMe a platform fee per consultation, see
+the clinician workflow, and the **centre-invited family and money flow** (tickets 043–047; the family pays
+on DoctorNearMe, and DoctorNearMe pays the centre after each consultation, keeping a platform fee; see
 [decision record](../specs/grill/doctornearme-mvp.md) decision 8).
 
 **Family journey: Discover → Book → Prepare → Ongoing care.**
