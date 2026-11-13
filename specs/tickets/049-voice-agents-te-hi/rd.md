@@ -1,6 +1,6 @@
 # 049: Telugu and Hindi for the new voice agents
 
-**Status:** ready (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
+**Status:** done (approved 2026-11-13: "fix the user journey so that I get a rating of at least 9")
 **Mode:** solo
 **Runs:** waits for 048 and 051: same voice components and screen agent
 

@@ -1,7 +1,7 @@
 # ElevenLabs agent for voice booking on /find (ticket 034)
 
 The `Book by voice` widget on `/find` lets a parent say what they need ("a Telugu-speaking speech therapist near
-Kukatpally on Saturday morning"). It talks to a **new, English-only** ElevenLabs Conversational AI agent, separate from
+Kukatpally on Saturday morning"). It talks to its own ElevenLabs Conversational AI agent (English, Hindi and Telugu since 049), separate from
 the intake agent (`docs/elevenlabs-agent.md`) and the check-in agent (`docs/elevenlabs-screen-agent.md`); do not change
 those for this. The agent calls three **server tools** on our API to search providers, read free times and place a
 **10-minute hold**. It can never confirm a booking: the parent signs in and taps `Confirm` on screen (030 flow).
@@ -25,10 +25,12 @@ shows the widget with a scripted conversation that calls the same tool handlers 
 - **Hold, never confirm.** `hold_slot` only holds a time for 10 minutes. Always explain that the parent must sign in
   and confirm on screen. There is no confirm tool. For `online` services the parent then pays on the next screen (031);
   the agent mentions the fee and never takes payment details.
-- English only. Max 4 minutes (ticket 051; was 6). Never give medical advice or recommend one provider over another beyond the facts the
+- English, Hindi or Telugu (the page language, when enabled; 049); tool parameters stay codes and English place names.
+  Max 4 minutes (ticket 051; was 6). Never give medical advice or recommend one provider over another beyond the facts the
   tools return (distance, mode, language).
 
-Fixed safety message (identical to the check-in, `lib/screen/questions.ts` `URGENT_MESSAGE`):
+Fixed safety message (identical to the check-in, `lib/screen/questions.ts` `URGENT_MESSAGE`; Hindi and Telugu:
+`screen.urgent` in `messages/{hi,te}.json`):
 
 ```
 Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today.
@@ -38,7 +40,8 @@ Please get help now. Call 108 for an ambulance or 112 for emergencies. If your c
 
 1. Agents > **Create agent** > Blank agent.
 2. **Name:** `DoctorNearMe Booking Assistant`
-3. **Agent language:** English. **Do not add additional languages** (D-3; Hindi/Telugu voice is out of scope).
+3. **Agent language (default):** English. **Additional languages:** Hindi and Telugu, configured as language presets
+   (section "Hindi and Telugu (ticket 049)" below).
 4. **Voice:** a calm, clear English voice (Indian English if available). **LLM:** any current low-latency model with
    reliable tool calling; temperature low (0.2-0.3).
 
@@ -50,7 +53,7 @@ Agent > **Security**:
    `GET https://api.elevenlabs.io/v1/convai/conversation/token?agent_id=<ELEVENLABS_BOOKING_AGENT_ID>` (header
    `xi-api-key`, `lib/elevenlabs/agent.ts` `startAgentSession(agentId)`, called by `POST /api/agents/booking/session`).
    The API key never reaches the browser.
-2. **Overrides:** all **off**.
+2. **Overrides:** **Language** on (049; the widget sends it for Hindi and Telugu only); everything else **off**.
 3. **Allowed hosts** (if shown): the deployed domain and `localhost`.
 
 ## 3. Limits and privacy
@@ -81,10 +84,11 @@ Workspace > **Secrets** (or the tool's header editor) > add a secret named `dnm_
 |----------|---------|---------|
 | `{{booking_session}}` | `q3V...` (43 characters) | Random per-conversation token. Valid for 30 minutes and 20 tool calls. Send it with every tool call; never read it out. |
 | `{{today}}` | `Friday 2026-11-13` | Today's weekday and date in India, to turn "Saturday morning" into `date_from`. |
+| `{{language}}` | `en`, `hi` or `te` | Call language (049); the Hindi/Telugu prompts use it. |
 
 ## 6. First message
 
-Copy exactly:
+English (base configuration). Copy exactly:
 
 ```
 Hello, I am DoctorNearMe's booking assistant. I am an AI. I can find a provider near you and hold a time for 10 minutes; you then sign in and confirm on your screen. Please do not tell me your child's name or any contact details. Which area are you in, and what kind of specialist do you need?
@@ -92,7 +96,7 @@ Hello, I am DoctorNearMe's booking assistant. I am an AI. I can find a provider 
 
 ## 7. System prompt
 
-Copy exactly:
+English (base configuration). Copy exactly:
 
 ```
 You are DoctorNearMe's booking assistant for families in Hyderabad. You are an AI, not a doctor, and you say so if asked. You speak English only. Use simple, warm, short sentences. Ask one question at a time. Today is {{today}}.
@@ -217,3 +221,57 @@ endpoints are listed for `/find` in `lib/csp.ts` and `lib/privacy/third-party-al
 6. Start again and say "my child is having a seizure right now": the widget shows only the 108/112 message; the agent
    says it and ends the call; no hold is placed.
 7. In the ElevenLabs conversation list, check the retention setting and that no audio is stored.
+
+## Hindi and Telugu (ticket 049)
+
+One agent serves English, Hindi and Telugu. The page asks for the viewer's UI language; the server checks that it is
+enabled on this agent (`ELEVENLABS_BOOKING_LANGUAGES`) and the browser starts the call with the language override (Hindi/Telugu only;
+English uses the base configuration above). The Hindi and Telugu first message and system prompt are the agent's
+**language presets**, generated from `lib/agents/booking/prompts/` (instructions in English; every Hindi/Telugu
+word, including the safety message, comes from `messages/{hi,te}.json`, identical to the page and listed in
+`messages/REVIEW.md`). Tool calls stay language-neutral: codes and English place names, never translated words.
+
+Until the steps below are done, keep `ELEVENLABS_BOOKING_LANGUAGES` empty (English only). On a page in a language that is not enabled
+`/find` shows "Voice is available in English. You can also answer by tapping in Telugu." with `Voice in English` and `Tap in Telugu` (focuses the search below); the call never falls back to English by itself (`409 language_unavailable` from
+the start route). DEMO_MODE enables all three: the scripted conversation runs in the call language: agent and parent lines from the catalogue, the parent's words mapped by `voiceAgents.lexicon` to the same tool arguments as English.
+
+### Steps (human, in the ElevenLabs dashboard)
+
+1. Agent > **Languages** (Additional languages): add **Hindi** and **Telugu**. Pick a voice per language that sounds
+   natural in it (a multilingual voice works); note the voice ids.
+2. Fill both language presets (first message + system prompt per language) from the code, either:
+   - print them and paste into each language's settings:
+     `npm run -s agents:presets -- booking --md`, or
+   - apply them through the API (no secrets in the file; the key stays in your shell):
+     `npm run -s agents:presets -- booking --voice-hi=<voice id> --voice-te=<voice id> > presets.json` then
+     `curl -X PATCH "https://api.elevenlabs.io/v1/convai/agents/$AGENT_ID" -H "xi-api-key: $ELEVENLABS_API_KEY" -H "Content-Type: application/json" -d @presets.json`
+     (only `conversation_config.language_presets` changes; check the result in the dashboard, then delete the file).
+3. Agent > **Security** > **Overrides**: turn on **Language** (`overrides.agent.language`) only. Prompt, first message
+   and voice overrides stay off.
+4. Run the smoke test below, then set `ELEVENLABS_BOOKING_LANGUAGES=en,hi,te` in Vercel (and `.env.local`) and redeploy. To switch a
+   language off again, remove it from the list: the page then offers the English/tap choice.
+
+### Smoke test in Telugu and Hindi (human)
+
+1. Switch the page to `తెలుగు`, open `/find` > `వాయిస్‌తో బుక్ చేయండి`: the disclosure says the assistant speaks
+   Telugu. Start, and say "బంజారా హిల్స్ దగ్గర స్పీచ్ థెరపిస్ట్ కావాలి, క్లినిక్‌లో, శనివారం ఉదయం".
+2. The agent answers in Telugu, lists providers, reads times and fees in Telugu, and holds a time; the hold card and
+   `Sign in and confirm` work as in English. In the ElevenLabs conversation, the tool calls show
+   `locality_text: "Banjara Hills"`, `type: "speech_language_pathologist"`, `mode: "in_clinic"` (codes, not Telugu).
+3. Say "వాడికి ఊపిరి ఆడటం లేదు": the widget shows only the 108/112 message; the agent says it in Telugu and ends.
+4. Repeat in हिन्दी.
+5. With `ELEVENLABS_BOOKING_LANGUAGES=en` and the page in Telugu, the widget offers `Voice in English` or
+   `Tap in Telugu` (E-2).
+
+### Language review checklist (human, native speakers, before the real pilot; NFR-2)
+
+- [ ] First message (`voiceAgents.booking.firstMessage`) and the safety message (`screen.urgent`) in
+      messages/REVIEW.md: natural, polite, and the 108/112 sentence identical to the page.
+- [ ] Listen to one full call per language in a quiet room and one on a phone in a noisy room: the voice sounds natural
+      in that language (change the preset's voice if not), the AI disclosure and "not a diagnosis"/no-advice rules hold,
+      and the agent never switches to English unless the parent does.
+- [ ] Provider types, in-clinic/video, parts of the day, "first/second/third" and the four demo areas as parents say
+      them (`voiceAgents.lexicon.types`, `modes`, `partsOfDay`, `choices`, `localities`).
+- [ ] The DEMO_MODE conversation lines (`voiceAgents.booking.demo.*`).
+- [ ] Set the reviewed rows to `approved` in messages/REVIEW.md (reviewer name), or `changes-requested` with notes.
+      Rerun `npx tsx scripts/i18n-review.ts` after any catalogue change and re-apply the presets (step 2).

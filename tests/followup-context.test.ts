@@ -408,7 +408,8 @@ describe.skipIf(!enabled)("follow-up context and routes (database)", () => {
     // 051: the start is recorded against the guardian's `followup` voice quota.
     expect((await sql`select agent, status from voice_usage where id = ${started.body.voice_usage_id as string}`)[0]).toEqual({ agent: "followup", status: "started" });
     const token = started.body.followup_session as string;
-    expect(started.body.dynamic_variables).toEqual({ followup_session: token });
+    // 049: plus the call language (no names).
+    expect(started.body.dynamic_variables).toEqual({ followup_session: token, language: "en" });
     const stored = await sql`select token_hash from followup_agent_sessions where child_id = ${childA}`;
     expect(stored[0].token_hash).not.toContain(token);
 

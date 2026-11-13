@@ -41,18 +41,18 @@ export const env = {
   get ELEVENLABS_AGENT_ID() {
     return required("ELEVENLABS_AGENT_ID");
   },
-  // 033: the English-only public developmental check-in agent (docs/elevenlabs-screen-agent.md). Optional: without
-  // it (and outside DEMO_MODE) `/screen` offers only the tap-through form.
+  // 033: the public developmental check-in agent (docs/elevenlabs-screen-agent.md; en/hi/te since 049). Optional:
+  // without it (and outside DEMO_MODE) `/screen` offers only the tap-through form.
   get ELEVENLABS_SCREEN_AGENT_ID() {
     return read("ELEVENLABS_SCREEN_AGENT_ID");
   },
-  // 034: the English-only voice booking agent on /find (docs/elevenlabs-booking-agent.md) and the shared secret its
+  // 034: the voice booking agent on /find (en/hi/te since 049) (docs/elevenlabs-booking-agent.md) and the shared secret its
   // server tools send as `X-Agent-Secret`. Optional: without both (and outside DEMO_MODE) /find has no voice widget;
   // without the secret every tool call is refused.
   get ELEVENLABS_BOOKING_AGENT_ID() {
     return read("ELEVENLABS_BOOKING_AGENT_ID");
   },
-  // 040: the English-only follow-up agent in the family portal (docs/elevenlabs-followup-agent.md); its server tool
+  // 040: the follow-up agent in the family portal (en/hi/te since 049) (docs/elevenlabs-followup-agent.md); its server tool
   // `answer_question` uses ELEVENLABS_TOOL_SECRET too. Optional: without both (and outside DEMO_MODE) the
   // `Ask by voice` button is hidden and the text chat is the only way to ask.
   get ELEVENLABS_FOLLOWUP_AGENT_ID() {
@@ -64,10 +64,25 @@ export const env = {
   get ELEVENLABS_WEBHOOK_SECRET() {
     return required("ELEVENLABS_WEBHOOK_SECRET");
   },
-  // 035: English-only generic pre-consult intake agent (docs/elevenlabs-generic-intake-agent.md). Optional: without it
-  // generic intake links work only in DEMO_MODE.
+  // 035: generic pre-consult intake agent (docs/elevenlabs-generic-intake-agent.md; en/hi/te since 049). Optional:
+  // without it generic intake links work only in DEMO_MODE.
   get ELEVENLABS_GENERIC_INTAKE_AGENT_ID() {
     return read("ELEVENLABS_GENERIC_INTAKE_AGENT_ID");
+  },
+  // 049 FR-4: languages enabled on each agent (comma-separated `en,hi,te`; English is always included). Set them only
+  // after the agent's Hindi/Telugu language presets exist in the dashboard. Unset: English only (all three in
+  // DEMO_MODE). A language that is not listed is never replaced by English silently (lib/agents/call-language.ts).
+  get ELEVENLABS_SCREEN_LANGUAGES() {
+    return read("ELEVENLABS_SCREEN_LANGUAGES");
+  },
+  get ELEVENLABS_BOOKING_LANGUAGES() {
+    return read("ELEVENLABS_BOOKING_LANGUAGES");
+  },
+  get ELEVENLABS_GENERIC_INTAKE_LANGUAGES() {
+    return read("ELEVENLABS_GENERIC_INTAKE_LANGUAGES");
+  },
+  get ELEVENLABS_FOLLOWUP_LANGUAGES() {
+    return read("ELEVENLABS_FOLLOWUP_LANGUAGES");
   },
   // 035: HMAC key for appointment intake links (the token is derived from the attempt id, only its hash is stored).
   // Optional: falls back to the service role key. Changing it invalidates every open appointment intake link.

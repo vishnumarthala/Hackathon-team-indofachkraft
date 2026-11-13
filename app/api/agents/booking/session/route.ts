@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { confirmUrl } from "@/lib/agents/booking/constants";
+import { bookingDemoScript } from "@/lib/agents/booking/demo";
 import { agentSessionLimiter, rateKey } from "@/lib/agents/booking/rate-limit";
 import { agentSessionCookie, cookieAgentToken, createAgentSession, endAgentSession, getAgentSession } from "@/lib/agents/booking/session";
+import { resolveCallLanguage } from "@/lib/agents/call-language";
 import { bookingSessionCookie, ensureBookingSession } from "@/lib/booking/session";
 import { getOwnedHold } from "@/lib/booking/store";
 import { todayIn } from "@/lib/booking/time";
@@ -33,21 +35,28 @@ function todayLabel(now = new Date()): string {
 // 051: voice needs a signed-in user, the Turnstile check (when configured) and room in the user's `booking` quota and
 // the platform budget (lib/voice/gate.ts), before ElevenLabs is contacted. Searching and booking by tapping on /find
 // stay anonymous. The widget reports the end of the call (POST /api/voice/usage/:id/end).
+// 049: optional JSON body `{ language }` (default the viewer's UI locale). A language the agent does not have
+// (ELEVENLABS_BOOKING_LANGUAGES) -> 409 `language_unavailable` before the gate; the widget then offers "Voice in
+// English" or tapping. DEMO_MODE returns the scripted conversation in the call language (`demo_script`).
 export async function POST(req: Request) {
   if (!agentSessionLimiter.allow(rateKey(req))) {
     return NextResponse.json({ error: RATE_LIMITED }, { status: 429, headers: { "Retry-After": "3600" } });
   }
+  const body = (await req.json().catch(() => null)) as { language?: unknown } | null;
   const demo = isDemoMode();
   const agentId = env.ELEVENLABS_BOOKING_AGENT_ID;
   // Without the tool secret every tool call would be refused: do not start a call that cannot work.
   if (!demo && (!agentId || !env.ELEVENLABS_TOOL_SECRET)) return fail(503, VOICE_BOOKING_UNAVAILABLE);
+  const call = await resolveCallLanguage("booking", body?.language);
+  if (!call.ok) return call.response;
+  const { language } = call;
   const gate = await voiceGate(req, "booking", { turnstile: true });
   if ("response" in gate) return gate.response;
 
   let voice: AgentStart | null = null;
   if (!demo) {
     try {
-      voice = await startAgentSession(agentId as string);
+      voice = await startAgentSession(agentId as string, { language });
     } catch (err) {
       await gate.release();
       console.error(`booking voice start failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -63,11 +72,12 @@ export async function POST(req: Request) {
       expires_at: session.expires_at,
       conversation_token: voice?.conversation_token ?? null,
       ...(voice ? { agent_id: voice.agent_id } : {}),
-      ...(demo ? { demo: true } : {}),
+      ...(demo ? { demo: true, demo_script: bookingDemoScript(language) } : {}),
       voice_usage_id: gate.usageId,
       max_seconds: gate.maxSeconds,
+      language,
       // FR-1: the only values the agent receives. No names, no contact details.
-      dynamic_variables: { booking_session: token, today: todayLabel() },
+      dynamic_variables: { booking_session: token, today: todayLabel(), language },
     },
     201,
   );

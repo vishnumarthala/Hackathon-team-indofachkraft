@@ -2,7 +2,7 @@
 
 Appointments for services whose intake kind is `generic` (default for physiotherapists and paediatricians; providers
 can change it per service on `/dashboard/schedule`) send the family an appointment-bound link
-`<APP_URL>/intake/a/<token>`. The page starts a browser voice call (WebRTC) with this **English-only** agent. Child
+`<APP_URL>/intake/a/<token>`. The page starts a browser voice call (WebRTC) with this agent (English, Hindi and Telugu since 049). Child
 Development services keep the existing en/hi/te agent (`docs/elevenlabs-agent.md`).
 
 The agent is configured **by hand** in the ElevenLabs dashboard. Nobody on the team had a key when 035 was built:
@@ -12,16 +12,17 @@ until the agent exists, generic links only work with `DEMO_MODE=true` (the page 
 ## 1. Create the agent
 
 1. Agents > **Create agent** > Blank agent.
-2. **Name:** `DoctorNearMe Pre-consult Intake (English)`
-3. **Agent language:** English. **No additional languages** (decision record: new agents are English only).
-4. **Voice:** a clear Indian-English voice.
+2. **Name:** `DoctorNearMe Pre-consult Intake` (an agent created as `... (English)` keeps working; renaming is optional)
+3. **Agent language (default):** English. **Additional languages:** Hindi and Telugu, configured as language presets
+   (section "Hindi and Telugu (ticket 049)" below).
+4. **Voice:** a clear Indian-English voice (Hindi/Telugu voices per language preset).
 
 ## 2. Security
 
 1. **Enable authentication** = on (private agent). The server mints a WebRTC conversation token with
    `GET https://api.elevenlabs.io/v1/convai/conversation/token?agent_id=<ELEVENLABS_GENERIC_INTAKE_AGENT_ID>`
    (header `xi-api-key`). The key must belong to the agent's workspace.
-2. **Overrides:** leave **all** overrides off. The page never sends a language override for this agent.
+2. **Overrides:** **Language** on (049; the page sends it for Hindi and Telugu only); all other overrides off.
 3. Allowed hosts (if shown): `localhost` and the deployed domain.
 
 ## 3. Conversation limits
@@ -40,18 +41,22 @@ Agent > Advanced > **Max conversation duration:** `600` seconds (10 minutes).
 | `{{provider_name}}` | `Dr Rao (synthetic)` | Provider of the appointment |
 | `{{service_name}}` | `Knee physiotherapy` | Booked service |
 | `{{centre_name}}` | `Synthetic Physio Clinic` | Organisation |
-| `{{language}}` | `en` | Always `en` |
+| `{{language}}` | `en`, `hi` or `te` | Call language: the page language when enabled (049); the Hindi/Telugu prompts use it |
 
 There is **no case id and no link token** in the call (FR-4). If the dashboard asks for test values, use obviously
 fake ones.
 
 ## 5. First message (AI disclosure)
 
+English (base configuration):
+
 ```
 Hello {{parent_name}}, I am an AI assistant from DoctorNearMe, not a doctor. I help {{provider_name}} prepare for {{child_name}}'s visit. This call is recorded and summarised for {{provider_name}}. It takes about five minutes. Is it okay to continue?
 ```
 
 ## 6. System prompt
+
+English (base configuration):
 
 ```
 You are DoctorNearMe's pre-consult intake assistant. You are an AI, not a doctor or therapist, and you say so if asked.
@@ -106,8 +111,59 @@ page's completion call (`POST /api/intake/a/<token>/complete`) fetches the conve
 1. Create a `generic` service (or a physiotherapist's default) on `/dashboard/schedule`, book it as a guardian whose
    child allows the AI intake call, run `npm run -s outbox:run -- --once`.
 2. The confirmation (in-app / email) says `Before your visit, please take a short voice call with our AI assistant:
-   <APP_URL>/intake/a/<token>`. Open it: no language select, English intro.
+   <APP_URL>/intake/a/<token>`. Open it: no language select; the intro and the call follow the page language (049).
 3. Tick consent, `Start call`: the agent greets with the AI disclosure. Say "she has trouble breathing": it gives the
    108/112 message and ends the call.
 4. A normal call: after `End call` the page saves the call; the provider's agenda shows `Intake: completed` and
    `Open brief` shows the pre-consult brief in the case.
+
+## Hindi and Telugu (ticket 049)
+
+One agent serves English, Hindi and Telugu. The page asks for the viewer's UI language; the server checks that it is
+enabled on this agent (`ELEVENLABS_GENERIC_INTAKE_LANGUAGES`) and the browser starts the call with the language override (Hindi/Telugu only;
+English uses the base configuration above). The Hindi and Telugu first message and system prompt are the agent's
+**language presets**, generated from `lib/agents/generic-intake/prompts/` (instructions in English; every Hindi/Telugu
+word, including the safety message, comes from `messages/{hi,te}.json`, identical to the page and listed in
+`messages/REVIEW.md`). Tool calls stay language-neutral: codes and English place names, never translated words.
+
+Until the steps below are done, keep `ELEVENLABS_GENERIC_INTAKE_LANGUAGES` empty (English only). On a page in a language that is not enabled
+`/intake/a/<token>` (generic services) shows "Voice is available in English. You can also skip the call: <provider> will ask you at the visit." with `Voice in English` and `Skip the call` (there is no tap-through intake); the call never falls back to English by itself (`409 language_unavailable` from
+the start route). DEMO_MODE enables all three: `Simulate completed call (demo)` replays the call in the call language (`demo/fixtures/elevenlabs-generic-post-call.{hi,te}.json`, same data-collection results as English).
+
+### Steps (human, in the ElevenLabs dashboard)
+
+1. Agent > **Languages** (Additional languages): add **Hindi** and **Telugu**. Pick a voice per language that sounds
+   natural in it (a multilingual voice works); note the voice ids.
+2. Fill both language presets (first message + system prompt per language) from the code, either:
+   - print them and paste into each language's settings:
+     `npm run -s agents:presets -- generic_intake --md`, or
+   - apply them through the API (no secrets in the file; the key stays in your shell):
+     `npm run -s agents:presets -- generic_intake --voice-hi=<voice id> --voice-te=<voice id> > presets.json` then
+     `curl -X PATCH "https://api.elevenlabs.io/v1/convai/agents/$AGENT_ID" -H "xi-api-key: $ELEVENLABS_API_KEY" -H "Content-Type: application/json" -d @presets.json`
+     (only `conversation_config.language_presets` changes; check the result in the dashboard, then delete the file).
+3. Agent > **Security** > **Overrides**: turn on **Language** (`overrides.agent.language`) only. Prompt, first message
+   and voice overrides stay off.
+4. Run the smoke test below, then set `ELEVENLABS_GENERIC_INTAKE_LANGUAGES=en,hi,te` in Vercel (and `.env.local`) and redeploy. To switch a
+   language off again, remove it from the list: the page then offers the English/tap choice.
+
+### Smoke test in Telugu and Hindi (human)
+
+1. Open a generic intake link with the page in `తెలుగు`: no language select; the page says the assistant speaks
+   Telugu. Tick consent, `Start call`: the AI disclosure is in Telugu.
+2. Answer in Telugu (reason, medicines with doses, allergies). After the call the provider's brief is in English, the
+   medicine names and doses are as said, and red-flag quotes stay word for word in Telugu.
+3. Say "పాపకి ఊపిరి ఆడటం లేదు": the agent says the Telugu urgent message (108/112) and ends the call.
+4. Repeat in हिन्दी.
+5. Remove `te` from `ELEVENLABS_GENERIC_INTAKE_LANGUAGES`: the page offers `Voice in English` or `Skip the call`.
+
+### Language review checklist (human, native speakers, before the real pilot; NFR-2)
+
+- [ ] First message (`voiceAgents.genericIntake.firstMessage`) and the safety message (`voiceAgents.genericIntake.safetyMessage`) in
+      messages/REVIEW.md: natural, polite, and the 108/112 sentence identical to the page.
+- [ ] Listen to one full call per language in a quiet room and one on a phone in a noisy room: the voice sounds natural
+      in that language (change the preset's voice if not), the AI disclosure and "not a diagnosis"/no-advice rules hold,
+      and the agent never switches to English unless the parent does.
+- [ ] The brief written from a Telugu/Hindi call (English, parent-reported, quotes word for word) is correct for a
+      few synthetic calls; `prompts/generic-intake.md` covers this.
+- [ ] Set the reviewed rows to `approved` in messages/REVIEW.md (reviewer name), or `changes-requested` with notes.
+      Rerun `npx tsx scripts/i18n-review.ts` after any catalogue change and re-apply the presets (step 2).

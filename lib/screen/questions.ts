@@ -15,6 +15,7 @@ import {
   type RedFlagCode,
 } from "@/lib/clinical/checkin";
 import { followUpIdsFor, MCHAT, MCHAT_FOLLOW_UP_ANSWERS, scoreMchat, type MchatFollowUpResult, type MchatRisk } from "@/lib/clinical/mchat";
+import { LOCALES, type Locale } from "@/lib/i18n/config";
 import type { Recommendation } from "./recommend";
 
 /** 048 FR-1: the bands a parent picks on the page. `under-18m` and `9y+` get no questions (no session). */
@@ -46,11 +47,14 @@ export const INSTRUMENT_BAND: Record<StoredAgeBand, string> = {
   "10y+": "72-215m",
 };
 
-/** What the voice agent hears as `{{age_band}}` (English agent; 049 adds hi/te). */
-export const SPOKEN_AGE_BAND: Record<QuestionAgeBand, string> = {
-  "18-30m": "18 to 30 months",
-  "31-71m": "2 and a half to 5 years",
-  "6-8y": "6 to 8 years",
+/**
+ * What the voice agent hears as `{{age_band}}`, in the call language (049; equal to `voiceAgents.screen.ageBands` in
+ * messages/{en,hi,te}.json, which the first message of each language is written around).
+ */
+export const SPOKEN_AGE_BAND: Record<Locale, Record<QuestionAgeBand, string>> = {
+  en: { "18-30m": "18 to 30 months", "31-71m": "2 and a half to 5 years", "6-8y": "6 to 8 years" },
+  hi: { "18-30m": "18 से 30 महीने", "31-71m": "ढाई से 5 साल", "6-8y": "6 से 8 साल" },
+  te: { "18-30m": "18 నుండి 30 నెలల", "31-71m": "రెండున్నర నుండి 5 సంవత్సరాల", "6-8y": "6 నుండి 8 సంవత్సరాల" },
 };
 
 /** 048 FR-3: the instruments a check-in session can use. */
@@ -252,6 +256,8 @@ export const CreateSessionSchema = z.object({
     .max(SCREEN_CONCERNS.length)
     .default([])
     .transform((list) => SCREEN_CONCERNS.filter((c) => list.includes(c))),
+  // 049 FR-1: the call language (voice only; the viewer's UI locale, or `en` after "Voice in English").
+  language: z.enum(LOCALES, { error: "language must be en, hi or te" }).optional(),
 });
 
 /** 048 FR-3: the M-CHAT-R/F Follow-Up answers (all at once). */

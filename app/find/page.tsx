@@ -4,6 +4,7 @@ import { FindFilters, type FindState } from "@/components/directory/FindFilters"
 import { ResultList } from "@/components/directory/ResultList";
 import { ResultsLayout } from "@/components/directory/ResultsLayout";
 import { BookingWidget } from "@/components/voice/BookingWidget";
+import { enabledVoiceLanguages } from "@/lib/agents/call-language";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { isDemoMode } from "@/lib/demo";
 import { env } from "@/lib/env";
@@ -163,7 +164,9 @@ export default async function FindPage({ searchParams }: Props) {
         <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
         <p className="text-slate-700">{t("intro")}</p>
       </header>
-      {voiceBooking ? <BookingWidget signedIn={signedIn} turnstileSiteKey={turnstileSiteKey()} /> : null}
+      {voiceBooking ? (
+        <BookingWidget signedIn={signedIn} turnstileSiteKey={turnstileSiteKey()} voiceLanguages={enabledVoiceLanguages("booking")} />
+      ) : null}
       <FindFilters
         key={JSON.stringify(initial)}
         initial={initial}

@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { useTurnstile } from "@/components/security/Turnstile";
-import { useT } from "@/lib/i18n/client";
+import { CallLanguageNote, VoiceLanguageChoice } from "@/components/voice/VoiceLanguageChoice";
+import { planVoiceLanguage } from "@/lib/agents/languages";
+import type { ScreenDemoScript } from "@/lib/agents/screen/demo-script";
+import { useLocale, useT } from "@/lib/i18n/client";
+import type { Locale } from "@/lib/i18n/config";
 import { SESSION_STORAGE_KEY, startScreen, type StartError, type StartedSession } from "@/lib/screen/client";
 import {
   concernsFor,
@@ -17,6 +21,7 @@ import {
 } from "@/lib/screen/questions";
 import { voiceSignInHref } from "@/lib/voice/constants";
 import { Over8Notice, Under18Guidance } from "./AgeGuidance";
+import { DemoVoiceCheckin } from "./DemoVoiceCheckin";
 import type { LocalityOption } from "./NearbyProviders";
 import { QuestionForm } from "./QuestionForm";
 import { ResultView } from "./ResultView";
@@ -34,7 +39,10 @@ type Step =
       target: { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
       dynamicVariables: Record<string, string>;
       usageId: string | null;
+      language: Locale;
     }
+  /** 049: DEMO_MODE voice check-in in the call language (no live call). */
+  | { kind: "demoVoice"; session: StartedSession; script: ScreenDemoScript }
   | { kind: "form"; sessionId: string; questions: ScreenQuestion[]; answers: Record<string, string>; notice: Notice }
   | { kind: "result"; sessionId: string; result: ScreenResult }
   | { kind: "urgent" };
@@ -82,29 +90,40 @@ const GUARD_ERRORS = new Set(["quotaDay", "quotaMonth", "paused", "concurrent", 
 // instead of the check-in; the other bands ask "What worries you most?" (codes only) before the questions.
 // 051 FR-1: tapping is the primary, anonymous path ("Start free check-in"); voice needs a free sign-in and returns
 // here with `?voice=1`. Quota, budget and bot-check refusals keep the tap option on screen.
+// 049: voice speaks the page language when the agent has it (`voiceLanguages`); otherwise the page offers "Voice in
+// English" or tapping in the page language (FR-4). DEMO_MODE runs the scripted voice check-in in the call language.
 export function ScreenFlow({
   viewer,
   localities,
   voiceAvailable,
+  voiceLanguages = ["en"],
   turnstileSiteKey = null,
   voiceIntent = false,
 }: {
   viewer: SaveViewer;
   localities: LocalityOption[];
   voiceAvailable: boolean;
+  /** 049 FR-4: languages enabled on the screen agent (ELEVENLABS_SCREEN_LANGUAGES). */
+  voiceLanguages?: Locale[];
   /** 051 FR-8: Cloudflare Turnstile site key (null = no bot check). */
   turnstileSiteKey?: string | null;
   /** 051: back from signing in to use voice (`/screen?voice=1`). */
   voiceIntent?: boolean;
 }) {
   const t = useT("screen");
+  const tf = useT("voiceAgents.fallback");
+  const tl = useT("voiceAgents.languages");
+  const locale = useLocale();
   const id = useId();
   const [step, setStep] = useState<Step>({ kind: "intro" });
   const [ageBand, setAgeBand] = useState<ScreenAgeBand | null>(null);
   const [concerns, setConcerns] = useState<ScreenConcern[]>([]);
   const [agreed, setAgreed] = useState(false);
   const [starting, setStarting] = useState<ScreenMode | null>(null);
-  const [error, setError] = useState<StartError | "expired" | null>(null);
+  const [error, setError] = useState<Exclude<StartError, "languageUnavailable"> | "expired" | null>(null);
+  // 049: the server said the agent does not speak this language (its list changed since the page loaded).
+  const [languageRefused, setLanguageRefused] = useState(false);
+  const plan = languageRefused ? ({ kind: "fallback", language: "en", locale } as const) : planVoiceLanguage(locale, voiceLanguages);
   const signedIn = viewer.kind !== "anonymous";
   const turnstile = useTurnstile(signedIn && voiceAvailable ? turnstileSiteKey : null);
   const voiceButton = useRef<HTMLButtonElement>(null);
@@ -139,7 +158,7 @@ export function ScreenFlow({
   const questionBand = isQuestionAgeBand(ageBand) ? ageBand : null;
   const offeredConcerns = questionBand ? concernsFor(questionBand) : [];
 
-  async function start(mode: ScreenMode) {
+  async function start(mode: ScreenMode, language?: Locale) {
     if (!questionBand || !agreed) return;
     setError(null);
     setStarting(mode);
@@ -152,14 +171,19 @@ export function ScreenFlow({
         turnstileToken: turnstile.token,
       },
       concerns.filter((c) => offeredConcerns.includes(c)),
+      mode === "voice" ? language : undefined,
     );
     if (mode === "voice") turnstile.reset();
     setStarting(null);
-    if (outcome.kind === "error") return setError(outcome.error);
+    if (outcome.kind === "error") {
+      if (outcome.error === "languageUnavailable") return setLanguageRefused(true);
+      return setError(outcome.error);
+    }
     storage.set(outcome.session.session_id);
     const form = (notice: Notice) =>
       setStep({ kind: "form", sessionId: outcome.session.session_id, questions: outcome.session.questions, answers: {}, notice });
     if (outcome.kind === "form") return form(null);
+    if (outcome.kind === "demo" && outcome.script) return setStep({ kind: "demoVoice", session: outcome.session, script: outcome.script });
     if (outcome.kind === "demo") return form("demo");
     if (outcome.kind === "micDenied") return form("mic");
     setStep({
@@ -168,6 +192,7 @@ export function ScreenFlow({
       target: outcome.target,
       dynamicVariables: outcome.dynamicVariables,
       usageId: outcome.usage.id,
+      language: outcome.language,
     });
   }
 
@@ -284,15 +309,27 @@ export function ScreenFlow({
                   {signedIn ? (
                     <>
                       <p className="font-medium text-slate-900">{voiceIntent ? t("voiceSignedIn") : t("voicePrompt")}</p>
-                      <button
-                        ref={voiceButton}
-                        type="button"
-                        className={secondaryButton}
-                        disabled={!questionBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
-                        onClick={() => void start("voice")}
-                      >
-                        {starting === "voice" ? t("starting") : t("startVoice")}
-                      </button>
+                      {plan.kind === "native" ? (
+                        <>
+                          <CallLanguageNote />
+                          <button
+                            ref={voiceButton}
+                            type="button"
+                            className={secondaryButton}
+                            disabled={!questionBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
+                            onClick={() => void start("voice", plan.language)}
+                          >
+                            {starting === "voice" ? t("starting") : t("startVoice")}
+                          </button>
+                        </>
+                      ) : (
+                        <VoiceLanguageChoice
+                          message={tf("tapMessage", { language: tl(locale) })}
+                          onVoiceInEnglish={() => void start("voice", "en")}
+                          alternative={{ label: tf("tapIn", { language: tl(locale) }), onClick: () => void start("form") }}
+                          disabled={!questionBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
+                        />
+                      )}
                       {turnstile.widget}
                     </>
                   ) : (
@@ -321,10 +358,23 @@ export function ScreenFlow({
         </form>
       ) : null}
 
+      {step.kind === "demoVoice" ? (
+        <DemoVoiceCheckin
+          session={step.session}
+          script={step.script}
+          onStopped={stop}
+          onFinished={showResult(step.session.session_id)}
+          onContinueByTapping={(answers) =>
+            setStep({ kind: "form", sessionId: step.session.session_id, questions: step.session.questions, answers, notice: null })
+          }
+        />
+      ) : null}
+
       {step.kind === "voice" ? (
         <VoiceCheckin
           session={step.session}
           target={step.target}
+          language={step.language}
           dynamicVariables={step.dynamicVariables}
           onStopped={stop}
           onFinished={showResult(step.session.session_id)}

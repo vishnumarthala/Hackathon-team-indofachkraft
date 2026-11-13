@@ -3,10 +3,12 @@
 // signed-in guardian who owns the session -> per-IP burst limit -> JSON body -> a valid (unexpired, not ended) session,
 // charged one call -> the guardian's link is still active and `ai_follow_up` still granted -> the same pipeline as the
 // text chat (lib/followup/answer.ts). Expired, ended, unknown or another guardian's session -> 401. Nothing from the
-// payload is logged.
+// payload is logged. 049: a Hindi or Telugu session gets its fixed answers in that language and model answers marked
+// `translate: true` (lib/agents/followup/localize.ts); the pipeline itself stays English.
 import { createHash, randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { verifyAgentSecret } from "@/lib/agents/booking/session";
+import { localizeToolAnswer } from "@/lib/agents/followup/localize";
 import { getActiveGuardianLink } from "@/lib/children";
 import { requireConsent } from "@/lib/consent";
 import { clientIp, createRateLimiter } from "@/lib/geo/rate-limit";
@@ -80,5 +82,7 @@ export async function handleAnswerTool(req: Request, auth: ToolAuth, opts: { gen
   });
   // FR-3: after a red flag the agent says the 108/112 message and the call ends; no further questions.
   if (outcome.redFlag) await endFollowupSession(token);
-  return done(outcome.response);
+  if (session.language === "en" || !outcome.response.ok) return done(outcome.response);
+  const answered = (await outcome.response.json()) as Record<string, unknown>;
+  return done(NextResponse.json(localizeToolAnswer(answered, session.language), { status: outcome.response.status }));
 }
