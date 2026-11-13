@@ -1,8 +1,11 @@
 // Ticket 035 FR-4: start an appointment-bound intake call. Public by design: the 43-character token is the capability
 // (only its hash is stored). Re-checks the link (expired at the appointment start, revoked on cancel / consent
 // withdrawal: 410) and ai_intake_call consent (422) on every start. Dynamic variables carry `intake_attempt_id`,
-// never the case id.
+// never the case id. 049: the generic agent speaks the call language too (`language`, default the viewer's UI
+// locale) when it is enabled (ELEVENLABS_GENERIC_INTAKE_LANGUAGES); otherwise 409 `language_unavailable` and the page
+// offers "Voice in English" or skipping the call. The Child Development agent is unchanged.
 import { z } from "zod";
+import { resolveCallLanguage } from "@/lib/agents/call-language";
 import { audit } from "@/lib/audit";
 import { requireConsent } from "@/lib/consent";
 import { isDemoMode } from "@/lib/demo";
@@ -31,8 +34,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
 
   const parsed = await parseJson(req, bodySchema);
   if ("response" in parsed) return parsed.response;
-  // The generic agent is English only (no language choice); the Child Development agent speaks en/hi/te.
-  const language = attempt.agent_kind === "generic" ? "en" : (parsed.data.language ?? attempt.case_language);
+  // The Child Development agent speaks the language the parent picked (or the case language); the generic agent the
+  // call language when it is enabled on that agent.
+  let language = parsed.data.language ?? attempt.case_language;
+  if (attempt.agent_kind === "generic") {
+    const call = await resolveCallLanguage("generic_intake", parsed.data.language);
+    if (!call.ok) return call.response;
+    language = call.language;
+  }
 
   await markAttemptStarted(attempt.id);
   const started = (demo: boolean) =>
@@ -47,14 +56,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
 
   if (isDemoMode()) {
     await started(true);
-    return ok({ demo: true });
+    return ok(attempt.agent_kind === "generic" ? { demo: true, language } : { demo: true });
   }
 
   const agentId = agentIdFor(attempt.agent_kind);
   if (!agentId) return fail(503, "Could not start the call");
   let session: AgentStart;
   try {
-    session = await startAgentSession(agentId);
+    session = await startAgentSession(agentId, attempt.agent_kind === "generic" ? { language } : {});
   } catch (err) {
     console.error(`appointment intake start failed: ${err instanceof Error ? err.message : String(err)}`);
     return fail(502, "Could not start the call");
@@ -74,6 +83,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   return ok({
     conversation_token: session.conversation_token,
     agent_id: session.agent_id,
+    ...(attempt.agent_kind === "generic" ? { language } : {}),
     dynamic_variables:
       attempt.agent_kind === "generic"
         ? { ...common, provider_name: attempt.provider_name, service_name: attempt.service_name }

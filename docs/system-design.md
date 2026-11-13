@@ -283,10 +283,11 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` / `_SECRET` | Supabase CLI only (local Google sign-in) | not read by the app; see `docs/guardian-auth.md`. Hosted projects set Google in the Supabase dashboard |
 | `ELEVENLABS_API_KEY` | Scribe, conversation token, TTS | |
 | `ELEVENLABS_AGENT_ID` | intake page | agent configured per `docs/elevenlabs-agent.md` |
-| `ELEVENLABS_SCREEN_AGENT_ID` | `/screen` voice check-in (033) | optional; English-only public agent per `docs/elevenlabs-screen-agent.md`; unset (and not `DEMO_MODE`) -> the page offers only the tap-through form |
+| `ELEVENLABS_SCREEN_AGENT_ID` | `/screen` voice check-in (033) | optional; public agent per `docs/elevenlabs-screen-agent.md` (en/hi/te since 049); unset (and not `DEMO_MODE`) -> the page offers only the tap-through form |
 | `MCHAT_LICENSED` | `/screen` 18-30 months (048) | optional, default `false`; `true` = M-CHAT-R/F instead of the ISAA-derived items. Only after the licence is confirmed and the placeholder wording in `schemas/mchat-rf.json` is replaced (`docs/screen-recommendations.md`) |
-| `ELEVENLABS_BOOKING_AGENT_ID` / `ELEVENLABS_TOOL_SECRET` | `/find` voice booking (034) | optional; English-only booking agent per `docs/elevenlabs-booking-agent.md` and the shared secret its server tools send as `X-Agent-Secret`; without both (and not `DEMO_MODE`) `/find` has no voice widget and every tool call is 401 |
-| `ELEVENLABS_FOLLOWUP_AGENT_ID` | `Ask by voice` in the family portal (040) | optional; English-only follow-up agent per `docs/elevenlabs-followup-agent.md`; its `answer_question` tool uses `ELEVENLABS_TOOL_SECRET`; without both (and not `DEMO_MODE`) the ask page offers the text chat only |
+| `ELEVENLABS_BOOKING_AGENT_ID` / `ELEVENLABS_TOOL_SECRET` | `/find` voice booking (034) | optional; booking agent per `docs/elevenlabs-booking-agent.md` (en/hi/te since 049) and the shared secret its server tools send as `X-Agent-Secret`; without both (and not `DEMO_MODE`) `/find` has no voice widget and every tool call is 401 |
+| `ELEVENLABS_FOLLOWUP_AGENT_ID` | `Ask by voice` in the family portal (040) | optional; follow-up agent per `docs/elevenlabs-followup-agent.md` (en/hi/te since 049); its `answer_question` tool uses `ELEVENLABS_TOOL_SECRET`; without both (and not `DEMO_MODE`) the ask page offers the text chat only |
+| `ELEVENLABS_{SCREEN,BOOKING,GENERIC_INTAKE,FOLLOWUP}_LANGUAGES` | voice call languages (049) | optional; comma-separated `en,hi,te` enabled on that agent (English always). Unset: English only (all three in `DEMO_MODE`). Set only after the agent's Hindi/Telugu presets exist (`docs/voice-languages.md`) |
 | `RETENTION_FOLLOWUP_DAYS` | retention job (040) | optional; days follow-up questions/answers are kept [90] |
 | `ELEVENLABS_WEBHOOK_SECRET` | webhook HMAC | only needed when the webhook is used (deployed or tunnel) |
 | `ELEVENLABS_VOICE_ID_EN` / `_HI` / `_TE` | parent voice note | |
@@ -1076,6 +1077,22 @@ Details and the clinical review list: [screen-recommendations.md](screen-recomme
   leads, 1 per day. **Admin**: `/admin/ops` Voice usage card (minutes, cost USD/INR, top users, blocked starts) and the
   runtime cap override (`voice_settings`, audited `voice.caps_updated`). Alerts at 80% / 100% (`voice.budget_alert`).
 - Details, env vars and the checklist for new voice entry points: `docs/voice-cost-guard.md`.
+
+## 13d.1 Voice agents in Hindi and Telugu (ticket 049)
+
+- The screen, booking, generic intake and follow-up agents follow the page language (en/hi/te) like the Child
+  Development intake agent: one agent per purpose, the language is a per-call override, the Hindi/Telugu first message
+  and prompt are the agent's language presets generated from `lib/agents/<agent>/prompts/` (`npm run -s agents:presets`).
+- Every voice start sends `language` (default the UI locale, `lib/agents/call-language.ts` `resolveCallLanguage`); a
+  language not in `ELEVENLABS_<AGENT>_LANGUAGES` -> 409 `language_unavailable` **before** the 051 gate, and the page
+  offers "Voice in English" or the tap/type path (`components/voice/VoiceLanguageChoice.tsx`). Never a silent English call.
+- Fixed texts the agents say (first messages, 108/112, follow-up fixed answers) come from `messages/{en,hi,te}.json`
+  (`voiceAgents.*`, `screen.urgent`), so they equal the page and appear in `messages/REVIEW.md`. Tool calls stay codes;
+  the spoken-word lexicon (`voiceAgents.lexicon`, `lib/agents/lexicon.ts`) is written into the prompts and drives the
+  DEMO_MODE scripts, whose te/hi fixtures must make the English tool calls (`tests/agents-*-locale.test.ts`).
+- Follow-up: the session stores its language (`followup_agent_sessions.language`, migration
+  `20261113004900_voice_agent_language.sql`); the pipeline stays English and the tool localizes fixed answers or marks
+  model answers `translate: true` (`lib/agents/followup/localize.ts`). Details and human steps: `docs/voice-languages.md`.
 
 ## 13e. Parent-first home page (ticket 050)
 

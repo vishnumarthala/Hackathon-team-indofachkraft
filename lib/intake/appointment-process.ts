@@ -34,9 +34,15 @@ import {
   type ProcessResult,
   type Sql,
 } from "@/lib/intake/process";
+import type { Locale } from "@/lib/i18n/config";
 import type { Segment } from "@/lib/types";
 
 export const GENERIC_POST_CALL_FIXTURE = "elevenlabs-generic-post-call.json";
+
+/** 049: the generic agent's demo call in Hindi or Telugu (same data-collection codes as English, FR-6). */
+export function genericPostCallFixture(language: Locale = "en"): string {
+  return language === "en" ? GENERIC_POST_CALL_FIXTURE : `elevenlabs-generic-post-call.${language}.json`;
+}
 
 export const AppointmentPostCallSchema = PostCallDataSchema.extend({
   conversation_initiation_client_data: z.object({
@@ -61,13 +67,22 @@ export function parseAppointmentPostCall(data: unknown): AppointmentPostCall {
   return result.data;
 }
 
-/** Demo path: the synthetic fixture of the attempt's agent with this attempt id and conversation id. */
-export function demoAppointmentPostCall(attempt: Pick<IntakeAttempt, "id" | "agent_kind">, conversationId: string): AppointmentPostCall {
-  const fixture = loadFixture<{ data: Record<string, unknown> }>(attempt.agent_kind === "generic" ? GENERIC_POST_CALL_FIXTURE : POST_CALL_FIXTURE);
+/**
+ * Demo path: the synthetic fixture of the attempt's agent with this attempt id and conversation id. 049: the generic
+ * agent's call in the call language (`language`, sent by the page).
+ */
+export function demoAppointmentPostCall(
+  attempt: Pick<IntakeAttempt, "id" | "agent_kind">,
+  conversationId: string,
+  language: Locale = "en",
+): AppointmentPostCall {
+  const fixture = loadFixture<{ data: Record<string, unknown> }>(attempt.agent_kind === "generic" ? genericPostCallFixture(language) : POST_CALL_FIXTURE);
   const data = structuredClone(fixture.data) as Record<string, unknown>;
   data.conversation_id = conversationId;
   data.agent_id = agentIdFor(attempt.agent_kind) ?? data.agent_id;
-  data.conversation_initiation_client_data = { dynamic_variables: { intake_attempt_id: attempt.id } };
+  data.conversation_initiation_client_data = {
+    dynamic_variables: { intake_attempt_id: attempt.id, ...(attempt.agent_kind === "generic" ? { language } : {}) },
+  };
   return parseAppointmentPostCall(data);
 }
 

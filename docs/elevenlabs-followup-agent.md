@@ -2,7 +2,7 @@
 
 In the family portal (`/family/children/<id>/ask`) a guardian can ask about their child's **published** plan, home
 program, shared session notes and reports, and signed prescriptions, by typing or by voice. `Ask by voice` talks to a
-**new, English-only** ElevenLabs Conversational AI agent, `DoctorNearMe Follow-up`, separate from the intake, check-in
+ElevenLabs Conversational AI agent, `DoctorNearMe Follow-up` (English, Hindi and Telugu since 049), separate from the intake, check-in
 and booking agents (`docs/elevenlabs-agent.md`, `docs/elevenlabs-screen-agent.md`, `docs/elevenlabs-booking-agent.md`);
 do not change those for this.
 
@@ -30,10 +30,12 @@ signed-in guardian, who must own the session) and the browser reads the answer a
   get 401).
 - **No medicine changes, no diagnosis.** The tool already answers these with fixed sentences
   (`Please don't change any medicine without talking to the prescriber.`); the agent must not add advice of its own.
-- English only. Max 10 minutes (ticket 051; was 15). No names: the agent receives only the session token, never the child's or guardian's
+- English, Hindi or Telugu (the page language, when enabled; 049); the tool's question is always English. Max 10
+  minutes (ticket 051; was 15). No names: the agent receives only the session token, never the child's or guardian's
   name.
 
-Fixed safety message (identical to the check-in, `lib/screen/questions.ts` `URGENT_MESSAGE`):
+Fixed safety message (identical to the check-in, `lib/screen/questions.ts` `URGENT_MESSAGE`; Hindi and Telugu:
+`screen.urgent` in `messages/{hi,te}.json`):
 
 ```
 Please get help now. Call 108 for an ambulance or 112 for emergencies. If your child is not in immediate danger, contact your child's doctor today.
@@ -43,7 +45,8 @@ Please get help now. Call 108 for an ambulance or 112 for emergencies. If your c
 
 1. Agents > **Create agent** > Blank agent.
 2. **Name:** `DoctorNearMe Follow-up`
-3. **Agent language:** English. **Do not add additional languages** (D-3; Hindi/Telugu voice is out of scope).
+3. **Agent language (default):** English. **Additional languages:** Hindi and Telugu, configured as language presets
+   (section "Hindi and Telugu (ticket 049)" below).
 4. **Voice:** a calm, clear English voice (Indian English if available). **LLM:** any current low-latency model with
    reliable tool calling; temperature low (0.1-0.2).
 
@@ -55,7 +58,7 @@ Agent > **Security**:
    `GET https://api.elevenlabs.io/v1/convai/conversation/token?agent_id=<ELEVENLABS_FOLLOWUP_AGENT_ID>` (header
    `xi-api-key`; `lib/elevenlabs/agent.ts` `startAgentSession(agentId)`, called by `POST /api/agents/followup/session`).
    The API key never reaches the browser.
-2. **Overrides:** all **off**.
+2. **Overrides:** **Language** on (049; the page sends it for Hindi and Telugu only); everything else **off**.
 3. **Allowed hosts** (if shown): the deployed domain and `localhost`.
 
 ## 3. Limits and privacy
@@ -86,10 +89,11 @@ answers 401.
 | Variable | Example | Meaning |
 |----------|---------|---------|
 | `{{followup_session}}` | `q3V...` (43 characters) | Random token bound to this guardian and child. Valid for 15 minutes and 20 tool calls. Send it with every tool call; never read it out. |
+| `{{language}}` | `en`, `hi` or `te` | Call language (049; also stored with the session). The Hindi/Telugu prompts use it. |
 
 ## 6. First message
 
-Copy exactly:
+English (base configuration). Copy exactly:
 
 ```
 Hello, I am DoctorNearMe's follow-up assistant. I am an AI, not a doctor. I can answer questions about your child's shared plans, home program and prescriptions. What would you like to know?
@@ -97,7 +101,7 @@ Hello, I am DoctorNearMe's follow-up assistant. I am an AI, not a doctor. I can 
 
 ## 7. System prompt
 
-Copy exactly:
+English (base configuration). Copy exactly:
 
 ```
 You are DoctorNearMe's follow-up assistant for parents. You are an AI, not a doctor, and you say so if asked. You speak English only. Use simple, warm, short sentences.
@@ -133,6 +137,11 @@ Agent > **Tools** > Add tool > **Webhook**:
 
 Returns the same body as the text chat (`POST /api/family/children/:id/ask`):
 `{ id?, found, answer, citations: [{ entity_type, entity_id, version, label, excerpt }], safety?: "red_flag" | "medical_advice" }`.
+
+049: for a Hindi or Telugu session the body also has `language` and `translate`. Fixed answers (108/112, medicine,
+condition, not found) come back in the session language, word for word from `messages/{hi,te}.json`
+(`translate: false`); a model answer stays the checked English text with `translate: true` and `answer_language: "en"`,
+which the agent translates faithfully. English sessions get exactly the body above. The stored history stays English.
 
 Errors: 401 wrong/missing `X-Agent-Secret`, or an unknown, expired, ended or revoked-guardian session; 400 invalid
 question; 422 `ai_follow_up` consent withdrawn (the session ends); 429 after 20 tool calls in a session or 30
@@ -174,3 +183,56 @@ prescription, and `AI follow-up assistant` allowed in the child's permissions).
 5. Withdraw `AI follow-up assistant` in the child's permissions during a call: the next question gets the consent error
    and the session ends.
 6. In the ElevenLabs conversation list, check the retention setting and that no audio is stored.
+
+## Hindi and Telugu (ticket 049)
+
+One agent serves English, Hindi and Telugu. The page asks for the viewer's UI language; the server checks that it is
+enabled on this agent (`ELEVENLABS_FOLLOWUP_LANGUAGES`) and the browser starts the call with the language override (Hindi/Telugu only;
+English uses the base configuration above). The Hindi and Telugu first message and system prompt are the agent's
+**language presets**, generated from `lib/agents/followup/prompts/` (instructions in English; every Hindi/Telugu
+word, including the safety message, comes from `messages/{hi,te}.json`, identical to the page and listed in
+`messages/REVIEW.md`). Tool calls stay language-neutral: codes and English place names, never translated words.
+
+Until the steps below are done, keep `ELEVENLABS_FOLLOWUP_LANGUAGES` empty (English only). On a page in a language that is not enabled
+`/family/children/<id>/ask` shows "Voice is available in English. You can also type your question below." with `Voice in English` and `Type instead`; the call never falls back to English by itself (`409 language_unavailable` from
+the start route). DEMO_MODE enables all three: the voice demo panel takes Telugu/Hindi text, sends the English question the agent would send (known intents and red flags via `voiceAgents.lexicon`), and reads translated fixed answers aloud in the call language.
+
+### Steps (human, in the ElevenLabs dashboard)
+
+1. Agent > **Languages** (Additional languages): add **Hindi** and **Telugu**. Pick a voice per language that sounds
+   natural in it (a multilingual voice works); note the voice ids.
+2. Fill both language presets (first message + system prompt per language) from the code, either:
+   - print them and paste into each language's settings:
+     `npm run -s agents:presets -- followup --md`, or
+   - apply them through the API (no secrets in the file; the key stays in your shell):
+     `npm run -s agents:presets -- followup --voice-hi=<voice id> --voice-te=<voice id> > presets.json` then
+     `curl -X PATCH "https://api.elevenlabs.io/v1/convai/agents/$AGENT_ID" -H "xi-api-key: $ELEVENLABS_API_KEY" -H "Content-Type: application/json" -d @presets.json`
+     (only `conversation_config.language_presets` changes; check the result in the dashboard, then delete the file).
+3. Agent > **Security** > **Overrides**: turn on **Language** (`overrides.agent.language`) only. Prompt, first message
+   and voice overrides stay off.
+4. Run the smoke test below, then set `ELEVENLABS_FOLLOWUP_LANGUAGES=en,hi,te` in Vercel (and `.env.local`) and redeploy. To switch a
+   language off again, remove it from the list: the page then offers the English/tap choice.
+
+### Smoke test in Telugu and Hindi (human)
+
+1. Switch the portal to `తెలుగు`, open `Ask about <child>'s plan` > `Ask by voice`: the page says the assistant speaks
+   Telugu; the agent greets in Telugu.
+2. Ask "ఈ వారం ఏమి సాధన చేయాలి?": the tool call carries the English question; the answer is spoken in Telugu (a
+   faithful translation of the English answer, `translate: true`), and the history shows the English question and
+   answer with the citation chip.
+3. Ask "సిరప్ మోతాదు రెట్టింపు చేయవచ్చా?": the agent says the Telugu medicine sentence word for word.
+4. Say "వాడికి ఊపిరి ఆడటం లేదు": the Telugu 108/112 message, the call ends, a new tool call gets 401.
+5. Repeat in हिन्दी; with `ELEVENLABS_FOLLOWUP_LANGUAGES=en` the page offers `Voice in English` or `Type instead`.
+
+### Language review checklist (human, native speakers, before the real pilot; NFR-2)
+
+- [ ] First message (`voiceAgents.followup.firstMessage`) and the safety message (`screen.urgent`) in
+      messages/REVIEW.md: natural, polite, and the 108/112 sentence identical to the page.
+- [ ] Listen to one full call per language in a quiet room and one on a phone in a noisy room: the voice sounds natural
+      in that language (change the preset's voice if not), the AI disclosure and "not a diagnosis"/no-advice rules hold,
+      and the agent never switches to English unless the parent does.
+- [ ] The fixed answers (`voiceAgents.followup.answers.*`: medicine, condition, not found, tool failure) and the way the
+      agent translates model answers (listen to 10 answers: nothing added, removed or softened; medicine names, doses,
+      numbers and dates unchanged).
+- [ ] Set the reviewed rows to `approved` in messages/REVIEW.md (reviewer name), or `changes-requested` with notes.
+      Rerun `npx tsx scripts/i18n-review.ts` after any catalogue change and re-apply the presets (step 2).

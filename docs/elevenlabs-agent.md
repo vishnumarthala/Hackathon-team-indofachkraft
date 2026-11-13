@@ -52,7 +52,8 @@ message and system prompt exactly as written, with double curly braces:
 `/intake/a/<token>`. They send `intake_attempt_id` instead of `intake_token` (the webhook routes on it), the child's
 and guardian's names, the provider as `therapist_name`, the organisation as `centre_name`, and the placeholder
 `case_id = appointment-intake` (the published agent requires the variable; the real case id is never sent). The
-generic (English-only) agent for other services is described in `docs/elevenlabs-generic-intake-agent.md`.
+generic agent for other services (English, Hindi and Telugu since 049) is described in
+`docs/elevenlabs-generic-intake-agent.md`.
 
 ## 5. First message
 

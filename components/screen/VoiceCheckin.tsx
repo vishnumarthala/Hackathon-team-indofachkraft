@@ -4,7 +4,9 @@ import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef, useState } from "react";
 import { upsertLine, type Line } from "@/components/landing/VoiceDemo";
 import { useVoiceCallGuard } from "@/components/voice/useVoiceCallGuard";
+import { SPEECH_LANG, voiceOverrides } from "@/lib/agents/languages";
 import { useT } from "@/lib/i18n/client";
+import type { Locale } from "@/lib/i18n/config";
 import { finishScreen, screenClientTools, type StartedSession } from "@/lib/screen/client";
 import { VOICE_MAX_MINUTES, type ScreenResult } from "@/lib/screen/questions";
 import { reportVoiceEnd } from "@/lib/voice/client";
@@ -16,6 +18,8 @@ type Target = { conversationToken: string } | { agentId: string; connectionType:
 export type VoiceProps = {
   session: StartedSession;
   target: Target;
+  /** 049: the call language: `overrides.agent.language` (the agent's language preset) and the captions' `lang`. */
+  language?: Locale;
   dynamicVariables: Record<string, string>;
   /** 051 FR-7: the `voice_usage` row this call reports its end against. */
   usageId: string | null;
@@ -33,7 +37,7 @@ export const CONNECT_TIMEOUT_SECONDS = 20;
 
 type Phase = "live" | "stopped" | "complete";
 
-function VoicePanel({ session, target, dynamicVariables, usageId, onStopped, onFinished, onContinueByTapping }: VoiceProps) {
+function VoicePanel({ session, target, language = "en", dynamicVariables, usageId, onStopped, onFinished, onContinueByTapping }: VoiceProps) {
   const t = useT("screen");
   const [phase, setPhase] = useState<Phase>("live");
   const [answered, setAnswered] = useState(0);
@@ -105,7 +109,7 @@ function VoicePanel({ session, target, dynamicVariables, usageId, onStopped, onF
       },
     );
     try {
-      startSession({ ...target, dynamicVariables, clientTools: tools });
+      startSession({ ...target, dynamicVariables, ...voiceOverrides(language), clientTools: tools });
     } catch {
       failedRef.current = true;
       void handleEnd();
@@ -187,7 +191,7 @@ function VoicePanel({ session, target, dynamicVariables, usageId, onStopped, onF
               <span className="mr-1.5 text-xs font-semibold text-slate-600">
                 {l.role === "agent" ? t("voice.speakerAi") : t("voice.speakerYou")}
               </span>
-              <span lang="en">{l.text}</span>
+              <span lang={SPEECH_LANG[language]}>{l.text}</span>
             </li>
           ))}
         </ol>
@@ -196,7 +200,7 @@ function VoicePanel({ session, target, dynamicVariables, usageId, onStopped, onF
   );
 }
 
-// Ticket 033 FR-3: the English-only voice check-in. The agent asks the same questions as the form and reports each
+// Ticket 033 FR-3: the voice check-in (049: in the call language, en/hi/te). The agent asks the same questions as the form and reports each
 // answer through the `record_answer` / `record_red_flag` client tools (lib/screen/client.ts).
 export function VoiceCheckin(props: VoiceProps) {
   return (

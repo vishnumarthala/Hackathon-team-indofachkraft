@@ -1,0 +1,22 @@
+{
+  "about": "Ticket 049 FR-6: scripted parent answers for the voice check-in (band 31-71m, ISAA-derived list: 6 red-flag questions, then q1-q15), in English, Hindi and Telugu. Synthetic. Each script must produce the same tool calls (tests/agents-screen-locale.test.ts); the DEMO_MODE voice check-in maps words the same way.",
+  "band": "31-71m",
+  "expected": ["no", "no", "no", "no", "no", "no", "often", "always", "sometimes", "never", "never", "often", "sometimes", "always", "never", "sometimes", "often", "never", "sometimes", "often", "always"],
+  "complete": {
+    "en": ["No.", "No, not really.", "No.", "No.", "No, she eats well.", "No.", "Most of the time.", "Always, she smiles back.", "Sometimes.", "Never.", "Not at all.", "Often.", "Now and then.", "All the time.", "Never.", "Sometimes.", "Usually.", "No, never.", "Sometimes.", "A lot.", "Always."],
+    "hi": ["नहीं।", "नहीं, ऐसा नहीं करता।", "नहीं।", "नहीं।", "नहीं, वह ठीक से खाती है।", "जी नहीं।", "ज़्यादातर देखता है।", "हमेशा मुस्कुराती है।", "कभी-कभी।", "कभी नहीं।", "बिल्कुल नहीं।", "अक्सर।", "कभी कभी।", "हर समय।", "कभी नहीं।", "कभी-कभी।", "अक्सर।", "कभी नहीं।", "कभी-कभी।", "ज़्यादातर।", "हमेशा।"],
+    "te": ["లేదు.", "లేదు, అలా చేయడు.", "లేదు.", "లేదు.", "లేదు, బాగా తింటుంది.", "కాదు.", "చాలాసార్లు చూస్తాడు.", "ఎల్లప్పుడూ నవ్వుతుంది.", "కొన్నిసార్లు.", "ఎప్పుడూ లేదు.", "అస్సలు లేదు.", "తరచుగా.", "అప్పుడప్పుడు.", "అన్ని వేళలా.", "ఎప్పుడూ లేదు.", "కొన్నిసార్లు.", "తరచుగా.", "ఎప్పుడూ చేయదు.", "కొన్నిసార్లు.", "చాలాసార్లు.", "ఎల్లప్పుడూ."]
+  },
+  "redFlagAnswer": {
+    "about": "Answers to the first three red-flag questions: no, no, then yes to rf_seizure (the session stops).",
+    "en": ["No.", "No.", "Yes, he had fits last week."],
+    "hi": ["नहीं।", "नहीं।", "हाँ, पिछले हफ्ते उसे दौरा पड़ा था।"],
+    "te": ["లేదు.", "లేదు.", "అవును, గత వారం వాడికి ఫిట్స్ వచ్చాయి."]
+  },
+  "redFlagSpoken": {
+    "about": "Mid check-in (answering q1) the parent describes an emergency: record_red_flag seizure.",
+    "en": "Wait, he is having a seizure right now.",
+    "hi": "रुकिए, उसे अभी दौरा पड़ रहा है।",
+    "te": "ఆగండి, ఇప్పుడే వాడికి ఫిట్స్ వస్తున్నాయి."
+  }
+}

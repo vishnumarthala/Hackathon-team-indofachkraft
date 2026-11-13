@@ -3,6 +3,8 @@
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef } from "react";
 import { VOICE_MAX_MINUTES } from "@/lib/agents/booking/constants";
+import { voiceOverrides } from "@/lib/agents/languages";
+import type { Locale } from "@/lib/i18n/config";
 import { useVoiceCallGuard } from "./useVoiceCallGuard";
 
 export type LiveTarget = { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
@@ -11,6 +13,8 @@ export type EndedCall = { seconds: number; conversationId: string | null; silenc
 
 export type LiveCallProps = {
   target: LiveTarget;
+  /** 049: the call language (`overrides.agent.language` for Hindi and Telugu). */
+  language?: Locale;
   dynamicVariables: Record<string, string>;
   onLine: (role: "user" | "agent", eventId: number, text: string) => void;
   onStatus: (status: "connecting" | "listening" | "speaking") => void;
@@ -27,7 +31,7 @@ const CONNECT_TIMEOUT_SECONDS = 20;
 /** Seconds the agent gets to say the 108/112 message after a red flag before the widget ends the call. */
 const RED_FLAG_WRAP_UP_SECONDS = 20;
 
-function LiveCall({ target, dynamicVariables, onLine, onStatus, onRedFlag, onEnded, endRef }: LiveCallProps) {
+function LiveCall({ target, language = "en", dynamicVariables, onLine, onStatus, onRedFlag, onEnded, endRef }: LiveCallProps) {
   const connected = useRef(false);
   const failed = useRef(false);
   const ended = useRef(false);
@@ -69,6 +73,7 @@ function LiveCall({ target, dynamicVariables, onLine, onStatus, onRedFlag, onEnd
       startSession({
         ...target,
         dynamicVariables,
+        ...voiceOverrides(language),
         clientTools: {
           // FR-1 / 033 rule: on a red flag the screen shows only the 108/112 message at once; the agent says it and ends.
           record_red_flag: async () => {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { primaryButton } from "@/components/screen/view";
 import { SUGGESTED_QUESTIONS } from "@/lib/followup/constants";
 import { useT } from "@/lib/i18n/client";
+import type { Locale } from "@/lib/i18n/config";
 import { AnswerCard, type ChatItem } from "./AnswerCard";
 import { FollowupVoice } from "./FollowupVoice";
 
@@ -13,7 +14,8 @@ type Props = {
   /** Newest first. */
   history: ChatItem[];
   remaining: number;
-  voice: { available: boolean; demo: boolean };
+  /** 049: `languages` = languages enabled on the follow-up agent (ELEVENLABS_FOLLOWUP_LANGUAGES). */
+  voice: { available: boolean; demo: boolean; languages?: Locale[] };
 };
 
 type AskError = "generic" | "limit" | "consent" | "length";
@@ -136,7 +138,7 @@ export function FollowupChat({ childId, childName, history, remaining: initialRe
         </ul>
       </section>
 
-      {voice.available ? <FollowupVoice childId={childId} demo={voice.demo} onAnswer={(item) => add(item, item.safety !== "red_flag")} onCallEnded={() => void refresh()} /> : null}
+      {voice.available ? <FollowupVoice childId={childId} demo={voice.demo} voiceLanguages={voice.languages} onAnswer={(item) => add(item, item.safety !== "red_flag")} onCallEnded={() => void refresh()} /> : null}
 
       <section aria-labelledby="followup-history" className="space-y-3">
         <h2 id="followup-history" className="text-xl font-semibold text-slate-900">

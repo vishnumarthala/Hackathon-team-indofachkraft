@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ScreenFlow } from "@/components/screen/ScreenFlow";
+import { enabledVoiceLanguages } from "@/lib/agents/call-language";
 import type { SaveViewer } from "@/components/screen/SaveResult";
 import { getAuthenticatedUser, getUserRole } from "@/lib/auth";
 import { listGuardianChildren } from "@/lib/children";
@@ -35,7 +36,8 @@ async function saveViewer(): Promise<SaveViewer> {
 // Ticket 033: public developmental check-in (linked from the landing page). Strict CSP with only the ElevenLabs
 // endpoints added (lib/csp.ts, NFR-1); no analytics. Translated chrome; question text English (clinical review).
 // 051: tapping is anonymous; voice needs a sign-in (`?voice=1` marks the return from it) and, when configured, the
-// Turnstile bot check (its site key is public).
+// Turnstile bot check (its site key is public). 049: voice in the page language when the agent has it, else "Voice in
+// English" or tapping.
 export default async function ScreenPage({ searchParams }: { searchParams: Promise<{ voice?: string | string[] }> }) {
   const viewer = await saveViewer();
   const voiceIntent = (await searchParams).voice === "1";
@@ -54,6 +56,7 @@ export default async function ScreenPage({ searchParams }: { searchParams: Promi
         viewer={viewer}
         localities={localities}
         voiceAvailable={voiceAvailable}
+        voiceLanguages={enabledVoiceLanguages("screen")}
         turnstileSiteKey={turnstileSiteKey()}
         voiceIntent={voiceIntent}
       />

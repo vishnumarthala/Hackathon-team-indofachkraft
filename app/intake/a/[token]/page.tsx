@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { IntakeCall } from "@/components/intake/IntakeCall";
+import { enabledVoiceLanguages } from "@/lib/agents/call-language";
 import { hasConsent } from "@/lib/consent";
 import { getT } from "@/lib/i18n/server";
 import { attemptLinkState, getAttemptByToken } from "@/lib/intake/attempts";
@@ -13,7 +14,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Ticket 035 FR-4: the appointment-bound intake page. Child Development services use the existing agent with the
-// en/hi/te language choice; other services the English-only generic agent (no language choice). Expired (appointment
+// en/hi/te language choice; other services the generic agent (no language choice; 049: it speaks the page language when
+// ELEVENLABS_GENERIC_INTAKE_LANGUAGES has it, else "Voice in English" or skip the call). Expired (appointment
 // started), revoked (cancelled, consent withdrawn) and unconsented links show the expired message (fail closed).
 export default async function AppointmentIntakePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -56,6 +58,8 @@ export default async function AppointmentIntakePage({ params }: { params: Promis
         apiBase={`/api/intake/a/${encodeURIComponent(token)}`}
         simulatePath={`/api/dev/simulate-intake/a/${encodeURIComponent(token)}`}
         languageSelect={!generic}
+        voiceLanguages={generic ? enabledVoiceLanguages("generic_intake") : undefined}
+        providerName={attempt.provider_name}
         copy={{
           title: t("appointment.title", vars),
           intro: t(generic ? "appointment.introGeneric" : "appointment.introChildDev", vars),

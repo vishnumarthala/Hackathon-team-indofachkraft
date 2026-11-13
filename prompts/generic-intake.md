@@ -28,4 +28,6 @@ Rules:
 - `questions_for_provider`: 1 to 6 short questions: the parent's own questions first, then points the provider should
   check at the visit.
 - Lines labelled AI are the assistant's questions, not information about the child.
+- The call may be in Hindi or Telugu. Write every field in English for the provider, keeping medicine names, doses
+  and numbers exactly as said; only `quote` stays word for word in the language of the transcript line.
 - Return only JSON that matches the schema.

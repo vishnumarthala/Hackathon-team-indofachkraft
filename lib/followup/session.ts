@@ -4,6 +4,7 @@
 // sends it with every `answer_question` tool call. Only its SHA-256 is stored. No child or guardian name ever goes to
 // the agent: the token is the only thing it learns.
 import { createHash, randomBytes } from "node:crypto";
+import type { Locale } from "@/lib/i18n/config";
 import { pg, type Queryable } from "@/lib/pg";
 import { AGENT_SESSION_TTL_MS, MAX_TOOL_CALLS } from "./constants";
 
@@ -14,6 +15,8 @@ export type FollowupSession = {
   guardian_user_id: string;
   child_id: string;
   demo: boolean;
+  /** 049: the call language (the tool localizes fixed answers for it). */
+  language: Locale;
   tool_calls: number;
   conversation_id: string | null;
   created_at: string;
@@ -29,7 +32,7 @@ export function hashSessionToken(token: string): string {
   return createHash("sha256").update(`followup-agent:${token}`).digest("hex");
 }
 
-const COLS = "id, guardian_user_id, child_id, demo, tool_calls, conversation_id, created_at, expires_at, ended_at";
+const COLS = "id, guardian_user_id, child_id, demo, language, tool_calls, conversation_id, created_at, expires_at, ended_at";
 const iso = (v: unknown): string => (v instanceof Date ? v.toISOString() : String(v));
 const toSession = (row: Record<string, unknown>): FollowupSession => ({
   ...(row as unknown as FollowupSession),
@@ -40,7 +43,7 @@ const toSession = (row: Record<string, unknown>): FollowupSession => ({
 
 /** Creates a session for (guardian, child). Also purges sessions that expired more than a day ago without a conversation id. */
 export async function createFollowupSession(
-  input: { guardianUserId: string; childId: string; demo: boolean; ttlMs?: number },
+  input: { guardianUserId: string; childId: string; demo: boolean; language?: Locale; ttlMs?: number },
   sql?: Queryable,
 ): Promise<{ token: string; session: FollowupSession }> {
   const db = sql ?? (await pg());
@@ -48,9 +51,9 @@ export async function createFollowupSession(
   const token = newSessionToken();
   const ttl = `${Math.round((input.ttlMs ?? AGENT_SESSION_TTL_MS) / 1000)} seconds`;
   const [row] = await db.unsafe(
-    `insert into public.followup_agent_sessions (token_hash, guardian_user_id, child_id, demo, expires_at)
-     values ($1, $2, $3, $4, now() + $5::interval) returning ${COLS}`,
-    [hashSessionToken(token), input.guardianUserId, input.childId, input.demo, ttl],
+    `insert into public.followup_agent_sessions (token_hash, guardian_user_id, child_id, demo, expires_at, language)
+     values ($1, $2, $3, $4, now() + $5::interval, $6) returning ${COLS}`,
+    [hashSessionToken(token), input.guardianUserId, input.childId, input.demo, ttl, input.language ?? "en"],
   );
   return { token, session: toSession(row) };
 }

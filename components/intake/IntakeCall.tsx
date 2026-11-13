@@ -3,7 +3,10 @@
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SimulateCallButton } from "@/components/intake/SimulateCallButton";
+import { CallLanguageNote, VoiceLanguageChoice } from "@/components/voice/VoiceLanguageChoice";
+import { LANGUAGE_UNAVAILABLE, planVoiceLanguage, voiceOverrides } from "@/lib/agents/languages";
 import { useLocale, useT } from "@/lib/i18n/client";
+import type { Locale } from "@/lib/i18n/config";
 import type { TFunction } from "@/lib/i18n/keys";
 import type { Language } from "@/lib/types";
 
@@ -88,10 +91,10 @@ type SessionOptions = SessionTarget & {
 };
 
 /**
- * 035: the appointment intake (`/intake/a/<token>`) uses its own API base; the generic (English-only) agent gets no
- * language override.
+ * 035: the appointment intake (`/intake/a/<token>`) uses its own API base. 049: the generic agent gets the language
+ * override only for Hindi and Telugu (`overrideLanguage: "non-english"`; English uses its base configuration).
  */
-export type IntakeApiOptions = { apiBase?: string; overrideLanguage?: boolean };
+export type IntakeApiOptions = { apiBase?: string; overrideLanguage?: boolean | "non-english" };
 
 export function intakeApiBase(token: string, opts: IntakeApiOptions = {}): string {
   return opts.apiBase ?? `/api/intake/${encodeURIComponent(token)}`;
@@ -104,7 +107,8 @@ export type StartDeps = {
   onSdkError: () => void;
 };
 
-export type StartResult = { kind: "demo" } | { kind: "error"; message: string } | { kind: "started" };
+/** 049: `languageUnavailable` = the generic agent does not speak the requested language (409). */
+export type StartResult = { kind: "demo" } | { kind: "error"; message: string } | { kind: "started" } | { kind: "languageUnavailable" };
 
 // The whole start flow, free of React so it can be tested with mocks.
 export async function startIntakeCall(
@@ -131,6 +135,7 @@ export async function startIntakeCall(
     dynamic_variables?: Record<string, string>;
   };
   if (!res.ok) {
+    if (res.status === 409 && (body as { error?: string }).error === LANGUAGE_UNAVAILABLE) return { kind: "languageUnavailable" };
     // The API answers in English; show its known answers in the viewer's language.
     if (res.status === 404) return { kind: "error", message: messages.notFound };
     if (res.status === 409) return { kind: "error", message: messages.alreadyComplete };
@@ -156,7 +161,11 @@ export async function startIntakeCall(
     deps.startSession({
       ...target,
       dynamicVariables: body.dynamic_variables ?? {},
-      ...(opts.overrideLanguage === false ? {} : { overrides: { agent: { language } } }),
+      ...(opts.overrideLanguage === false
+        ? {}
+        : opts.overrideLanguage === "non-english"
+          ? voiceOverrides(language)
+          : { overrides: { agent: { language } } }),
       onError: deps.onSdkError,
     });
   } catch {
@@ -260,6 +269,12 @@ export type IntakeCallProps = {
   languageSelect?: boolean;
   /** Server-translated copy replacing the Child Development title / intro / consent label. */
   copy?: { title: string; intro: string; consent: string };
+  /**
+   * 049: the generic agent (no language choice) speaks the page language when it is enabled (`voiceLanguages`,
+   * ELEVENLABS_GENERIC_INTAKE_LANGUAGES); otherwise the page offers "Voice in English" or skipping the call.
+   */
+  voiceLanguages?: Locale[];
+  providerName?: string;
 };
 
 export function IntakeCall(props: IntakeCallProps) {
@@ -270,14 +285,35 @@ export function IntakeCall(props: IntakeCallProps) {
   );
 }
 
-function IntakeCallInner({ token, childAlias, defaultLanguage, apiBase, simulatePath, languageSelect = true, copy }: IntakeCallProps) {
+function IntakeCallInner({
+  token,
+  childAlias,
+  defaultLanguage,
+  apiBase,
+  simulatePath,
+  languageSelect = true,
+  copy,
+  voiceLanguages = ["en"],
+  providerName = "",
+}: IntakeCallProps) {
   const t = useT("intake");
   const tStatus = useT("intake.status");
+  const tf = useT("voiceAgents.fallback");
   const messages = useMemo(() => intakeMessages(tStatus), [tStatus]);
   const uiLocale = useLocale();
+  // 049: without a language choice (generic agent) the call speaks the page language when the agent has it.
+  const [languageRefused, setLanguageRefused] = useState(false);
+  const plan = languageRefused ? ({ kind: "fallback", language: "en", locale: uiLocale } as const) : planVoiceLanguage(uiLocale, voiceLanguages);
+  const [englishChosen, setEnglishChosen] = useState(false);
+  const [skipped, setSkipped] = useState(false);
   // The call language is independent of the UI language: switching the UI never changes it.
-  const [language, setLanguage] = useState<Language>(languageSelect ? (defaultLanguage ?? uiLocale) : "en");
-  const apiOptions = useMemo<IntakeApiOptions>(() => ({ apiBase, overrideLanguage: languageSelect }), [apiBase, languageSelect]);
+  const [chosenLanguage, setLanguage] = useState<Language>(defaultLanguage ?? uiLocale);
+  const language: Language = languageSelect ? chosenLanguage : plan.language;
+  const choosing = !languageSelect && plan.kind === "fallback" && !englishChosen;
+  const apiOptions = useMemo<IntakeApiOptions>(
+    () => ({ apiBase, overrideLanguage: languageSelect ? true : "non-english" }),
+    [apiBase, languageSelect],
+  );
   const [consent, setConsent] = useState(false);
   const [starting, setStarting] = useState(false);
   const [demo, setDemo] = useState(false);
@@ -338,6 +374,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage, apiBase, simulate
         setStarting(false);
       },
     }, messages, apiOptions);
+    if (result.kind === "languageUnavailable") setLanguageRefused(true);
     if (result.kind === "demo") setDemo(true);
     if (result.kind === "error") setError(result.message);
     setStarting(false);
@@ -372,18 +409,36 @@ function IntakeCallInner({ token, childAlias, defaultLanguage, apiBase, simulate
         </div>
       )}
 
-      <label className="flex items-start gap-3 text-base text-slate-800">
-        <input
-          type="checkbox"
-          checked={consent}
-          disabled={live}
-          onChange={(e) => setConsent(e.target.checked)}
-          className="mt-1 h-5 w-5 shrink-0"
-        />
-        <span>{copy?.consent ?? t("consent")}</span>
-      </label>
+      {!languageSelect && plan.kind === "native" ? <CallLanguageNote className="text-base text-slate-800" /> : null}
 
-      {!live && !ended && !demo && (
+      {skipped ? (
+        <p role="status" className="text-base font-medium text-slate-900" data-testid="intake-skipped">
+          {tf("skipped", { provider: providerName })}
+        </p>
+      ) : null}
+
+      {choosing && !skipped ? (
+        <VoiceLanguageChoice
+          message={tf("intakeMessage", { provider: providerName })}
+          onVoiceInEnglish={() => setEnglishChosen(true)}
+          alternative={{ label: tf("skipCall"), onClick: () => setSkipped(true) }}
+        />
+      ) : null}
+
+      {choosing || skipped ? null : (
+        <label className="flex items-start gap-3 text-base text-slate-800">
+          <input
+            type="checkbox"
+            checked={consent}
+            disabled={live}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-1 h-5 w-5 shrink-0"
+          />
+          <span>{copy?.consent ?? t("consent")}</span>
+        </label>
+      )}
+
+      {!live && !ended && !demo && !choosing && !skipped && (
         <button
           type="button"
           onClick={onStart}
@@ -431,7 +486,7 @@ function IntakeCallInner({ token, childAlias, defaultLanguage, apiBase, simulate
             {messages.demo}
           </p>
           <div id="demo-actions">
-            <SimulateCallButton token={token} path={simulatePath} />
+            <SimulateCallButton token={token} path={simulatePath} language={languageSelect ? undefined : language} />
           </div>
         </div>
       )}

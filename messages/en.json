@@ -748,7 +748,7 @@
     "appointment": {
       "title": "Before {child}'s visit with {provider}",
       "introChildDev": "You will talk to an AI assistant, not a person. It asks about {child}'s development so {provider} is prepared for the visit. The call takes up to 15 minutes and is recorded and summarised for {provider}.",
-      "introGeneric": "You will talk to an AI assistant, not a person. It asks why you booked this visit for {child} so {provider} is prepared. The call is in English, takes up to 10 minutes and is recorded and summarised for {provider}. The assistant does not give medical advice.",
+      "introGeneric": "You will talk to an AI assistant, not a person. It asks why you booked this visit for {child} so {provider} is prepared. The call takes up to 10 minutes and is recorded and summarised for {provider}. The assistant does not give medical advice.",
       "consent": "I agree to talk to an AI assistant and for this call to be recorded and summarised for my child's provider.",
       "expired": "This link has expired. The intake call is only available before the appointment starts."
     },
@@ -757,7 +757,7 @@
       "intro": "Pre-consult calls the family took before an appointment with your organisation. Parent-reported; check everything at the visit.",
       "heading": "{service}, {date}",
       "childDev": "Child Development intake",
-      "generic": "General intake (English)",
+      "generic": "General intake",
       "notStarted": "Intake: not started",
       "completed": "Intake: completed",
       "briefFailed": "The call was received but the brief could not be generated.",
@@ -2597,7 +2597,7 @@
     "metaDescription": "A free 5-minute developmental check-in for parents in Hyderabad, by voice or by tapping. This is a developmental check-in, not a diagnosis.",
     "title": "Developmental check-in",
     "intro": "About 5 minutes, for children up to 8 years. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child.",
-    "aiDisclosure": "You will talk to an AI assistant. It speaks English. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
+    "aiDisclosure": "You will talk to an AI assistant. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
     "noPersonal": "Please do not say or type your child's name, your name or contact details. We keep only your answers, without any name, and delete them after 30 days unless you save them to your child's profile.",
     "ageLabel": "Child's age",
     "ageBands": {
@@ -2892,7 +2892,7 @@
     "button": "Book by voice",
     "title": "Book by voice",
     "intro": "Tell our assistant what you need, for example a Telugu-speaking speech therapist near Kukatpally on Saturday morning.",
-    "disclosure": "You will talk to an AI assistant in English. It will not ask for your child's name.",
+    "disclosure": "You will talk to an AI assistant. It will not ask for your child's name.",
     "privacy": "Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe. The assistant can only hold a time for 10 minutes; you sign in and confirm on screen.",
     "start": "Start",
     "cancel": "Cancel",
@@ -3161,7 +3161,7 @@
     "voice": {
       "title": "Ask by voice",
       "button": "Ask by voice",
-      "intro": "Talk to the DoctorNearMe Follow-up assistant. It speaks English only and answers from the same shared plans.",
+      "intro": "Talk to the DoctorNearMe Follow-up assistant. It answers from the same shared plans.",
       "processor": "Your voice is processed by ElevenLabs to answer you.",
       "end": "End call",
       "connecting": "Connecting...",
@@ -3681,6 +3681,122 @@
     "notice": {
       "atClinicRetired": "Pay at the clinic is no longer available. Your paid services now take payment on DoctorNearMe: online when families book, or with a payment link or QR code at the desk.",
       "dismiss": "OK"
+    }
+  },
+  "voiceAgents": {
+    "languages": {
+      "en": "English",
+      "hi": "Hindi",
+      "te": "Telugu"
+    },
+    "callLanguage": "The assistant speaks {language}.",
+    "fallback": {
+      "tapMessage": "Voice is available in English. You can also answer by tapping in {language}.",
+      "intakeMessage": "Voice is available in English. You can also skip the call: {provider} will ask you at the visit.",
+      "followupMessage": "Voice is available in English. You can also type your question below.",
+      "voiceInEnglish": "Voice in English",
+      "tapIn": "Tap in {language}",
+      "skipCall": "Skip the call",
+      "skipped": "No call needed. {provider} will ask you at the visit.",
+      "typeInstead": "Type instead"
+    },
+    "screen": {
+      "firstMessage": "Hello, I am DoctorNearMe's AI assistant. I will ask you about 20 short questions about your child, aged {age_band}. This is a developmental check-in, not a diagnosis. Please do not tell me your child's name or any contact details. Shall we start?",
+      "ageBands": {
+        "m18to30": "18 to 30 months",
+        "m31to71": "2 and a half to 5 years",
+        "y6to8": "6 to 8 years"
+      },
+      "demo": "Demo mode: a scripted voice check-in, no live call. Tap or type what you would say.",
+      "demoQuestionNote": "In a live call the assistant asks this question in {language}.",
+      "demoSay": "What you would say",
+      "demoType": "Or type your answer",
+      "demoSend": "Say it",
+      "demoUnclear": "Sorry, I did not understand. Please choose one of the answers.",
+      "demoClosing": "Thank you. Your result and nearby specialists are now on your screen."
+    },
+    "booking": {
+      "firstMessage": "Hello, I am DoctorNearMe's booking assistant. I am an AI. I can find a provider near you and hold a time for 10 minutes; you then sign in and confirm on your screen. Please do not tell me your child's name or any contact details. Which area are you in, and what kind of specialist do you need?",
+      "demo": {
+        "parentAsk": "A speech therapist near {area}, at the clinic, for my child aged 3 to 5.",
+        "parentPickFirst": "The first one, please. Any morning this week.",
+        "parentPickTime": "The first time, please.",
+        "parentDemoAck": "Yes, I understand this is a demo.",
+        "providers": "I found these providers who take bookings: {list}. Which one would you like?",
+        "providerItem": "{n}. {name}, {distance} km away",
+        "times": "{name} has these times: {times}. Which one should I hold?",
+        "noProviders": "I could not find a provider who takes bookings there. Please use the search on this page.",
+        "noSlots": "I could not find a free time in the next week. Please use the search on this page to see other providers.",
+        "error": "Sorry, something went wrong. Please use the search on this page.",
+        "demoNotice": "This is a demo profile. No real consultation will take place. Do you understand this is a demo?",
+        "googleRequired": "Video consultations need your Google account, so I cannot hold this time. Please tap the provider in the search on this page, sign in with Google and book there.",
+        "held": "Done. I am holding {time} with {name} for 10 minutes. It is not booked yet: tap Sign in and confirm on your screen to finish. Goodbye.",
+        "heldOnline": "Done. I am holding {time} with {name} for 10 minutes. It is not booked yet: tap Sign in and confirm on your screen to finish. After you confirm, you pay {fee} rupees online on the next screen. Goodbye."
+      }
+    },
+    "genericIntake": {
+      "firstMessage": "Hello {parent_name}, I am an AI assistant from DoctorNearMe, not a doctor. I help {provider_name} prepare for {child_name}'s visit. This call is recorded and summarised for {provider_name}. It takes about five minutes. Is it okay to continue?",
+      "safetyMessage": "This sounds urgent. Please call 108 for an ambulance now, or 112 for emergency help. Do not wait for your appointment."
+    },
+    "followup": {
+      "firstMessage": "Hello, I am DoctorNearMe's follow-up assistant. I am an AI, not a doctor. I can answer questions about your child's shared plans, home program and prescriptions. What would you like to know?",
+      "answers": {
+        "notFound": "I couldn't find that in your child's shared plans. Please ask your provider using Messages.",
+        "medicine": "Please don't change any medicine without talking to the prescriber.",
+        "condition": "I can't say whether your child has a condition. Please ask your provider using Messages.",
+        "toolFailed": "Sorry, I could not answer that. Please type your question on the screen or ask your provider using Messages."
+      },
+      "demoTranslated": "In a live call the assistant reads this answer in {language}."
+    },
+    "lexicon": {
+      "answers": {
+        "never": "never, not at all",
+        "sometimes": "sometimes, now and then",
+        "often": "often, a lot, usually, most of the time",
+        "always": "always, all the time",
+        "yes": "yes, yeah",
+        "no": "no, not really, nope"
+      },
+      "redFlags": {
+        "skill_regression": "stopped talking, lost words, lost skills",
+        "self_injury": "hurts himself, hurts herself, bangs his head, bangs her head",
+        "seizure": "seizure, fits, convulsion",
+        "breathing": "not breathing, can't breathe, trouble breathing",
+        "not_eating_drinking": "not eating or drinking, stopped eating",
+        "safety_concern": "in danger, emergency, abuse"
+      },
+      "types": {
+        "speech_language_pathologist": "speech therapist, speech-language pathologist",
+        "occupational_therapist": "occupational therapist",
+        "child_psychologist": "child psychologist",
+        "developmental_pediatrician": "developmental pediatrician, developmental paediatrician"
+      },
+      "modes": {
+        "in_clinic": "at the clinic, in clinic, in person",
+        "video": "video, online"
+      },
+      "partsOfDay": {
+        "morning": "morning",
+        "afternoon": "afternoon",
+        "evening": "evening"
+      },
+      "choices": {
+        "first": "first, 1st",
+        "second": "second, 2nd",
+        "third": "third, 3rd"
+      },
+      "localities": {
+        "banjaraHills": "Banjara Hills",
+        "kukatpally": "Kukatpally",
+        "gachibowli": "Gachibowli",
+        "madhapur": "Madhapur"
+      },
+      "followup": {
+        "practice": "practise this week, practice this week",
+        "nextReview": "next review",
+        "medicineHow": "give the medicine",
+        "medicineChange": "double the syrup dose, double the dose"
+      }
     }
   }
 }

@@ -4,7 +4,11 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { upsertLine, type Line } from "@/components/landing/VoiceDemo";
 import { primaryButton, secondaryButton } from "@/components/screen/view";
-import { useT } from "@/lib/i18n/client";
+import { CallLanguageNote, VoiceLanguageChoice } from "@/components/voice/VoiceLanguageChoice";
+import { followupQuestionFor, type FollowupDemoScript } from "@/lib/agents/followup/demo-script";
+import { LANGUAGE_UNAVAILABLE, planVoiceLanguage, responseLanguage, SPEECH_LANG } from "@/lib/agents/languages";
+import { useLocale, useT } from "@/lib/i18n/client";
+import type { Locale } from "@/lib/i18n/config";
 import { callSeconds, reportVoiceEnd } from "@/lib/voice/client";
 import { voiceRefusal } from "@/lib/voice/constants";
 import type { ChatItem } from "./AnswerCard";
@@ -20,6 +24,9 @@ type Session = {
   dynamic_variables: Record<string, string>;
   /** 051 FR-7: the usage row this call reports its end against. */
   voice_usage_id?: string;
+  /** 049: the call language, and (DEMO_MODE) its spoken-word lexicon. */
+  language?: Locale;
+  demo_script?: FollowupDemoScript;
 };
 
 type Phase = "idle" | "starting" | "live" | "ended";
@@ -27,14 +34,16 @@ type Phase = "idle" | "starting" | "live" | "ended";
 type Props = {
   childId: string;
   demo: boolean;
+  /** 049 FR-4: languages enabled on the follow-up agent. */
+  voiceLanguages?: Locale[];
   onAnswer: (item: ChatItem) => void;
   onCallEnded: () => void;
 };
 
-function speak(text: string) {
+function speak(text: string, lang: string) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-IN";
+  utterance.lang = lang;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utterance);
 }
@@ -43,8 +52,16 @@ function speak(text: string) {
 // answers only through its server tool `answer_question` (same handler as the text chat, bound to a 15-minute session
 // for this guardian and child). DEMO_MODE: no call; the guardian types what they would say, the demo tool route
 // answers with the same handler and the browser reads the answer aloud. Any failure leaves the text chat as is.
-export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
+// 049: the call speaks the page language when the agent has it, else the page offers "Voice in English" or typing. In
+// Hindi or Telugu the tool returns fixed answers translated and model answers in English with `translate: true` (the
+// live agent translates them; the demo shows a note).
+export function FollowupVoice({ childId, demo, voiceLanguages = ["en"], onAnswer, onCallEnded }: Props) {
   const t = useT("followup.voice");
+  const tf = useT("voiceAgents.fallback");
+  const ta = useT("voiceAgents");
+  const locale = useLocale();
+  const [languageRefused, setLanguageRefused] = useState(false);
+  const plan = languageRefused ? ({ kind: "fallback", language: "en", locale } as const) : planVoiceLanguage(locale, voiceLanguages);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -52,6 +69,8 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
   const [status, setStatus] = useState<"connecting" | "listening" | "speaking">("connecting");
   const [said, setSaid] = useState("");
   const [busy, setBusy] = useState(false);
+  /** Demo answers that came back in English with `translate: true` (a live agent says them in the call language). */
+  const [translatedIds, setTranslatedIds] = useState<number[]>([]);
   const endRef = useRef<(() => void) | null>(null);
   const conversationId = useRef<string | null>(null);
   const demoStartedAt = useRef<number | null>(null);
@@ -74,7 +93,7 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
     void reportVoiceEnd(fetch, session.voice_usage_id, callSeconds(demoStartedAt.current, Date.now()));
   }, [phase, session]);
 
-  async function start() {
+  async function start(language: Locale) {
     setPhase("starting");
     setError(null);
     setLines([]);
@@ -82,9 +101,14 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
     const res = await fetch("/api/agents/followup/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ child_id: childId }),
+      body: JSON.stringify({ child_id: childId, language }),
     }).catch(() => null);
     const json = (await res?.json().catch(() => null)) as Session | null;
+    if (res?.status === 409 && (json as { error?: string } | null)?.error === LANGUAGE_UNAVAILABLE) {
+      setLanguageRefused(true);
+      setPhase("idle");
+      return;
+    }
     if (!res || res.status !== 201 || !json) {
       // 051: quota / budget / one-call-at-a-time refusals say so; the text chat below always works.
       const refusal = res ? voiceRefusal(res.status, json) : null;
@@ -105,12 +129,14 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
     seq.current += 1;
     const id = seq.current;
     setLines((prev) => upsertLine(prev, "user", id, q));
+    // 049: what the agent would send: the parent's question in English (lexicon stand-in for the agent's translation).
+    const question = session.demo_script ? followupQuestionFor(session.demo_script, q) : q;
     const res = await fetch("/api/agents/followup/demo/answer_question", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ followup_session: session.followup_session, question: q }),
+      body: JSON.stringify({ followup_session: session.followup_session, question }),
     }).catch(() => null);
-    const json = (await res?.json().catch(() => null)) as (ChatItem & { error?: string }) | null;
+    const json = (await res?.json().catch(() => null)) as (ChatItem & { error?: string; translate?: boolean }) | null;
     setBusy(false);
     setSaid("");
     if (!res?.ok || !json) {
@@ -118,9 +144,12 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
       if (res?.status === 401) setPhase("ended");
       return;
     }
+    const callLanguage = responseLanguage(session);
+    const answerLanguage = json.translate ? "en" : callLanguage;
+    setTranslatedIds((prev) => (json.translate ? [...prev, id] : prev));
     setLines((prev) => upsertLine(prev, "agent", id, json.answer));
-    speak(json.answer);
-    onAnswer({ ...json, id: json.id ?? `rf-${Date.now()}`, question: q, channel: "voice", created_at: new Date().toISOString() });
+    speak(json.answer, SPEECH_LANG[answerLanguage]);
+    onAnswer({ ...json, id: json.id ?? `rf-${Date.now()}`, question, channel: "voice", created_at: new Date().toISOString() });
     // FR-3: a red flag ends the session; the 108/112 message stays on screen.
     if (json.safety === "red_flag") setPhase("ended");
   }
@@ -163,10 +192,27 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
       <p className="text-slate-700">{t("intro")}</p>
       <p className="text-sm text-slate-600">{demo ? t("demoNote") : t("processor")}</p>
 
-      {phase === "idle" || phase === "ended" ? (
-        <button type="button" className={secondaryButton} onClick={() => void start()} data-testid="followup-voice-start">
-          {t("button")}
-        </button>
+      {(phase === "idle" || phase === "ended") && plan.kind === "native" ? (
+        <>
+          <CallLanguageNote />
+          <button type="button" className={secondaryButton} onClick={() => void start(plan.language)} data-testid="followup-voice-start">
+            {t("button")}
+          </button>
+        </>
+      ) : null}
+      {(phase === "idle" || phase === "ended") && plan.kind === "fallback" ? (
+        <VoiceLanguageChoice
+          message={tf("followupMessage")}
+          onVoiceInEnglish={() => void start("en")}
+          alternative={{
+            label: tf("typeInstead"),
+            onClick: () => {
+              const input = document.getElementById("followup-question");
+              input?.scrollIntoView({ block: "center" });
+              input?.focus();
+            },
+          }}
+        />
       ) : null}
 
       {phase === "live" && session?.demo ? (
@@ -182,7 +228,7 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
           </label>
           <input
             id="followup-voice-said"
-            lang="en"
+            lang={SPEECH_LANG[responseLanguage(session)]}
             maxLength={500}
             value={said}
             onChange={(e) => setSaid(e.target.value)}
@@ -201,6 +247,7 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
           </p>
           <LiveFollowupCall
             target={target}
+            language={responseLanguage(session)}
             dynamicVariables={session.dynamic_variables}
             onLine={onLine}
             onStatus={setStatus}
@@ -221,12 +268,18 @@ export function FollowupVoice({ childId, demo, onAnswer, onCallEnded }: Props) {
 
       {lines.length > 0 ? (
         <ol className="space-y-2" aria-live="polite" data-testid="followup-voice-captions">
-          {lines.map((line) => (
-            <li key={line.key} className={line.role === "agent" ? "text-slate-900" : "text-slate-700"} lang="en">
-              <span className="font-semibold">{line.role === "agent" ? t("agent") : t("parent")}: </span>
-              {line.text}
-            </li>
-          ))}
+          {lines.map((line) => {
+            const translated = line.role === "agent" && translatedIds.some((id) => line.key === `agent-${id}`);
+            return (
+              <li key={line.key} className={line.role === "agent" ? "text-slate-900" : "text-slate-700"}>
+                <span className="font-semibold">{line.role === "agent" ? t("agent") : t("parent")}: </span>
+                <span lang={SPEECH_LANG[translated ? "en" : responseLanguage(session)]}>{line.text}</span>
+                {translated ? (
+                  <span className="block text-xs text-slate-600">{ta("followup.demoTranslated", { language: ta(`languages.${responseLanguage(session)}`) })}</span>
+                ) : null}
+              </li>
+            );
+          })}
         </ol>
       ) : null}
 

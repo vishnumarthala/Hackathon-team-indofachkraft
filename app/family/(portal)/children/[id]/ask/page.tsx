@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FollowupChat } from "@/components/followup/FollowupChat";
+import { enabledVoiceLanguages } from "@/lib/agents/call-language";
 import { requireChildGuardianPage, requireGuardianPage } from "@/lib/authz";
 import { hasConsent } from "@/lib/consent";
 import { isDemoMode } from "@/lib/demo";
@@ -12,7 +13,8 @@ export const dynamic = "force-dynamic";
 
 // Ticket 040 FR-4: `Ask about <child>'s plan`. Guardian of this child only (else 404). Without `ai_follow_up` consent
 // the page explains how to turn the assistant on and offers no input. Voice (FR-5) is offered in DEMO_MODE or when the
-// follow-up agent and its tool secret are configured; the text chat is always there.
+// follow-up agent and its tool secret are configured; the text chat is always there. 049: voice speaks the page language
+// when the agent has it (ELEVENLABS_FOLLOWUP_LANGUAGES), else "Voice in English" or typing.
 export default async function AskPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireGuardianPage();
   const { id } = await params;
@@ -38,7 +40,7 @@ export default async function AskPage({ params }: { params: Promise<{ id: string
           childName={child.display_name}
           history={history}
           remaining={Math.max(0, DAILY_QUESTION_LIMIT - used)}
-          voice={{ available: voiceAvailable, demo }}
+          voice={{ available: voiceAvailable, demo, languages: enabledVoiceLanguages("followup") }}
         />
       ) : (
         <section aria-labelledby="followup-consent" className="space-y-2 rounded-2xl border border-slate-200 bg-white p-4" data-testid="followup-consent-needed">

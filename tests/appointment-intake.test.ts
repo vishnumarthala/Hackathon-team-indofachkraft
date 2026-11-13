@@ -367,9 +367,17 @@ describe.skipIf(!enabled)("appointment intake (database, route handlers, outbox)
     expect(attempt).toMatchObject({ agent_kind: "generic", status: "issued" });
     expect(event.payload.intake).toEqual({ status: "link", attempt_id: attempt.id, agent_kind: "generic" });
     const token = tokenOf(attempt.id);
-    expect((await start(token, { language: "te" })).json).toEqual({ demo: true }); // language ignored: English only
+    // 049: the generic agent speaks the call language too (DEMO_MODE: en/hi/te enabled).
+    expect((await start(token, { language: "te" })).json).toEqual({ demo: true, language: "te" });
     const audit = await sql<{ details: Json }[]>`select details from audit_events where action = 'intake.started' and entity_id = ${attempt.id}`;
-    expect(audit[0].details).toMatchObject({ language: "en", agent_kind: "generic" });
+    expect(audit[0].details).toMatchObject({ language: "te", agent_kind: "generic" });
+    // 049 FR-4: a language the generic agent does not have -> 409, never a silent English call.
+    vi.stubEnv("ELEVENLABS_GENERIC_INTAKE_LANGUAGES", "en");
+    expect(await start(token, { language: "te" })).toEqual({
+      status: 409,
+      json: { error: "language_unavailable", details: { language: "te", enabled: ["en"] } },
+    });
+    vi.stubEnv("ELEVENLABS_GENERIC_INTAKE_LANGUAGES", "");
 
     // Webhook from the child-dev agent for a generic attempt -> refused, nothing stored.
     const wrongAgent = processing.demoAppointmentPostCall({ id: attempt.id, agent_kind: "generic" }, `conv-${key()}`);

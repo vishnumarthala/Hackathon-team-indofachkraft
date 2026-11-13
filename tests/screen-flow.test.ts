@@ -106,7 +106,8 @@ describe("/screen page chrome (FR-2, NFR-1)", () => {
       "About 5 minutes, for children up to 8 years. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child.",
     );
     expect(html).toContain(
-      "You will talk to an AI assistant. It speaks English. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
+      // 049: the call language is shown next to the voice button (en/hi/te), not in the disclosure.
+      "You will talk to an AI assistant. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
     );
     expect(html).toContain("I understand this is not a diagnosis and agree to talk to an AI assistant.");
     for (const label of ["Under 18 months", "18-30 months", "2½-5 years", "6-8 years", "9 years or older", "Child&#x27;s age"]) expect(html).toContain(label);
@@ -485,9 +486,9 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     agent.startAgentSession.mockResolvedValue({ agent_id: "agent_screen_test", conversation_token: "tok_test" });
     const { status, body } = await start("6-8y", "voice");
     expect(status).toBe(201);
-    expect(agent.startAgentSession).toHaveBeenCalledWith("agent_screen_test");
+    expect(agent.startAgentSession).toHaveBeenCalledWith("agent_screen_test", { language: "en" });
     expect(body.conversation_token).toBe("tok_test");
-    expect(Object.keys(body.dynamic_variables).sort()).toEqual(["age_band", "questions", "screen_session_id"]);
+    expect(Object.keys(body.dynamic_variables).sort()).toEqual(["age_band", "language", "questions", "screen_session_id"]);
     // 048 FR-9: the new bands, as the agent says them.
     expect(body.dynamic_variables).toMatchObject({ screen_session_id: body.session_id, age_band: "6 to 8 years" });
     expect(body.dynamic_variables.questions).toBe(agentQuestionList(screenQuestions("6-8y")));

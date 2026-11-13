@@ -112,7 +112,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 046 | Payouts to centres and the platform fee (Razorpay Route) | ready | solo | waits for 044, 045 |
 | 047 | Import existing children from a spreadsheet | done | solo | alongside |
 | 048 | Parent check-in up to 8 (age-aware, concern-based advice, inline slots) | done | solo | waits for 051 |
-| 049 | Telugu and Hindi for the new voice agents | ready | solo | waits for 048, 051 |
+| 049 | Telugu and Hindi for the new voice agents | done | solo | waits for 048, 051 |
 | 050 | Parent-first home page and Indian statistics | done | solo | waits for 051 |
 | 051 | Voice cost guard (no anonymous voice, quotas, platform budget) | done | solo | alongside |
 | 052 | Clear next steps (family home, provider Today, what happens next) | ready | solo | waits for 043, 044, 045, 051 |
