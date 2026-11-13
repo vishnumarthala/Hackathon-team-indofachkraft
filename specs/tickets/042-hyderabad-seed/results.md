@@ -1,6 +1,6 @@
 # 042: Hyderabad directory seed data - Results
 
-Branch: `ticket/042-hyderabad-seed` (merged with `main` incl. 034, 035, 039). Local Supabase stack slot 4
+Branch: `ticket/042-hyderabad-seed` (merged with `main` incl. 034, 035, 036, 039). Local Supabase stack slot 4
 (`127.0.0.1:60321`/`60322`, all migrations re-applied by `reset` after the merge), `DEMO_MODE=true`, dev server on
 port 3040, own headless Chromium (Playwright) at 375 px. Synthetic data only. Evidence files in `evidence/`.
 
@@ -8,7 +8,7 @@ port 3040, own headless Chromium (Playwright) at 375 px. Synthetic data only. Ev
 |-------|--------|----------|
 | `npm run lint` | PASS | exit 0 (merged tree) |
 | `npm run typecheck` | PASS | exit 0 (after `npm run build` generated `next-env.d.ts`) |
-| `npx vitest run` | PASS | 87 files, 1401 passed, 11 skipped (DB suites ran against slot 4). One earlier full run had 2 failures in `tests/documents-access.test.ts` (document-visibility notification rows, then a dependent list check); that file passes alone (18/18) and the next full run was green: a timing flake under parallel load, not touched by this ticket |
+| `npx vitest run` | PASS | final merged tree (after 036): 88 files, 1469 passed, 11 skipped (DB suites ran against slot 4). One earlier full run had 2 failures in `tests/documents-access.test.ts` (document-visibility notification rows, then a dependent list check); that file passes alone (18/18) and the next full run was green: a timing flake under parallel load, not touched by this ticket |
 | `npm run build` | PASS | exit 0 |
 | Ticket tests (`--reporter=verbose`) | PASS | `evidence/vitest-042.txt`: 47 passed in `tests/seed-hyderabad.test.ts` (10), `tests/import-providers.test.ts` (6), `tests/demo-booking.test.ts` (6), `tests/booking-agent-tools.test.ts` (25, 2 new) |
 | Determinism, Hyderabad bbox, 800 m, flags | PASS | seed tests: same seed -> deep-equal plan, other seed differs; every location inside the bbox, at its locality's PIN code and <= 800 m from the centroid (60 and 1,000 profiles); all 9 types, 8 centres of 2-5; names `Dr. (Demo) <given> <initial>.`, `DEMO-<n>`, `+91 90000 0xxxx`, `*.example.com`; DB: 60/60 synthetic, verified, listed, unclaimed, no users, geography set, modes match services; generated hours give bookable slots |

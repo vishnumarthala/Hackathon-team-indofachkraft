@@ -1,0 +1,134 @@
+// 036 UI checks in an isolated headless Chrome (own profile and cookies). Usage: npx tsx .tmp/ui-036.mts
+import { readFileSync, writeFileSync } from "node:fs";
+import { createServerClient } from "@supabase/ssr";
+import { chromium, type BrowserContext, type Page } from "playwright-core";
+
+const BASE = `http://localhost:${process.env.DNM_DEV_PORT}`;
+const EVID = "specs/tickets/036-ratings/evidence";
+const users = JSON.parse(readFileSync(".tmp/users.json", "utf8")).users as Record<string, { email: string; password: string }>;
+const ids = JSON.parse(readFileSync(".tmp/accept-ids.json", "utf8"));
+const lines: string[] = [];
+let failures = 0;
+const check = (name: string, ok: boolean, detail = "") => {
+  if (!ok) failures++;
+  lines.push(`${ok ? "PASS" : "FAIL"} ${name}${detail ? ` :: ${detail}` : ""}`);
+};
+
+async function cookiesFor(key: string) {
+  const store = new Map<string, string>();
+  const client = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    cookies: { getAll: () => [...store].map(([name, value]) => ({ name, value })), setAll: (l) => l.forEach((c) => store.set(c.name, c.value)) },
+  });
+  const { error } = await client.auth.signInWithPassword({ email: users[key].email, password: users[key].password });
+  if (error) throw error;
+  return [...store].map(([name, value]) => ({ name, value, domain: "localhost", path: "/" }));
+}
+
+const browser = await chromium.launch({ executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", headless: true });
+async function ctxFor(key: string | null): Promise<BrowserContext> {
+  const c = await browser.newContext({ viewport: { width: 375, height: 800 }, deviceScaleFactor: 1 });
+  if (key) await c.addCookies(await cookiesFor(key));
+  return c;
+}
+async function open(c: BrowserContext, path: string, shot: string): Promise<{ page: Page; errors: string[] }> {
+  const page = await c.newPage();
+  const errors: string[] = [];
+  page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  page.on("pageerror", (e) => errors.push(String(e)));
+  await page.goto(`${BASE}${path}`, { waitUntil: "networkidle" });
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  check(`${path} at 375 px: no horizontal scroll`, overflow <= 0, `overflow ${overflow}`);
+  await page.screenshot({ path: `${EVID}/${shot}`, fullPage: true });
+  return { page, errors };
+}
+
+// Public profile.
+{
+  const c = await ctxFor(null);
+  const { page, errors } = await open(c, `/p/${ids.A.slug}`, "profile-ratings-375.png");
+  const badge = page.getByTestId("rating-badge");
+  check("profile badge `4.5 ★ (4 ratings)` with accessible label", (await badge.textContent()) === "4.5 ★ (4 ratings)" && (await badge.getAttribute("aria-label")) === "Rated 4.5 out of 5 from 4 ratings");
+  check("profile: 3 comments, each `Verified booking` + month/year", (await page.getByTestId("rating-comments").locator("li").count()) === 3);
+  check("profile: no console errors", errors.length === 0, errors.join(" | "));
+  const fresh = await open(c, `/p/${ids.B.slug}`, "profile-new-375.png");
+  check("fresh profile badge `New on DoctorNearMe`", (await fresh.page.getByTestId("rating-badge").textContent()) === "New on DoctorNearMe");
+  await c.close();
+}
+
+// Guardian: list + rate page (name rejected, then saved).
+{
+  const c = await ctxFor("guardian_a");
+  const { page, errors } = await open(c, "/family/appointments", "family-appointments-rate-375.png");
+  check("family list: `Rate this visit` link", (await page.getByRole("link", { name: "Rate this visit" }).count()) >= 1);
+  check("family list: own rating shown", (await page.getByTestId("my-rating").count()) >= 3);
+  check("family list: no console errors", errors.length === 0, errors.join(" | "));
+  const rate = await open(c, `/family/appointments/${ids.a4}/rate`, "rate-form-375.png");
+  await rate.page.getByRole("radio", { name: "4 stars" }).check({ force: true });
+  await rate.page.getByLabel("Comment (optional)").fill("Aarav was calm the whole time");
+  await rate.page.getByRole("button", { name: "Send rating" }).click();
+  const alert = rate.page.locator("#rating-error");
+  await alert.waitFor();
+  check("rate form: child's name -> translated error", (await alert.textContent()) === "Please remove names and contact details from your comment.");
+  await rate.page.screenshot({ path: `${EVID}/rate-form-error-375.png`, fullPage: true });
+  await rate.page.getByLabel("Comment (optional)").fill("Calm room, clear explanations, practical tips.");
+  await rate.page.getByRole("button", { name: "Send rating" }).click();
+  await rate.page.getByText("Thank you. Your rating is saved.").waitFor();
+  check("rate form: saved", true);
+  await rate.page.screenshot({ path: `${EVID}/rate-form-saved-375.png`, fullPage: true });
+  // The browser logs the expected 422 response; anything else is an error.
+  const unexpected = rate.errors.filter((e) => !e.includes("status of 422"));
+  check("rate page: no console errors (besides the expected 422 response)", unexpected.length === 0, unexpected.join(" | "));
+  await c.close();
+}
+
+// Provider: report a rating.
+{
+  const c = await ctxFor("provider_a");
+  const { page, errors } = await open(c, "/dashboard/ratings", "provider-ratings-375.png");
+  const item = page.getByTestId("provider-ratings").locator("li", { hasText: "Calm room" });
+  await item.getByRole("button", { name: "Report a rating" }).click();
+  await item.getByLabel("What is wrong with this rating?").fill("Not about my service (synthetic test).");
+  await item.getByRole("button", { name: "Send report" }).click();
+  await page.getByText("Reported - under review").waitFor();
+  check("provider: report -> `Reported - under review`", true);
+  await page.screenshot({ path: `${EVID}/provider-reported-375.png`, fullPage: true });
+  check("provider page: no console errors", errors.length === 0, errors.join(" | "));
+  await c.close();
+}
+
+// Admin: publish it again from the queue.
+{
+  const c = await ctxFor("platform_admin");
+  await c.setDefaultTimeout(15_000);
+  const page = await c.newPage();
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await page.goto(`${BASE}/admin/ratings`, { waitUntil: "networkidle" });
+  const item = page.getByTestId("admin-ratings").locator("li", { hasText: "Calm room" });
+  check("admin queue shows the reported rating with the guardian email", (await item.textContent())?.includes(users.guardian_a.email) ?? false);
+  await page.screenshot({ path: `${EVID}/admin-ratings-queue.png`, fullPage: true });
+  await item.getByRole("button", { name: "Hide" }).click();
+  check("admin: hide without note -> error", (await item.getByRole("alert").textContent()) === "Add a note saying why the rating is hidden.");
+  await item.getByLabel("Note (required to hide)").fill("Reviewed: genuine visit.");
+  await item.getByRole("button", { name: "Publish" }).click();
+  await page.waitForLoadState("networkidle");
+  await page.getByText("Nothing here.").waitFor();
+  check("admin: publish empties the queue", true);
+  await c.close();
+}
+{
+  const c = await ctxFor(null);
+  const page = await c.newPage();
+  await page.goto(`${BASE}/p/${ids.A.slug}`, { waitUntil: "networkidle" });
+  check("profile after publish: `4.4 ★ (5 ratings)` and the new comment", (await page.getByTestId("rating-badge").textContent()) === "4.4 ★ (5 ratings)" && (await page.getByText("Calm room").count()) === 1);
+  // Telugu at 375 px.
+  await c.addCookies([{ name: "dnm_locale", value: "te", domain: "localhost", path: "/" }]);
+  const te = await open(c, `/p/${ids.A.slug}`, "profile-ratings-te-375.png");
+  check("Telugu profile: badge translated", ((await te.page.getByTestId("rating-badge").textContent()) ?? "").includes("రేటింగ్‌లు"));
+  await c.close();
+}
+
+await browser.close();
+lines.push(failures ? `${failures} FAILED` : "ALL PASS");
+writeFileSync(`${EVID}/ui.txt`, `${lines.join("\n")}\n`);
+console.log(lines.join("\n"));
+process.exit(failures ? 1 : 0);

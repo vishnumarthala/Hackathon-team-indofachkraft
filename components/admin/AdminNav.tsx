@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/admin/privacy/requests", key: "requests" },
   { href: "/admin/ops", key: "ops" },
   { href: "/admin/notifications", key: "notifications" },
+  { href: "/admin/ratings", key: "ratings" },
 ] as const;
 
 // 041: platform admin navigation for the privacy/audit/ops pages.

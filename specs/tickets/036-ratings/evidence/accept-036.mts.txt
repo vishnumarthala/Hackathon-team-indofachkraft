@@ -1,0 +1,216 @@
+// 036 acceptance (E-1..E-3) against the running dev server. Synthetic data only. Usage:
+//   eval "$(dnm-db.sh 6 <wt> env)"; npx tsx .tmp/accept-036.mts > specs/tickets/036-ratings/evidence/acceptance.txt
+import { readFileSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { createServerClient } from "@supabase/ssr";
+import postgres from "postgres";
+
+const BASE = `http://localhost:${process.env.DNM_DEV_PORT}`;
+const users = JSON.parse(readFileSync(".tmp/users.json", "utf8")).users as Record<string, { id: string; email: string; password: string }>;
+const orgs = JSON.parse(readFileSync(".tmp/users.json", "utf8")).orgs as Record<string, { id: string }>;
+const sql = postgres(process.env.DATABASE_URL!, { max: 2, prepare: false, onnotice: () => {} });
+let failures = 0;
+const check = (name: string, ok: boolean, detail: unknown = "") => {
+  if (!ok) failures++;
+  console.log(`${ok ? "PASS" : "FAIL"} ${name}${detail === "" ? "" : ` :: ${typeof detail === "string" ? detail : JSON.stringify(detail)}`}`);
+};
+
+const jars: Record<string, string> = {};
+const cookieJar: Record<string, { name: string; value: string }[]> = {};
+async function signIn(key: string) {
+  const store = new Map<string, string>();
+  const client = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    cookies: { getAll: () => [...store].map(([name, value]) => ({ name, value })), setAll: (list) => list.forEach((c) => store.set(c.name, c.value)) },
+  });
+  const { error } = await client.auth.signInWithPassword({ email: users[key].email, password: users[key].password });
+  if (error) throw new Error(`sign in ${key}: ${error.message}`);
+  cookieJar[key] = [...store].map(([name, value]) => ({ name, value }));
+  jars[key] = [...store].map(([n, v]) => `${n}=${v}`).join("; ");
+}
+
+async function api(who: string | null, method: string, path: string, body?: unknown) {
+  const res = await fetch(`${BASE}${path}`, {
+    method,
+    headers: { ...(who ? { cookie: jars[who] } : {}), ...(body === undefined ? {} : { "content-type": "application/json" }) },
+    body: body === undefined ? undefined : JSON.stringify(body),
+    redirect: "manual",
+  });
+  const text = await res.text();
+  let json: Record<string, unknown> = {};
+  try { json = JSON.parse(text); } catch { /* html */ }
+  return { status: res.status, json, text };
+}
+
+// ---------- setup: providers, services, children ----------
+const IST = 330 * 60_000;
+function slot(hoursAhead: number, extra = 0): string {
+  const step = 30 * 60_000;
+  const local = Date.now() + hoursAhead * 3_600_000 + IST;
+  const day = Math.floor(local / 86_400_000) * 86_400_000;
+  return new Date(day + Math.ceil((local - day) / step) * step + extra * step - IST).toISOString();
+}
+
+async function profile(userKey: string, orgId: string, slug: string, name: string) {
+  const [loc] = await sql<{ id: string }[]>`
+    insert into practice_locations (org_id, name, address_line1, locality, pincode, lat, lng)
+    values (${orgId}, ${`${name} clinic (synthetic)`}, 'Road 2 (synthetic)', 'Banjara Hills', '500034', 17.412, 78.441) returning id`;
+  const [p] = await sql<{ id: string }[]>`
+    insert into provider_profiles (user_id, slug, display_name, provider_type, verification_status, verified_at, listed, claimed, is_synthetic)
+    values (${users[userKey].id}, ${slug}, ${name}, 'speech_language_pathologist', 'verified', now(), true, true, false) returning id`;
+  await sql`insert into provider_locations (provider_profile_id, location_id, org_id) values (${p.id}, ${loc.id}, ${orgId})`;
+  for (const weekday of [0, 1, 2, 3, 4, 5, 6]) {
+    await sql`insert into availability_rules (provider_profile_id, org_id, location_id, weekday, start_time, end_time, mode, valid_from)
+              values (${p.id}, ${orgId}, ${loc.id}, ${weekday}, '00:00', '24:00', 'both', current_date - 2)`;
+  }
+  const [svc] = await sql<{ id: string }[]>`
+    insert into services (provider_profile_id, org_id, location_id, name, mode, duration_min, fee_inr, payment_mode)
+    values (${p.id}, ${orgId}, ${loc.id}, 'Speech session (synthetic)', 'in_clinic', 30, 0, 'free') returning id`;
+  return { profileId: p.id, serviceId: svc.id, slug };
+}
+
+async function child(guardianKey: string, name: string) {
+  const [c] = await sql<{ id: string }[]>`
+    insert into children (display_name, date_of_birth, source, created_by) values (${name}, '2021-05-01', 'guardian', ${users[guardianKey].id}) returning id`;
+  await sql`insert into guardian_links (child_id, user_id, relationship, status, verification_method, declared_at)
+            values (${c.id}, ${users[guardianKey].id}, 'mother', 'active', 'self_registered', now())`;
+  return c.id;
+}
+
+const tag = Date.now().toString(36);
+await sql`delete from provider_profiles where user_id in ${sql([users.provider_a.id, users.provider_b.id])}`;
+const A = await profile("provider_a", orgs.org_a.id, `e036-dr-asha-${tag}`, "Dr Asha Rao (synthetic)");
+const B = await profile("provider_b", orgs.org_b.id, `e036-dr-fresh-${tag}`, "Dr Fresh Iyer (synthetic)");
+const childA = await child("guardian_a", "Aarav Reddy (synthetic)");
+const childB = await child("guardian_b", "Meera Das (synthetic)");
+for (const k of ["guardian_a", "guardian_b", "provider_a", "provider_b", "platform_admin"]) await signIn(k);
+console.log(`setup: provider_a /p/${A.slug}, provider_b /p/${B.slug}`);
+
+let n = 0;
+async function book(guardian: string, childId: string, svc = A.serviceId) {
+  const h = await api(guardian, "POST", "/api/appointments/hold", { service_id: svc, start: slot(4, n++ * 2), idempotency_key: `e036-${tag}-${n}` });
+  if (h.status !== 201) throw new Error(`hold ${h.status} ${h.text}`);
+  const id = h.json.appointment_id as string;
+  const c = await api(guardian, "POST", `/api/appointments/${id}/confirm`, { child_id: childId });
+  if (c.status !== 200) throw new Error(`confirm ${c.status} ${c.text}`);
+  return id;
+}
+async function travel(id: string) {
+  n++;
+  await sql`update appointments set slot = tstzrange(now() - make_interval(hours => ${n + 3}), now() - make_interval(hours => ${n + 3}) + interval '30 minutes', '[)') where id = ${id}`;
+}
+
+// ---------- E-1 ----------
+console.log("\n== E-1: rate and display ==");
+const a1 = await book("guardian_a", childA);
+const a2 = await book("guardian_a", childA);
+const a3 = await book("guardian_a", childA);
+const a4 = await book("guardian_a", childA); // stays completed and unrated: `Rate this visit`
+const b1 = await book("guardian_b", childB);
+const pending = await book("guardian_a", childA); // stays confirmed
+for (const id of [a1, a2, a3, a4, b1, pending]) await travel(id);
+for (const id of [a1, a2, a3, a4, b1]) {
+  const r = await api("provider_a", "POST", `/api/appointments/${id}/complete`, { status: "completed" });
+  check(`provider_a marks ${id.slice(0, 8)} completed`, r.status === 200, r.status);
+}
+const [ev] = await sql<{ id: string; deliver_after: Date; status: string }[]>`
+  select id::text, deliver_after, status from outbox_events where dedup_key = ${`appt:${a1}:rate_prompt`}`;
+const mins = Math.round((ev.deliver_after.getTime() - Date.now()) / 60_000);
+check("rate prompt enqueued on completion, due in ~2 h", ev.status === "pending" && mins >= 118 && mins <= 120, { deliver_in_min: mins });
+const before = await api("guardian_a", "GET", "/api/notifications");
+const mine = (items: { link: string }[]) => items.filter((i) => [a1, a2, a3, a4].some((id) => i.link === `/family/appointments/${id}/rate`));
+check("no prompt before 2 h", mine(before.json.items as { link: string }[]).length === 0);
+// Time travel: the 2 h pass.
+await sql`update outbox_events set deliver_after = now() where topic = 'appointment.rate_prompt' and aggregate_id in ${sql([a1, a2, a3, a4, b1])}`;
+const run = execFileSync("npx", ["tsx", "scripts/outbox-run.ts", "--once", "--mock-log", ".tmp/outbox-mock.log"], { encoding: "utf8" });
+console.log(`outbox:run --once -> ${run.trim().split("\n").pop()}`);
+const notes = await api("guardian_a", "GET", "/api/notifications");
+const prompts = mine(notes.json.items as { title: string; body: string; link: string }[]) as { title: string; body: string; link: string }[];
+check("guardian_a in-app rate prompt (x4)", prompts.length === 4, prompts[0]);
+check("prompt links to the rate page", prompts.some((p) => p.link === `/family/appointments/${a1}/rate`));
+check("prompt email delivered (mock log)", readFileSync(".tmp/outbox-mock.log", "utf8").includes("email"));
+
+const rates: [string, string, number, string | null][] = [
+  ["guardian_a", a1, 5, "Very patient and explained the home plan clearly."],
+  ["guardian_a", a2, 4, null],
+  ["guardian_a", a3, 5, "Good with toddlers and always on time."],
+  ["guardian_b", b1, 4, "Helpful, practical advice for speech at home."],
+];
+for (const [who, id, stars, comment] of rates) {
+  const r = await api(who, "POST", `/api/appointments/${id}/rating`, { stars, comment });
+  check(`${who} rates ${stars} -> 201`, r.status === 201, r.json);
+}
+const page = await api(null, "GET", `/p/${A.slug}`);
+const plain = page.text.replace(/<!-- -->/g, "");
+check("/p/<slug> shows `4.5 ★ (4 ratings)`", plain.includes("4.5 ★ (4 ratings)"));
+check("/p/<slug> 3 comments with `Verified booking` (rendered list)", (plain.match(/✓ Verified booking<\/span>/g) ?? []).length === 3);
+const monthYear = new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric", timeZone: "Asia/Kolkata" }).format(new Date());
+check(`/p/<slug> month/year only (${monthYear})`, plain.includes(monthYear));
+for (const secret of [users.guardian_a.email, users.guardian_b.email, "Aarav", "Meera", users.guardian_a.id, users.guardian_b.id]) {
+  check(`/p/<slug> does not contain ${secret.includes("@") ? "guardian email" : secret.length > 20 ? "guardian id" : `child name ${secret}`}`, !page.text.includes(secret));
+}
+const search = await api(null, "GET", `/api/public/providers?lat=17.41&lng=78.44&radius_km=5`);
+const hit = (search.json.results as { slug: string; rating_avg: number | null; rating_count: number }[] | undefined)?.find((r) => r.slug === A.slug);
+check("directory search returns rating_avg 4.5 / rating_count 4", Number(hit?.rating_avg) === 4.5 && hit?.rating_count === 4, hit ? { rating_avg: hit.rating_avg, rating_count: hit.rating_count } : search.status);
+
+// Fresh provider with only 2 ratings.
+const f1 = await book("guardian_a", childA, B.serviceId);
+const f2 = await book("guardian_b", childB, B.serviceId);
+for (const id of [f1, f2]) {
+  await travel(id);
+  await api("provider_b", "POST", `/api/appointments/${id}/complete`, { status: "completed" });
+}
+await api("guardian_a", "POST", `/api/appointments/${f1}/rating`, { stars: 5 });
+await api("guardian_b", "POST", `/api/appointments/${f2}/rating`, { stars: 5 });
+const fresh = (await api(null, "GET", `/p/${B.slug}`)).text.replace(/<!-- -->/g, "");
+check("fresh provider with 2 ratings -> `New on DoctorNearMe`", fresh.includes("New on DoctorNearMe") && !fresh.includes("★ (2"));
+
+const fam = (await api("guardian_a", "GET", "/family/appointments")).text.replace(/<!-- -->/g, "");
+check("/family/appointments shows `Rate this visit` for the unrated completed visit", fam.includes(`/family/appointments/${a4}/rate`) && fam.includes("Rate this visit"));
+check("/family/appointments shows the guardian's own ratings", fam.includes("You rated this visit 5 ★"));
+
+// ---------- E-2 ----------
+console.log("\n== E-2: negatives ==");
+let r = await api("guardian_a", "POST", `/api/appointments/${pending}/rating`, { stars: 5 });
+check("rate the non-completed appointment -> 403", r.status === 403 && r.json.error === "You can rate only your completed appointments", r.json);
+r = await api("guardian_a", "POST", `/api/appointments/${a1}/rating`, { stars: 3 });
+check("rate twice -> 409", r.status === 409, r.json);
+r = await api("guardian_b", "POST", `/api/appointments/${a4}/rating`, { stars: 1 });
+check("guardian_b rates guardian_a's appointment -> 403", r.status === 403 && r.json.error === "You can rate only your completed appointments", r.json);
+r = await api("guardian_a", "POST", `/api/appointments/${a4}/rating`, { stars: 4, comment: "Call me on 9876543210" });
+check("comment with 9876543210 -> 422", r.status === 422 && r.json.error === "Please remove names and contact details from your comment", r.json);
+r = await api("guardian_a", "POST", `/api/appointments/${a4}/rating`, { stars: 4, comment: "Aarav enjoyed it a lot" });
+check("comment with the child's name -> 422", r.status === 422, r.json);
+r = await api(null, "POST", `/api/appointments/${a4}/rating`, { stars: 4 });
+check("anonymous -> 401", r.status === 401, r.status);
+check("nothing saved for a4", (await sql`select 1 from ratings where appointment_id = ${a4}`).length === 0);
+
+// ---------- E-3 ----------
+console.log("\n== E-3: moderation ==");
+const [target] = await sql<{ id: string }[]>`select id from ratings where appointment_id = ${b1}`;
+r = await api("provider_b", "POST", `/api/ratings/${target.id}/report`, { reason: "Not my patient" });
+check("another provider reporting -> 404", r.status === 404, r.status);
+r = await api("provider_a", "POST", `/api/ratings/${target.id}/report`, { reason: "This family never visited my clinic." });
+check("provider_a reports a rating -> 200 pending_review", r.status === 200 && (r.json.rating as { status: string }).status === "pending_review", r.json);
+let prof = (await api(null, "GET", `/p/${A.slug}`)).text.replace(/<!-- -->/g, "");
+check("reported comment hidden from the profile", !prof.includes("Helpful, practical advice"));
+check("profile now `4.7 ★ (3 ratings)`", prof.includes("4.7 ★ (3 ratings)"));
+r = await api("provider_a", "POST", `/api/admin/ratings/${target.id}`, { action: "publish" });
+check("provider calling the admin moderation API -> 403", r.status === 403, r.json);
+const adminPage = await api("platform_admin", "GET", "/admin/ratings");
+check("/admin/ratings queue lists it with the guardian identity (admin only)", adminPage.status === 200 && adminPage.text.includes("This family never visited my clinic.") && adminPage.text.includes(users.guardian_b.email));
+check("/admin/ratings as provider -> 404", (await api("provider_a", "GET", "/admin/ratings")).status === 404);
+r = await api("platform_admin", "POST", `/api/admin/ratings/${target.id}`, { action: "hide" });
+check("hide without a note -> 400", r.status === 400, r.json);
+r = await api("platform_admin", "POST", `/api/admin/ratings/${target.id}`, { action: "publish", note: "Checked the booking: genuine completed visit." });
+check("admin publishes -> 200 published", r.status === 200 && (r.json.rating as { status: string }).status === "published", r.json);
+prof = (await api(null, "GET", `/p/${A.slug}`)).text.replace(/<!-- -->/g, "");
+check("visible again on the profile, `4.5 ★ (4 ratings)`", prof.includes("Helpful, practical advice") && prof.includes("4.5 ★ (4 ratings)"));
+const provPage = (await api("provider_a", "GET", "/dashboard/ratings")).text.replace(/<!-- -->/g, "");
+check("/dashboard/ratings lists ratings with `Report a rating`, no guardian identity", provPage.includes("Report a rating") && !provPage.includes(users.guardian_b.email));
+const audit = await sql<{ action: string; actor_role: string }[]>`select action, actor_role from audit_events where entity = 'rating' and entity_id = ${target.id} order by id`;
+check("audit trail", JSON.stringify(audit.map((a) => `${a.action}/${a.actor_role}`)) === JSON.stringify(["rating.created/guardian", "rating.reported/provider", "rating.moderated/platform_admin"]), audit);
+
+writeFileSync(".tmp/accept-ids.json", JSON.stringify({ A, B, a4, a1, b1, target: target.id }));
+console.log(`\n${failures === 0 ? "ALL PASS" : `${failures} FAILED`}`);
+await sql.end();
+process.exit(failures ? 1 : 0);

@@ -27,6 +27,7 @@ import privacy_deletion_rejected from "./privacy_deletion_rejected";
 import privacy_deletion_requested from "./privacy_deletion_requested";
 import privacy_export_ready from "./privacy_export_ready";
 import provider_verified from "./provider_verified";
+import rating_prompt from "./rating_prompt";
 import sharing_granted from "./sharing_granted";
 import test_ping from "./test_ping";
 
@@ -60,6 +61,7 @@ export const TEMPLATES = {
   appointment_meet_failed,
   google_calendar_reconnect,
   payment_refunded,
+  rating_prompt,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

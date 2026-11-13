@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DemoBadge } from "@/components/providers/PublicProfile";
 import type { TFunction } from "@/lib/i18n/keys";
 import type { DirectoryResult } from "@/lib/geo/search";
+import { ratingBadge } from "@/lib/ratings/display";
 
 // Server-rendered result cards for /find and /find/hyderabad/<type> (ticket 029 FR-5). Public fields only.
 
@@ -11,6 +12,8 @@ export function formatDistance(km: number): string {
 
 export function ResultCard({ r, t, tp }: { r: DirectoryResult; t: TFunction<"directory">; tp: TFunction<"providers"> }) {
   const modes = [r.offers_in_clinic ? t("modes.in_clinic") : null, r.offers_video ? t("modes.video") : null].filter(Boolean);
+  // 036: the average only from 3 published ratings (search_providers returns rating_avg null below that).
+  const rating = ratingBadge(r);
   return (
     <li className="space-y-2 rounded border border-slate-200 bg-white p-4">
       <div className="flex flex-wrap items-center gap-2">
@@ -20,6 +23,9 @@ export function ResultCard({ r, t, tp }: { r: DirectoryResult; t: TFunction<"dir
         {r.is_synthetic ? <DemoBadge t={tp} /> : null}
       </div>
       <p className="text-sm text-slate-700">{tp(`types.${r.provider_type}`)}</p>
+      {rating.kind === "average" ? (
+        <p className="text-sm font-semibold text-amber-900">{t("results.rating", { average: rating.average, count: rating.count })}</p>
+      ) : null}
       <p className="text-sm text-slate-700">
         {[
           r.org_public_name && r.org_public_name !== r.display_name ? r.org_public_name : null,
