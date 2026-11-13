@@ -143,6 +143,15 @@ flowchart LR
   `/find/hyderabad/<type>`, `Get directions` on `/p/<slug>`. Addresses are geocoded server-side when a
   location is created (Google with `GOOGLE_MAPS_SERVER_KEY`, else the bundled Hyderabad PIN code table).
   The searcher's location is never stored. See `docs/maps.md`.
+- **Notifications (ticket 032).** Every user-facing notification goes through the transactional outbox:
+  the domain write and `outbox_events` row commit together (`enqueue(tx, ...)` from `lib/notify/outbox.ts`
+  inside `sql.begin`, or `public.outbox_enqueue(...)` from SQL; `enqueueEvent(...)` for supabase-js code).
+  A worker fans due events out into per-recipient, per-channel `notifications` (in-app / Resend email with
+  `.ics` / Meta WhatsApp templates), re-checking access at fan-out, then delivers under `skip locked` leases
+  with retries (1 min .. 12 h, then `dead`). Scheduler: Vercel cron every minute (`vercel.json`,
+  `/api/cron/outbox`, `CRON_SECRET`) plus an immediate `after()` drain (`drainSoon`); locally
+  `npm run outbox:run`. Bell + `/notifications`, preferences in settings, `/admin/notifications`.
+  See `docs/notifications.md`.
 
 ## 3. Repo layout
 
@@ -217,6 +226,9 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `EMAIL_FROM` | email | default `DoctorNearMe <onboarding@resend.dev>` |
 | `DEMO_EMAIL_TO` | email | if set, **every** email goes here (Resend test sender only delivers to the account owner); body starts with `Originally to: <address>` |
 | `CONSENT_IP_SALT` | consent records | optional salt for the sha256 IP hash stored with each consent record; falls back to the service role key (020) |
+| `CRON_SECRET` | `/api/cron/*` (032) | `Authorization: Bearer <CRON_SECRET>`; Vercel cron sends it automatically when set in the project; unset = cron refused |
+| `WHATSAPP_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` | WhatsApp notifications (032) | optional; unset or `DEMO_MODE=true` -> WhatsApp deliveries `skipped` (`whatsapp_not_configured`) |
+| `WHATSAPP_API_VERSION` | WhatsApp notifications (032) | Graph API version, default `v21.0` |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
 used). `npm run build` must succeed with no `.env.local`.
@@ -500,6 +512,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
+| `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 
 `ResolvedCitation = { kind: "fact" | "segment", id, recording_id, session_number | null, start_sec, label }`
@@ -519,6 +532,7 @@ Every mutation writes an `audit_events` row via `lib/audit.ts`.
 | ElevenLabs finished conversation | `demo/fixtures/elevenlabs-post-call.json` (`data`) returned by `/api/intake/:token/complete` and replayed by `/api/dev/simulate-intake/:token` |
 | ElevenLabs TTS | skipped: report saved without audio, page shows "Voice note skipped in demo mode" |
 | Resend | not sent: audit `email.demo_skipped`, returns `{ id: "demo", delivered: false }` |
+| WhatsApp Cloud API (032) | not called: notification `skipped` with `whatsapp_not_configured` |
 
 `demo/fixtures/roleplay-segments.json` is the expected `Segment[]` for the role-play session (speaker
 roles already mapped). Gaps between segments are >= 2.0 s and speakers alternate, so `lib/transcript.ts`

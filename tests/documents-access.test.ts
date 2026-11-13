@@ -9,7 +9,7 @@ import { loadEnvConfig } from "@next/env";
 import postgres, { type Sql } from "postgres";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { documentActionErrorKey } from "@/components/documents/DocumentList";
-import { createUploader, documentRoutes, objectExists, PDF_BYTES, PNG_BYTES, purgeDocumentObjects } from "./helpers/documents";
+import { createUploader, documentEvents, documentRoutes, objectExists, PDF_BYTES, PNG_BYTES, purgeDocumentObjects } from "./helpers/documents";
 import { createWorld, ctx, post, type TestUser } from "./helpers/world";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
@@ -19,12 +19,6 @@ const session = vi.hoisted(() => ({ user: null as null | { id: string; email: st
 vi.mock("@/lib/auth", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/auth")>();
   return { ...actual, getAuthenticatedUser: vi.fn(async () => session.user) };
-});
-
-const notify = vi.hoisted(() => ({ calls: [] as unknown[][] }));
-vi.mock("@/lib/notify/topics", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/notify/topics")>();
-  return { ...actual, notifyLater: vi.fn(async (...args: unknown[]) => void notify.calls.push(args)) };
 });
 
 const ROOT = process.cwd();
@@ -167,7 +161,6 @@ describe.skipIf(!enabled)("document access (database)", { timeout: 120_000 }, ()
 
   beforeEach(() => {
     as(null);
-    notify.calls = [];
   });
 
   it("FR-4 matrix without grants", async () => {
@@ -274,17 +267,47 @@ describe.skipIf(!enabled)("document access (database)", { timeout: 120_000 }, ()
     const res = await patch(assignedA, P2, { visible_to_guardian: true });
     expect(res.status).toBe(200);
     expect((await res.json()).document.visible_to_guardian).toBe(true);
-    expect(notify.calls).toEqual([["document.shared_with_guardian", { document_id: P2, child_id: childId, org_id: orgA }]]);
+    const [event] = await documentEvents(sql, P2);
+    expect(event).toMatchObject({ topic: "document.shared_with_guardian", payload: { document_id: P2, child_id: childId } });
+
+    // Fan-out (FR-9): both linked guardians, in-app + email only; no title, no clinical content, no child name.
+    const { fanOutDue } = await import("@/lib/notify/worker");
+    await fanOutDue(sql, { eventIds: [event.id] });
+    const rows = await sql<{ recipient_user_id: string; channel: string; title: string; body: string; link: string }[]>`
+      select recipient_user_id, channel, title, body, link from notifications where event_id = ${event.id}
+      order by recipient_user_id, channel`;
+    const got = rows.map((r) => `${r.recipient_user_id}:${r.channel}`).sort();
+    expect(got).toEqual([guardianA, guardianA2].flatMap((g) => [`${g.id}:email`, `${g.id}:in_app`]).sort());
+    for (const r of rows) {
+      expect(`${r.title} ${r.body}`).not.toMatch(/Internal note|chart|synthetic|t023/i);
+      expect(r.link).toBe("/family/documents");
+    }
     expect((await store.listGuardianDocuments([childId])).map((d) => d.id)).toContain(P2);
     expect((await download(guardianA, P2)).status).toBe(302);
     const [audit] = await sql<{ details: { visible_to_guardian: boolean } }[]>`
       select details from audit_events where action = 'document.visibility_changed' and entity_id = ${P2}`;
     expect(audit.details.visible_to_guardian).toBe(true);
 
-    notify.calls = [];
+    // Hiding never notifies; showing again does not notify twice (one event per document).
     expect((await patch(assignedA, P2, { visible_to_guardian: false })).status).toBe(200);
-    expect(notify.calls).toEqual([]);
+    expect((await patch(assignedA, P2, { visible_to_guardian: true })).status).toBe(200);
+    expect((await patch(assignedA, P2, { visible_to_guardian: false })).status).toBe(200);
+    expect(await documentEvents(sql, P2)).toHaveLength(1);
     expect(await pathOf(guardianA, P2)).toBeNull();
+
+    // Recipients are re-checked at fan-out: hidden (P2 now) -> nobody; visible (P1) -> active guardians only;
+    // a payload naming another child -> nobody; a guardian who left -> dropped.
+    const { TOPICS } = await import("@/lib/notify/topics");
+    const recipients = (documentId: string, child = childId) =>
+      TOPICS["document.shared_with_guardian"].recipients({ document_id: documentId, child_id: child }, { sql, event: event as never });
+    expect(await recipients(P2)).toEqual([]);
+    expect((await recipients(P1)).sort()).toEqual([guardianA.id, guardianA2.id].sort());
+    expect(await recipients(P1, otherChild)).toEqual([]);
+    expect(await recipients(G1)).toEqual([]);
+    await sql`update guardian_links set status = 'revoked', revoked_at = now() where child_id = ${childId} and user_id = ${guardianA2.id}`;
+    expect(await recipients(P1)).toEqual([guardianA.id]);
+    await sql`update guardian_links set status = 'active', revoked_at = null where child_id = ${childId} and user_id = ${guardianA2.id}`;
+    expect(TOPICS["document.shared_with_guardian"].channels).toEqual(["in_app", "email"]);
   });
 
   it("FR-8 lists: case tab = case uploads + family uploads shared with the org; guardian list excludes hidden", async () => {

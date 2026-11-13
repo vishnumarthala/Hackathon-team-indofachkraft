@@ -1,6 +1,6 @@
 # 032: Notifications - transactional outbox, scheduler, email / in-app / WhatsApp adapters
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 020: recipients are guardians/providers resolved through child links and case access
 

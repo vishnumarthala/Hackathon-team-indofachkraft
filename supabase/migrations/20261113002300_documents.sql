@@ -3,6 +3,8 @@
 -- Additive only: a private bucket, two tables, access/list functions and security-definer write functions
 -- (each one transaction with its audit row: strict, an audit failure saves nothing).
 -- Who may read a document is defined once here (`document_access`) and used by every route, list and RLS.
+-- FR-9: `document.shared_with_guardian` is enqueued with `public.outbox_enqueue` (ticket 032, migration
+-- 20261113003200, applied later; plpgsql resolves it at call time) inside the same transaction as the change.
 
 -- ---------- storage ----------
 -- Private: no public URLs. Objects are reached only through 300 s signed URLs minted by the server after
@@ -281,6 +283,24 @@ begin
 end;
 $$;
 
+-- FR-9: tell the child's guardians that a provider document became visible to them. Ids only (no title, no
+-- clinical content, no child name). One event per document (dedup key): hiding and showing it again does not
+-- notify twice. Recipients are re-checked at fan-out (lib/notify/topics.ts: active guardians, document still
+-- ready and visible). Called only from the transactions below.
+create or replace function public.document_notify_guardians(d public.documents)
+returns bigint
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  return public.outbox_enqueue(
+    'document.shared_with_guardian', 'document', d.id,
+    jsonb_build_object('document_id', d.id, 'child_id', d.child_id),
+    'document:' || d.id::text || ':shared_with_guardian', now());
+end;
+$$;
+
 -- FR-3 step 2: pending -> ready with the verified size and checksum; audit `document.uploaded` (strict).
 create or replace function public.complete_document(p_doc uuid, p_user uuid, p_size bigint, p_sha256 text)
 returns jsonb
@@ -290,6 +310,7 @@ set search_path = ''
 as $$
 declare
   d public.documents%rowtype;
+  v_event bigint;
 begin
   update public.documents
   set status = 'ready', size_bytes = p_size, sha256 = p_sha256, completed_at = now()
@@ -307,7 +328,10 @@ begin
                              'shared_with_org_ids', coalesce((
                                select jsonb_agg(s.org_id) from public.document_org_shares s
                                where s.document_id = d.id and s.revoked_at is null), '[]'::jsonb)));
-  return to_jsonb(d);
+  if d.uploader_kind = 'provider' and d.visible_to_guardian then
+    v_event := public.document_notify_guardians(d);
+  end if;
+  return to_jsonb(d) || jsonb_build_object('outbox_event_id', v_event);
 end;
 $$;
 
@@ -380,6 +404,7 @@ declare
   d public.documents%rowtype;
   v_access jsonb;
   v_before boolean;
+  v_event bigint;
 begin
   select visible_to_guardian into v_before from public.documents where id = p_doc for update;
   v_access := public.document_access(p_user, p_doc);
@@ -394,8 +419,12 @@ begin
     insert into public.audit_events (case_id, actor, actor_user_id, action, entity, entity_id, details)
     values (d.case_id, 'therapist', p_user, 'document.visibility_changed', 'document', d.id::text,
             jsonb_build_object('child_id', d.child_id, 'visible_to_guardian', p_visible));
+    if p_visible then
+      v_event := public.document_notify_guardians(d);
+    end if;
   end if;
-  return jsonb_build_object('result', 'updated', 'changed', v_before is distinct from p_visible, 'document', to_jsonb(d));
+  return jsonb_build_object('result', 'updated', 'changed', v_before is distinct from p_visible, 'document', to_jsonb(d),
+                            'outbox_event_id', v_event);
 end;
 $$;
 
@@ -497,6 +526,7 @@ begin
 end;
 $$;
 
+revoke all on function public.document_notify_guardians(public.documents) from public, anon, authenticated;
 revoke all on function public.create_document(jsonb) from public, anon, authenticated;
 revoke all on function public.complete_document(uuid, uuid, bigint, text) from public, anon, authenticated;
 revoke all on function public.reject_document(uuid, uuid, text) from public, anon, authenticated;

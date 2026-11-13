@@ -15,6 +15,7 @@ function required(name: string, ...aliases: string[]): string {
 export const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
 export const DEFAULT_EMAIL_FROM = "DoctorNearMe <onboarding@resend.dev>";
 export const DEFAULT_FIXTURES_DIR = "demo/fixtures";
+export const DEFAULT_WHATSAPP_API_VERSION = "v21.0";
 
 export const env = {
   get NEXT_PUBLIC_APP_URL() {
@@ -92,5 +93,21 @@ export const env = {
   // 020: salt for the hashed IP stored with each consent record (falls back to the service role key).
   get CONSENT_IP_SALT() {
     return read("CONSENT_IP_SALT");
+  },
+  // 032: shared secret for the cron routes (`Authorization: Bearer <CRON_SECRET>`; Vercel cron sends it).
+  // Unset = every cron request is refused.
+  get CRON_SECRET() {
+    return read("CRON_SECRET");
+  },
+  // 032: Meta WhatsApp Cloud API. Optional: without both values (or in DEMO_MODE) WhatsApp deliveries are
+  // `skipped` with `whatsapp_not_configured` and never fail the domain action.
+  get WHATSAPP_TOKEN() {
+    return read("WHATSAPP_TOKEN");
+  },
+  get WHATSAPP_PHONE_NUMBER_ID() {
+    return read("WHATSAPP_PHONE_NUMBER_ID");
+  },
+  get WHATSAPP_API_VERSION() {
+    return read("WHATSAPP_API_VERSION") ?? DEFAULT_WHATSAPP_API_VERSION;
   },
 };

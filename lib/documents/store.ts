@@ -4,7 +4,7 @@
 // audit row (strict: an audit failure saves nothing -> 503).
 import { createHash, randomUUID } from "node:crypto";
 import { supabaseAdmin } from "@/lib/db";
-import { notifyLater, DOCUMENT_TOPICS } from "@/lib/notify/topics";
+import { drainSoon } from "@/lib/notify/outbox";
 import type { Result } from "@/lib/orgs";
 import { orgNames } from "@/lib/sharing/shared";
 import { DOCUMENT_COLUMNS, type DocumentAccess, type DocumentRow } from "./access";
@@ -129,14 +129,15 @@ export async function completeUpload(document: DocumentRow, userId: string): Pro
     return { ok: false, status: 503, error: SAVE_FAILED };
   }
   if (!done.data) return { ok: false, status: 404, error: DOCUMENT_NOT_FOUND };
-  const row = done.data as DocumentRow;
-  if (row.uploader_kind === "provider" && row.visible_to_guardian) await notifyGuardians(row);
-  return { ok: true, data: row };
+  const { outbox_event_id, ...row } = done.data as DocumentRow & { outbox_event_id: number | string | null };
+  deliver(outbox_event_id);
+  return { ok: true, data: row as DocumentRow };
 }
 
-// FR-9. Ids only: no title or file name ever goes into a WhatsApp/email body.
-async function notifyGuardians(row: DocumentRow): Promise<void> {
-  await notifyLater(DOCUMENT_TOPICS.sharedWithGuardian, { document_id: row.id, child_id: row.child_id, org_id: row.org_id });
+// FR-9: `document.shared_with_guardian` was enqueued by the database function in the same transaction as the
+// change (ids only); deliver it right after the response. The cron picks it up if this does not run.
+function deliver(eventId: number | string | null | undefined): void {
+  if (eventId !== null && eventId !== undefined) drainSoon([String(eventId)]);
 }
 
 /**
@@ -181,13 +182,18 @@ export async function setVisibility(documentId: string, userId: string, visible:
     console.error(`set_document_visibility failed: ${error.message}`);
     return { ok: false, status: 503, error: SAVE_FAILED };
   }
-  const outcome = data as { result: "updated" | "not_found" | "forbidden"; changed?: boolean; document?: DocumentRow };
+  const outcome = data as {
+    result: "updated" | "not_found" | "forbidden";
+    changed?: boolean;
+    document?: DocumentRow;
+    outbox_event_id?: number | string | null;
+  };
   if (outcome.result === "not_found" || !outcome.document) {
     return outcome.result === "forbidden"
       ? { ok: false, status: 403, error: "Only the case's providers can change this" }
       : { ok: false, status: 404, error: DOCUMENT_NOT_FOUND };
   }
-  if (outcome.changed && visible) await notifyGuardians(outcome.document);
+  deliver(outcome.outbox_event_id);
   return { ok: true, data: outcome.document };
 }
 

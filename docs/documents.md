@@ -72,10 +72,17 @@ file names are never put in audit details or notifications. Signed URLs are neve
 
 ## Notifications (FR-9)
 
-A provider upload with `visible_to_guardian`, or a later switch to visible, calls
-`notifyLater("document.shared_with_guardian", { document_id, child_id, org_id })` (`DOCUMENT_TOPICS`,
-`lib/notify/topics.ts`). Until ticket 032 wires the outbox this only logs ids. Recipients for 032: the
-child's active guardians; the message must not contain the document title.
+`document.shared_with_guardian` is a transactional outbox event (ticket 032, `docs/notifications.md`): the
+database functions `complete_document` (provider upload with `visible_to_guardian`) and
+`set_document_visibility` (switch to visible) call `document_notify_guardians`, which runs
+`public.outbox_enqueue(...)` in the same transaction as the change (if the event cannot be written, nothing is
+saved). Payload `{ document_id, child_id }` only; dedup key `document:<id>:shared_with_guardian`, so a
+document notifies at most once (hiding and showing it again does not repeat). The route then calls
+`drainSoon([eventId])`; the cron delivers it otherwise. At fan-out the recipients are re-checked
+(`visibleDocumentGuardians` in `lib/notify/recipients.ts`): active guardians of the live child, and only while
+the document is still a `ready`, guardian-visible provider upload of that child. Channels: in-app + email (no
+WhatsApp). Template `document_shared`: "Your child's care team shared a document with you." with a link to
+`/family/documents`: no title, no clinical content, no child name. Family uploads notify nobody.
 
 ## UI
 

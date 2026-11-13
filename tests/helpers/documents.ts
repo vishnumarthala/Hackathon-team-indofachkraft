@@ -92,7 +92,22 @@ export async function objectExists(db: Db, path: string): Promise<boolean> {
 /** Removes every object stored for the given children (tests only; rows go with the children). */
 export async function purgeDocumentObjects(sql: Sql, db: Db, childIds: string[]) {
   if (childIds.length === 0) return;
-  const rows = await sql<{ storage_path: string }[]>`select storage_path from documents where child_id in ${sql(childIds)}`;
+  const rows = await sql<{ id: string; storage_path: string }[]>`select id, storage_path from documents where child_id in ${sql(childIds)}`;
+  await purgeDocumentEvents(sql, rows.map((r) => r.id));
   const paths = rows.map((r) => r.storage_path);
   for (let i = 0; i < paths.length; i += 100) await db.storage.from("documents").remove(paths.slice(i, i + 100));
+}
+
+export type DocEvent = { id: string; topic: string; aggregate_type: string; payload: Record<string, unknown>; dedup_key: string; status: string };
+
+/** 023 FR-9: outbox events written for a document. */
+export async function documentEvents(sql: Sql, documentId: string): Promise<DocEvent[]> {
+  return sql<DocEvent[]>`
+    select id::text as id, topic, aggregate_type, payload, dedup_key, status from outbox_events
+    where aggregate_type = 'document' and aggregate_id = ${documentId} order by id`;
+}
+
+/** Removes the outbox events (and, by cascade, notifications) of the given documents (tests only). */
+export async function purgeDocumentEvents(sql: Sql, documentIds: string[]) {
+  if (documentIds.length) await sql`delete from outbox_events where aggregate_type = 'document' and aggregate_id in ${sql(documentIds)}`;
 }

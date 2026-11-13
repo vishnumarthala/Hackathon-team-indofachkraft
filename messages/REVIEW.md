@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1046. Not yet approved: 1046.
+Rows: 1085. Not yet approved: 1085.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -937,6 +937,45 @@ Rows: 1046. Not yet approved: 1046.
 | `consentForm.print` | Print | प्रिंट करें | ప్రింట్ చేయండి |  | pending |
 | `consentForm.notConsent` | Printing this form is not consent. It counts only after the signed form is recorded by the centre. | यह फ़ॉर्म प्रिंट करना सहमति नहीं है। यह तभी मान्य है जब केंद्र हस्ताक्षरित फ़ॉर्म दर्ज करे। | ఈ ఫారం ప్రింట్ చేయడం సమ్మతి కాదు. సంతకం చేసిన ఫారాన్ని కేంద్రం నమోదు చేసిన తర్వాతే ఇది లెక్కలోకి వస్తుంది. |  | pending |
 | `consentForm.language` | Form language | फ़ॉर्म की भाषा | ఫారం భాష |  | pending |
+| `notifications.bellLabel` | Notifications, {count} unread | सूचनाएँ, {count} अपठित | నోటిఫికేషన్లు, {count} చదవనివి |  | pending |
+| `notifications.title` | Notifications | सूचनाएँ | నోటిఫికేషన్లు |  | pending |
+| `notifications.empty` | No notifications yet. | अभी कोई सूचना नहीं है। | ఇంకా నోటిఫికేషన్లు లేవు. |  | pending |
+| `notifications.markAllRead` | Mark all as read | सभी को पढ़ा हुआ चिह्नित करें | అన్నింటినీ చదివినట్లు గుర్తించండి |  | pending |
+| `notifications.marking` | Marking... | चिह्नित कर रहे हैं... | గుర్తిస్తున్నాం... |  | pending |
+| `notifications.markFailed` | Could not mark notifications as read. Please try again. | सूचनाओं को पढ़ा हुआ चिह्नित नहीं कर सके। कृपया फिर से कोशिश करें। | నోటిఫికేషన్లను చదివినట్లు గుర్తించలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `notifications.unread` | Unread | अपठित | చదవనిది |  | pending |
+| `notifications.open` | Open | खोलें | తెరవండి |  | pending |
+| `notifications.loadMore` | Load more | और दिखाएँ | మరిన్ని చూపించండి |  | pending |
+| `notifications.loading` | Loading... | लोड हो रहा है... | లోడ్ అవుతోంది... |  | pending |
+| `notifications.loadFailed` | Could not load notifications. Please try again. | सूचनाएँ लोड नहीं हो सकीं। कृपया फिर से कोशिश करें। | నోటిఫికేషన్లు లోడ్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `notifications.settingsLink` | Settings | सेटिंग्स | సెట్టింగ్స్ |  | pending |
+| `notifications.settingsTitle` | Settings | सेटिंग्स | సెట్టింగ్స్ |  | pending |
+| `notifications.prefs.title` | Notifications | सूचनाएँ | నోటిఫికేషన్లు |  | pending |
+| `notifications.prefs.intro` | In-app notifications are always on. Choose how else we let you know. | ऐप में सूचनाएँ हमेशा चालू रहती हैं। चुनें कि हम आपको और किस तरह बताएँ। | యాప్‌లో నోటిఫికేషన్లు ఎప్పుడూ ఆన్‌లో ఉంటాయి. మేము మీకు ఇంకా ఎలా తెలియజేయాలో ఎంచుకోండి. |  | pending |
+| `notifications.prefs.email` | Email | ईमेल | ఇమెయిల్ |  | pending |
+| `notifications.prefs.emailHint` | Short alerts to your email address. They never include health details. | आपके ईमेल पते पर छोटी सूचनाएँ। इनमें कभी स्वास्थ्य से जुड़ी जानकारी नहीं होती। | మీ ఇమెయిల్ చిరునామాకు చిన్న హెచ్చరికలు. వాటిలో ఎప్పుడూ ఆరోగ్య వివరాలు ఉండవు. |  | pending |
+| `notifications.prefs.whatsapp` | WhatsApp | WhatsApp | WhatsApp |  | pending |
+| `notifications.prefs.whatsappHint` | Short alerts on WhatsApp to your verified phone number. They never include health details. | आपके सत्यापित फ़ोन नंबर पर WhatsApp पर छोटी सूचनाएँ। इनमें कभी स्वास्थ्य से जुड़ी जानकारी नहीं होती। | మీ ధృవీకరించిన ఫోన్ నంబర్‌కు WhatsApp లో చిన్న హెచ్చరికలు. వాటిలో ఎప్పుడూ ఆరోగ్య వివరాలు ఉండవు. |  | pending |
+| `notifications.prefs.save` | Save | सहेजें | సేవ్ చేయండి |  | pending |
+| `notifications.prefs.saving` | Saving... | सहेज रहे हैं... | సేవ్ చేస్తున్నాం... |  | pending |
+| `notifications.prefs.saved` | Saved. | सहेज लिया गया। | సేవ్ అయింది. |  | pending |
+| `notifications.prefs.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `notifications.admin.title` | Notification delivery | सूचना डिलीवरी | నోటిఫికేషన్ డెలివరీ |  | pending |
+| `notifications.admin.counts` | Deliveries by channel and status | चैनल और स्थिति के अनुसार डिलीवरी | ఛానల్, స్థితి వారీగా డెలివరీలు |  | pending |
+| `notifications.admin.channel` | Channel | चैनल | ఛానల్ |  | pending |
+| `notifications.admin.events` | Outbox events | आउटबॉक्स इवेंट | అవుట్‌బాక్స్ ఈవెంట్లు |  | pending |
+| `notifications.admin.problems` | Last 50 failed or dead deliveries | पिछली 50 विफल या बंद डिलीवरी | చివరి 50 విఫలమైన లేదా ఆగిపోయిన డెలివరీలు |  | pending |
+| `notifications.admin.none` | No failed or dead deliveries. | कोई विफल या बंद डिलीवरी नहीं। | విఫలమైన లేదా ఆగిపోయిన డెలివరీలు లేవు. |  | pending |
+| `notifications.admin.topic` | Topic | विषय | అంశం |  | pending |
+| `notifications.admin.status` | Status | स्थिति | స్థితి |  | pending |
+| `notifications.admin.attempts` | Attempts | प्रयास | ప్రయత్నాలు |  | pending |
+| `notifications.admin.error` | Error | त्रुटि | లోపం |  | pending |
+| `notifications.admin.lastAttempt` | Last attempt | पिछला प्रयास | చివరి ప్రయత్నం |  | pending |
+| `notifications.admin.nextAttempt` | Next attempt | अगला प्रयास | తదుపరి ప్రయత్నం |  | pending |
+| `notifications.admin.retry` | Retry | फिर से कोशिश करें | మళ్ళీ ప్రయత్నించండి |  | pending |
+| `notifications.admin.retrying` | Retrying... | फिर से कोशिश कर रहे हैं... | మళ్ళీ ప్రయత్నిస్తున్నాం... |  | pending |
+| `notifications.admin.retried` | Queued again. | फिर से कतार में लगा दिया। | మళ్ళీ క్యూలో చేర్చాం. |  | pending |
+| `notifications.admin.retryFailed` | Could not retry. | फिर से कोशिश नहीं हो सकी। | మళ్ళీ ప్రయత్నించలేకపోయాం. |  | pending |
 | `caseTabs.label` | Case sections | केस के हिस्से | కేసు విభాగాలు |  | pending |
 | `caseTabs.overview` | Overview | सारांश | సారాంశం |  | pending |
 | `caseTabs.brief` | Brief | ब्रीफ़ | బ్రీఫ్ |  | pending |

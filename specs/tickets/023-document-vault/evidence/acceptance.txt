@@ -1,17 +1,17 @@
 ## setup: child of guardian_a with cases in org A (provider_a assigned) and org B
-PASS setup ids :: {"child":"2dc4523a-4dfe-4a18-9954-f60309ac8e05","caseA":"2922e8b9-76fd-4cfe-934f-7e3815779814","caseB":"9f62b2bb-0e38-4578-b2fe-96f2a5511752"}
+PASS setup ids :: {"child":"6ed28e6b-117c-45e7-b2c8-b27860d4b640","caseA":"a5fc95c4-b969-4f84-a2d7-5485d1deb7ef","caseB":"d7d4a862-7655-41c2-b58b-5707cc5aae00"}
 
 ## E-1 guardian upload and share (FR-3, FR-7)
 PASS E-1.1 POST /api/family/children/:id/documents -> 201 { document_id, signed_upload_url, token, path } :: 201
 PASS E-1.1 PUT to the signed upload URL :: ok
-PASS E-1.1 POST /api/documents/:id/complete -> 200 ready with sha256 :: {"id":"858bbbbc-be13-4e8f-92f3-16fb4d36bf7a","child_id":"2dc4523a-4dfe-4a18-9954-f60309ac8e05","case_id":null,"org_id":null,"uploader_kind":"guardian","uploaded_by_me":true,"category":"school","title":"d023 School letter","file_name":"letter.pdf","mime_type":"application/pdf","size_bytes":77,"sha256
+PASS E-1.1 POST /api/documents/:id/complete -> 200 ready with sha256 :: {"id":"07a30c77-c4e2-45bd-9967-8a9f593e6bd1","child_id":"6ed28e6b-117c-45e7-b2c8-b27860d4b640","case_id":null,"org_id":null,"uploader_kind":"guardian","uploaded_by_me":true,"category":"school","title":"d023 School letter","file_name":"letter.pdf","mime_type":"application/pdf","size_bytes":77,"sha256
 PASS E-1.1 guardian page lists it, uploaded by You, shared with org A :: 200
 PASS E-1.2 provider_a case Documents tab lists it :: 200
 PASS E-1.2 provider_a download -> 302, Cache-Control no-store :: 302 no-store
 PASS E-1.2 signed URL valid 300 s (exp - iat), download=<file_name> :: exp-iat=300
 PASS E-1.2 signed URL serves the file (attachment) :: attachment; filename=letter.pdf; filename*=UTF-8''letter.pdf
 PASS E-1.2 an expired signed URL is denied by storage (1 s TTL stand-in for 5 min) :: 400 {"statusCode":"400","error":"InvalidJWT","message":"\"exp\" claim timestamp chec
-PASS E-1.2 audit document.downloaded (strict) :: {"access":"org_share","org_id":null,"child_id":"2dc4523a-4dfe-4a18-9954-f60309ac8e05","grant_id":null}
+PASS E-1.2 audit document.downloaded (strict) :: {"access":"org_share","org_id":null,"child_id":"6ed28e6b-117c-45e7-b2c8-b27860d4b640","grant_id":null}
 PASS E-1.3 provider_b: not visible in org B's case :: 200
 PASS E-1.3 provider_b download -> 404 :: 404 {"error":"Document not found"}
 PASS unassigned member provider_a2 download -> 404 :: 404
@@ -24,13 +24,18 @@ PASS E-2.1 guardian direct download -> 404 :: 404
 PASS E-2.1 tick visibility -> 200 :: 200
 PASS E-2.1 guardian now sees it (uploaded by the org) :: 200
 PASS E-2.1 guardian download -> 302
+PASS FR-9 one outbox event document.shared_with_guardian, payload ids only :: [{"id":"206","topic":"document.shared_with_guardian","payload":{"child_id":"6ed28e6b-117c-45e7-b2c8-b27860d4b640","document_id":"a3cf293d-68d1-44bf-84ab-6bf100b8c626"},"status":"fanned_out"}]
+PASS FR-9 delivered right after the response: guardian_a in-app sent + email sent (DEMO_MODE), no WhatsApp :: [["email","sent"],["in_app","sent"]]
+PASS FR-9 no title / child name in the notification :: New document | Your child's care team shared a document with you. | /family/documents
+PASS FR-9 guardian_a inbox lists it :: {"id":"6d2edc7b-2637-4d89-818f-ba94b0eb9b5f","title":"New document","body":"Your child's care team shared a document with you.","link":"/family/documents","created_at":"2026-11-13T01:07:29.060Z","read_at":null}
+PASS FR-9 family uploads enqueue nothing
 PASS guardian cannot change visibility -> 403
 
 ## E-3 validation (FR-2)
 PASS E-3 21 MB -> 413 Files can be up to 20 MB :: 413 {"error":"Files can be up to 20 MB"}
 PASS E-3 .txt -> 415 Upload a PDF, JPG, PNG or HEIC file :: 415 {"error":"Upload a PDF, JPG, PNG or HEIC file"}
 PASS E-3 PDF-named PNG bytes -> 422 This file does not match its type :: 422 {"error":"This file does not match its type"}
-PASS E-3 ... no object left in the bucket :: 2dc4523a-4dfe-4a18-9954-f60309ac8e05/1cc9e352-85a4-401e-8568-713a4fc4e975.pdf
+PASS E-3 ... no object left in the bucket :: 6ed28e6b-117c-45e7-b2c8-b27860d4b640/74f5e018-bd62-4dc1-be5c-b1ce54302dd7.pdf
 PASS E-3 ... document status deleted :: deleted
 
 ## E-4 cross-org via grant (FR-4)
@@ -51,7 +56,7 @@ PASS E-5 ... object stored
 PASS E-5 guardian_a deletes own upload -> 200 { deleted: true } :: {"deleted":true}
 PASS E-5 object removed from storage
 PASS E-5 listed nowhere (family, org A, org B)
-PASS E-5 audit document.deleted :: {"actor":"parent","actor_user_id":"04740452-09bb-4c07-bd20-540a13002c5f"}
+PASS E-5 audit document.deleted :: {"actor":"parent","actor_user_id":"f999e732-d0d5-4e28-85fd-ac64422265d1"}
 PASS E-5 guardian_a DELETE on a provider document -> 403 :: {"error":"You cannot delete this document"}
 PASS other guardian DELETE -> 404
 
@@ -64,4 +69,4 @@ PASS Telugu /family/documents
 PASS Hindi case Documents tab
 
 ALL PASS
-BROWSER child=2dc4523a-4dfe-4a18-9954-f60309ac8e05 caseA=2922e8b9-76fd-4cfe-934f-7e3815779814 caseB=9f62b2bb-0e38-4578-b2fe-96f2a5511752 letter=858bbbbc-be13-4e8f-92f3-16fb4d36bf7a chart=b03f5124-912c-4cb8-b3e7-51681f675cdf
+BROWSER child=6ed28e6b-117c-45e7-b2c8-b27860d4b640 caseA=a5fc95c4-b969-4f84-a2d7-5485d1deb7ef caseB=d7d4a862-7655-41c2-b58b-5707cc5aae00 letter=07a30c77-c4e2-45bd-9967-8a9f593e6bd1 chart=a3cf293d-68d1-44bf-84ab-6bf100b8c626

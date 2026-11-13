@@ -9,7 +9,7 @@ import { runDocumentUpload, uploadErrorKey, type UploadDeps } from "@/components
 import { checkFile, cleanFileName, declaredMime, MAX_DOCUMENT_BYTES } from "@/lib/documents/constants";
 import { sniffDocumentType } from "@/lib/documents/magic";
 import { GuardianUploadSchema, ProviderUploadSchema } from "@/lib/documents/schemas";
-import { createUploader, HEIC_BYTES, JPEG_BYTES, objectExists, PDF_BYTES, PNG_BYTES, purgeDocumentObjects } from "./helpers/documents";
+import { createUploader, documentEvents, HEIC_BYTES, JPEG_BYTES, objectExists, PDF_BYTES, PNG_BYTES, purgeDocumentObjects } from "./helpers/documents";
 import { createWorld, type TestUser } from "./helpers/world";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
@@ -19,12 +19,6 @@ const session = vi.hoisted(() => ({ user: null as null | { id: string; email: st
 vi.mock("@/lib/auth", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/auth")>();
   return { ...actual, getAuthenticatedUser: vi.fn(async () => session.user) };
-});
-
-const notify = vi.hoisted(() => ({ calls: [] as unknown[][] }));
-vi.mock("@/lib/notify/topics", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/notify/topics")>();
-  return { ...actual, notifyLater: vi.fn(async (...args: unknown[]) => void notify.calls.push(args)) };
 });
 
 describe("file checks (FR-2)", () => {
@@ -169,7 +163,6 @@ describe.skipIf(!enabled)("document uploads (database)", { timeout: 120_000 }, (
 
   beforeEach(() => {
     as(null);
-    notify.calls = [];
   });
 
   it("the bucket is private with a 20 MB limit and the four types", async () => {
@@ -217,7 +210,7 @@ describe.skipIf(!enabled)("document uploads (database)", { timeout: 120_000 }, (
     expect(JSON.stringify(audit.details)).not.toContain("School letter");
     const shares = await sql`select org_id from document_org_shares where document_id = ${ticket.document_id} and revoked_at is null`;
     expect(shares.map((s) => s.org_id)).toEqual([orgA]);
-    expect(notify.calls).toEqual([]);
+    expect(await documentEvents(sql, ticket.document_id)).toEqual([]); // family uploads notify nobody
   });
 
   it("E-3 validation: 21 MB -> 413, .txt -> 415, PDF-named PNG bytes -> 422 and no object left", async () => {
@@ -272,15 +265,23 @@ describe.skipIf(!enabled)("document uploads (database)", { timeout: 120_000 }, (
 
     const hidden = await up.upload(assignedA, { caseId: caseA }, { ...png, visible_to_guardian: false }, PNG_BYTES);
     expect(hidden.completed.status).toBe(200);
-    expect(notify.calls).toEqual([]);
+    expect(await documentEvents(sql, hidden.id)).toEqual([]);
     const [row] = await sql<{ org_id: string; case_id: string; child_id: string; uploader_kind: string; visible_to_guardian: boolean }[]>`
       select org_id, case_id, child_id, uploader_kind, visible_to_guardian from documents where id = ${hidden.id}`;
     expect(row).toEqual({ org_id: orgA, case_id: caseA, child_id: childId, uploader_kind: "provider", visible_to_guardian: false });
 
-    // FR-9: a guardian-visible provider upload emits document.shared_with_guardian with ids only.
+    // FR-9: a guardian-visible provider upload enqueues document.shared_with_guardian (ids only) in the same
+    // transaction as `ready`.
     const visible = await up.upload(ownerA, { caseId: caseA }, { ...png, file_name: "photo.heic", mime_type: "image/heic" }, HEIC_BYTES);
     expect(visible.completed.status).toBe(200);
-    expect(notify.calls).toEqual([["document.shared_with_guardian", { document_id: visible.id, child_id: childId, org_id: orgA }]]);
+    expect(await documentEvents(sql, visible.id)).toEqual([
+      expect.objectContaining({
+        topic: "document.shared_with_guardian",
+        payload: { document_id: visible.id, child_id: childId },
+        dedup_key: `document:${visible.id}:shared_with_guardian`,
+        status: "pending",
+      }),
+    ]);
     const [audit] = await sql<{ case_id: string; actor: string }[]>`
       select case_id, actor from audit_events where action = 'document.uploaded' and entity_id = ${visible.id}`;
     expect(audit).toEqual({ case_id: caseA, actor: "therapist" });
@@ -305,6 +306,29 @@ describe.skipIf(!enabled)("document uploads (database)", { timeout: 120_000 }, (
     const [row] = await sql<{ status: string }[]>`select status from documents where id = ${ticket.document_id}`;
     expect(row.status).toBe("pending");
     expect((await up.complete(guardian, ticket.document_id)).status).toBe(200);
+  });
+
+  it("FR-9 same transaction: if the outbox event cannot be written the provider upload stays pending", async () => {
+    const png = { title: "t023 outbox rollback", category: "medical", file_name: "x.png", mime_type: "image/png" };
+    const res = await up.start(ownerA, { caseId: caseA }, png, PNG_BYTES.length);
+    const ticket = await res.json();
+    await up.put(ticket.path, ticket.token, PNG_BYTES, "image/png");
+    const fn = `t023_fail_outbox_${randomUUID().slice(0, 8)}`;
+    await sql.unsafe(`
+      create function public.${fn}() returns trigger language plpgsql as $f$
+      begin raise exception 'forced outbox failure (test)'; end $f$;
+      create trigger ${fn} before insert on public.outbox_events for each row
+      when (new.aggregate_id = '${ticket.document_id}') execute function public.${fn}();`);
+    try {
+      expect((await up.complete(ownerA, ticket.document_id)).status).toBe(503);
+    } finally {
+      await sql.unsafe(`drop trigger if exists ${fn} on public.outbox_events; drop function if exists public.${fn}();`);
+    }
+    const [row] = await sql<{ status: string }[]>`select status from documents where id = ${ticket.document_id}`;
+    expect(row.status).toBe("pending");
+    expect(await sql`select 1 from audit_events where action = 'document.uploaded' and entity_id = ${ticket.document_id}`).toHaveLength(0);
+    expect((await up.complete(ownerA, ticket.document_id)).status).toBe(200);
+    expect(await documentEvents(sql, ticket.document_id)).toHaveLength(1);
   });
 
   it("a guardian who lost the link cannot complete a pending upload", async () => {

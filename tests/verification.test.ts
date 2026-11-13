@@ -16,10 +16,11 @@ vi.mock("@/lib/auth", async (importOriginal) => {
   return { ...actual, getAuthenticatedUser: vi.fn(async () => session.user) };
 });
 vi.mock("next/cache", () => ({ revalidateTag: vi.fn(), unstable_cache: (fn: () => unknown) => fn }));
-const notify = vi.hoisted(() => vi.fn(async () => {}));
-vi.mock("@/lib/notify/topics", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/notify/topics")>();
-  return { ...actual, notifyLater: notify };
+// 032: decisions enqueue outbox events in the deciding transaction; the immediate drain is not under test here.
+const drain = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/notify/outbox", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/notify/outbox")>();
+  return { ...actual, drainSoon: drain };
 });
 
 describe("public register links", () => {
@@ -51,9 +52,12 @@ describe.skipIf(!enabled)("credential verification (database)", { timeout: 60_00
     await sql.end({ timeout: 5 });
   });
 
+  const outbox = (topic: string, profileId: string) =>
+    sql`select payload, dedup_key from outbox_events where topic = ${topic} and aggregate_id = ${profileId}`;
+
   beforeEach(() => {
     as(null);
-    notify.mockClear();
+    drain.mockClear();
   });
 
   async function registered(name: string, type: string): Promise<{ user: TestUser; profileId: string; slug: string }> {
@@ -119,7 +123,10 @@ describe.skipIf(!enabled)("credential verification (database)", { timeout: 60_00
     const approved = await review(submission_id, { action: "approve" });
     expect(approved.status).toBe(200);
     expect(await profileRow(p.profileId)).toMatchObject({ verification_status: "verified", verified_by: admin.id, listed: false });
-    expect(notify).toHaveBeenCalledWith("provider.verified", expect.objectContaining({ provider_profile_id: p.profileId }));
+    expect(await outbox("provider.verified", p.profileId)).toEqual([
+      { payload: { provider_profile_id: p.profileId, submission_id }, dedup_key: `provider.verified:${submission_id}` },
+    ]);
+    expect(drain).toHaveBeenCalled();
     const [auditRow] = await sql`select actor_user_id, details from audit_events where action = 'provider.verified' and entity_id = ${p.profileId}`;
     expect(auditRow.actor_user_id).toBe(admin.id);
     expect(auditRow.details).toMatchObject({ submission_id, council: "RCI" });
@@ -193,7 +200,7 @@ describe.skipIf(!enabled)("credential verification (database)", { timeout: 60_00
     expect(await profileRow(slp.profileId)).toMatchObject({ verification_status: "rejected", listed: false });
     const [auditRow] = await sql`select actor_user_id from audit_events where action = 'provider.rejected' and entity_id = ${slp.profileId}`;
     expect(auditRow.actor_user_id).toBe(admin.id);
-    expect(notify).toHaveBeenCalledWith("provider.rejected", expect.anything());
+    expect(await outbox("provider.rejected", slp.profileId)).toHaveLength(1);
   });
 
   it("suspend: verified only, note required, unlists, blocks resubmission, audited", async () => {
@@ -213,6 +220,9 @@ describe.skipIf(!enabled)("credential verification (database)", { timeout: 60_00
     expect(can).toBe(false);
     const [auditRow] = await sql`select actor_user_id, details from audit_events where action = 'provider.suspended' and entity_id = ${p.profileId}`;
     expect(auditRow).toMatchObject({ actor_user_id: admin.id, details: { note: "Complaint under review (synthetic)" } });
+    expect(await sql`select payload from outbox_events where topic = 'provider.suspended' and aggregate_id = ${p.profileId}`).toEqual([
+      { payload: { provider_profile_id: p.profileId } },
+    ]);
 
     as(p.user);
     const res = await submit(p.profileId, { council: "NMC", registration_number: "TEST-s-2", certificate_path: await uploadCertificate(p.profileId) });
