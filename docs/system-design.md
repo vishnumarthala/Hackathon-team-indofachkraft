@@ -257,6 +257,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `ELEVENLABS_API_KEY` | Scribe, conversation token, TTS | |
 | `ELEVENLABS_AGENT_ID` | intake page | agent configured per `docs/elevenlabs-agent.md` |
 | `ELEVENLABS_SCREEN_AGENT_ID` | `/screen` voice check-in (033) | optional; English-only public agent per `docs/elevenlabs-screen-agent.md`; unset (and not `DEMO_MODE`) -> the page offers only the tap-through form |
+| `ELEVENLABS_BOOKING_AGENT_ID` / `ELEVENLABS_TOOL_SECRET` | `/find` voice booking (034) | optional; English-only booking agent per `docs/elevenlabs-booking-agent.md` and the shared secret its server tools send as `X-Agent-Secret`; without both (and not `DEMO_MODE`) `/find` has no voice widget and every tool call is 401 |
 | `ELEVENLABS_WEBHOOK_SECRET` | webhook HMAC | only needed when the webhook is used (deployed or tunnel) |
 | `ELEVENLABS_VOICE_ID_EN` / `_HI` / `_TE` | parent voice note | |
 | `GEMINI_API_KEY` | Gemini | |
@@ -603,6 +604,9 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/cron/retention` (daily), `GET\|POST /api/cron/privacy` (every 5 min) | 041 | `Authorization: Bearer <CRON_SECRET>` | 200 `{ counts }` / `{ exports, deletions }`; 401 |
 | `GET /api/health` | 041 | public | 200 `{ ok: true, db: "ok", version }`; 503 `{ ok: false, db: "unreachable" }` |
 | `POST /api/screen/sessions`, `GET /api/screen/sessions/:id`, `POST /api/screen/sessions/:id/answers\|red-flag\|finish` | 033 | public; `{ age_band, mode }`, `{ answers: [{ item_id, answer }] }`, `{ code }`, finish `{ conversation_id? }` | 201 `{ session_id, questions, conversation_token?, dynamic_variables? }` or `{ demo: true }`; answers 200 `{ missing, stop }`; red-flag 200 `{ stop: true }`; finish 200 `{ result_band, domains, red_flag, message }`; 404 / 409 stopped or finished / 410 expired (2 h) / 422 incomplete / 429 5 per IP per hour (section 13a) |
+| `POST\|GET\|DELETE /api/agents/booking/session` | 034 | public; POST 5 per IP per hour; GET/DELETE bound to the `dnm_booking_session` cookie | 201 `{ booking_session, conversation_token, agent_id?, demo?, dynamic_variables: { booking_session, today } }`; GET 200 `{ active, expires_at, hold }`; DELETE 200 `{ ended: true }`; 404 no session; 429; 503 not configured (section 13b) |
+| `POST /api/agents/booking/tools/{search_providers\|get_slots\|hold_slot}` | 034 | `X-Agent-Secret` + `{ booking_session, ... }` (strict) | 200 tool result; 401 secret / session; 400 unknown keys; 429 after 20 calls per session; 404 unknown provider/service (`docs/elevenlabs-booking-agent.md`) |
+| `POST /api/agents/booking/demo/:tool` | 034 | DEMO_MODE only (else 404); cookie-bound | same handlers as the tools |
 | `POST /api/family/screen-results` | 033 | `{ session_id, child_id }` | 201 (200 again) `{ saved: true }`; 401; 404 not your child; 422 `screen_result_save` consent; 409 unfinished / red flag / other child; 410 expired |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 
@@ -706,6 +710,10 @@ confidence capped at 0.5. `start_sec`/`end_sec` come from the segment.
   id (default: the intake agent). Dynamic variables `{ screen_session_id, age_band, questions }` only; answers come
   back through the client tools `record_answer({ item_id, answer })` / `record_red_flag({ code })`
   (`lib/screen/client.ts`); no webhook, no data collection.
+- **Voice booking agent** (034): a third, English-only private agent (`ELEVENLABS_BOOKING_AGENT_ID`,
+  `docs/elevenlabs-booking-agent.md`) with **server (webhook) tools** `search_providers`, `get_slots`, `hold_slot`
+  authenticated by `X-Agent-Secret` (`ELEVENLABS_TOOL_SECRET`) plus the per-conversation `{{booking_session}}`, and a
+  client tool `record_red_flag`. No webhook, no data collection. Section 13b.
 
 ## 12. Flows
 
@@ -804,6 +812,38 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   conversation); retention step `unsaved_screen_sessions` deletes unsaved rows after 30 days. `/screen` gets the
   strict family CSP (nonce, no analytics) plus the ElevenLabs API/LiveKit `connect-src` (`lib/csp.ts`,
   `lib/privacy/third-party-allowlist.ts`).
+
+## 13b. Voice booking agent on /find (ticket 034)
+
+- `/find` shows `Book by voice` (`components/voice/BookingWidget.tsx`) when `DEMO_MODE` is on or both
+  `ELEVENLABS_BOOKING_AGENT_ID` and `ELEVENLABS_TOOL_SECRET` are set; otherwise the page is unchanged. Disclosure `You
+  will talk to an AI assistant in English. It will not ask for your child's name.` -> `Start` -> live captions -> hold
+  card `<provider> - <date time> - held for 10 minutes` with a countdown and `Sign in and confirm`
+  (`/book/<profileId>?appointment=<id>`; 030's page accepts `appointment` as an alias of `hold`).
+- **Sessions** (`lib/agents/booking/session.ts`, migration `20261113003400_booking_agent.sql`, table
+  `booking_agent_sessions`): `POST /api/agents/booking/session` creates a random 32-byte `booking_session` (only its
+  SHA-256 is stored; valid 30 minutes; 20 tool calls, counted atomically in SQL) and sets it as the httpOnly
+  `dnm_booking_session` cookie (path `/api/agents/booking`). **Hold ownership** is the browser's 030 anonymous booking
+  session (`dnm_booking` cookie, `hashBookingSession`), stored as `owner_session_hash`; the agent token is never an
+  ownership credential, so the agent (or anyone who sees its variables) cannot attach a hold. One hold per session: the
+  SQL releases the owner's older hold.
+- **Tool calls** (`lib/agents/booking/handler.ts`): `X-Agent-Secret` (constant-time) -> per-IP burst limit -> JSON
+  object -> session charged (401 unknown/expired/ended, 429 over 20) -> strict schema (`lib/agents/booking/schemas.ts`,
+  unknown keys such as `child_name` -> 400) -> tool (`lib/agents/booking/tools.ts`). `search_providers` geocodes the
+  text server-side (029 `getGeocoder()`), searches 10 km then 25 km and keeps providers with an active service (max 5);
+  `get_slots` merges the provider's active services of that mode (030 `getSlots`, 7 days, part of day in the clinic's
+  zone, max 6); `hold_slot` runs `checkHoldPreconditions` (037/042 hooks) and `booking_hold` with the owner session in
+  one transaction with the strict audit row `booking_agent.hold_created` (actor `ai`, details `{ session_hash }` only).
+  There is no confirm tool: `POST /api/appointments/:id/confirm` still needs a signed-in guardian and the holding
+  browser's cookie (D-2). Logs carry tool, status and duration only; payloads and transcripts are never stored.
+- **Safety:** the agent prompt reuses 033's red-flag rule and fixed 108/112 message; its `record_red_flag` client tool
+  makes the widget show 033's `UrgentNotice` only and `DELETE` the session (later tool calls 401).
+- **DEMO_MODE:** the widget runs `lib/agents/booking/demo-script.ts` (scripted English conversation) against
+  `POST /api/agents/booking/demo/:tool`, which authenticates with the cookie instead of the secret and calls the same
+  handlers; 404 outside DEMO_MODE.
+- `/find` has no nonce CSP (029 loads Google Maps); the ElevenLabs endpoints are declared for `/find` in `lib/csp.ts`
+  and `lib/privacy/third-party-allowlist.ts` (approved) for when it gets one. Expired sessions are purged 1 day after
+  expiry when new sessions start; the table holds hashes and counters only (not a privacy-registry category).
 
 ## 14. Human setup checklist (not tickets)
 

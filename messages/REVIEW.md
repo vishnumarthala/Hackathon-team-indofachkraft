@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2109. Not yet approved: 2109.
+Rows: 2136. Not yet approved: 2136.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -2124,3 +2124,30 @@ Rows: 2109. Not yet approved: 2109.
 | `screen.landing.title` | Worried about your child's development? | अपने बच्चे के विकास को लेकर चिंतित हैं? | మీ బిడ్డ అభివృద్ధి గురించి ఆందోళనగా ఉందా? |  | pending |
 | `screen.landing.text` | Answer a few short questions by voice or by tapping. About 5 minutes and free. A developmental check-in, not a diagnosis, with specialists near you. | आवाज़ से या टैप करके कुछ छोटे सवालों के जवाब दें। लगभग 5 मिनट, मुफ़्त: विकास की एक जाँच, निदान नहीं, और आपके पास के विशेषज्ञ। | మాట ద్వారా లేదా ట్యాప్ చేసి కొన్ని చిన్న ప్రశ్నలకు సమాధానం ఇవ్వండి. సుమారు 5 నిమిషాలు, ఉచితం: అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు, మీ దగ్గరి నిపుణులతో. |  | pending |
 | `screen.landing.cta` | Start the developmental check-in | विकास जाँच शुरू करें | అభివృద్ధి పరిశీలన ప్రారంభించండి |  | pending |
+| `voiceBooking.button` | Book by voice | आवाज़ से बुक करें | వాయిస్‌తో బుక్ చేయండి |  | pending |
+| `voiceBooking.title` | Book by voice | आवाज़ से बुक करें | వాయిస్‌తో బుక్ చేయండి |  | pending |
+| `voiceBooking.intro` | Tell our assistant what you need, for example a Telugu-speaking speech therapist near Kukatpally on Saturday morning. | हमारे सहायक को बताइए कि आपको क्या चाहिए, जैसे शनिवार सुबह कूकटपल्ली के पास तेलुगु बोलने वाला स्पीच थेरेपिस्ट। | మీకు ఏమి కావాలో మా సహాయకుడికి చెప్పండి, ఉదాహరణకు శనివారం ఉదయం కూకట్‌పల్లి దగ్గర తెలుగు మాట్లాడే స్పీచ్ థెరపిస్ట్. |  | pending |
+| `voiceBooking.disclosure` | You will talk to an AI assistant in English. It will not ask for your child's name. | आप अंग्रेज़ी में एक AI सहायक से बात करेंगे। यह आपके बच्चे का नाम नहीं पूछेगा। | మీరు ఇంగ్లీష్‌లో ఒక AI సహాయకుడితో మాట్లాడతారు. ఇది మీ పిల్లల పేరు అడగదు. |  | pending |
+| `voiceBooking.privacy` | Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe. The assistant can only hold a time for 10 minutes; you sign in and confirm on screen. | आपकी आवाज़ ElevenLabs (USA) द्वारा प्रोसेस की जाती है और DoctorNearMe इसे संग्रहीत नहीं करता। सहायक केवल 10 मिनट के लिए समय रोक सकता है; आप साइन इन करके स्क्रीन पर पुष्टि करते हैं। | మీ వాయిస్‌ను ElevenLabs (USA) ప్రాసెస్ చేస్తుంది, DoctorNearMe దాన్ని నిల్వ చేయదు. సహాయకుడు ఒక సమయాన్ని 10 నిమిషాలు మాత్రమే ఆపగలడు; మీరు సైన్ ఇన్ చేసి స్క్రీన్‌పై నిర్ధారిస్తారు. |  | pending |
+| `voiceBooking.start` | Start | शुरू करें | ప్రారంభించండి |  | pending |
+| `voiceBooking.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `voiceBooking.starting` | Starting... | शुरू हो रहा है... | ప్రారంభమవుతోంది... |  | pending |
+| `voiceBooking.demo` | Demo mode: a scripted conversation, no live voice call. | डेमो मोड: पहले से लिखी बातचीत, कोई लाइव वॉइस कॉल नहीं। | డెమో మోడ్: ముందే రాసిన సంభాషణ, లైవ్ వాయిస్ కాల్ లేదు. |  | pending |
+| `voiceBooking.connecting` | Connecting... | जुड़ रहा है... | కనెక్ట్ అవుతోంది... |  | pending |
+| `voiceBooking.listening` | Listening... | सुन रहा है... | వింటోంది... |  | pending |
+| `voiceBooking.speaking` | Speaking... | बोल रहा है... | మాట్లాడుతోంది... |  | pending |
+| `voiceBooking.end` | End call | कॉल समाप्त करें | కాల్ ముగించండి |  | pending |
+| `voiceBooking.ended` | The call has ended. | कॉल समाप्त हो गई। | కాల్ ముగిసింది. |  | pending |
+| `voiceBooking.again` | Start again | फिर से शुरू करें | మళ్ళీ ప్రారంభించండి |  | pending |
+| `voiceBooking.captions` | Live captions | लाइव कैप्शन | లైవ్ క్యాప్షన్లు |  | pending |
+| `voiceBooking.speakerAi` | Assistant | सहायक | సహాయకుడు |  | pending |
+| `voiceBooking.speakerYou` | You | आप | మీరు |  | pending |
+| `voiceBooking.holdTitle` | Time held for you | आपके लिए समय रोका गया | మీ కోసం సమయం ఆపబడింది |  | pending |
+| `voiceBooking.holdCard` | {provider} - {time} - held for 10 minutes | {provider} - {time} - 10 मिनट के लिए रोका गया | {provider} - {time} - 10 నిమిషాలు ఆపబడింది |  | pending |
+| `voiceBooking.timeLeft` | Time left: {time} | बचा समय: {time} | మిగిలిన సమయం: {time} |  | pending |
+| `voiceBooking.holdExpired` | This hold has expired. Start again or pick a time below. | यह रोक समाप्त हो गई। फिर से शुरू करें या नीचे समय चुनें। | ఈ హోల్డ్ ముగిసింది. మళ్ళీ ప్రారంభించండి లేదా కింద సమయం ఎంచుకోండి. |  | pending |
+| `voiceBooking.confirm` | Sign in and confirm | साइन इन करें और पुष्टि करें | సైన్ ఇన్ చేసి నిర్ధారించండి |  | pending |
+| `voiceBooking.confirmNote` | Not booked yet. Sign in, choose your child and tap Confirm to book. | अभी बुक नहीं हुआ है। साइन इन करें, अपना बच्चा चुनें और बुक करने के लिए पुष्टि करें पर टैप करें। | ఇంకా బుక్ కాలేదు. సైన్ ఇన్ చేసి, మీ పిల్లలను ఎంచుకుని, బుక్ చేయడానికి నిర్ధారించండి నొక్కండి. |  | pending |
+| `voiceBooking.errors.busy` | Too many voice bookings were started from this connection. Please try again in an hour. | इस कनेक्शन से बहुत सारी वॉइस बुकिंग शुरू की गईं। कृपया एक घंटे बाद फिर कोशिश करें। | ఈ కనెక్షన్ నుండి చాలా వాయిస్ బుకింగ్‌లు ప్రారంభించబడ్డాయి. దయచేసి ఒక గంట తర్వాత మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `voiceBooking.errors.unavailable` | Voice booking is not available right now. Please use the search below. | आवाज़ से बुकिंग अभी उपलब्ध नहीं है। कृपया नीचे खोज का उपयोग करें। | వాయిస్ బుకింగ్ ఇప్పుడు అందుబాటులో లేదు. దయచేసి కింద ఉన్న శోధనను ఉపయోగించండి. |  | pending |
+| `voiceBooking.errors.connect` | The call could not connect. Please use the search below. | कॉल कनेक्ट नहीं हो सकी। कृपया नीचे खोज का उपयोग करें। | కాల్ కనెక్ట్ కాలేదు. దయచేసి కింద ఉన్న శోధనను ఉపయోగించండి. |  | pending |

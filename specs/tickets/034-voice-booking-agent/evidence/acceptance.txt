@@ -1,0 +1,51 @@
+# 034 acceptance evidence (slot 7, dev server :3070, DEMO_MODE=true, ELEVENLABS_TOOL_SECRET=test-3070, own headless Chromium 375 px, Asia/Kolkata)
+
+## curl (API)
+POST /api/agents/booking/session -> 201 {booking_session: 43 chars, expires_at: +30 min, conversation_token: null, demo: true, dynamic_variables: {booking_session, today: "Friday 2026-11-13"}}; Set-Cookie dnm_booking + dnm_booking_session (HttpOnly)
+search_providers without X-Agent-Secret -> 401 {"error":"Unauthorized"}
+search_providers with X-Agent-Secret: nope -> 401
+search_providers (secret + session, type "speech therapist") -> 200 in 0.06 s {"place":"Banjara Hills","results":[{"profile_id":"79a1bf16-...","name":"Dr Asha Rao (synthetic)","type":"speech_language_pathologist","locality":"Banjara Hills","distance_km":0.1,"modes":["in_clinic"],"languages":["en","te"]}],"message":"Found 1 provider(s) ..."}
+search_providers with child_name -> 400 {"error":"Invalid request","details":{"body":"Unrecognized key: \"child_name\""}}
+get_slots with an unknown booking_session -> 401 {"error":"Invalid or expired booking session"}
+POST /api/agents/booking/tools/confirm -> 404 (no such tool)
+POST /api/appointments/<id>/confirm without a session -> 401 {"error":"Authentication required"}
+
+Degrade (dev server restarted with DEMO_MODE=false, no ELEVENLABS_BOOKING_AGENT_ID / ELEVENLABS_TOOL_SECRET):
+GET /find -> 200, no data-testid="voice-booking" (0 matches), search form present (1 match)
+POST /api/agents/booking/session -> 503 {"error":"Voice booking is not available right now. Please use the search below."}
+POST /api/agents/booking/demo/search_providers -> 404; POST /api/agents/booking/tools/search_providers -> 401
+
+## browser (scripted DEMO_MODE conversation -> hold -> sign in -> confirm)
+disclosure visible: true
+captions:
+AssistantHello, I am DoctorNearMe's booking assistant. I am an AI. I can find a provider near you and hold a time for 10 minutes. Please do not tell me your child's name or any contact details. Which area are you in, and what kind of specialist do you need?
+YouA speech therapist near Banjara Hills, at the clinic, for my child aged 3 to 5.
+AssistantI found 1 provider who take bookings: 1. Dr Asha Rao (synthetic), 0.1 km away. Which one would you like?
+YouThe first one, please. Any morning this week.
+AssistantDr Asha Rao (synthetic) has these times: Saturday, 14 November, 9:00 am; Saturday, 14 November, 9:30 am; Saturday, 14 November, 10:00 am. Which one should I hold?
+YouThe first time, please.
+AssistantDone. I am holding Saturday, 14 November, 9:00 am with Dr Asha Rao (synthetic) for 10 minutes. It is not booked yet: tap Sign in and confirm on your screen to finish. Goodbye.
+card:
+Time held for you
+
+Dr Asha Rao (synthetic) - 14 Nov 2026, 9:00 am IST - held for 10 minutes
+
+Time left: 9:59
+
+Not booked yet. Sign in, choose your child and tap Confirm to book.
+
+Sign in and confirm
+375px scrollWidth: 375
+cookies httpOnly: true true agent cookie path: /api/agents/booking
+confirm href: /book/79a1bf16-cc0a-4f89-a6d3-aafcc85251f9?appointment=3b73f453-23c0-4c70-8fd2-1a9144041eee
+appointment: held owner matches sha256(cookie): true expires in s: 599
+audit: [{"actor":"ai","actor_role":"ai","details":{"session_hash":"ec96c312f8c2b2440fb3cb31893d17d6d58b738eebc5eb2cb4cd8a2aff40ab20"}}]
+browser B sees hold on confirm URL: false
+browser B after sign-in: /book/79a1bf16-cc0a-4f89-a6d3-aafcc85251f9
+browser B (guardian_b) confirm: {"status":404,"body":{"error":"Appointment not found","code":"not_found"}}
+returned to: /book/79a1bf16-cc0a-4f89-a6d3-aafcc85251f9?hold=3b73f453-23c0-4c70-8fd2-1a9144041eee
+after confirm: {"status":"confirmed","guardian_user_id":"3cda9958-3e4b-4b78-bd7f-20afb36bb6cf","child_id":"08318dc5-d044-4560-8169-2fa12b0d5985"}
+console errors: one hydration warning on 029's find-q input (style caret-color injected by the Playwright screenshot taken before hydration); a reload without screenshot logs no console errors
+
+## i18n 375 px
+en/hi/te: /find widget opened, documentElement.scrollWidth = 375 (no horizontal scroll); screenshots find-disclosure-{hi,te}-375.png

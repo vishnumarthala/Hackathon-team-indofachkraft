@@ -23,6 +23,9 @@ const ELEVENLABS_CONNECT = [
 /** Route prefix -> extra sources (approved exceptions only). */
 export const FAMILY_CSP_EXCEPTIONS: Record<string, CspAllowance> = {
   "/screen": { connectSrc: ELEVENLABS_CONNECT },
+  // 034: the voice booking widget on /find (approved 2026-11-13). /find is not under the strict family policy today
+  // (029 loads Google Maps there), so this applies once it is.
+  "/find": { connectSrc: ELEVENLABS_CONNECT },
 };
 
 /** 033 NFR-1: the public check-in gets the same strict CSP as child pages (no analytics, ElevenLabs only). */

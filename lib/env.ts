@@ -46,6 +46,15 @@ export const env = {
   get ELEVENLABS_SCREEN_AGENT_ID() {
     return read("ELEVENLABS_SCREEN_AGENT_ID");
   },
+  // 034: the English-only voice booking agent on /find (docs/elevenlabs-booking-agent.md) and the shared secret its
+  // server tools send as `X-Agent-Secret`. Optional: without both (and outside DEMO_MODE) /find has no voice widget;
+  // without the secret every tool call is refused.
+  get ELEVENLABS_BOOKING_AGENT_ID() {
+    return read("ELEVENLABS_BOOKING_AGENT_ID");
+  },
+  get ELEVENLABS_TOOL_SECRET() {
+    return read("ELEVENLABS_TOOL_SECRET");
+  },
   get ELEVENLABS_WEBHOOK_SECRET() {
     return required("ELEVENLABS_WEBHOOK_SECRET");
   },

@@ -22,6 +22,9 @@ export function isPublicApiPath(pathname: string): boolean {
     pathname === "/api/health" ||
     // 033: the public developmental check-in (anonymous sessions; the save route is under /api/family).
     pathname.startsWith("/api/screen/") ||
+    // 034: the voice booking agent. Tool calls authenticate with X-Agent-Secret + a per-conversation booking session,
+    // the session/demo routes with the browser's own cookie (lib/agents/booking/handler.ts).
+    pathname.startsWith("/api/agents/booking/") ||
     pathname === "/api/auth/phone/send" ||
     pathname === "/api/auth/phone/verify" ||
     /^\/api\/cases\/[^/]+\/ask$/.test(pathname) ||

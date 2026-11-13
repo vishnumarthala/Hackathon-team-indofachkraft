@@ -12,7 +12,7 @@ import { getT } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ profileId: string }>; searchParams: Promise<{ hold?: string }> };
+type Props = { params: Promise<{ profileId: string }>; searchParams: Promise<{ hold?: string; appointment?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { profileId } = await params;
@@ -26,7 +26,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // No third-party scripts (family CSP in proxy.ts, lib/csp.ts).
 export default async function BookPage({ params, searchParams }: Props) {
   const { profileId } = await params;
-  const { hold: holdParam } = await searchParams;
+  // 034: the voice booking widget links here with `?appointment=<id>` (same meaning as `?hold=`).
+  const { hold, appointment } = await searchParams;
+  const holdParam = hold ?? appointment;
   if (!isUuid(profileId)) notFound();
   const profile = await getBookableProfile(profileId);
   if (!profile) notFound();

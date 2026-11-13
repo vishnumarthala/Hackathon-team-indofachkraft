@@ -3,6 +3,8 @@ import Link from "next/link";
 import { FindFilters, type FindState } from "@/components/directory/FindFilters";
 import { ResultList } from "@/components/directory/ResultList";
 import { ResultsLayout } from "@/components/directory/ResultsLayout";
+import { BookingWidget } from "@/components/voice/BookingWidget";
+import { isDemoMode } from "@/lib/demo";
 import { env } from "@/lib/env";
 import { DIRECTORY_TYPES, findHref, isInIndia, typeSlug, type FindQuery } from "@/lib/geo/constants";
 import { getGeocoder, KNOWN_LOCALITIES } from "@/lib/geo/geocode";
@@ -86,6 +88,8 @@ export default async function FindPage({ searchParams }: Props) {
   };
   const base: FindQuery = { ...initial, q: initial.q || undefined };
   const browserKey = env.NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY;
+  // 034: the voice booking widget only when it can work (agent + tool secret, or the DEMO_MODE script).
+  const voiceBooking = isDemoMode() || Boolean(env.ELEVENLABS_BOOKING_AGENT_ID && env.ELEVENLABS_TOOL_SECRET);
   const message = (text: string, role: "status" | "alert" = "status") => (
     <p role={role} className="rounded border border-slate-200 bg-slate-50 p-4 text-slate-800">
       {text}
@@ -155,6 +159,7 @@ export default async function FindPage({ searchParams }: Props) {
         <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
         <p className="text-slate-700">{t("intro")}</p>
       </header>
+      {voiceBooking ? <BookingWidget /> : null}
       <FindFilters
         key={JSON.stringify(initial)}
         initial={initial}
