@@ -30,7 +30,6 @@ export async function POST(req: Request) {
   }
 
   await audit({
-    actor: "parent",
     actorUserId: session.user.id,
     action: "guardian.identity_linked",
     entity: "user",

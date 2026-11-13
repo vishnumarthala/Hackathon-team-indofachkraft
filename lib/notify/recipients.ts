@@ -85,6 +85,13 @@ export async function visibleDocumentGuardians(sql: Queryable, documentId: strin
   return rows.map((r) => r.user_id);
 }
 
+/** 041: active platform admins (deletion requests to review). */
+export async function platformAdmins(sql: Queryable): Promise<string[]> {
+  const rows = await sql<{ id: string }[]>`
+    select p.id from public.user_profiles p join auth.users u on u.id = p.id where p.role = 'platform_admin'`;
+  return rows.map((r) => r.id);
+}
+
 /** 024: the guardian a questionnaire is assigned to, while it is still open, the child is live and their link is
  * active (another guardian of the same child gets nothing). */
 export async function assignedAssessmentGuardian(sql: Queryable, assessmentId: string, childId: string): Promise<string[]> {

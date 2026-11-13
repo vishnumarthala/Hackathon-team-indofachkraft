@@ -1,3 +1,4 @@
+import { getAuditActor } from "@/lib/audit";
 import { z } from "zod";
 import { requireRecordingAccess } from "@/lib/authz";
 import { fail, ok, parseJson } from "@/lib/http";
@@ -17,7 +18,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   let result: SwapResult;
   try {
-    result = await swapSpeakers(id);
+    result = await swapSpeakers(id, await getAuditActor());
   } catch (err) {
     console.error(`speaker swap failed: ${err instanceof Error ? err.message : String(err)}`);
     return fail(500, "Could not swap the speakers");

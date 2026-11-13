@@ -18,7 +18,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ token:
   const result = await claimProfile(token, user.id);
   if (!result.ok) return fail(result.status, result.error);
   await audit({
-    actor: "therapist",
     actorUserId: user.id,
     action: "provider.claimed",
     entity: "provider_profile",

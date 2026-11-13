@@ -19,7 +19,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const profile = await updateProfile(id, parsed.data);
   await audit({
-    actor: "therapist",
     actorUserId: gate.actor.user.id,
     action: "provider.profile_updated",
     entity: "provider_profile",

@@ -15,6 +15,8 @@ export function isPublicApiPath(pathname: string): boolean {
     pathname === "/api/providers/join" ||
     pathname === "/api/public/providers" ||
     pathname === "/api/webhooks/elevenlabs" ||
+    // 041 FR-12: public health check (no data).
+    pathname === "/api/health" ||
     pathname === "/api/auth/phone/send" ||
     pathname === "/api/auth/phone/verify" ||
     /^\/api\/cases\/[^/]+\/ask$/.test(pathname) ||

@@ -1,3 +1,4 @@
+import { getAuditActor } from "@/lib/audit";
 import { BulkActionSchema, bulkUpdate } from "@/lib/facts";
 import { requireRecordingAccess } from "@/lib/authz";
 import { fail, ok, parseJson } from "@/lib/http";
@@ -12,7 +13,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const parsed = await parseJson(req, BulkActionSchema);
   if ("response" in parsed) return parsed.response;
 
-  const result = await bulkUpdate(id, parsed.data);
+  const result = await bulkUpdate(id, parsed.data, await getAuditActor());
   if (!result.ok) return fail(result.status, result.error);
   return ok(result.data);
 }

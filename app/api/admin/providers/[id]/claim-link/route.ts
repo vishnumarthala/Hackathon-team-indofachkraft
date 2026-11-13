@@ -17,7 +17,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const result = await createClaimLink(id, gate.actor.user.id);
   if (!result.ok) return fail(result.status, result.error);
   await audit({
-    actor: "system",
     actorUserId: gate.actor.user.id,
     action: "provider.claim_link_created",
     entity: "provider_profile",

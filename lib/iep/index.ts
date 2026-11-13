@@ -14,6 +14,7 @@
 // suggestions with `recordProgress({ ..., source: "ai_suggested_confirmed", recordingId })`.
 import type postgres from "postgres";
 import { contentHash, getLatestPublished, listGuardianVisible, publishVersion, type PublishedVersion } from "@/lib/clinical/publish";
+import { auditStrict } from "@/lib/audit";
 import { isUuid } from "@/lib/cases/validation";
 import { iepPlanMarkdown, orderGoals } from "@/lib/iep/markdown";
 import { goalTrend, sortPoints, type GoalTrend } from "@/lib/iep/progress";
@@ -145,14 +146,15 @@ function omitVersion<T extends { version: number }>(body: T): Omit<T, "version">
   return out as Omit<T, "version">;
 }
 
+// 041: strict audit in the caller's transaction, attributed to the session user (role from user_profiles).
 async function auditTx(
   tx: Tx,
   e: { caseId: string; actorUserId: string; action: string; entity: "iep_plan" | "iep_goal" | "goal_progress"; entityId: string; details?: Record<string, unknown> },
 ) {
-  await tx`
-    insert into audit_events (case_id, actor, actor_user_id, action, entity, entity_id, details)
-    values (${e.caseId}, 'therapist', ${e.actorUserId}, ${e.action}, ${e.entity}, ${e.entityId},
-            ${tx.json((e.details ?? {}) as postgres.JSONValue)})`;
+  await auditStrict(
+    { caseId: e.caseId, actorUserId: e.actorUserId, action: e.action, entity: e.entity, entityId: e.entityId, details: e.details ?? {} },
+    tx,
+  );
 }
 
 // ---------------------------------------------------------------------------------------------------------

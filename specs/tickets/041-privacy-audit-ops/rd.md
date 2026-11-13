@@ -1,6 +1,6 @@
 # 041: Privacy, audit and operations baseline
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 023, 032: deletion/export must cover documents (023); export delivery and incident/ops alerts use the outbox (032)
 

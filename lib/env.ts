@@ -110,4 +110,22 @@ export const env = {
   get WHATSAPP_API_VERSION() {
     return read("WHATSAPP_API_VERSION") ?? DEFAULT_WHATSAPP_API_VERSION;
   },
+  // 041: privacy notice (FR-10) and retention (FR-6). All optional; see .env.example.
+  get GRIEVANCE_OFFICER_EMAIL() {
+    return read("GRIEVANCE_OFFICER_EMAIL");
+  },
+  /** Only a human sets this, after legal review; until then /privacy shows the draft badge. */
+  get PRIVACY_NOTICE_REVIEWED() {
+    return process.env.PRIVACY_NOTICE_REVIEWED === "true";
+  },
+  get SUPABASE_REGION_LABEL() {
+    return read("SUPABASE_REGION_LABEL");
+  },
+  get RETENTION_AUDIO_DAYS() {
+    return read("RETENTION_AUDIO_DAYS");
+  },
+  /** Dev/test hook (lib/audit.ts `auditWouldFail`); ignored in production builds. */
+  get AUDIT_FAIL_ACTIONS() {
+    return read("AUDIT_FAIL_ACTIONS");
+  },
 };
