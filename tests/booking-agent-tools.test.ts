@@ -101,6 +101,18 @@ describe("booking agent: schemas, helpers and access lists", () => {
     expect(guide).toMatch(/sign in and (tap )?confirm/i);
   });
 
+  it("037: the demo script relays a Google-account refusal instead of failing", async () => {
+    const said: string[] = [];
+    const callTool: ToolCaller = async (tool) => {
+      if (tool === "search_providers") return { status: 200, json: { results: [{ profile_id: "p", name: "Dr X (synthetic)", locality: null, distance_km: null, modes: ["video"] }] } };
+      if (tool === "get_slots") return { status: 200, json: { slots: [{ service_id: "s", start: "2026-11-14T04:30:00.000Z", local_time: "Saturday, 14 November, 10:00 am" }] } };
+      return { status: 200, json: { held: false, reason: "google_account_required" } };
+    };
+    const outcome = await runDemoScript({ bookingSession: VALID_TOKEN, today: "Friday 2026-11-13", callTool, say: (_r, t) => void said.push(t) });
+    expect(outcome).toEqual({ kind: "refused" });
+    expect(said.at(-1)).toBe(DEMO_LINES.googleRequired);
+  });
+
   it("NFR-3: the demo script stops cleanly when nothing is bookable", async () => {
     const said: string[] = [];
     const callTool: ToolCaller = async () => ({ status: 200, json: { results: [] } });
@@ -156,6 +168,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     paymentOrder: typeof import("@/app/api/appointments/[id]/payment-order/route");
   };
   let online600: string;
+  let mainVideo: string;
 
   // Shamshabad (bundled geocoder table): far from the other suites' synthetic clinics.
   const AREA = "Shamshabad";
@@ -194,7 +207,7 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     }
     main = providers[0];
     mainClinic = await world.service(main, { duration: 30, payment: "free", name: "Speech assessment (synthetic)" });
-    await world.service(main, { mode: "video", duration: 30, payment: "free", name: "Video consult (synthetic)" });
+    mainVideo = await world.service(main, { mode: "video", duration: 30, payment: "free", name: "Video consult (synthetic)" });
     for (const p of providers.slice(1)) await world.service(p, { duration: 30, payment: "free" });
     online600 = await world.service(providers[6], { duration: 30, payment: "online", fee: 600, name: "Online assessment (synthetic)" });
     guardianA = await world.guardian("ga");
@@ -464,6 +477,23 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
     expect(wrong.status).toBe(404);
     const offGrid = await tool("hold_slot", { booking_session: token, profile_id: main.profileId, service_id: mainClinic, start: new Date(futureSlot(32).getTime() + 7 * 60_000).toISOString() });
     expect(offGrid.json).toMatchObject({ held: false, reason: "slot_unavailable" });
+  });
+
+  it("037: a video hold is refused for the agent (no Google identity) -> 200 { held: false, reason: 'google_account_required' }, nothing held", async () => {
+    const { token } = await startSession();
+    const start = futureSlot(70);
+    const r = await tool("hold_slot", { booking_session: token, profile_id: main.profileId, service_id: mainVideo, start: start.toISOString() });
+    expect(r.status).toBe(200);
+    expect(r.json).toMatchObject({ held: false, reason: "google_account_required", booking_url: `/book/${main.profileId}` });
+    expect(String(r.json.message)).toMatch(/Google account/);
+    expect(String(r.json.message)).toMatch(/in-clinic/);
+    const rows = await sql`select id from appointments where provider_profile_id = ${main.profileId} and lower(slot) = ${start}`;
+    expect(rows).toHaveLength(0);
+    const { hashAgentToken } = await import("@/lib/agents/booking/session");
+    const [agentSession] = await sql`select hold_appointment_id from booking_agent_sessions where token_hash = ${hashAgentToken(token)}`;
+    expect(agentSession.hold_appointment_id).toBeNull();
+    const video = await tool("get_slots", { booking_session: token, profile_id: main.profileId, service_mode: "video", date_from: (await import("@/lib/booking/time")).todayIn("Asia/Kolkata") });
+    expect(String(video.json.message)).toMatch(/sign in with Google/);
   });
 
   it("E-2 / E-3: confirm needs a signed-in guardian (401); another browser's cookie -> 404; the holding browser -> confirmed", async () => {

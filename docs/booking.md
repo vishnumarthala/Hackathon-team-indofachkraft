@@ -85,8 +85,9 @@ generated slot is accepted by the SQL check.
 | Method + path | Who | Body / query | Success / errors |
 |---|---|---|---|
 | `GET /api/public/providers/:profileId/slots?service_id=&from=YYYY-MM-DD&days=7` | public (120/min per IP) | `from` = local date in the service's zone (default today), `days` 1-14 | 200 `{ slots: [{ start, end }], from, days, time_zone, duration_min }` (UTC ISO); 404 unknown/unlisted profile or inactive service; 400 |
-| `POST /api/appointments/hold` | guardian or anonymous (30 per 10 min per IP) | `{ service_id, start, idempotency_key }` | 201 `{ appointment_id, hold_expires_at, status }`; 200 replay; 409 taken; 403 signed-in non-guardian; 422 |
-| `POST /api/appointments/:id/confirm` | guardian | `{ child_id }` | 200 `{ appointment }` (`confirmed` or `pending_payment`); 401; 404; 410; 422 |
+| `POST /api/appointments/hold` | guardian or anonymous (30 per 10 min per IP) | `{ service_id, start, idempotency_key }` | 201 `{ appointment_id, hold_expires_at, status }`; 200 replay; 409 taken; 403 signed-in non-guardian; 422 (037: video without a linked Google account) |
+| `POST /api/appointments/:id/confirm` | guardian | `{ child_id }` | 200 `{ appointment }` (`confirmed` or `pending_payment`); 401; 404; 410; 422 (037: video without Google) |
+| `POST /api/appointments/:id/meet-link` (037) | provider side | `{ url }` (`https://meet.google.com/...`) | 200 `{ meet_url, meet_status: "manual" }`; 400 not a Meet link; 404; 409 (see `docs/google-meet.md`) |
 | `POST /api/appointments/:id/cancel` | booking guardian or provider side | `{ reason? }` | 200 `{ appointment }`; 409 |
 | `POST /api/appointments/:id/reschedule` | booking guardian or provider side | `{ start }` | 200 `{ appointment, rescheduled_from }`; 409 |
 | `POST /api/appointments/:id/complete` | provider side | `{ status: "completed" \| "no_show" }` | 200; 409 before the start |
@@ -109,10 +110,12 @@ needs a session. `postSignInPath` lets guardians return to `/book/<profileId>?ho
   `Booking shares <child>'s name and age with <provider (location)>` -> `Confirm booking` (`Continue to payment` for
   online services; 031 adds the checkout).
 - `/family/appointments`: upcoming / past, `Add to calendar`, `Reschedule` (`/family/appointments/:id/reschedule`),
-  `Cancel` (up to 2 h before the start).
+  `Cancel` (up to 2 h before the start). Video appointments (037): `Join video call` from 10 minutes before the start
+  until 30 minutes after the end, or `Your provider will share the video link soon.`
 - `/dashboard/schedule` (link in the provider header): agenda (day/week in the profile's zone, child name and age,
   status, a warning on confirmed appointments that no longer fit the hours, `Mark completed`, `No-show`, `Cancel`),
-  services editor, weekly hours (`Add hours`), date changes (`Block a date`, `Add extra hours`).
+  services editor, weekly hours (`Add hours`), date changes (`Block a date`, `Add extra hours`). Video appointments
+  (037): Meet link state, `Join video call` in the join window, `Add a video link` when the automatic link failed.
 
 ## Notifications (FR-6)
 
@@ -144,11 +147,17 @@ same calendar entry across reschedules.
   where the owner is the **browser's** booking session (`dnm_booking` cookie hash, stored per agent session), not the
   agent's token, so the normal confirm flow attaches the hold after sign-in. `/book/<profileId>?appointment=<id>` is an
   alias of `?hold=`. Confirmation still needs a signed-in guardian; for online services that confirm leads to 031's
-  payment page like any other hold. See `docs/elevenlabs-booking-agent.md` and
+  payment page like any other hold. 037's video rule refuses agent holds (no Google identity) as `{ held: false,
+  reason: "google_account_required" }`. See `docs/elevenlabs-booking-agent.md` and
   `docs/system-design.md` section 13b.
 - **035 intake:** `services.intake_kind`, `appointments.case_id`, `service_snapshot.intake_kind`.
-- **037 Meet / 042 demo safeguard:** `lib/booking/hooks.ts` `checkHoldPreconditions()` runs before every hold
-  (Google account for video holds; `demo_ack` for `is_synthetic` profiles, plus an `is_demo` column).
+- **037 Meet (done) / 042 demo safeguard:** `lib/booking/hooks.ts` `checkHoldPreconditions()` runs before every hold and
+  `checkConfirmPreconditions()` before confirming an owned hold. 037: a `video` service needs a signed-in guardian with a
+  linked Google identity, else 422 `{ error: "Link your Google account to book a video consultation", code:
+  "google_account_required" }` (anonymous video holds too); the booking page shows that text with `Connect Google` /
+  `Sign in` before slot selection. 042: `demo_ack` for `is_synthetic` profiles, plus an `is_demo` column. Meet links
+  themselves are created from the state machine's own outbox events (no change to the SQL functions): see
+  `docs/google-meet.md`.
 
 ## Open questions (product / legal)
 

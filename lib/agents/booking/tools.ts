@@ -139,7 +139,7 @@ export async function getSlotsTool(input: GetSlotsInput): Promise<ToolResult> {
     provider_name: profile.display_name,
     slots,
     message: slots.length
-      ? `Offer these ${label} times (local_time) and ask which one to hold. Mention the fee (fee_inr, in rupees; payment_mode online = paid online after confirming, at_clinic = paid at the clinic, free = no fee). Use the exact service_id and start in hold_slot.`
+      ? `${input.service_mode === "video" ? "Video bookings need the parent to sign in with Google on the booking page, so hold_slot cannot hold these; offer in-clinic times if possible. " : ""}Offer these ${label} times (local_time) and ask which one to hold. Mention the fee (fee_inr, in rupees; payment_mode online = paid online after confirming, at_clinic = paid at the clinic, free = no fee). Use the exact service_id and start in hold_slot.`
       : `No free ${label} times in the ${SLOT_SEARCH_DAYS} days from ${input.date_from}${input.part_of_day ? ` in the ${input.part_of_day}` : ""}. Offer another day or part of the day.`,
   });
 }
@@ -149,6 +149,14 @@ export async function getSlotsTool(input: GetSlotsInput): Promise<ToolResult> {
 /** Booking refusals the agent can talk the parent through (anything else is a server error). */
 const HOLD_REFUSALS: BookingErrorCode[] = ["slot_taken", "slot_unavailable", "too_soon", "too_far"];
 
+/** What the agent tells the parent when a hold rule (lib/booking/hooks.ts) refuses an agent hold. */
+export function refusalMessage(blocked: { code: string; error: string }): string {
+  if (blocked.code === "google_account_required") {
+    return "Nothing was held. Video consultations need the parent's Google account, which you cannot check by phone. Offer an in-clinic time instead, or tell the parent to tap the provider's name in the search results on their screen, sign in with Google and book the video time there.";
+  }
+  return `Nothing was held: ${blocked.error} Offer another time, or tell the parent to book on the provider's page on their screen.`;
+}
+
 export const HOLD_CREATED_ACTION = "booking_agent.hold_created";
 
 export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Promise<ToolResult> {
@@ -156,8 +164,9 @@ export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Prom
   const profile = service?.active && service.provider_profile_id === input.profile_id ? await getBookableProfile(service.provider_profile_id) : null;
   if (!service || !profile) return notFound("Service not found", "This time cannot be booked. Read the free times again with get_slots.");
 
+  // 037/042 rules apply to agent holds too (anonymous: no user). A refusal is relayed, never an error for the agent.
   const blocked = await checkHoldPreconditions({ profile, service, userId: null, body: { service_id: input.service_id, start: input.start } });
-  if (blocked) return ok({ held: false, reason: blocked.code, message: `${blocked.error} The parent can book on the provider's page instead.` });
+  if (blocked) return ok({ held: false, reason: blocked.code, booking_url: `/book/${profile.id}`, message: refusalMessage(blocked) });
 
   const sql = await pg();
   try {

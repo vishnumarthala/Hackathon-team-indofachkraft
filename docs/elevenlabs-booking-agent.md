@@ -166,7 +166,10 @@ Returns `{ provider_name, slots: [{ service_id, service_name, start, end, local_
 | `start` | string | yes | `start` of the chosen slot, copied exactly. |
 
 Returns `{ held: true, expires_at, confirm_url, provider_name, start, local_time, payment_mode, fee_inr, message }` or
-`{ held: false, reason: "slot_taken" | "slot_unavailable" | "too_soon" | "too_far", message }`. One hold per session:
+`{ held: false, reason: "slot_taken" | "slot_unavailable" | "too_soon" | "too_far" | "google_account_required", message }`
+(`google_account_required` (037): video consultations need the parent's Google account, so the agent cannot hold
+them; the result adds `booking_url` and tells the agent to offer an in-clinic time or send the parent to the booking
+page). One hold per session:
 a new hold releases the previous one.
 
 Errors: 401 wrong/missing `X-Agent-Secret` or an unknown/expired/ended `booking_session`; 400 invalid or extra

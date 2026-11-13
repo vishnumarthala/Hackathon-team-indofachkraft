@@ -97,7 +97,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 
 | # | Title | Status | Mode | Runs |
 |---|-------|--------|------|------|
-| 037 | Google Meet for video appointments | draft | solo | waits for 030 |
+| 037 | Google Meet for video appointments | done | solo | waits for 030 |
 | 038 | AI scribe for any provider type | done | solo | waits for 024, 025, 028, 041 |
 | 039 | E-prescriptions for verified prescribers | draft | solo | waits for 021, 028, 038 |
 | 040 | Follow-up agent ("ask about my child's plan") | draft | solo | waits for 026, 033, 039 |

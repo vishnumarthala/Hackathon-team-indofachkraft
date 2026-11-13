@@ -2,6 +2,8 @@
 import type { Template } from "../types";
 import appointment_cancelled from "./appointment_cancelled";
 import appointment_confirmed from "./appointment_confirmed";
+import appointment_meet_failed from "./appointment_meet_failed";
+import appointment_meet_ready from "./appointment_meet_ready";
 import appointment_reminder_24h from "./appointment_reminder_24h";
 import appointment_reminder_2h from "./appointment_reminder_2h";
 import appointment_rescheduled from "./appointment_rescheduled";
@@ -9,6 +11,7 @@ import assessment_assigned from "./assessment_assigned";
 import assessment_red_flag from "./assessment_red_flag";
 import assessment_submitted from "./assessment_submitted";
 import document_shared from "./document_shared";
+import google_calendar_reconnect from "./google_calendar_reconnect";
 import home_program_published from "./home_program_published";
 import iep_published from "./iep_published";
 import message_created from "./message_created";
@@ -47,6 +50,9 @@ export const TEMPLATES = {
   appointment_reminder_2h,
   appointment_cancelled,
   appointment_rescheduled,
+  appointment_meet_ready,
+  appointment_meet_failed,
+  google_calendar_reconnect,
   payment_refunded,
 } as const satisfies Record<string, Template<never>>;
 

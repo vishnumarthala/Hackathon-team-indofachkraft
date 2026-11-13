@@ -13,6 +13,7 @@ export type DemoOutcome =
   | { kind: "held"; appointment_id: string; profile_id: string }
   | { kind: "no_providers" }
   | { kind: "no_slots" }
+  | { kind: "refused" }
   | { kind: "error" };
 
 export const DEMO_AREA = "Banjara Hills";
@@ -26,6 +27,8 @@ export const DEMO_LINES = {
   noProviders: "I could not find a provider who takes bookings there. Please use the search on this page.",
   noSlots: "I could not find a free time in the next week. Please use the search on this page to see other providers.",
   error: "Sorry, something went wrong. Please use the search on this page.",
+  googleRequired:
+    "Video consultations need your Google account, so I cannot hold this time. Please tap the provider in the search on this page, sign in with Google and book there.",
   held: (time: string, name: string, onlineFee?: number) =>
     `Done. I am holding ${time} with ${name} for 10 minutes. It is not booked yet: tap Sign in and confirm on your screen to finish.${
       onlineFee ? ` After you confirm, you pay ${onlineFee} rupees online on the next screen.` : ""
@@ -80,6 +83,7 @@ export async function runDemoScript(deps: { bookingSession: string; today: strin
       await say("agent", `${provider.name} has these times: ${slots.slice(0, 3).map((s) => s.local_time).join("; ")}. Which one should I hold?`);
       await say("parent", DEMO_LINES.parentPickTime);
       const hold = await callTool("hold_slot", { booking_session, profile_id: provider.profile_id, service_id: slots[0].service_id, start: slots[0].start });
+      if (hold.status === 200 && hold.json.reason === "google_account_required") return stop(DEMO_LINES.googleRequired, { kind: "refused" });
       if (hold.status !== 200 || hold.json.held !== true) return stop(DEMO_LINES.error, { kind: "error" });
       const onlineFee = hold.json.payment_mode === "online" ? Number(hold.json.fee_inr) || undefined : undefined;
       await say("agent", DEMO_LINES.held(slots[0].local_time, provider.name, onlineFee));

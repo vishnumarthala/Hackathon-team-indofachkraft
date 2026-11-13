@@ -68,3 +68,34 @@ only. No ElevenLabs key or agent exists locally: the live call is a manual human
 - **For later tickets:** 037/042 hold rules in `lib/booking/hooks.ts` `checkHoldPreconditions()` also apply to agent
   holds (`userId: null`); a refusal becomes `{ held: false, reason: <code> }`. Agent tools reuse 029's `getGeocoder()` /
   `searchProviders()` and 030's `getSlots()` / `holdSlot()`; new agent tools go through `handleToolCall()`.
+
+## Merge with main (031 payments, 037 Google Meet)
+
+- **Merged `main` twice** (031 Razorpay test mode, then 037 Google Meet). Conflicts resolved keeping both sides:
+  `lib/csp.ts` (`/find` ElevenLabs + `/book/*/pay/*` Razorpay exceptions), `tests/no-tracking.test.ts` (allowlist
+  names/routes for `/find` and the payment page), `docs/booking.md`, `messages/{en,hi,te}.json` (main's catalogues +
+  `voiceBooking`), `messages/REVIEW.md` regenerated (`npx tsx scripts/i18n-review.ts`, 2245 rows). Test cleanup deletes
+  this suite's `payments` (and their events/outbox/audit) before appointments (031 `on delete restrict`).
+- **031 online payment:** `get_slots` and `hold_slot` results, the widget status and card carry `payment_mode` +
+  `fee_inr`; for online services the agent/demo says the parent pays online after confirming and the card shows
+  `After you confirm, you pay ₹500 online to complete the booking.` Confirm moves the agent's hold to `pending_payment`
+  and 030's page continues to `/book/<profileId>/pay/<appointmentId>`. Vitest: agent hold (online, ₹600) -> guardian
+  confirm 200 `pending_payment` -> `payment-order` 200 `amount_paise 60000`. Browser (375 px): voice hold -> `Sign in and
+  confirm` -> OTP -> child -> `Continue to payment` -> `/book/<id>/pay/<id>` `Pay for your appointment`, row
+  `pending_payment` (15 min) (`evidence/acceptance.txt`, `evidence/find-hold-card-online-375.png`,
+  `evidence/pay-from-voice-375.png`).
+- **037 Google Meet:** `checkHoldPreconditions()` refuses video holds without a Google identity, and agent holds are
+  anonymous, so `hold_slot` relays it as 200 `{ held: false, reason: "google_account_required", booking_url:
+  "/book/<profileId>", message }` (offer an in-clinic time or book on the page after signing in with Google); nothing is
+  held or audited. `get_slots` for video warns the agent up front; the demo script says the refusal. Tests added.
+- **i18n typing:** with the merged catalogue (2245 keys) `createTranslator()` hit TS2589 ("type instantiation is
+  excessively deep") in `lib/i18n/translate.ts`; the inner function is now typed with `string` keys and cast once to
+  `TFunction<N>` (call sites keep full key checking; no runtime change).
+- **Post-merge checks** (slot 7 reset with all migrations incl. 031/037, env loaded): see the table below.
+
+| Post-merge check | Result | Evidence |
+|-------|--------|----------|
+| `$H 7 <worktree> reset` | PASS | all migrations from the merged tree (incl. 031 payments, 037 Meet, 034 booking agent) |
+| `npm run lint` / `npm run typecheck` / `npm run build` | PASS | exit 0 |
+| `npx vitest run` | PASS | 82 files, 1333 passed, 11 skipped (same opt-in skips); every DB suite ran. A first run had one failure in 041's `privacy-export-deletion` (export notification already drained by a concurrent outbox worker in another suite); the file passes alone (5/5) and the full rerun is green; unrelated to 034 |
+| `npx vitest run tests/booking-agent-tools.test.ts` | PASS | 23 passed (20 + online payment -> `pending_payment` -> payment order; video hold -> `google_account_required`; demo script relays the refusal) |

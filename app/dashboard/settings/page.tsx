@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { NotificationPreferencesForm } from "@/components/notifications/NotificationPreferencesForm";
 import { requireProviderPage } from "@/lib/authz";
 import { getT } from "@/lib/i18n/server";
@@ -15,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ProviderSettingsPage() {
   const { user } = await requireProviderPage();
   const t = await getT("notifications");
+  const ti = await getT("integrations");
   const preferences = await getPreferences(user.id);
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-6">
@@ -25,6 +27,18 @@ export default async function ProviderSettingsPage() {
         </h2>
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <NotificationPreferencesForm initial={preferences} />
+        </div>
+      </section>
+      {/* 037: Google Calendar / Meet connection. */}
+      <section aria-labelledby="integrations-heading" className="space-y-2">
+        <h2 id="integrations-heading" className="text-lg font-semibold text-slate-900">
+          {ti("title")}
+        </h2>
+        <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-4">
+          <p className="text-sm text-slate-700">{ti("settingsIntro")}</p>
+          <Link href="/dashboard/settings/integrations" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
+            {ti("settingsLink")}
+          </Link>
         </div>
       </section>
     </div>

@@ -26,16 +26,26 @@ export type FlowChild = { id: string; name: string; age: string };
 type Props = {
   profile: { id: string; name: string; slug: string };
   services: FlowService[];
-  viewer: { signedIn: boolean; isGuardian: boolean; children: FlowChild[] };
+  viewer: { signedIn: boolean; isGuardian: boolean; hasGoogle: boolean; children: FlowChild[] };
   initialHold: FlowHold | null;
 };
 
-type ErrorCode = "slot_taken" | "hold_expired" | "slot_unavailable" | "too_soon" | "too_far" | "child_not_linked" | "invalid_transition" | "rate_limited" | "generic";
+type ErrorCode =
+  | "slot_taken"
+  | "hold_expired"
+  | "slot_unavailable"
+  | "too_soon"
+  | "too_far"
+  | "child_not_linked"
+  | "invalid_transition"
+  | "google_account_required"
+  | "rate_limited"
+  | "generic";
 
 function errorCodeOf(status: number, json: Record<string, unknown>): ErrorCode {
   if (status === 429) return "rate_limited";
   const code = json.code;
-  const known: ErrorCode[] = ["slot_taken", "hold_expired", "slot_unavailable", "too_soon", "too_far", "child_not_linked", "invalid_transition"];
+  const known: ErrorCode[] = ["slot_taken", "hold_expired", "slot_unavailable", "too_soon", "too_far", "child_not_linked", "invalid_transition", "google_account_required"];
   return known.includes(code as ErrorCode) ? (code as ErrorCode) : "generic";
 }
 
@@ -177,6 +187,24 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
     </dl>
   );
 
+  // 037 FR-5a: a video consultation needs a guardian with a linked Google account (shown before slot selection).
+  const needsGoogle = service.mode === "video" && !(viewer.isGuardian && viewer.hasGoogle);
+  const googleNotice = needsGoogle ? (
+    <div className="space-y-3 rounded-lg border border-sky-200 bg-sky-50 p-4" role="note" data-testid="google-required">
+      <p className="font-semibold text-sky-950">{t("flow.googleRequired")}</p>
+      <p className="text-sm text-sky-900">{t("flow.googleRequiredHint")}</p>
+      {!viewer.signedIn ? (
+        <Link href={`/family/login?next=${encodeURIComponent(`/book/${profile.id}`)}`} className={buttonClass}>
+          {t("flow.signIn")}
+        </Link>
+      ) : viewer.isGuardian ? (
+        <Link href="/family/settings" className={buttonClass}>
+          {t("flow.connectGoogle")}
+        </Link>
+      ) : null}
+    </div>
+  ) : null;
+
   if (hold) {
     const minutes = Math.floor(left / 60_000);
     const seconds = Math.floor((left % 60_000) / 1000);
@@ -209,6 +237,8 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
           </div>
         ) : !viewer.isGuardian ? (
           <p role="alert" className="rounded border border-slate-200 bg-white p-4 text-sm text-slate-800">{t("flow.familyOnly")}</p>
+        ) : needsGoogle ? (
+          googleNotice
         ) : (
           <div className="space-y-4">
             <fieldset className="space-y-2">
@@ -275,10 +305,14 @@ export function BookingFlow({ profile, services, viewer, initialHold }: Props) {
       ) : null}
       {summary}
       {errorBox}
-      <SlotPicker profileId={profile.id} serviceId={service.id} clinicTimeZone={clinicTz} selected={picked} onSelect={setPicked} refreshKey={refreshKey} />
-      <button type="button" className={buttonClass} disabled={!picked || busy} onClick={continueWithSlot}>
-        {t("flow.continue")}
-      </button>
+      {googleNotice ?? (
+        <>
+          <SlotPicker profileId={profile.id} serviceId={service.id} clinicTimeZone={clinicTz} selected={picked} onSelect={setPicked} refreshKey={refreshKey} />
+          <button type="button" className={buttonClass} disabled={!picked || busy} onClick={continueWithSlot}>
+            {t("flow.continue")}
+          </button>
+        </>
+      )}
     </div>
   );
 }

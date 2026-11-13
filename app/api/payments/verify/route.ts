@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { auditFailure, AuditWriteError } from "@/lib/audit";
 import { requireGuardian } from "@/lib/authz";
+import { drainMeetJobs } from "@/lib/google/meet";
 import { ok, parseJson } from "@/lib/http";
 import { logger } from "@/lib/log";
 import { drainSoon } from "@/lib/notify/outbox";
@@ -50,6 +51,8 @@ export async function POST(req: Request) {
   try {
     const result = await applyPaymentCaptured({ orderId, paymentId, actorUserId: session.user.id, source: "checkout" });
     if (result.event_id) drainSoon([result.event_id]);
+    // 037: a paid video appointment's Meet event (queued with appointment.confirmed) right after the response.
+    if (result.event_id) await drainMeetJobs(result.appointment_id);
     if (result.payment_status === "refund_pending") runPaymentJobsSoon([result.payment_id]);
     return ok({
       appointment_id: result.appointment_id,

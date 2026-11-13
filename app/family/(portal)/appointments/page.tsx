@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { CancelAppointmentButton } from "@/components/booking/AppointmentActions";
+import { MeetPanel } from "@/components/google/MeetPanel";
 import { requireGuardianPage } from "@/lib/authz";
 import { clinicTimeIfDifferent, guardianCanChange, splitAppointments } from "@/lib/booking/display";
 import { GUARDIAN_CANCEL_WINDOW_MINUTES } from "@/lib/booking/slots";
 import { listGuardianAppointments, type AppointmentView } from "@/lib/booking/store";
+import { getMeetInfo } from "@/lib/google/meet";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { PAYMENT_LABEL_STYLE, paymentHoldOpen, paymentLabel } from "@/lib/payments/display";
 import { listPaymentsForAppointments } from "@/lib/payments/store";
@@ -30,6 +32,8 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
   const tp = await getT("payments");
   const payments = await listPaymentsForAppointments(all.map((a) => a.id));
   const { upcoming, past } = splitAppointments(all);
+  // 037: Meet link state of the guardian's own video appointments (Join video call inside the join window).
+  const meet = await getMeetInfo(upcoming.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
 
   const card = (a: AppointmentView, actions: boolean) => {
     const snap = a.service_snapshot;
@@ -71,6 +75,7 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
             ) : null}
           </div>
         </div>
+        {actions && snap.mode === "video" ? <MeetPanel appointment={a} meet={meet.get(a.id)} side="guardian" /> : null}
         {actions && (a.status === "confirmed" || a.status === "pending_payment") ? (
           <div className="flex flex-wrap items-center gap-2">
             {actions && payable ? (
