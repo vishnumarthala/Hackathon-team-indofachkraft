@@ -1,15 +1,16 @@
 # 024: Assessment portal and shared clinical contracts - Results
 
-Branch: `ticket/024-assessment-portal-contracts` (base `87571ad`: 017-020, 022, 028, 029 merged). Tested against the
-isolated local Supabase stack `dnmslot4` (all 12 migrations applied by `db reset`), `DEMO_MODE=true`, dev server on
+Branch: `ticket/024-assessment-portal-contracts` (base `87571ad`: 017-020, 022, 028, 029; then `main` merged with
+021 health profile, 023 document vault and 032 notifications outbox, see "Merge with main"). Tested against the
+isolated local Supabase stack `dnmslot4` (all 16 migrations applied by `db reset`), `DEMO_MODE=true`, dev server on
 port 3040, integrated browser. Accounts from `npm run -s seed:users -- --prefix acct`; synthetic data only. Raw
-evidence in `evidence/`: `acceptance.txt` (scripted API/HTML run, 44 checks, all PASS), `vitest-024-verbose.txt` (the
+evidence in `evidence/`: `acceptance.txt` (scripted API/HTML run after the merge, 48 checks, all PASS), `vitest-024-verbose.txt` (the
 eval test command, 55 tests), `regression-diff.txt`, `migration-on-existing-db.txt`, `browser.txt` + screenshots.
 
 | Check | Result | Evidence |
 |-------|--------|----------|
 | Migrations `20261113002400_clinical_contracts.sql`, `20261113002401_assessments.sql` | PASS | `db reset` applies all 12. Also applied on top of a populated base DB (seed + one legacy final assessment report + one final parent summary): backfill published 2, re-run 0, `facts_instrument_check` replaced by `facts_instrument_fkey` (added `not valid`, validated, old check dropped) (`migration-on-existing-db.txt`) |
-| `npm run verify` (lint, typecheck, vitest, build) | PASS | exit 0; vitest 57 files, 808 passed, 10 skipped (the pre-existing ticket 010 `CT_DB_TESTS` block); every other DB suite ran against slot 4. Baseline before 024: 54 files, 752 passed, 10 skipped - no existing test removed |
+| `npm run lint`, `npm run typecheck`, `npx vitest run`, `npm run build` (after merging main) | PASS | all exit 0; vitest 63 files, 929 passed, 10 skipped (the pre-existing ticket 010 `CT_DB_TESTS` block); every other DB suite ran against slot 4. One earlier run hit a pre-existing timing flake in `tests/children-claims.test.ts` (claim code expiry 72.000008 h > 72 h, DB vs Node clock); it passed on 3 re-runs and the full re-run. Before the merge: `npm run verify` exit 0, 57 files, 808 passed. Base before 024: 54 files, 752 passed |
 | `npx vitest run tests/clinical-contracts.test.ts tests/assessments.test.ts tests/regression-child-dev.test.ts --reporter=verbose` | PASS | 3 files, 55 passed, 0 skipped (`vitest-024-verbose.txt`) |
 | Registry loads ISAA / CASE_SHEET / ISAA_PARENT_CHECKIN; unknown instrument fails (FK) | PASS | tests: typed items (ISAA 40 items, red flags 15/29; case sheet fields; check-in 21 items), DB `definition` deep-equals `schemas/*.json`; `insert into facts (... 'MCHAT' ...)` -> `facts_instrument_fkey` violation; `score("ISAA", facts)` equals `scoreIsaa(facts)` |
 | `published_versions` update/delete raise; hash = sha256(content_md) | PASS | tests: update, delete, truncate -> `published_versions is append-only`; `service_role` insert -> permission denied (only `publish_version()` writes); hash checked in SQL and TS; versions 1, 2, 3 per entity; case/org/child mismatch rejected; RLS (guardian: visible only; care team: own cases; others: nothing; `authenticated` cannot call `publish_version`) |
@@ -22,7 +23,7 @@ eval test command, 55 tests), `regression-diff.txt`, `migration-on-existing-db.t
 | E-2.1 send questionnaire | PASS | provider_a `Assessments` tab, `Send questionnaire` `Parent developmental check-in` to guardian_a due in 7 days -> 201; audit `assessment.assigned`; browser `provider-assessments-tab.png` |
 | E-2.2 save and continue later, 422, submit | PASS | 5 answers saved (version 1 -> 2), reload resumes at `Question 6 of 21` (API + browser); submit with missing -> 422 `Please answer all questions` listing the 16 missing ids; all answered -> 200 `submitted` |
 | E-2.3 review and share | PASS | provider detail shows score `21 of 45 points`, band and `This is a developmental check-in, not a diagnosis.`; `Mark reviewed` + `Share result with parent` (API and browser form, `provider-review-shared.png`) -> published version `entity_type assessment`, visible; guardian sees the summary on `/family/assessments/[id]`; the reviewer note is never in it |
-| E-3 red flag | PASS | `rf_skill_regression` `yes`: 108/112 message immediately (browser, Telugu, `family-redflag-te-375.png`) and auto-saved; audit `assessment.red_flag`; `notifyLater("assessment.red_flag", ...)` logged once (032 not merged: no outbox row, see Deviations); provider list badge `1 red flag`, detail highlights the answer |
+| E-3 red flag | PASS | `rf_skill_regression` `yes`: 108/112 message immediately (browser, Telugu, `family-redflag-te-375.png`) and auto-saved; audit `assessment.red_flag`; outbox event `assessment.red_flag` committed in the save transaction (payload ids only, dedup per raised codes) and fanned out to provider_a (assigned) and org_admin_a (owner), not provider_b, no child name in the text; provider list badge `1 red flag`, detail highlights the answer |
 | E-4.1 concurrency | PASS | two saves with the same `version`: 200 then 409 (stale), value of the first kept |
 | E-4.2 other guardian / other org | PASS | guardian_b page/PUT/submit -> 404; provider_b GET/review/cancel/detail page -> 404; unassigned org member -> 404; revoked guardian link -> 404 on the next request; guardians on provider APIs 403, providers on family APIs 403, anonymous 401 |
 | E-4.3 not linked / submit twice | PASS | assigning guardian_b -> 422 `This parent is not linked to the child`; second submit -> 409 `Already submitted`; save after submit -> 409; duplicate open questionnaire -> 409 |
@@ -52,9 +53,12 @@ eval test command, 55 tests), `regression-diff.txt`, `migration-on-existing-db.t
   any red flag -> `see_professional_soon`; `age_bands` cover 18-215 months for every question (no age-specific
   items yet). Clinical review pending (rd.md open question). Answer labels (Never ... Always, Yes/No) are translated
   as UI chrome; question text is not.
-- **Notifications**: 032 is not on this base, so `notifyLater` (only logs, `[notify:pending-032]`) is used for
-  `assessment.assigned` (guardian), `assessment.submitted` and `assessment.red_flag` (care team). Topics added to
-  `lib/notify/topics.ts` (`ASSESSMENT_TOPICS`); 032 should enqueue them in the producing transactions.
+- **Notifications (032 outbox)**: `assessment.assigned`, `assessment.red_flag` and `assessment.submitted` are enqueued
+  with `enqueue(tx, ...)` in the producing transactions (`createAssessment`, `saveResponses`, `submitAssessment`);
+  the routes call `drainSoon`. Payloads `{ assessment_id, child_id, case_id }` only (red-flag codes stay out of
+  notifications). 024 added the `assessment.submitted` topic + template (providers, in-app + email) and narrowed
+  `assessment.assigned` recipients to the assigned guardian (`assignedAssessmentGuardian`, re-checked at fan-out);
+  its link now opens `/family/assessments/<id>`. No `notifyLater` call sites remain.
 - **Guardians do not see the score at submit**; they see the published summary once the care team shares it.
 - **No consent gate for questionnaires**: answers stay with the treating organisation and no AI or external
   processor touches them (020's feature list has no matching feature). 033's public screen must use
@@ -67,6 +71,18 @@ eval test command, 55 tests), `regression-diff.txt`, `migration-on-existing-db.t
 - **Existing tests touched** (contract changes only): `tests/report.test.ts` (authz mock gains `requireReportActor`),
   `tests/sharing-grants.test.ts` (registry now lists `reports` and `assessments`), `tests/fixtures.test.ts`
   (`parseArgs` gains `finalReport`).
+
+## Merge with main (021, 023, 032)
+
+- `git merge main`; conflicts resolved keeping both sides: case tabs (Documents, Assessments, Team, Health, Shared),
+  `lib/sharing/registry.ts` (reports, assessments, documents, health_profile; `tests/sharing-grants.test.ts` expects
+  all four), `messages/*.json` (deep union, no value clashes; `messages/REVIEW.md` regenerated, 1285 rows),
+  `lib/notify/topics.ts` (032's registry + 024's `assessment.submitted` and `ASSESSMENT_TOPICS`; `notifyLater` gone).
+- `lib/assessments` now uses 032's shared pool `lib/pg.ts`. `tests/notify-templates.test.ts` covers the new topic;
+  `tests/assessments.test.ts` checks outbox rows and fan-out recipients instead of a `notifyLater` mock.
+- After `$H 4 <worktree> reset`: lint, typecheck, vitest, build all pass; the eval test command 55/55; the
+  regression output is still identical to the pre-024 baseline (`diff` empty); E-1/E-2/E-3/E-4 re-checked against
+  the dev server (`acceptance.txt`).
 
 ## Notes
 
@@ -87,5 +103,6 @@ eval test command, 55 tests), `regression-diff.txt`, `migration-on-existing-db.t
   published version (expected 0). `UPDATE_REGRESSION_BASELINE=1` rewrites the regression baseline (only on a
   commit before a deliberate behaviour change).
 - No new env vars, no new dependencies.
+- `docs/notifications.md` topic table updated for 024's three topics.
 - The integrated browser reported a hydration warning (`caret-color` style) caused by its own screenshot tooling,
   not by the app.

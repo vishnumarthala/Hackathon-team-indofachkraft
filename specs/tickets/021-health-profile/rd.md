@@ -1,6 +1,6 @@
 # 021: Child health profile
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 020: needs `children`, guardian links and child access helpers
 

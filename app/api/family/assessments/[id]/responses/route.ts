@@ -2,7 +2,7 @@ import { saveResponses } from "@/lib/assessments";
 import { ResponsesSchema } from "@/lib/assessments/schemas";
 import { requireGuardian } from "@/lib/authz";
 import { fail, ok, parseJson } from "@/lib/http";
-import { ASSESSMENT_TOPICS, notifyLater } from "@/lib/notify/topics";
+import { drainSoon } from "@/lib/notify/outbox";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,12 +18,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
   const result = await saveResponses({ assessmentId: id, userId: session.user.id, body: parsed.data });
   if (!result.ok) return fail(result.status, result.error, result.details);
-  if (result.new_red_flags.length > 0) {
-    await notifyLater(ASSESSMENT_TOPICS.redFlag, {
-      assessment_id: id,
-      case_id: result.case_id,
-      codes: result.new_red_flags.join(","),
-    });
-  }
+  // A newly raised red flag enqueued `assessment.red_flag` in the save transaction.
+  if (result.event_ids.length > 0) drainSoon(result.event_ids);
   return ok({ version: result.version, status: result.status, red_flags: result.red_flags });
 }

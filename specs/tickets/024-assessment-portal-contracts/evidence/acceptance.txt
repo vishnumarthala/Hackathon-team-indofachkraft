@@ -1,11 +1,12 @@
-# Ticket 024 acceptance: scripted API/HTML run against the dev server (:3040, DEMO_MODE=true, slot-4 stack after
-# `db reset` with all 12 migrations; `seed:demo -- --confirmed`, `seed:users -- --prefix acct`, org_admin_a owner of the
-# bootstrap org). Script: .tmp/acceptance-024.ts (not committed). Synthetic data only.
+# Ticket 024 acceptance (re-run after merging main with 021, 023, 032): scripted API/HTML run against the dev server
+# (:3040, DEMO_MODE=true, slot-4 stack after `db reset` with all 16 migrations; `seed:demo -- --confirmed`,
+# `seed:users -- --prefix acct`, org_admin_a owner of the bootstrap org). Script: .tmp/acceptance-024.ts (not
+# committed). Notifications go through the 032 outbox (events + fan-out rows checked). Synthetic data only.
 
 ## setup: guardian_a's child claimed into an org A case (020 claim flow)
 PASS provider_a creates a case in org A :: 201
 PASS claim code :: 201
-PASS guardian_a claims the case's child :: {"child":{"id":"20b62b52-5276-44e0-b7f8-c5625eed594c","display_name":"Anu (synthetic)","date_of_birth":null,"sex":null}}
+PASS guardian_a claims the case's child :: {"child":{"id":"37f2052a-fd94-4060-93ec-8b3563047c31","display_name":"Anu (synthetic)","date_of_birth":null,"sex":null}}
 
 ## E-1 report finalisation publishes (FR-3)
 PASS E-1 draft assessment report on the seeded case (demo Gemini) :: 200
@@ -18,8 +19,9 @@ PASS E-1.3 every final report has a published version (backfill evidence: eviden
 
 ## E-2 assign and fill a questionnaire (FR-8, FR-9)
 PASS provider_a Assessments tab renders with `Send questionnaire` :: 200
-PASS E-2.1 Send `Parent developmental check-in` to guardian_a, due in 7 days -> 201 :: {"id":"7ce1c79f-306b-442e-92ef-2c8b47542957","case_id":"8321c4d6-3397-4087-a574-5de2f5ab1fcd","child_id":"20b62b52-5276-44e0-b7f8-c5625eed594c","org_id":"3958148c-f3ad-4cd6-b027-658b7c2a0fef","template_id":"00000000-0000-4000-8024-000000000001","assigned_to":"
-PASS E-2.2 guardian_a /family/assessments lists it (child, title, due date, status) ::  Family account - DoctorNearMe DoctorNearMe Language English हिन्दी తెలుగు Sign out Home Children Questionnaires Appointments Messages Documents Settings Questionnaires Questionnaires your child&#x27;
+PASS E-2.1 Send `Parent developmental check-in` to guardian_a, due in 7 days -> 201 :: {"id":"35b51e06-5188-4709-bba4-8786f7a4810f","case_id":"f5cc187a-0d3c-47a1-a7b7-fd7abb089564","child_id":"37f2052a-fd94-4060-93ec-8b3563047c31","org_id":"51c1baa4-54f3-434d-ae74-2196ab71b411","template_id":"00000000-0000-4000-8024-000000000001","assigned_to":"
+PASS E-2.1 outbox `assessment.assigned` -> guardian_a only (in-app sent; email/WhatsApp per 032 adapters) :: ["email:sent","in_app:sent","whatsapp:skipped"]
+PASS E-2.2 guardian_a /family/assessments lists it (child, title, due date, status) ::  Family account - DoctorNearMe DoctorNearMe 1 Language English हिन्दी తెలుగు Sign out Home Children Questionnaires Appointments Messages Documents Settings Questionnaires Questionnaires your child&#x2
 PASS E-2.2 answer 5 questions, `Save and continue later` -> 200 :: {"version":2,"status":"in_progress","red_flags":[]}
 PASS E-2.2 reload: the form resumes at question 6 (answers kept) :: 200
 PASS E-2.2 5 answers stored :: {"n":5}
@@ -31,7 +33,9 @@ PASS E-4.1 two tabs save with version 2: first 200, second 409 :: {"first":200,"
 ## E-3 red flag (FR-9)
 PASS E-3 `skill_regression` answered yes -> saved, red_flags returned :: {"version":4,"status":"in_progress","red_flags":["skill_regression"]}
 PASS E-3 the 108/112 message shows on the guardian page
-PASS E-3 audit assessment.red_flag; outbox event skipped (032 not merged): notifyLater logs `assessment.red_flag` (see dev log) :: {"codes":["skill_regression"]}
+PASS E-3 audit assessment.red_flag :: {"codes":["skill_regression"]}
+PASS E-3 outbox event `assessment.red_flag` committed with the save, payload ids only :: {"id":"2","payload":{"case_id":"f5cc187a-0d3c-47a1-a7b7-fd7abb089564","child_id":"37f2052a-fd94-4060-93ec-8b3563047c31","assessment_id":"35b51e06-5188-4709-bba4-8786f7a4810f"},"status":"fanned_out"}
+PASS E-3 fanned out (drainSoon) to the case's providers: provider_a (assigned) + org_admin_a (owner), not provider_b; no child name in the text :: ["email:sent","email:sent","in_app:sent","in_app:sent"]
 PASS E-3 provider list shows the red-flag badge
 PASS E-3 provider detail highlights the red-flag answer
 
@@ -39,6 +43,7 @@ PASS E-3 provider detail highlights the red-flag answer
 PASS E-2.2 answer the rest -> 200 :: {"version":5,"status":"in_progress","red_flags":["skill_regression"]}
 PASS E-2.2 submit -> 200 status submitted :: {"status":"submitted","red_flags":["skill_regression"]}
 PASS E-4.3 submitting twice -> 409 :: {"error":"Already submitted"}
+PASS outbox `assessment.submitted` enqueued once :: {"n":1}
 PASS E-2.3 provider sees score/band with `This is a developmental check-in, not a diagnosis.` :: Score 21 of 45 points See a professional soon Your answers suggest your child should see a developmental professional soon. T
 PASS E-2.3 `Mark reviewed` + `Share result with parent` -> 200, published version (assessment, visible) :: {"version":1,"visible":true}
 PASS E-2.3 guardian sees the published summary :: Result from your child&#x27;s care team The result is in English for now. Parent developmental check-in Answered by the parent on 13 November 2026. Reviewed by the care te
@@ -56,15 +61,10 @@ PASS provider API as guardian -> 403 :: {"error":"Provider access required"}
 PASS anonymous -> 401 :: {"error":"Authentication required"}
 
 ## FR-10 sharing: `assessments` scope through a guardian grant
-PASS org B case claimed into the same child :: {"child":{"id":"20b62b52-5276-44e0-b7f8-c5625eed594c","display_name":"Anu (synthetic)","date_of_birth":null,"sex":null}}
+PASS org B case claimed into the same child :: {"child":{"id":"37f2052a-fd94-4060-93ec-8b3563047c31","display_name":"Anu (synthetic)","date_of_birth":null,"sex":null}}
 PASS without a grant provider_b cannot open it -> 404 :: 404
 PASS guardian_a shares Assessments + Reports A -> B :: 201
-PASS provider_b `Shared with us` lists the reviewed questionnaire :: Assessments Team Shared with us Shared with us Records that the child&#x27;s parent has shared with your organisation from their ot
+PASS provider_b `Shared with us` lists the reviewed questionnaire :: Assessments Team Health Shared with us Shared with us Records that the child&#x27;s parent has shared with your organisation from t
 PASS provider_b opens the shared summary (read only) -> 200, not the reviewer note :: 200
 
-ALL PASS (44 checks)
-
-## dev server log: notification topics (032 not merged on this base: notifyLater only logs, no outbox row)
-[notify:pending-032] assessment.assigned {"assessment_id":"7ce1c79f-306b-442e-92ef-2c8b47542957","case_id":"8321c4d6-3397-4087-a574-5de2f5ab1fcd","assigned_to":"ea0d9731-5b7e-47b3-8164-b436540d6c57"}
-[notify:pending-032] assessment.red_flag {"assessment_id":"7ce1c79f-306b-442e-92ef-2c8b47542957","case_id":"8321c4d6-3397-4087-a574-5de2f5ab1fcd","codes":"skill_regression"}
-[notify:pending-032] assessment.submitted {"assessment_id":"7ce1c79f-306b-442e-92ef-2c8b47542957","case_id":"8321c4d6-3397-4087-a574-5de2f5ab1fcd","red_flags":"skill_regression"}
+ALL PASS (48 checks)

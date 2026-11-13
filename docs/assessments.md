@@ -45,7 +45,8 @@ The guardian does not get the score at submit: the care team reviews first.
 
 A red-flag question answered `yes` shows `Please contact your child's doctor now. In an emergency call 108
 (ambulance) or 112.` immediately in the form, which saves at once. The server audits `assessment.red_flag`
-and calls `notifyLater("assessment.red_flag", { assessment_id, case_id, codes })` once per newly raised code.
+and enqueues the outbox event `assessment.red_flag` in the same transaction (dedup key
+`assessment:<id>:red_flag:<codes>`, so re-answering the same codes does not notify again).
 The provider list shows a red-flag badge and the detail page highlights the answers.
 
 ## Publishing and sharing
@@ -58,11 +59,17 @@ sets `visible_to_guardian`; the guardian sees the summary on `/family/assessment
 Share scope `assessments` (`lib/sharing/loaders/assessments.ts`): the current published summary of each
 **reviewed** questionnaire of the source organisations' cases for the child.
 
-## Notifications (ticket 032)
+## Notifications (ticket 032 outbox)
 
-Topics in `lib/notify/topics.ts` (`ASSESSMENT_TOPICS`), only logged until 032 wires the outbox:
-`assessment.assigned` (recipient: the guardian), `assessment.submitted` and `assessment.red_flag`
-(recipients: the case's active care team, lead first). Payloads carry ids and red-flag codes only.
+Enqueued with `enqueue(tx, ...)` inside the producing transaction in `lib/assessments/index.ts`; the routes call
+`drainSoon(event_ids)`. Payloads are `{ assessment_id, child_id, case_id }` only: no answers, score, red-flag codes
+or child name reach email/WhatsApp (032 content rule).
+
+| Topic | Producer | Recipients (re-checked at fan-out) | Channels | Template |
+|---|---|---|---|---|
+| `assessment.assigned` | `createAssessment` | the assigned guardian, while the questionnaire is open and their link active (`assignedAssessmentGuardian`) | in-app, email, WhatsApp | `assessment_assigned` (links to `/family/assessments/<id>`) |
+| `assessment.red_flag` | `saveResponses` (newly raised red flag) | providers who can access the case (org owners/admins + assigned care team, `caseProviders`) | in-app, email | `assessment_red_flag` |
+| `assessment.submitted` | `submitAssessment` | same as red flag | in-app, email | `assessment_submitted` (links to the case's questionnaire) |
 
 ## UI
 

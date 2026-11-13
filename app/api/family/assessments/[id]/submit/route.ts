@@ -1,7 +1,7 @@
 import { submitAssessment } from "@/lib/assessments";
 import { requireGuardian } from "@/lib/authz";
 import { fail, ok } from "@/lib/http";
-import { ASSESSMENT_TOPICS, notifyLater } from "@/lib/notify/topics";
+import { drainSoon } from "@/lib/notify/outbox";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,10 +15,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
   const result = await submitAssessment({ assessmentId: id, userId: session.user.id });
   if (!result.ok) return fail(result.status, result.error, result.details);
-  await notifyLater(ASSESSMENT_TOPICS.submitted, {
-    assessment_id: id,
-    case_id: result.case_id,
-    red_flags: result.red_flags.join(",") || null,
-  });
+  drainSoon(result.event_ids);
   return ok({ status: result.status, red_flags: result.red_flags });
 }

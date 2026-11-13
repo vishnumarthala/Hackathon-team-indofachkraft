@@ -5,6 +5,9 @@
 // providers -> requireCaseActor / requireAssessmentActor (case access, 022 rule);
 // guardians -> requireGuardian, and every function here re-checks `assigned_to = user` AND an active guardian
 // link to a live child (fail closed: a revoked link ends access on the next request; 404 otherwise).
+// Notifications (032 outbox) are enqueued in the same transactions: `assessment.assigned` (the guardian),
+// `assessment.red_flag` and `assessment.submitted` (the case's providers). Payloads carry ids only; callers pass
+// the returned `event_ids` to `drainSoon()`.
 import type postgres from "postgres";
 import {
   MSG,
@@ -19,7 +22,8 @@ import { scoreCheckin, type CheckinScore } from "@/lib/clinical/checkin";
 import { getInstrument, type InstrumentItem } from "@/lib/clinical/instruments";
 import { getLatestPublished, publishVersion, type PublishedVersion } from "@/lib/clinical/publish";
 import { isUuid } from "@/lib/cases/validation";
-import { db } from "@/lib/facts";
+import { enqueue } from "@/lib/notify/outbox";
+import { pg as db } from "@/lib/pg";
 
 type Tx = postgres.Sql | postgres.TransactionSql;
 
@@ -212,7 +216,7 @@ export async function createAssessment(input: {
   caseId: string;
   actorUserId: string;
   body: AssignInput;
-}): Promise<{ ok: true; assessment: AssessmentRow } | Failure> {
+}): Promise<{ ok: true; assessment: AssessmentRow; event_ids: string[] } | Failure> {
   const sql = await db();
   return sql.begin(async (tx) => {
     const [kase] = await tx<{ id: string; org_id: string; child_id: string }[]>`
@@ -249,19 +253,26 @@ export async function createAssessment(input: {
       entityId: created.id,
       details: { template_id: template.id, instrument_key: template.instrument_key, due_on: input.body.due_on },
     });
+    const eventId = await enqueue(tx, {
+      topic: "assessment.assigned",
+      aggregateType: "assessment",
+      aggregateId: created.id,
+      payload: { assessment_id: created.id, child_id: kase.child_id, case_id: kase.id },
+      dedupKey: `assessment:${created.id}:assigned`,
+    });
     const [row] = await tx<AssessmentRow[]>`
       select ${tx.unsafe(COLS)} from assessments a
       join assessment_templates t on t.id = a.template_id join children ch on ch.id = a.child_id
       where a.id = ${created.id}`;
-    return { ok: true as const, assessment: toRow(row) };
+    return { ok: true as const, assessment: toRow(row), event_ids: [eventId] };
   });
 }
 
-type Locked = { id: string; case_id: string; status: AssessmentStatus; version: number; instrument_key: string; title: string };
+type Locked = { id: string; case_id: string; child_id: string; status: AssessmentStatus; version: number; instrument_key: string; title: string };
 
 async function lockForProvider(tx: Tx, assessmentId: string): Promise<Locked | null> {
   const [row] = await tx<Locked[]>`
-    select a.id, a.case_id, a.status, a.version, t.instrument_key, t.title
+    select a.id, a.case_id, a.child_id, a.status, a.version, t.instrument_key, t.title
     from assessments a join assessment_templates t on t.id = a.template_id
     where a.id = ${assessmentId}
     for update of a`;
@@ -397,7 +408,7 @@ export async function getGuardianAssessment(assessmentId: string, userId: string
 async function lockForGuardian(tx: Tx, assessmentId: string, userId: string): Promise<Locked | null> {
   if (!isUuid(assessmentId)) return null;
   const [row] = await tx<Locked[]>`
-    select a.id, a.case_id, a.status, a.version, t.instrument_key, t.title
+    select a.id, a.case_id, a.child_id, a.status, a.version, t.instrument_key, t.title
     from assessments a ${tx.unsafe(GUARDIAN_JOIN)}
     where a.id = ${assessmentId} and a.assigned_to = ${userId}
     for update of a`;
@@ -417,6 +428,7 @@ export type SaveResult = {
   red_flags: string[];
   new_red_flags: string[];
   case_id: string;
+  event_ids: string[];
 };
 
 export async function saveResponses(input: {
@@ -466,6 +478,7 @@ export async function saveResponses(input: {
       entityId: locked.id,
       details: { answers: answers.size, version: next.version },
     });
+    const eventIds: string[] = [];
     if (newRedFlags.length > 0) {
       await auditTx(tx, {
         caseId: locked.case_id,
@@ -475,6 +488,16 @@ export async function saveResponses(input: {
         entityId: locked.id,
         details: { codes: newRedFlags },
       });
+      // Codes stay out of the payload (no clinical content in notifications); the key dedups re-answers.
+      eventIds.push(
+        await enqueue(tx, {
+          topic: "assessment.red_flag",
+          aggregateType: "assessment",
+          aggregateId: locked.id,
+          payload: { assessment_id: locked.id, child_id: locked.child_id, case_id: locked.case_id },
+          dedupKey: `assessment:${locked.id}:red_flag:${[...newRedFlags].sort().join("+")}`,
+        }),
+      );
     }
     return {
       ok: true as const,
@@ -483,11 +506,19 @@ export async function saveResponses(input: {
       red_flags: redFlags,
       new_red_flags: newRedFlags,
       case_id: locked.case_id,
+      event_ids: eventIds,
     };
   });
 }
 
-export type SubmitResult = { ok: true; status: "submitted"; score: CheckinScore | null; case_id: string; red_flags: string[] };
+export type SubmitResult = {
+  ok: true;
+  status: "submitted";
+  score: CheckinScore | null;
+  case_id: string;
+  red_flags: string[];
+  event_ids: string[];
+};
 
 export async function submitAssessment(input: { assessmentId: string; userId: string }): Promise<SubmitResult | Failure> {
   const sql = await db();
@@ -516,6 +547,20 @@ export async function submitAssessment(input: { assessmentId: string; userId: st
       entityId: locked.id,
       details: { band: score?.band ?? null, red_flags: redFlags },
     });
-    return { ok: true as const, status: "submitted" as const, score, case_id: locked.case_id, red_flags: redFlags };
+    const eventId = await enqueue(tx, {
+      topic: "assessment.submitted",
+      aggregateType: "assessment",
+      aggregateId: locked.id,
+      payload: { assessment_id: locked.id, child_id: locked.child_id, case_id: locked.case_id },
+      dedupKey: `assessment:${locked.id}:submitted`,
+    });
+    return {
+      ok: true as const,
+      status: "submitted" as const,
+      score,
+      case_id: locked.case_id,
+      red_flags: redFlags,
+      event_ids: [eventId],
+    };
   });
 }

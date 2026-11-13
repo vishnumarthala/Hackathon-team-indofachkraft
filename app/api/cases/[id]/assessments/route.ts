@@ -2,7 +2,7 @@ import { createAssessment, listCaseAssessments } from "@/lib/assessments";
 import { makeAssignSchema } from "@/lib/assessments/schemas";
 import { requireCaseActor } from "@/lib/authz";
 import { fail, ok, parseJson } from "@/lib/http";
-import { ASSESSMENT_TOPICS, notifyLater } from "@/lib/notify/topics";
+import { drainSoon } from "@/lib/notify/outbox";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,10 +25,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const result = await createAssessment({ caseId: id, actorUserId: gate.actor.user.id, body: parsed.data });
   if (!result.ok) return fail(result.status, result.error, result.details);
-  await notifyLater(ASSESSMENT_TOPICS.assigned, {
-    assessment_id: result.assessment.id,
-    case_id: result.assessment.case_id,
-    assigned_to: result.assessment.assigned_to,
-  });
+  drainSoon(result.event_ids);
   return ok({ assessment: result.assessment }, 201);
 }

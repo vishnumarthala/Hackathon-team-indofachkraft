@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 1103. Not yet approved: 1103.
+Rows: 1285. Not yet approved: 1285.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -977,6 +977,45 @@ Rows: 1103. Not yet approved: 1103.
 | `consentForm.print` | Print | प्रिंट करें | ప్రింట్ చేయండి |  | pending |
 | `consentForm.notConsent` | Printing this form is not consent. It counts only after the signed form is recorded by the centre. | यह फ़ॉर्म प्रिंट करना सहमति नहीं है। यह तभी मान्य है जब केंद्र हस्ताक्षरित फ़ॉर्म दर्ज करे। | ఈ ఫారం ప్రింట్ చేయడం సమ్మతి కాదు. సంతకం చేసిన ఫారాన్ని కేంద్రం నమోదు చేసిన తర్వాతే ఇది లెక్కలోకి వస్తుంది. |  | pending |
 | `consentForm.language` | Form language | फ़ॉर्म की भाषा | ఫారం భాష |  | pending |
+| `notifications.bellLabel` | Notifications, {count} unread | सूचनाएँ, {count} अपठित | నోటిఫికేషన్లు, {count} చదవనివి |  | pending |
+| `notifications.title` | Notifications | सूचनाएँ | నోటిఫికేషన్లు |  | pending |
+| `notifications.empty` | No notifications yet. | अभी कोई सूचना नहीं है। | ఇంకా నోటిఫికేషన్లు లేవు. |  | pending |
+| `notifications.markAllRead` | Mark all as read | सभी को पढ़ा हुआ चिह्नित करें | అన్నింటినీ చదివినట్లు గుర్తించండి |  | pending |
+| `notifications.marking` | Marking... | चिह्नित कर रहे हैं... | గుర్తిస్తున్నాం... |  | pending |
+| `notifications.markFailed` | Could not mark notifications as read. Please try again. | सूचनाओं को पढ़ा हुआ चिह्नित नहीं कर सके। कृपया फिर से कोशिश करें। | నోటిఫికేషన్లను చదివినట్లు గుర్తించలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `notifications.unread` | Unread | अपठित | చదవనిది |  | pending |
+| `notifications.open` | Open | खोलें | తెరవండి |  | pending |
+| `notifications.loadMore` | Load more | और दिखाएँ | మరిన్ని చూపించండి |  | pending |
+| `notifications.loading` | Loading... | लोड हो रहा है... | లోడ్ అవుతోంది... |  | pending |
+| `notifications.loadFailed` | Could not load notifications. Please try again. | सूचनाएँ लोड नहीं हो सकीं। कृपया फिर से कोशिश करें। | నోటిఫికేషన్లు లోడ్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `notifications.settingsLink` | Settings | सेटिंग्स | సెట్టింగ్స్ |  | pending |
+| `notifications.settingsTitle` | Settings | सेटिंग्स | సెట్టింగ్స్ |  | pending |
+| `notifications.prefs.title` | Notifications | सूचनाएँ | నోటిఫికేషన్లు |  | pending |
+| `notifications.prefs.intro` | In-app notifications are always on. Choose how else we let you know. | ऐप में सूचनाएँ हमेशा चालू रहती हैं। चुनें कि हम आपको और किस तरह बताएँ। | యాప్‌లో నోటిఫికేషన్లు ఎప్పుడూ ఆన్‌లో ఉంటాయి. మేము మీకు ఇంకా ఎలా తెలియజేయాలో ఎంచుకోండి. |  | pending |
+| `notifications.prefs.email` | Email | ईमेल | ఇమెయిల్ |  | pending |
+| `notifications.prefs.emailHint` | Short alerts to your email address. They never include health details. | आपके ईमेल पते पर छोटी सूचनाएँ। इनमें कभी स्वास्थ्य से जुड़ी जानकारी नहीं होती। | మీ ఇమెయిల్ చిరునామాకు చిన్న హెచ్చరికలు. వాటిలో ఎప్పుడూ ఆరోగ్య వివరాలు ఉండవు. |  | pending |
+| `notifications.prefs.whatsapp` | WhatsApp | WhatsApp | WhatsApp |  | pending |
+| `notifications.prefs.whatsappHint` | Short alerts on WhatsApp to your verified phone number. They never include health details. | आपके सत्यापित फ़ोन नंबर पर WhatsApp पर छोटी सूचनाएँ। इनमें कभी स्वास्थ्य से जुड़ी जानकारी नहीं होती। | మీ ధృవీకరించిన ఫోన్ నంబర్‌కు WhatsApp లో చిన్న హెచ్చరికలు. వాటిలో ఎప్పుడూ ఆరోగ్య వివరాలు ఉండవు. |  | pending |
+| `notifications.prefs.save` | Save | सहेजें | సేవ్ చేయండి |  | pending |
+| `notifications.prefs.saving` | Saving... | सहेज रहे हैं... | సేవ్ చేస్తున్నాం... |  | pending |
+| `notifications.prefs.saved` | Saved. | सहेज लिया गया। | సేవ్ అయింది. |  | pending |
+| `notifications.prefs.failed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `notifications.admin.title` | Notification delivery | सूचना डिलीवरी | నోటిఫికేషన్ డెలివరీ |  | pending |
+| `notifications.admin.counts` | Deliveries by channel and status | चैनल और स्थिति के अनुसार डिलीवरी | ఛానల్, స్థితి వారీగా డెలివరీలు |  | pending |
+| `notifications.admin.channel` | Channel | चैनल | ఛానల్ |  | pending |
+| `notifications.admin.events` | Outbox events | आउटबॉक्स इवेंट | అవుట్‌బాక్స్ ఈవెంట్లు |  | pending |
+| `notifications.admin.problems` | Last 50 failed or dead deliveries | पिछली 50 विफल या बंद डिलीवरी | చివరి 50 విఫలమైన లేదా ఆగిపోయిన డెలివరీలు |  | pending |
+| `notifications.admin.none` | No failed or dead deliveries. | कोई विफल या बंद डिलीवरी नहीं। | విఫలమైన లేదా ఆగిపోయిన డెలివరీలు లేవు. |  | pending |
+| `notifications.admin.topic` | Topic | विषय | అంశం |  | pending |
+| `notifications.admin.status` | Status | स्थिति | స్థితి |  | pending |
+| `notifications.admin.attempts` | Attempts | प्रयास | ప్రయత్నాలు |  | pending |
+| `notifications.admin.error` | Error | त्रुटि | లోపం |  | pending |
+| `notifications.admin.lastAttempt` | Last attempt | पिछला प्रयास | చివరి ప్రయత్నం |  | pending |
+| `notifications.admin.nextAttempt` | Next attempt | अगला प्रयास | తదుపరి ప్రయత్నం |  | pending |
+| `notifications.admin.retry` | Retry | फिर से कोशिश करें | మళ్ళీ ప్రయత్నించండి |  | pending |
+| `notifications.admin.retrying` | Retrying... | फिर से कोशिश कर रहे हैं... | మళ్ళీ ప్రయత్నిస్తున్నాం... |  | pending |
+| `notifications.admin.retried` | Queued again. | फिर से कतार में लगा दिया। | మళ్ళీ క్యూలో చేర్చాం. |  | pending |
+| `notifications.admin.retryFailed` | Could not retry. | फिर से कोशिश नहीं हो सकी। | మళ్ళీ ప్రయత్నించలేకపోయాం. |  | pending |
 | `caseTabs.label` | Case sections | केस के हिस्से | కేసు విభాగాలు |  | pending |
 | `caseTabs.overview` | Overview | सारांश | సారాంశం |  | pending |
 | `caseTabs.brief` | Brief | ब्रीफ़ | బ్రీఫ్ |  | pending |
@@ -985,6 +1024,8 @@ Rows: 1103. Not yet approved: 1103.
 | `caseTabs.referral` | Referral | रेफ़रल | రిఫరల్ |  | pending |
 | `caseTabs.team` | Team | टीम | టీమ్ |  | pending |
 | `caseTabs.shared` | Shared with us | हमसे साझा | మాతో పంచుకున్నవి |  | pending |
+| `caseTabs.health` | Health | स्वास्थ्य | ఆరోగ్యం |  | pending |
+| `caseTabs.documents` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
 | `caseTabs.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
@@ -1030,6 +1071,147 @@ Rows: 1103. Not yet approved: 1103.
 | `sharedWithUs.back` | Back to shared records | साझा रिकॉर्ड पर वापस | పంచుకున్న రికార్డులకు వెనుకకు |  | pending |
 | `sharedWithUs.readOnly` | Shared by {org}. Read only. | {org} ने साझा किया। सिर्फ़ पढ़ने के लिए। | {org} పంచుకున్నారు. చదవడానికి మాత్రమే. |  | pending |
 | `sharedWithUs.openFailed` | Could not open this record. Please try again. | यह रिकॉर्ड नहीं खुल सका। कृपया फिर से कोशिश करें। | ఈ రికార్డును తెరవలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `health.title` | Health profile | स्वास्थ्य प्रोफ़ाइल | ఆరోగ్య ప్రొఫైల్ |  | pending |
+| `health.link` | Health profile | स्वास्थ्य प्रोफ़ाइल | ఆరోగ్య ప్రొఫైల్ |  | pending |
+| `health.back` | Back to {name} | {name} पर वापस जाएँ | {name} కి తిరిగి వెళ్ళండి |  | pending |
+| `health.intro` | Allergies, medicines and other health details for {name}, kept in one place. | {name} की एलर्जी, दवाइयाँ और अन्य स्वास्थ्य जानकारी, एक ही जगह। | {name} అలర్జీలు, మందులు మరియు ఇతర ఆరోగ్య వివరాలు, ఒకే చోట. |  | pending |
+| `health.notice` | Providers treating {name} at organisations where {name} has an open case can see this profile. | जिन संस्थाओं में {name} का केस खुला है, वहाँ {name} का इलाज करने वाले विशेषज्ञ यह प्रोफ़ाइल देख सकते हैं। | {name} కేసు తెరిచి ఉన్న సంస్థలలో {name} కి చికిత్స చేస్తున్న నిపుణులు ఈ ప్రొఫైల్‌ను చూడగలరు. |  | pending |
+| `health.sections.allergies` | Allergies | एलर्जी | అలర్జీలు |  | pending |
+| `health.sections.medications` | Medicines | दवाइयाँ | మందులు |  | pending |
+| `health.sections.conditions` | Conditions | स्वास्थ्य समस्याएँ | ఆరోగ్య సమస్యలు |  | pending |
+| `health.sections.birth_history` | Birth history | जन्म का इतिहास | జనన చరిత్ర |  | pending |
+| `health.sections.developmental_history` | Development so far | अब तक का विकास | ఇప్పటివరకు అభివృద్ధి |  | pending |
+| `health.sections.emergency_contact` | Emergency contact | आपातकालीन संपर्क | అత్యవసర సంప్రదింపు |  | pending |
+| `health.sections.blood_group` | Blood group | ब्लड ग्रुप | బ్లడ్ గ్రూప్ |  | pending |
+| `health.fields.substance` | Allergic to | किससे एलर्जी है | దేనికి అలర్జీ |  | pending |
+| `health.fields.reaction` | Reaction | प्रतिक्रिया | ప్రతిచర్య |  | pending |
+| `health.fields.severity` | Severity | गंभीरता | తీవ్రత |  | pending |
+| `health.fields.medicineName` | Medicine | दवा | మందు |  | pending |
+| `health.fields.dose` | Dose | खुराक | మోతాదు |  | pending |
+| `health.fields.frequency` | How often | कितनी बार | ఎంత తరచుగా |  | pending |
+| `health.fields.since` | Since (YYYY-MM) | कब से (YYYY-MM) | ఎప్పటి నుండి (YYYY-MM) |  | pending |
+| `health.fields.conditionName` | Condition | स्वास्थ्य समस्या | ఆరోగ్య సమస్య |  | pending |
+| `health.fields.notes` | Notes | टिप्पणी | గమనికలు |  | pending |
+| `health.fields.contactName` | Name | नाम | పేరు |  | pending |
+| `health.fields.contactPhone` | Phone number (with country code) | फ़ोन नंबर (देश कोड के साथ) | ఫోన్ నంబర్ (దేశ కోడ్‌తో) |  | pending |
+| `health.fields.birthHint` | For example: born at 36 weeks, NICU stay, birth weight. | उदाहरण: 36 हफ़्ते में जन्म, NICU में रहना, जन्म के समय वज़न। | ఉదాహరణకు: 36 వారాలకు జననం, NICU లో ఉండటం, జనన బరువు. |  | pending |
+| `health.fields.developmentHint` | For example: first words, walking, any concerns you noticed. | उदाहरण: पहले शब्द, चलना, कोई चिंता जो आपने देखी। | ఉదాహరణకు: మొదటి మాటలు, నడక, మీరు గమనించిన ఏవైనా ఆందోళనలు. |  | pending |
+| `health.severity.mild` | Mild | हल्की | తేలికపాటి |  | pending |
+| `health.severity.moderate` | Moderate | मध्यम | మధ్యస్థ |  | pending |
+| `health.severity.severe` | Severe | गंभीर | తీవ్రమైన |  | pending |
+| `health.severity.unknown` | Not sure | पता नहीं | తెలియదు |  | pending |
+| `health.bloodGroupUnknown` | Not known | पता नहीं | తెలియదు |  | pending |
+| `health.bloodGroupNotSet` | Not set | नहीं चुना | ఎంచుకోలేదు |  | pending |
+| `health.addAllergy` | Add allergy | एलर्जी जोड़ें | అలర్జీ జోడించండి |  | pending |
+| `health.addMedicine` | Add medicine | दवा जोड़ें | మందు జోడించండి |  | pending |
+| `health.addCondition` | Add condition | स्वास्थ्य समस्या जोड़ें | ఆరోగ్య సమస్య జోడించండి |  | pending |
+| `health.remove` | Remove | हटाएँ | తొలగించండి |  | pending |
+| `health.removeRow` | Remove row {number} | पंक्ति {number} हटाएँ | వరుస {number} తొలగించండి |  | pending |
+| `health.row` | Row {number} | पंक्ति {number} | వరుస {number} |  | pending |
+| `health.nka` | No known allergies | कोई ज्ञात एलर्जी नहीं | తెలిసిన అలర్జీలు లేవు |  | pending |
+| `health.nkaConflict` | Remove the allergies above, or untick No known allergies. | ऊपर दी गई एलर्जी हटाएँ, या "कोई ज्ञात एलर्जी नहीं" से टिक हटाएँ। | పైన ఉన్న అలర్జీలను తొలగించండి, లేదా "తెలిసిన అలర్జీలు లేవు" టిక్ తీసేయండి. |  | pending |
+| `health.save` | Save | सेव करें | సేవ్ చేయండి |  | pending |
+| `health.saving` | Saving… | सेव हो रहा है… | సేవ్ అవుతోంది… |  | pending |
+| `health.saved` | Saved. | सेव हो गया। | సేవ్ అయింది. |  | pending |
+| `health.lastUpdated` | Last updated {date} by {name} | आख़िरी बदलाव {date} को {name} ने किया | చివరి మార్పు {date} న {name} చేశారు |  | pending |
+| `health.lastUpdatedNoName` | Last updated {date} | आख़िरी बदलाव {date} को | చివరి మార్పు {date} న |  | pending |
+| `health.notSavedYet` | Not saved yet. | अभी सेव नहीं हुआ। | ఇంకా సేవ్ కాలేదు. |  | pending |
+| `health.conflict` | This profile was changed by someone else. Reload to see the latest version. | यह प्रोफ़ाइल किसी और ने बदल दी है। नया संस्करण देखने के लिए पेज फिर से लोड करें। | ఈ ప్రొఫైల్‌ను వేరొకరు మార్చారు. తాజా వెర్షన్ చూడటానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `health.reload` | Reload | फिर से लोड करें | మళ్ళీ లోడ్ చేయండి |  | pending |
+| `health.invalid` | Some entries need attention: {sections}. | कुछ जानकारी ठीक करनी है: {sections}। | కొన్ని వివరాలు సరిచేయాలి: {sections}. |  | pending |
+| `health.saveFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `health.none` | None added. | कुछ नहीं जोड़ा गया। | ఏమీ జోడించలేదు. |  | pending |
+| `health.notRecorded` | Not recorded | दर्ज नहीं | నమోదు కాలేదు |  | pending |
+| `health.historyLink` | Version history | संस्करण इतिहास | వెర్షన్ చరిత్ర |  | pending |
+| `health.history.title` | Version history | संस्करण इतिहास | వెర్షన్ చరిత్ర |  | pending |
+| `health.history.intro` | Every saved change to {name}'s health profile. Older versions cannot be edited. | {name} की स्वास्थ्य प्रोफ़ाइल में हर सेव किया गया बदलाव। पुराने संस्करण बदले नहीं जा सकते। | {name} ఆరోగ్య ప్రొఫైల్‌లో సేవ్ చేసిన ప్రతి మార్పు. పాత వెర్షన్‌లను మార్చలేరు. |  | pending |
+| `health.history.empty` | No saved versions yet. | अभी कोई संस्करण सेव नहीं हुआ। | ఇంకా ఏ వెర్షన్ సేవ్ కాలేదు. |  | pending |
+| `health.history.version` | Version {version} | संस्करण {version} | వెర్షన్ {version} |  | pending |
+| `health.history.savedBy` | Saved {date} by {name} | {date} को {name} ने सेव किया | {date} న {name} సేవ్ చేశారు |  | pending |
+| `health.history.savedOn` | Saved {date} | {date} को सेव किया | {date} న సేవ్ చేశారు |  | pending |
+| `health.history.changed` | Changed: {sections} | बदला गया: {sections} | మారినవి: {sections} |  | pending |
+| `health.history.nothingChanged` | Saved without changes | बिना बदलाव के सेव किया | మార్పులు లేకుండా సేవ్ చేశారు |  | pending |
+| `health.history.current` | Current version | मौजूदा संस्करण | ప్రస్తుత వెర్షన్ |  | pending |
+| `health.history.view` | View | देखें | చూడండి |  | pending |
+| `health.history.viewVersion` | View version {version} | संस्करण {version} देखें | వెర్షన్ {version} చూడండి |  | pending |
+| `health.history.readOnly` | This is an older version, shown read only. | यह पुराना संस्करण है, केवल पढ़ने के लिए। | ఇది పాత వెర్షన్, చదవడానికి మాత్రమే. |  | pending |
+| `health.history.back` | Back to health profile | स्वास्थ्य प्रोफ़ाइल पर वापस जाएँ | ఆరోగ్య ప్రొఫైల్‌కి తిరిగి వెళ్ళండి |  | pending |
+| `health.history.backToHistory` | Back to version history | संस्करण इतिहास पर वापस जाएँ | వెర్షన్ చరిత్రకి తిరిగి వెళ్ళండి |  | pending |
+| `health.provider.empty` | The family has not added a health profile yet. | परिवार ने अभी स्वास्थ्य प्रोफ़ाइल नहीं जोड़ी है। | కుటుంబం ఇంకా ఆరోగ్య ప్రొఫైల్ జోడించలేదు. |  | pending |
+| `health.provider.readOnly` | Only the child's parent or guardian can change this profile. Ask them to update it in their DoctorNearMe app. | यह प्रोफ़ाइल केवल बच्चे के माता-पिता या अभिभावक बदल सकते हैं। उनसे DoctorNearMe ऐप में इसे अपडेट करने को कहें। | ఈ ప్రొఫైల్‌ను పిల్లల తల్లిదండ్రులు లేదా సంరక్షకులు మాత్రమే మార్చగలరు. DoctorNearMe యాప్‌లో దీన్ని అప్‌డేట్ చేయమని వారిని అడగండి. |  | pending |
+| `health.provider.updated` | Last updated {date} | आख़िरी बदलाव {date} को | చివరి మార్పు {date} న |  | pending |
+| `health.provider.severeAllergy` | Severe allergy: {substance} | गंभीर एलर्जी: {substance} | తీవ్రమైన అలర్జీ: {substance} |  | pending |
+| `documents.title` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
+| `documents.intro` | Reports, school letters and prescriptions for your children. Only your family and the organisations you choose can see your uploads. | आपके बच्चों की रिपोर्ट, स्कूल के पत्र और पर्चे। आपके अपलोड सिर्फ़ आपका परिवार और आपके चुने हुए संगठन देख सकते हैं। | మీ పిల్లల రిపోర్ట్‌లు, స్కూల్ లేఖలు మరియు ప్రిస్క్రిప్షన్‌లు. మీరు అప్‌లోడ్ చేసినవి మీ కుటుంబం మరియు మీరు ఎంచుకున్న సంస్థలు మాత్రమే చూడగలరు. |  | pending |
+| `documents.childTitle` | {name}'s documents | {name} के दस्तावेज़ | {name} పత్రాలు |  | pending |
+| `documents.childIntro` | Upload reports, letters and prescriptions for {name}. Your child's providers can also add documents here for you. | {name} की रिपोर्ट, पत्र और पर्चे अपलोड करें। आपके बच्चे के विशेषज्ञ भी यहाँ आपके लिए दस्तावेज़ जोड़ सकते हैं। | {name} రిపోర్ట్‌లు, లేఖలు మరియు ప్రిస్క్రిప్షన్‌లు అప్‌లోడ్ చేయండి. మీ పిల్లల నిపుణులు కూడా ఇక్కడ మీ కోసం పత్రాలు జోడించవచ్చు. |  | pending |
+| `documents.back` | Back to {name} | {name} पर वापस जाएँ | {name} కు తిరిగి వెళ్ళండి |  | pending |
+| `documents.link` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
+| `documents.openChild` | Open {name}'s documents | {name} के दस्तावेज़ खोलें | {name} పత్రాలు తెరవండి |  | pending |
+| `documents.empty` | No documents yet. | अभी कोई दस्तावेज़ नहीं है। | ఇంకా పత్రాలు లేవు. |  | pending |
+| `documents.noChildren` | Add a child first to keep their documents here. | दस्तावेज़ रखने के लिए पहले एक बच्चा जोड़ें। | పత్రాలు ఉంచడానికి ముందుగా ఒక బిడ్డను జోడించండి. |  | pending |
+| `documents.upload` | Upload document | दस्तावेज़ अपलोड करें | పత్రం అప్‌లోడ్ చేయండి |  | pending |
+| `documents.uploadTitle` | Upload a document | एक दस्तावेज़ अपलोड करें | ఒక పత్రం అప్‌లోడ్ చేయండి |  | pending |
+| `documents.providerUpload` | Upload | अपलोड करें | అప్‌లోడ్ |  | pending |
+| `documents.fieldTitle` | Title | शीर्षक | శీర్షిక |  | pending |
+| `documents.fieldCategory` | Category | श्रेणी | వర్గం |  | pending |
+| `documents.chooseCategory` | Choose a category | एक श्रेणी चुनें | ఒక వర్గం ఎంచుకోండి |  | pending |
+| `documents.fieldFile` | File | फ़ाइल | ఫైల్ |  | pending |
+| `documents.fileHint` | PDF, JPG, PNG or HEIC, up to 20 MB. On a phone you can take a photo. | PDF, JPG, PNG या HEIC, 20 MB तक। फ़ोन पर आप फ़ोटो ले सकते हैं। | PDF, JPG, PNG లేదా HEIC, 20 MB వరకు. ఫోన్‌లో మీరు ఫోటో తీయవచ్చు. |  | pending |
+| `documents.shareWith` | Share with | इनके साथ साझा करें | వీరితో పంచుకోండి |  | pending |
+| `documents.shareWithHint` | Only the organisations you tick can see this document. You can change this later. | सिर्फ़ वही संगठन यह दस्तावेज़ देख सकते हैं जिन पर आप टिक करें। आप इसे बाद में बदल सकते हैं। | మీరు టిక్ చేసిన సంస్థలు మాత్రమే ఈ పత్రాన్ని చూడగలవు. మీరు దీన్ని తర్వాత మార్చవచ్చు. |  | pending |
+| `documents.noOrgs` | No organisation is treating {name} yet. You can share later. | अभी कोई संगठन {name} का इलाज नहीं कर रहा है। आप बाद में साझा कर सकते हैं। | ఇంకా ఏ సంస్థా {name} కు చికిత్స చేయడం లేదు. మీరు తర్వాత పంచుకోవచ్చు. |  | pending |
+| `documents.parentCanSee` | Parent can see this document | माता-पिता यह दस्तावेज़ देख सकते हैं | తల్లిదండ్రులు ఈ పత్రాన్ని చూడగలరు |  | pending |
+| `documents.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `documents.save` | Upload | अपलोड करें | అప్‌లోడ్ చేయండి |  | pending |
+| `documents.uploading` | Uploading... | अपलोड हो रहा है... | అప్‌లోడ్ అవుతోంది... |  | pending |
+| `documents.uploaded` | Document uploaded. | दस्तावेज़ अपलोड हो गया। | పత్రం అప్‌లోడ్ అయింది. |  | pending |
+| `documents.download` | Download | डाउनलोड करें | డౌన్‌లోడ్ |  | pending |
+| `documents.downloadLabel` | Download {title} | {title} डाउनलोड करें | {title} డౌన్‌లోడ్ చేయండి |  | pending |
+| `documents.delete` | Delete | हटाएँ | తొలగించండి |  | pending |
+| `documents.deleteLabel` | Delete {title} | {title} हटाएँ | {title} తొలగించండి |  | pending |
+| `documents.deleting` | Deleting... | हटाया जा रहा है... | తొలగిస్తోంది... |  | pending |
+| `documents.deleteConfirm` | Delete "{title}"? This cannot be undone. | "{title}" हटाएँ? इसे वापस नहीं लाया जा सकता। | "{title}" తొలగించాలా? దీన్ని తిరిగి పొందలేరు. |  | pending |
+| `documents.deleted` | Document deleted. | दस्तावेज़ हटा दिया गया। | పత్రం తొలగించబడింది. |  | pending |
+| `documents.sharing` | Sharing | साझा करना | పంచుకోవడం |  | pending |
+| `documents.sharingLabel` | Sharing for {title} | {title} का साझा करना | {title} పంచుకోవడం |  | pending |
+| `documents.sharingTitle` | Who can see this document | यह दस्तावेज़ कौन देख सकता है | ఈ పత్రాన్ని ఎవరు చూడగలరు |  | pending |
+| `documents.share` | Share | साझा करें | పంచుకోండి |  | pending |
+| `documents.stopSharing` | Stop sharing | साझा करना बंद करें | పంచుకోవడం ఆపండి |  | pending |
+| `documents.sharedWith` | Shared with: {orgs} | इनके साथ साझा: {orgs} | వీరితో పంచుకున్నారు: {orgs} |  | pending |
+| `documents.notShared` | Not shared with any organisation | किसी संगठन के साथ साझा नहीं | ఏ సంస్థతోనూ పంచుకోలేదు |  | pending |
+| `documents.close` | Close | बंद करें | మూసివేయండి |  | pending |
+| `documents.uploadedBy` | Uploaded by {who} | {who} ने अपलोड किया | {who} అప్‌లోడ్ చేశారు |  | pending |
+| `documents.byYou` | You | आप | మీరు |  | pending |
+| `documents.byFamily` | Your family | आपका परिवार | మీ కుటుంబం |  | pending |
+| `documents.byParent` | Parent | माता-पिता | తల్లిదండ్రులు |  | pending |
+| `documents.addedOn` | Added {date} | {date} को जोड़ा गया | {date} న జోడించారు |  | pending |
+| `documents.visibleToParent` | Parent can see this | माता-पिता इसे देख सकते हैं | తల్లిదండ్రులు దీన్ని చూడగలరు |  | pending |
+| `documents.hiddenFromParent` | Parent cannot see this | माता-पिता इसे नहीं देख सकते | తల్లిదండ్రులు దీన్ని చూడలేరు |  | pending |
+| `documents.showToParent` | Show to parent | माता-पिता को दिखाएँ | తల్లిదండ్రులకు చూపించండి |  | pending |
+| `documents.hideFromParent` | Hide from parent | माता-पिता से छिपाएँ | తల్లిదండ్రుల నుండి దాచండి |  | pending |
+| `documents.caseIntro` | Documents of this case and documents the parent shared with your organisation. | इस केस के दस्तावेज़ और वे दस्तावेज़ जो माता-पिता ने आपके संगठन के साथ साझा किए हैं। | ఈ కేసు పత్రాలు మరియు తల్లిదండ్రులు మీ సంస్థతో పంచుకున్న పత్రాలు. |  | pending |
+| `documents.sharedWithUs` | Shared with us | हमारे साथ साझा | మాతో పంచుకున్నవి |  | pending |
+| `documents.sharedWithUsIntro` | Documents from the child's other organisations, shared by the parent. Read only. | बच्चे के दूसरे संगठनों के दस्तावेज़, जिन्हें माता-पिता ने साझा किया है। सिर्फ़ पढ़ने के लिए। | పిల్లల ఇతర సంస్థల పత్రాలు, తల్లిదండ్రులు పంచుకున్నవి. చదవడానికి మాత్రమే. |  | pending |
+| `documents.sharedFrom` | From {org} | {org} से | {org} నుండి |  | pending |
+| `documents.noShared` | Nothing has been shared with your organisation. | आपके संगठन के साथ अभी कुछ साझा नहीं किया गया है। | మీ సంస్థతో ఇంకా ఏమీ పంచుకోలేదు. |  | pending |
+| `documents.categories.prior_report` | Prior report | पिछली रिपोर्ट | మునుపటి రిపోర్ట్ |  | pending |
+| `documents.categories.prescription` | Prescription | पर्चा | ప్రిస్క్రిప్షన్ |  | pending |
+| `documents.categories.school` | School | स्कूल | స్కూల్ |  | pending |
+| `documents.categories.medical` | Medical | चिकित्सा | వైద్య |  | pending |
+| `documents.categories.assessment` | Assessment | आकलन | అంచనా |  | pending |
+| `documents.categories.consent_form` | Consent form | सहमति फ़ॉर्म | సమ్మతి ఫారం |  | pending |
+| `documents.categories.other` | Other | अन्य | ఇతర |  | pending |
+| `documents.errors.tooLarge` | Files can be up to 20 MB | फ़ाइलें 20 MB तक हो सकती हैं | ఫైళ్ళు 20 MB వరకు ఉండవచ్చు |  | pending |
+| `documents.errors.unsupported` | Upload a PDF, JPG, PNG or HEIC file | PDF, JPG, PNG या HEIC फ़ाइल अपलोड करें | PDF, JPG, PNG లేదా HEIC ఫైల్ అప్‌లోడ్ చేయండి |  | pending |
+| `documents.errors.mismatch` | This file does not match its type | यह फ़ाइल अपने प्रकार से मेल नहीं खाती | ఈ ఫైల్ దాని రకానికి సరిపోలడం లేదు |  | pending |
+| `documents.errors.notTreating` | This organisation is not treating your child | यह संगठन आपके बच्चे का इलाज नहीं कर रहा है | ఈ సంస్థ మీ బిడ్డకు చికిత్స చేయడం లేదు |  | pending |
+| `documents.errors.titleRequired` | Enter a title | शीर्षक लिखें | శీర్షిక రాయండి |  | pending |
+| `documents.errors.categoryRequired` | Choose a category | एक श्रेणी चुनें | ఒక వర్గం ఎంచుకోండి |  | pending |
+| `documents.errors.fileRequired` | Choose a file | एक फ़ाइल चुनें | ఒక ఫైల్ ఎంచుకోండి |  | pending |
+| `documents.errors.uploadFailed` | The upload did not finish. Please try again. | अपलोड पूरा नहीं हुआ। कृपया फिर से कोशिश करें। | అప్‌లోడ్ పూర్తి కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `documents.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `documents.errors.forbidden` | You cannot change this document. | आप इस दस्तावेज़ को नहीं बदल सकते। | మీరు ఈ పత్రాన్ని మార్చలేరు. |  | pending |
 | `speakers.clinician` | Clinician | क्लिनिशियन | క్లినీషియన్ |  | pending |
 | `speakers.parentOrCaregiver` | Parent or caregiver | माता-पिता या देखभाल करने वाले | తల్లిదండ్రులు లేదా సంరక్షకులు |  | pending |
 | `speakers.child` | Child | बच्चा | బిడ్డ |  | pending |

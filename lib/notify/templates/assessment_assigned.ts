@@ -1,0 +1,15 @@
+import { defineTemplate, idOf } from "./shared";
+
+export default defineTemplate({
+  name: "assessment_assigned",
+  strings: {
+    en: { title: "A questionnaire for you", body: "Your child's care team sent you a questionnaire to fill in." },
+    hi: { title: "आपके लिए एक प्रश्नावली", body: "आपके बच्चे की देखभाल टीम ने आपको भरने के लिए एक प्रश्नावली भेजी है।" },
+    te: { title: "మీ కోసం ఒక ప్రశ్నావళి", body: "మీ పిల్లల సంరక్షణ బృందం మీకు నింపడానికి ఒక ప్రశ్నావళిని పంపింది." },
+  },
+  // 024: straight to the questionnaire (the page re-checks that this guardian is the assignee).
+  link: ({ payload }) => {
+    const id = idOf(payload, "assessment_id");
+    return id ? `/family/assessments/${id}` : "/family/assessments";
+  },
+});

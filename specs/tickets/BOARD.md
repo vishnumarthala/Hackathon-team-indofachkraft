@@ -69,14 +69,14 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 018 | i18n foundation (English, Hindi, Telugu) | done | solo | alongside |
 | 019 | Guardian sign-in and family portal shell | done | solo | waits for 017, 018 |
 | 020 | Children, guardian links and consent gating | done | solo | waits for 019 |
-| 021 | Child health profile | draft | solo | waits for 020 |
+| 021 | Child health profile | done | solo | waits for 020 |
 | 022 | Care team, provider assignments and cross-org sharing grants | done | solo | waits for 020 |
-| 023 | Document vault | draft | solo | waits for 022 |
+| 023 | Document vault | done | solo | waits for 022 |
 | 024 | Assessment portal and shared clinical contracts | draft | solo | waits for 022 |
 | 025 | IEP plans, SMART goals and progress tracking | draft | solo | waits for 022, 024 |
 | 026 | Home program | draft | solo | waits for 023, 025 |
 | 027 | Secure messaging (guardian <-> care team) | draft | solo | waits for 022, 023, 032 |
-| 032 | Notifications - transactional outbox, scheduler, email / in-app / WhatsApp adapters | draft | solo | waits for 020 |
+| 032 | Notifications - transactional outbox, scheduler, email / in-app / WhatsApp adapters | done | solo | waits for 020 |
 | 041 | Privacy, audit and operations baseline | draft | solo | waits for 023, 032 |
 
 ## M2 - Directory, booking and voice

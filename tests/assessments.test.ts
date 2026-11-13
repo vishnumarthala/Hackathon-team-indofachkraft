@@ -8,7 +8,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { loadEnvConfig } from "@next/env";
 import postgres, { type Sql } from "postgres";
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { CheckinForm, saveAnswers, submitAnswers, type FormItem } from "@/components/assessments/CheckinForm";
 import { assessmentErrorKey } from "@/components/assessments/view";
 import { MSG, PARENT_CHECKIN_TEMPLATE_ID, ResponsesSchema, makeAssignSchema, todayInIndia } from "@/lib/assessments/schemas";
@@ -27,14 +27,6 @@ vi.mock("@/lib/auth", async (importOriginal) => {
   return { ...actual, getAuthenticatedUser: vi.fn(async () => session.user) };
 });
 
-const notify = vi.hoisted(() => ({ calls: [] as [string, Record<string, unknown>][] }));
-vi.mock("@/lib/notify/topics", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/lib/notify/topics")>();
-  return {
-    ...actual,
-    notifyLater: vi.fn(async (topic: string, payload: Record<string, unknown>) => void notify.calls.push([topic, payload])),
-  };
-});
 vi.mock("next/navigation", async (importOriginal) => ({
   ...(await importOriginal<typeof import("next/navigation")>()),
   useRouter: () => ({ refresh: () => {}, push: () => {}, replace: () => {} }),
@@ -208,13 +200,19 @@ describe.skipIf(!enabled)("assessment portal (database)", { timeout: 120_000 }, 
 
   afterAll(async () => {
     as(null);
+    if (sql && caseA) {
+      await sql`delete from outbox_events where aggregate_type = 'assessment'
+                and aggregate_id in (select id from assessments where case_id = ${caseA})`;
+    }
     if (world) await world.cleanup();
     await sql?.end({ timeout: 5 });
   });
 
-  beforeEach(() => {
-    notify.calls.length = 0;
-  });
+  // 032 outbox rows of this suite's questionnaires (topic, payload, dedup key), oldest first.
+  const events = async (id: string) =>
+    sql<{ topic: string; payload: Record<string, unknown>; dedup_key: string }[]>`
+      select topic, payload, dedup_key from outbox_events
+      where aggregate_type = 'assessment' and aggregate_id = ${id} order by id`;
 
   it("E-2.1: provider sends `Parent developmental check-in` to guardian_a, due in 7 days", async () => {
     as(ownerA);
@@ -234,7 +232,17 @@ describe.skipIf(!enabled)("assessment portal (database)", { timeout: 120_000 }, 
       instrument_key: "ISAA_PARENT_CHECKIN",
     });
     expect(await auditActions(assessmentId)).toEqual(["assessment.assigned"]);
-    expect(notify.calls).toEqual([["assessment.assigned", { assessment_id: assessmentId, case_id: caseA, assigned_to: guardianA.id }]]);
+    expect(await events(assessmentId)).toEqual([
+      {
+        topic: "assessment.assigned",
+        payload: { assessment_id: assessmentId, child_id: childA, case_id: caseA },
+        dedup_key: `assessment:${assessmentId}:assigned`,
+      },
+    ]);
+    // Fan-out goes to the assigned guardian only (re-checked: open questionnaire, active link).
+    const { TOPICS } = await import("@/lib/notify/topics");
+    const ctxFor = { sql, event: {} as never };
+    expect(await TOPICS["assessment.assigned"].recipients({ assessment_id: assessmentId, child_id: childA }, ctxFor)).toEqual([guardianA.id]);
 
     const r = await routes();
     const list = await (await r.list.GET(post("http://x"), ctx({ id: caseA }))).json();
@@ -307,13 +315,28 @@ describe.skipIf(!enabled)("assessment portal (database)", { timeout: 120_000 }, 
     const res = await save(assessmentId, { rf_skill_regression: "yes" }, version);
     expect(res.status).toBe(200);
     expect((await res.json()).red_flags).toEqual(["skill_regression"]);
-    expect(notify.calls).toEqual([["assessment.red_flag", { assessment_id: assessmentId, case_id: caseA, codes: "skill_regression" }]]);
+    const redFlagEvents = () => events(assessmentId).then((rows) => rows.filter((e) => e.topic === "assessment.red_flag"));
+    expect(await redFlagEvents()).toEqual([
+      {
+        topic: "assessment.red_flag",
+        payload: { assessment_id: assessmentId, child_id: childA, case_id: caseA },
+        dedup_key: `assessment:${assessmentId}:red_flag:skill_regression`,
+      },
+    ]);
     expect(await auditActions(assessmentId)).toContain("assessment.red_flag");
+    // Recipients at fan-out: org owner (and assigned care team); the unassigned member and other orgs get nothing.
+    const { TOPICS } = await import("@/lib/notify/topics");
+    const recipients = await TOPICS["assessment.red_flag"].recipients(
+      { assessment_id: assessmentId, child_id: childA, case_id: caseA },
+      { sql, event: {} as never },
+    );
+    expect(recipients).toContain(ownerA.id);
+    expect(recipients).not.toContain(memberA.id);
+    expect(recipients).not.toContain(providerB.id);
 
-    notify.calls.length = 0;
     version = await versionOf(assessmentId);
     expect((await save(assessmentId, { rf_skill_regression: "yes", q7: "never" }, version)).status).toBe(200);
-    expect(notify.calls).toEqual([]);
+    expect(await redFlagEvents()).toHaveLength(1);
 
     as(ownerA);
     const { listCaseAssessments } = await import("@/lib/assessments");
@@ -356,7 +379,7 @@ describe.skipIf(!enabled)("assessment portal (database)", { timeout: 120_000 }, 
     const res = await submit(assessmentId);
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ status: "submitted", red_flags: ["skill_regression"] });
-    expect(notify.calls.map((c) => c[0])).toContain("assessment.submitted");
+    expect((await events(assessmentId)).map((e) => e.topic)).toContain("assessment.submitted");
     const [row] = await sql<{ status: string; submitted_at: Date | null; score: { band: string; total: number } }[]>`
       select status, submitted_at, score from assessments where id = ${assessmentId}`;
     expect(row.status).toBe("submitted");
