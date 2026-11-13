@@ -748,7 +748,8 @@
       "signOut": "Sign out",
       "signingOut": "Signing out...",
       "signOutFailed": "Could not sign out. Please try again.",
-      "emergency": "In an emergency call 108 (ambulance) or 112."
+      "emergency": "In an emergency call 108 (ambulance) or 112.",
+      "assessments": "Questionnaires"
     },
     "home": {
       "hello": "Hello, {name}",
@@ -892,6 +893,49 @@
         "notShared": "Not shared",
         "chooseScope": "Choose at least one type of record.",
         "notTreating": "This organisation is not treating your child",
+        "saveFailed": "Could not save. Please try again."
+      }
+    },
+    "assessments": {
+      "title": "Questionnaires",
+      "intro": "Questionnaires your child's care team asked you to fill in.",
+      "empty": "No questionnaires yet.",
+      "forChild": "For {child}",
+      "due": "Please answer by {date}",
+      "noDue": "No due date",
+      "start": "Start",
+      "continue": "Continue",
+      "view": "View answers",
+      "viewResult": "View result",
+      "backToList": "Back to questionnaires",
+      "englishOnly": "Questions are in English for now. A checked translation is coming.",
+      "englishOnlyResult": "The result is in English for now.",
+      "questionOf": "Question {n} of {total}",
+      "safetyQuestion": "Safety question {n} of {total}",
+      "previous": "Previous",
+      "next": "Next",
+      "saveLater": "Save and continue later",
+      "saving": "Saving...",
+      "saved": "Saved. You can continue later.",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "submitted": "Thank you. Your answers were sent to your child's care team. They will review them.",
+      "reviewedNotShared": "Your child's care team has reviewed your answers. Ask them about the result at your next visit.",
+      "resultTitle": "Result from your child's care team",
+      "yourAnswers": "Your answers",
+      "missingList": "Questions not answered yet: {list}",
+      "reload": "Reload",
+      "errors": {
+        "notLinked": "This parent is not linked to the child.",
+        "alreadyOpen": "This questionnaire is already open for this parent.",
+        "chooseTemplate": "Choose a questionnaire.",
+        "notOpen": "Only open questionnaires can be cancelled.",
+        "alreadyReviewed": "Already reviewed.",
+        "notSubmitted": "The parent has not submitted it yet.",
+        "answerAll": "Please answer all questions.",
+        "alreadySubmitted": "Already submitted.",
+        "cancelled": "This questionnaire was cancelled.",
+        "stale": "These answers were changed in another window. Reload to continue.",
         "saveFailed": "Could not save. Please try again."
       }
     }
@@ -1101,7 +1145,8 @@
     "report": "Report",
     "referral": "Referral",
     "team": "Team",
-    "shared": "Shared with us"
+    "shared": "Shared with us",
+    "assessments": "Assessments"
   },
   "sharing": {
     "scopes": {
@@ -1154,5 +1199,111 @@
     "back": "Back to shared records",
     "readOnly": "Shared by {org}. Read only.",
     "openFailed": "Could not open this record. Please try again."
+  },
+  "speakers": {
+    "clinician": "Clinician",
+    "parentOrCaregiver": "Parent or caregiver",
+    "child": "Child",
+    "otherAdult": "Other adult",
+    "aiAssistant": "AI assistant",
+    "unknown": "Unknown"
+  },
+  "assessments": {
+    "disclaimer": "This is a developmental check-in, not a diagnosis.",
+    "urgent": "Please contact your child's doctor now. In an emergency call 108 (ambulance) or 112.",
+    "status": {
+      "assigned": "Not started",
+      "inProgress": "In progress",
+      "submitted": "Submitted",
+      "reviewed": "Reviewed",
+      "cancelled": "Cancelled"
+    },
+    "bands": {
+      "noStrongSigns": "No strong signs",
+      "discussWithProfessional": "Discuss with a professional",
+      "seeProfessionalSoon": "See a professional soon"
+    },
+    "redFlags": {
+      "skillRegression": "Lost words or skills",
+      "selfInjury": "Hurts themselves",
+      "seizure": "Fits (seizures)",
+      "breathing": "Breathing problems",
+      "notEatingDrinking": "Not eating or drinking",
+      "safetyConcern": "Worried about safety"
+    },
+    "answers": {
+      "never": "Never",
+      "sometimes": "Sometimes",
+      "often": "Often",
+      "always": "Always",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "provider": {
+      "title": "Assessments",
+      "intro": "Send questionnaires to the child's parents. They answer in their DoctorNearMe app; you review the answers here.",
+      "send": "Send questionnaire",
+      "sending": "Sending...",
+      "sent": "Questionnaire sent.",
+      "template": "Questionnaire",
+      "parent": "Parent",
+      "parentFallback": "Parent",
+      "dueDate": "Due date (optional)",
+      "noGuardians": "No parent is linked to this child yet. Give the parent a code from the Overview tab so they can add the child in their app.",
+      "empty": "No questionnaires sent yet.",
+      "listLabel": "Questionnaires",
+      "sentTo": "Sent to {name}",
+      "due": "Due {date}",
+      "noDue": "No due date",
+      "redFlags_one": "{count} red flag",
+      "redFlags_other": "{count} red flags",
+      "sharedBadge": "Shared with parent",
+      "open": "Open",
+      "cancel": "Cancel",
+      "cancelling": "Cancelling...",
+      "cancelConfirm": "Cancel \"{title}\"? The parent can no longer answer it.",
+      "back": "Back to assessments",
+      "submittedOn": "Submitted {date}",
+      "reviewedOn": "Reviewed {date}",
+      "redFlagTitle": "Red flags: the parent answered yes",
+      "scoreTitle": "Score",
+      "partial": "Not submitted yet: score of the answers saved so far ({answered} of {total} questions).",
+      "scoreValue": "{total} of {max} points",
+      "domains": {
+        "social": "Social: {points}/{max}",
+        "emotional": "Emotional: {points}/{max}",
+        "speech": "Speech and communication: {points}/{max}",
+        "behaviour": "Behaviour: {points}/{max}",
+        "sensory": "Sensory: {points}/{max}",
+        "cognitive": "Attention and thinking: {points}/{max}"
+      },
+      "answersTitle": "Answers",
+      "safetyTitle": "Safety questions",
+      "notAnswered": "Not answered",
+      "reviewTitle": "Review",
+      "note": "Note for the care team (not shown to the parent)",
+      "share": "Share result with parent",
+      "shareHint": "The parent sees the result summary in their DoctorNearMe app.",
+      "markReviewed": "Mark reviewed",
+      "reviewing": "Saving...",
+      "reviewDone": "Reviewed",
+      "reviewerNote": "Reviewer note:",
+      "sharedYes": "The result is shared with the parent.",
+      "sharedNo": "The result is not shared with the parent.",
+      "summaryTitle": "Published summary (version {version})",
+      "errors": {
+        "notLinked": "This parent is not linked to the child.",
+        "alreadyOpen": "This questionnaire is already open for this parent.",
+        "chooseTemplate": "Choose a questionnaire.",
+        "notOpen": "Only open questionnaires can be cancelled.",
+        "alreadyReviewed": "Already reviewed.",
+        "notSubmitted": "The parent has not submitted it yet.",
+        "answerAll": "Please answer all questions.",
+        "alreadySubmitted": "Already submitted.",
+        "cancelled": "This questionnaire was cancelled.",
+        "stale": "These answers were changed in another window. Reload to continue.",
+        "saveFailed": "Could not save. Please try again."
+      }
+    }
   }
 }

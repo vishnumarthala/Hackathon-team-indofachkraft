@@ -14,9 +14,18 @@ export const SHARING_TOPICS = {
   granted: "sharing.granted",
 } as const;
 
+// Ticket 024 FR-8/FR-9: questionnaires. Recipients: `assigned` -> the assigned guardian; `submitted` and
+// `red_flag` -> the case's active care team (lead first). Payload ids and red-flag codes only.
+export const ASSESSMENT_TOPICS = {
+  assigned: "assessment.assigned",
+  submitted: "assessment.submitted",
+  redFlag: "assessment.red_flag",
+} as const;
+
 export type NotifyTopic =
   | (typeof PROVIDER_TOPICS)[keyof typeof PROVIDER_TOPICS]
-  | (typeof SHARING_TOPICS)[keyof typeof SHARING_TOPICS];
+  | (typeof SHARING_TOPICS)[keyof typeof SHARING_TOPICS]
+  | (typeof ASSESSMENT_TOPICS)[keyof typeof ASSESSMENT_TOPICS];
 
 export type NotifyPayload = Record<string, string | number | boolean | null>;
 

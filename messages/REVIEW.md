@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 974. Not yet approved: 974.
+Rows: 1103. Not yet approved: 1103.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -661,6 +661,7 @@ Rows: 974. Not yet approved: 974.
 | `family.shell.signingOut` | Signing out... | साइन आउट हो रहा है... | సైన్ అవుట్ అవుతోంది... |  | pending |
 | `family.shell.signOutFailed` | Could not sign out. Please try again. | साइन आउट नहीं हो सका। कृपया फिर से कोशिश करें। | సైన్ అవుట్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `family.shell.emergency` | In an emergency call 108 (ambulance) or 112. | आपात स्थिति में 108 (एम्बुलेंस) या 112 पर कॉल करें। | అత్యవసర పరిస్థితిలో 108 (అంబులెన్స్) లేదా 112 కు కాల్ చేయండి. |  | pending |
+| `family.shell.assessments` | Questionnaires | प्रश्नावली | ప్రశ్నావళులు |  | pending |
 | `family.home.hello` | Hello, {name} | नमस्ते, {name} | నమస్తే, {name} |  | pending |
 | `family.home.there` | there | जी | మిత్రమా |  | pending |
 | `family.home.addChild` | Add your child | अपने बच्चे को जोड़ें | మీ బిడ్డను జోడించండి |  | pending |
@@ -786,6 +787,45 @@ Rows: 974. Not yet approved: 974.
 | `family.children.team.chooseScope` | Choose at least one type of record. | कम से कम एक तरह का रिकॉर्ड चुनें। | కనీసం ఒక రకమైన రికార్డును ఎంచుకోండి. |  | pending |
 | `family.children.team.notTreating` | This organisation is not treating your child | यह संस्था आपके बच्चे का इलाज नहीं कर रही है | ఈ సంస్థ మీ పిల్లలకు చికిత్స చేయడం లేదు |  | pending |
 | `family.children.team.saveFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.assessments.title` | Questionnaires | प्रश्नावली | ప్రశ్నావళులు |  | pending |
+| `family.assessments.intro` | Questionnaires your child's care team asked you to fill in. | आपके बच्चे की केयर टीम ने जो प्रश्नावली भरने को कहा है। | మీ బిడ్డ కేర్ టీమ్ మిమ్మల్ని నింపమని అడిగిన ప్రశ్నావళులు. |  | pending |
+| `family.assessments.empty` | No questionnaires yet. | अभी कोई प्रश्नावली नहीं है। | ఇంకా ప్రశ్నావళులు లేవు. |  | pending |
+| `family.assessments.forChild` | For {child} | {child} के लिए | {child} కోసం |  | pending |
+| `family.assessments.due` | Please answer by {date} | कृपया {date} तक जवाब दें | దయచేసి {date} లోపు జవాబు ఇవ్వండి |  | pending |
+| `family.assessments.noDue` | No due date | कोई अंतिम तारीख नहीं | చివరి తేదీ లేదు |  | pending |
+| `family.assessments.start` | Start | शुरू करें | ప్రారంభించండి |  | pending |
+| `family.assessments.continue` | Continue | जारी रखें | కొనసాగించండి |  | pending |
+| `family.assessments.view` | View answers | जवाब देखें | జవాబులు చూడండి |  | pending |
+| `family.assessments.viewResult` | View result | परिणाम देखें | ఫలితం చూడండి |  | pending |
+| `family.assessments.backToList` | Back to questionnaires | प्रश्नावली पर वापस | ప్రశ్నావళులకు తిరిగి |  | pending |
+| `family.assessments.englishOnly` | Questions are in English for now. A checked translation is coming. | प्रश्न अभी अंग्रेज़ी में हैं। जाँचा हुआ अनुवाद जल्द आएगा। | ప్రశ్నలు ప్రస్తుతం ఇంగ్లీష్‌లో ఉన్నాయి. పరిశీలించిన అనువాదం త్వరలో వస్తుంది. |  | pending |
+| `family.assessments.englishOnlyResult` | The result is in English for now. | परिणाम अभी अंग्रेज़ी में है। | ఫలితం ప్రస్తుతం ఇంగ్లీష్‌లో ఉంది. |  | pending |
+| `family.assessments.questionOf` | Question {n} of {total} | प्रश्न {n} / {total} | ప్రశ్న {n} / {total} |  | pending |
+| `family.assessments.safetyQuestion` | Safety question {n} of {total} | सुरक्षा प्रश्न {n} / {total} | భద్రత ప్రశ్న {n} / {total} |  | pending |
+| `family.assessments.previous` | Previous | पिछला | వెనుకటి |  | pending |
+| `family.assessments.next` | Next | अगला | తదుపరి |  | pending |
+| `family.assessments.saveLater` | Save and continue later | सहेजें और बाद में जारी रखें | సేవ్ చేసి తర్వాత కొనసాగించండి |  | pending |
+| `family.assessments.saving` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `family.assessments.saved` | Saved. You can continue later. | सहेज लिया। आप बाद में जारी रख सकते हैं। | సేవ్ అయింది. మీరు తర్వాత కొనసాగించవచ్చు. |  | pending |
+| `family.assessments.submit` | Submit | भेजें | పంపండి |  | pending |
+| `family.assessments.submitting` | Submitting... | भेजा जा रहा है... | పంపుతోంది... |  | pending |
+| `family.assessments.submitted` | Thank you. Your answers were sent to your child's care team. They will review them. | धन्यवाद। आपके जवाब आपके बच्चे की केयर टीम को भेज दिए गए हैं। वे उनकी समीक्षा करेंगे। | ధన్యవాదాలు. మీ జవాబులు మీ బిడ్డ కేర్ టీమ్‌కు పంపబడ్డాయి. వారు వాటిని సమీక్షిస్తారు. |  | pending |
+| `family.assessments.reviewedNotShared` | Your child's care team has reviewed your answers. Ask them about the result at your next visit. | आपके बच्चे की केयर टीम ने आपके जवाबों की समीक्षा कर ली है। अगली मुलाक़ात में उनसे परिणाम के बारे में पूछें। | మీ బిడ్డ కేర్ టీమ్ మీ జవాబులను సమీక్షించింది. తదుపరి సందర్శనలో ఫలితం గురించి వారిని అడగండి. |  | pending |
+| `family.assessments.resultTitle` | Result from your child's care team | आपके बच्चे की केयर टीम से परिणाम | మీ బిడ్డ కేర్ టీమ్ నుంచి ఫలితం |  | pending |
+| `family.assessments.yourAnswers` | Your answers | आपके जवाब | మీ జవాబులు |  | pending |
+| `family.assessments.missingList` | Questions not answered yet: {list} | जिन प्रश्नों के जवाब अभी बाकी हैं: {list} | ఇంకా జవాబు ఇవ్వని ప్రశ్నలు: {list} |  | pending |
+| `family.assessments.reload` | Reload | दोबारा लोड करें | మళ్ళీ లోడ్ చేయండి |  | pending |
+| `family.assessments.errors.notLinked` | This parent is not linked to the child. | ये माता-पिता इस बच्चे से जुड़े नहीं हैं। | ఈ తల్లిదండ్రులు ఈ బిడ్డకు లింక్ కాలేదు. |  | pending |
+| `family.assessments.errors.alreadyOpen` | This questionnaire is already open for this parent. | यह प्रश्नावली इन माता-पिता के लिए पहले से खुली है। | ఈ ప్రశ్నావళి ఈ తల్లిదండ్రుల కోసం ఇప్పటికే తెరిచి ఉంది. |  | pending |
+| `family.assessments.errors.chooseTemplate` | Choose a questionnaire. | कोई प्रश्नावली चुनें। | ఒక ప్రశ్నావళిని ఎంచుకోండి. |  | pending |
+| `family.assessments.errors.notOpen` | Only open questionnaires can be cancelled. | केवल खुली प्रश्नावली रद्द की जा सकती है। | తెరిచి ఉన్న ప్రశ్నావళులను మాత్రమే రద్దు చేయగలరు. |  | pending |
+| `family.assessments.errors.alreadyReviewed` | Already reviewed. | समीक्षा पहले ही हो चुकी है। | ఇప్పటికే సమీక్షించబడింది. |  | pending |
+| `family.assessments.errors.notSubmitted` | The parent has not submitted it yet. | माता-पिता ने इसे अभी तक नहीं भेजा है। | తల్లిదండ్రులు దీన్ని ఇంకా పంపలేదు. |  | pending |
+| `family.assessments.errors.answerAll` | Please answer all questions. | कृपया सभी प्रश्नों के जवाब दें। | దయచేసి అన్ని ప్రశ్నలకు జవాబు ఇవ్వండి. |  | pending |
+| `family.assessments.errors.alreadySubmitted` | Already submitted. | पहले ही भेजा जा चुका है। | ఇప్పటికే పంపబడింది. |  | pending |
+| `family.assessments.errors.cancelled` | This questionnaire was cancelled. | यह प्रश्नावली रद्द कर दी गई थी। | ఈ ప్రశ్నావళి రద్దు చేయబడింది. |  | pending |
+| `family.assessments.errors.stale` | These answers were changed in another window. Reload to continue. | ये जवाब किसी दूसरी विंडो में बदले गए थे। जारी रखने के लिए पेज दोबारा लोड करें। | ఈ జవాబులు మరో విండోలో మార్చబడ్డాయి. కొనసాగించడానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `family.assessments.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `directory.title` | Find a provider near you | अपने पास कोई विशेषज्ञ खोजें | మీ దగ్గర నిపుణులను కనుగొనండి |  | pending |
 | `directory.intro` | Verified child-development specialists and centres in Hyderabad. Search by locality or PIN code. | हैदराबाद में सत्यापित बाल-विकास विशेषज्ञ और केंद्र। इलाके या पिन कोड से खोजें। | హైదరాబాద్‌లో ధృవీకరించబడిన పిల్లల అభివృద్ధి నిపుణులు మరియు కేంద్రాలు. ప్రాంతం లేదా పిన్ కోడ్‌తో వెతకండి. |  | pending |
 | `directory.metaTitle` | Find child-development specialists near you in Hyderabad \| DoctorNearMe | हैदराबाद में अपने पास बाल-विकास विशेषज्ञ खोजें \| DoctorNearMe | హైదరాబాద్‌లో మీ దగ్గర పిల్లల అభివృద్ధి నిపుణులను కనుగొనండి \| DoctorNearMe |  | pending |
@@ -945,6 +985,7 @@ Rows: 974. Not yet approved: 974.
 | `caseTabs.referral` | Referral | रेफ़रल | రిఫరల్ |  | pending |
 | `caseTabs.team` | Team | टीम | టీమ్ |  | pending |
 | `caseTabs.shared` | Shared with us | हमसे साझा | మాతో పంచుకున్నవి |  | pending |
+| `caseTabs.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -989,3 +1030,91 @@ Rows: 974. Not yet approved: 974.
 | `sharedWithUs.back` | Back to shared records | साझा रिकॉर्ड पर वापस | పంచుకున్న రికార్డులకు వెనుకకు |  | pending |
 | `sharedWithUs.readOnly` | Shared by {org}. Read only. | {org} ने साझा किया। सिर्फ़ पढ़ने के लिए। | {org} పంచుకున్నారు. చదవడానికి మాత్రమే. |  | pending |
 | `sharedWithUs.openFailed` | Could not open this record. Please try again. | यह रिकॉर्ड नहीं खुल सका। कृपया फिर से कोशिश करें। | ఈ రికార్డును తెరవలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `speakers.clinician` | Clinician | क्लिनिशियन | క్లినీషియన్ |  | pending |
+| `speakers.parentOrCaregiver` | Parent or caregiver | माता-पिता या देखभाल करने वाले | తల్లిదండ్రులు లేదా సంరక్షకులు |  | pending |
+| `speakers.child` | Child | बच्चा | బిడ్డ |  | pending |
+| `speakers.otherAdult` | Other adult | अन्य वयस्क | ఇతర పెద్దవారు |  | pending |
+| `speakers.aiAssistant` | AI assistant | AI सहायक | AI సహాయకుడు |  | pending |
+| `speakers.unknown` | Unknown | अज्ञात | తెలియదు |  | pending |
+| `assessments.disclaimer` | This is a developmental check-in, not a diagnosis. | यह विकास की एक जाँच है, निदान नहीं। | ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. |  | pending |
+| `assessments.urgent` | Please contact your child's doctor now. In an emergency call 108 (ambulance) or 112. | कृपया अभी अपने बच्चे के डॉक्टर से संपर्क करें। आपात स्थिति में 108 (एम्बुलेंस) या 112 पर कॉल करें। | దయచేసి వెంటనే మీ బిడ్డ డాక్టర్‌ను సంప్రదించండి. అత్యవసర పరిస్థితిలో 108 (అంబులెన్స్) లేదా 112 కు కాల్ చేయండి. |  | pending |
+| `assessments.status.assigned` | Not started | शुरू नहीं हुआ | ప్రారంభించలేదు |  | pending |
+| `assessments.status.inProgress` | In progress | जारी है | కొనసాగుతోంది |  | pending |
+| `assessments.status.submitted` | Submitted | भेजा गया | పంపబడింది |  | pending |
+| `assessments.status.reviewed` | Reviewed | समीक्षा हो गई | సమీక్షించబడింది |  | pending |
+| `assessments.status.cancelled` | Cancelled | रद्द | రద్దు చేయబడింది |  | pending |
+| `assessments.bands.noStrongSigns` | No strong signs | कोई गंभीर संकेत नहीं | బలమైన సంకేతాలు లేవు |  | pending |
+| `assessments.bands.discussWithProfessional` | Discuss with a professional | किसी विशेषज्ञ से बात करें | నిపుణులతో మాట్లాడండి |  | pending |
+| `assessments.bands.seeProfessionalSoon` | See a professional soon | जल्द किसी विशेषज्ञ से मिलें | త్వరలో నిపుణులను కలవండి |  | pending |
+| `assessments.redFlags.skillRegression` | Lost words or skills | शब्द या कौशल खो दिए | మాటలు లేదా నైపుణ్యాలు కోల్పోయారు |  | pending |
+| `assessments.redFlags.selfInjury` | Hurts themselves | खुद को चोट पहुँचाता है | తమను తాము గాయపరుచుకుంటున్నారు |  | pending |
+| `assessments.redFlags.seizure` | Fits (seizures) | दौरे (फ़िट्स) | ఫిట్స్ (మూర్ఛ) |  | pending |
+| `assessments.redFlags.breathing` | Breathing problems | साँस लेने में परेशानी | శ్వాస తీసుకోవడంలో ఇబ్బంది |  | pending |
+| `assessments.redFlags.notEatingDrinking` | Not eating or drinking | खाना-पीना बंद | తినడం లేదా తాగడం మానేశారు |  | pending |
+| `assessments.redFlags.safetyConcern` | Worried about safety | सुरक्षा की चिंता | భద్రతపై ఆందోళన |  | pending |
+| `assessments.answers.never` | Never | कभी नहीं | ఎప్పుడూ లేదు |  | pending |
+| `assessments.answers.sometimes` | Sometimes | कभी-कभी | కొన్నిసార్లు |  | pending |
+| `assessments.answers.often` | Often | अक्सर | తరచుగా |  | pending |
+| `assessments.answers.always` | Always | हमेशा | ఎల్లప్పుడూ |  | pending |
+| `assessments.answers.yes` | Yes | हाँ | అవును |  | pending |
+| `assessments.answers.no` | No | नहीं | లేదు |  | pending |
+| `assessments.provider.title` | Assessments | आकलन | అంచనాలు |  | pending |
+| `assessments.provider.intro` | Send questionnaires to the child's parents. They answer in their DoctorNearMe app; you review the answers here. | बच्चे के माता-पिता को प्रश्नावली भेजें। वे अपने DoctorNearMe ऐप में जवाब देते हैं; आप यहाँ जवाबों की समीक्षा करते हैं। | బిడ్డ తల్లిదండ్రులకు ప్రశ్నావళులు పంపండి. వారు తమ DoctorNearMe యాప్‌లో జవాబులు ఇస్తారు; మీరు ఇక్కడ వాటిని సమీక్షిస్తారు. |  | pending |
+| `assessments.provider.send` | Send questionnaire | प्रश्नावली भेजें | ప్రశ్నావళి పంపండి |  | pending |
+| `assessments.provider.sending` | Sending... | भेजा जा रहा है... | పంపుతోంది... |  | pending |
+| `assessments.provider.sent` | Questionnaire sent. | प्रश्नावली भेज दी गई। | ప్రశ్నావళి పంపబడింది. |  | pending |
+| `assessments.provider.template` | Questionnaire | प्रश्नावली | ప్రశ్నావళి |  | pending |
+| `assessments.provider.parent` | Parent | माता-पिता | తల్లిదండ్రులు |  | pending |
+| `assessments.provider.parentFallback` | Parent | माता-पिता | తల్లిదండ్రులు |  | pending |
+| `assessments.provider.dueDate` | Due date (optional) | अंतिम तारीख (वैकल्पिक) | చివరి తేదీ (ఐచ్ఛికం) |  | pending |
+| `assessments.provider.noGuardians` | No parent is linked to this child yet. Give the parent a code from the Overview tab so they can add the child in their app. | इस बच्चे से अभी कोई माता-पिता जुड़े नहीं हैं। माता-पिता को सारांश टैब से एक कोड दें ताकि वे अपने ऐप में बच्चे को जोड़ सकें। | ఈ బిడ్డకు ఇంకా తల్లిదండ్రులు ఎవరూ లింక్ కాలేదు. తల్లిదండ్రులు తమ యాప్‌లో బిడ్డను జోడించేందుకు సారాంశం ట్యాబ్ నుంచి ఒక కోడ్ ఇవ్వండి. |  | pending |
+| `assessments.provider.empty` | No questionnaires sent yet. | अभी तक कोई प्रश्नावली नहीं भेजी गई। | ఇంకా ఏ ప్రశ్నావళీ పంపలేదు. |  | pending |
+| `assessments.provider.listLabel` | Questionnaires | प्रश्नावली | ప్రశ్నావళులు |  | pending |
+| `assessments.provider.sentTo` | Sent to {name} | {name} को भेजी गई | {name} కు పంపబడింది |  | pending |
+| `assessments.provider.due` | Due {date} | अंतिम तारीख {date} | చివరి తేదీ {date} |  | pending |
+| `assessments.provider.noDue` | No due date | कोई अंतिम तारीख नहीं | చివరి తేదీ లేదు |  | pending |
+| `assessments.provider.redFlags_one` | {count} red flag | {count} खतरे का संकेत | {count} ప్రమాద సంకేతం |  | pending |
+| `assessments.provider.redFlags_other` | {count} red flags | {count} खतरे के संकेत | {count} ప్రమాద సంకేతాలు |  | pending |
+| `assessments.provider.sharedBadge` | Shared with parent | माता-पिता से साझा | తల్లిదండ్రులతో పంచుకున్నారు |  | pending |
+| `assessments.provider.open` | Open | खोलें | తెరవండి |  | pending |
+| `assessments.provider.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `assessments.provider.cancelling` | Cancelling... | रद्द किया जा रहा है... | రద్దు చేస్తోంది... |  | pending |
+| `assessments.provider.cancelConfirm` | Cancel "{title}"? The parent can no longer answer it. | "{title}" रद्द करें? माता-पिता इसका जवाब नहीं दे पाएँगे। | "{title}" రద్దు చేయాలా? తల్లిదండ్రులు ఇక దీనికి జవాబు ఇవ్వలేరు. |  | pending |
+| `assessments.provider.back` | Back to assessments | आकलन पर वापस | అంచనాలకు తిరిగి |  | pending |
+| `assessments.provider.submittedOn` | Submitted {date} | {date} को भेजा गया | {date} న పంపబడింది |  | pending |
+| `assessments.provider.reviewedOn` | Reviewed {date} | {date} को समीक्षा हुई | {date} న సమీక్షించబడింది |  | pending |
+| `assessments.provider.redFlagTitle` | Red flags: the parent answered yes | खतरे के संकेत: माता-पिता ने हाँ कहा | ప్రమాద సంకేతాలు: తల్లిదండ్రులు అవును అన్నారు |  | pending |
+| `assessments.provider.scoreTitle` | Score | स्कोर | స్కోర్ |  | pending |
+| `assessments.provider.partial` | Not submitted yet: score of the answers saved so far ({answered} of {total} questions). | अभी भेजा नहीं गया: अब तक सहेजे गए जवाबों का स्कोर ({total} में से {answered} प्रश्न)। | ఇంకా పంపలేదు: ఇప్పటివరకు సేవ్ చేసిన జవాబుల స్కోర్ ({total} లో {answered} ప్రశ్నలు). |  | pending |
+| `assessments.provider.scoreValue` | {total} of {max} points | {max} में से {total} अंक | {max} లో {total} పాయింట్లు |  | pending |
+| `assessments.provider.domains.social` | Social: {points}/{max} | सामाजिक: {points}/{max} | సామాజిక: {points}/{max} |  | pending |
+| `assessments.provider.domains.emotional` | Emotional: {points}/{max} | भावनात्मक: {points}/{max} | భావోద్వేగ: {points}/{max} |  | pending |
+| `assessments.provider.domains.speech` | Speech and communication: {points}/{max} | बोलना और संवाद: {points}/{max} | మాట మరియు సంభాషణ: {points}/{max} |  | pending |
+| `assessments.provider.domains.behaviour` | Behaviour: {points}/{max} | व्यवहार: {points}/{max} | ప్రవర్తన: {points}/{max} |  | pending |
+| `assessments.provider.domains.sensory` | Sensory: {points}/{max} | संवेदी: {points}/{max} | ఇంద్రియ: {points}/{max} |  | pending |
+| `assessments.provider.domains.cognitive` | Attention and thinking: {points}/{max} | ध्यान और सोच: {points}/{max} | శ్రద్ధ మరియు ఆలోచన: {points}/{max} |  | pending |
+| `assessments.provider.answersTitle` | Answers | जवाब | జవాబులు |  | pending |
+| `assessments.provider.safetyTitle` | Safety questions | सुरक्षा के प्रश्न | భద్రత ప్రశ్నలు |  | pending |
+| `assessments.provider.notAnswered` | Not answered | जवाब नहीं दिया | జవాబు ఇవ్వలేదు |  | pending |
+| `assessments.provider.reviewTitle` | Review | समीक्षा | సమీక్ష |  | pending |
+| `assessments.provider.note` | Note for the care team (not shown to the parent) | केयर टीम के लिए नोट (माता-पिता को नहीं दिखेगा) | కేర్ టీమ్ కోసం నోట్ (తల్లిదండ్రులకు కనిపించదు) |  | pending |
+| `assessments.provider.share` | Share result with parent | परिणाम माता-पिता से साझा करें | ఫలితాన్ని తల్లిదండ్రులతో పంచుకోండి |  | pending |
+| `assessments.provider.shareHint` | The parent sees the result summary in their DoctorNearMe app. | माता-पिता अपने DoctorNearMe ऐप में परिणाम का सारांश देखेंगे। | తల్లిదండ్రులు తమ DoctorNearMe యాప్‌లో ఫలితాల సారాంశాన్ని చూస్తారు. |  | pending |
+| `assessments.provider.markReviewed` | Mark reviewed | समीक्षा पूरी करें | సమీక్షించినట్లు గుర్తించండి |  | pending |
+| `assessments.provider.reviewing` | Saving... | सहेजा जा रहा है... | సేవ్ చేస్తోంది... |  | pending |
+| `assessments.provider.reviewDone` | Reviewed | समीक्षा हो गई | సమీక్షించబడింది |  | pending |
+| `assessments.provider.reviewerNote` | Reviewer note: | समीक्षक का नोट: | సమీక్షకుల నోట్: |  | pending |
+| `assessments.provider.sharedYes` | The result is shared with the parent. | परिणाम माता-पिता से साझा है। | ఫలితం తల్లిదండ్రులతో పంచుకోబడింది. |  | pending |
+| `assessments.provider.sharedNo` | The result is not shared with the parent. | परिणाम माता-पिता से साझा नहीं है। | ఫలితం తల్లిదండ్రులతో పంచుకోలేదు. |  | pending |
+| `assessments.provider.summaryTitle` | Published summary (version {version}) | प्रकाशित सारांश (संस्करण {version}) | ప్రచురించిన సారాంశం (వెర్షన్ {version}) |  | pending |
+| `assessments.provider.errors.notLinked` | This parent is not linked to the child. | ये माता-पिता इस बच्चे से जुड़े नहीं हैं। | ఈ తల్లిదండ్రులు ఈ బిడ్డకు లింక్ కాలేదు. |  | pending |
+| `assessments.provider.errors.alreadyOpen` | This questionnaire is already open for this parent. | यह प्रश्नावली इन माता-पिता के लिए पहले से खुली है। | ఈ ప్రశ్నావళి ఈ తల్లిదండ్రుల కోసం ఇప్పటికే తెరిచి ఉంది. |  | pending |
+| `assessments.provider.errors.chooseTemplate` | Choose a questionnaire. | कोई प्रश्नावली चुनें। | ఒక ప్రశ్నావళిని ఎంచుకోండి. |  | pending |
+| `assessments.provider.errors.notOpen` | Only open questionnaires can be cancelled. | केवल खुली प्रश्नावली रद्द की जा सकती है। | తెరిచి ఉన్న ప్రశ్నావళులను మాత్రమే రద్దు చేయగలరు. |  | pending |
+| `assessments.provider.errors.alreadyReviewed` | Already reviewed. | समीक्षा पहले ही हो चुकी है। | ఇప్పటికే సమీక్షించబడింది. |  | pending |
+| `assessments.provider.errors.notSubmitted` | The parent has not submitted it yet. | माता-पिता ने इसे अभी तक नहीं भेजा है। | తల్లిదండ్రులు దీన్ని ఇంకా పంపలేదు. |  | pending |
+| `assessments.provider.errors.answerAll` | Please answer all questions. | कृपया सभी प्रश्नों के जवाब दें। | దయచేసి అన్ని ప్రశ్నలకు జవాబు ఇవ్వండి. |  | pending |
+| `assessments.provider.errors.alreadySubmitted` | Already submitted. | पहले ही भेजा जा चुका है। | ఇప్పటికే పంపబడింది. |  | pending |
+| `assessments.provider.errors.cancelled` | This questionnaire was cancelled. | यह प्रश्नावली रद्द कर दी गई थी। | ఈ ప్రశ్నావళి రద్దు చేయబడింది. |  | pending |
+| `assessments.provider.errors.stale` | These answers were changed in another window. Reload to continue. | ये जवाब किसी दूसरी विंडो में बदले गए थे। जारी रखने के लिए पेज दोबारा लोड करें। | ఈ జవాబులు మరో విండోలో మార్చబడ్డాయి. కొనసాగించడానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
+| `assessments.provider.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |

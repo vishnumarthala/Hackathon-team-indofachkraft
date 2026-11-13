@@ -1,15 +1,10 @@
 "use client";
 
 import type { ReactNode, RefObject } from "react";
+import { SPEAKER_LABEL_KEYS, isSpeakerRole } from "@/lib/clinical/speakers";
+import { useT } from "@/lib/i18n/client";
 import type { Segment } from "@/lib/types";
 import { formatClock } from "./time";
-
-const SPEAKER_LABELS: Record<string, string> = {
-  therapist: "Therapist",
-  parent: "Parent",
-  agent: "Agent",
-  unknown: "Speaker",
-};
 
 export function AudioTranscript({
   sessionNumber,
@@ -28,6 +23,8 @@ export function AudioTranscript({
   onSelect: (segmentId: string, startSec: number) => void;
   headerAction?: ReactNode;
 }) {
+  // 024 FR-5: speaker labels from the speaker-role contract (Clinician, Parent or caregiver, ...).
+  const ts = useT("speakers");
   return (
     <div className="min-w-0 space-y-3 lg:sticky lg:top-4 lg:self-start">
       <div className="flex flex-wrap items-start justify-between gap-2">
@@ -60,7 +57,7 @@ export function AudioTranscript({
                 className="block w-full px-2 py-1.5 text-left text-sm"
               >
                 <span className="mr-2 font-semibold text-slate-900">
-                  {SPEAKER_LABELS[segment.speaker] ?? segment.speaker}
+                  {isSpeakerRole(segment.speaker) ? ts(SPEAKER_LABEL_KEYS[segment.speaker]) : segment.speaker}
                 </span>
                 <span className="mr-2 font-mono text-xs text-slate-500">{formatClock(segment.start_sec)}</span>
                 <span className="text-slate-800">{segment.text}</span>

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { audit } from "@/lib/audit";
-import { requireReportAccess } from "@/lib/authz";
+import { requireReportActor } from "@/lib/authz";
 import { fail, ok, parseJson } from "@/lib/http";
 import { getReport, updateDraftReport } from "@/lib/queries/reports";
 
@@ -21,8 +21,8 @@ const ReportPatchSchema = z
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const denied = await requireReportAccess(id);
-  if (denied) return denied;
+  const gate = await requireReportActor(id);
+  if ("response" in gate) return gate.response;
   const report = await getReport(id);
   if (!report) return fail(404, "Report not found");
   if (report.kind !== "assessment") return fail(422, "Only assessment reports can be edited here");
@@ -32,13 +32,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if ("response" in parsed) return parsed.response;
   const patch = parsed.data;
 
-  const updated = await updateDraftReport(id, patch);
+  // 024 FR-3: `final` publishes version 1 (published_versions) in the same transaction.
+  const updated = await updateDraftReport(id, patch, gate.actor.user.id);
   if (!updated) return fail(409, "Report is final");
 
   if (patch.content_md !== undefined) {
     await audit({
       caseId: report.case_id,
       actor: "therapist",
+      actorUserId: gate.actor.user.id,
       action: "report.edited",
       entity: "report",
       entityId: id,
@@ -46,7 +48,14 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     });
   }
   if (patch.status === "final") {
-    await audit({ caseId: report.case_id, actor: "therapist", action: "report.finalized", entity: "report", entityId: id });
+    await audit({
+      caseId: report.case_id,
+      actor: "therapist",
+      actorUserId: gate.actor.user.id,
+      action: "report.finalized",
+      entity: "report",
+      entityId: id,
+    });
   }
   return ok({ report: updated });
 }
