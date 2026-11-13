@@ -12,6 +12,7 @@ const TABS = [
   { key: "referral", segment: "referral" },
   { key: "documents", segment: "documents" },
   { key: "team", segment: "team" },
+  { key: "health", segment: "health" },
   { key: "shared", segment: "shared" },
 ] as const;
 

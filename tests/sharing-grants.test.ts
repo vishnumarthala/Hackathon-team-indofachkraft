@@ -41,8 +41,8 @@ describe("grant request validation and helpers", () => {
     expect(GrantCreateSchema.safeParse({ ...base, source_org_id: "x" }).success).toBe(false);
   });
 
-  it("registers the reports loader; other scopes register in their own tickets (023: documents)", () => {
-    expect(Object.keys(SHARE_LOADERS)).toEqual(expect.arrayContaining(["reports", "documents"]));
+  it("registers the reports loader; other scopes register in their own tickets (021 health_profile, 023 documents)", () => {
+    expect(Object.keys(SHARE_LOADERS)).toEqual(expect.arrayContaining(["reports", "health_profile", "documents"]));
     expect(reportTitle("# Assessment summary\n\ntext")).toBe("Assessment summary");
     expect(reportTitle("no heading")).toBe("Assessment report");
   });

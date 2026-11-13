@@ -1,6 +1,6 @@
 # 023: Document vault - Results
 
-Branch: `ticket/023-document-vault` (base: 017-020, 022, 028, 029 merged; local `main` with 032 merged in afterwards, see `Merge with main (032)`). Tested against the local Supabase
+Branch: `ticket/023-document-vault` (base: 017-020, 022, 028, 029 merged; local `main` with 032 and then 021 merged in afterwards, see the merge sections at the end). Tested against the local Supabase
 stack of slot 6 (all migrations applied by `supabase db reset`), `DEMO_MODE=true`, dev server on port 3060.
 Acceptance script and UI check (isolated headless Chrome via `playwright-core`, own cookie jar) live in the
 git-ignored `.tmp/`; their output is in `evidence/`. Synthetic accounts (`seed:users --prefix d023`), child
@@ -80,3 +80,14 @@ git-ignored `.tmp/`; their output is in `evidence/`. Synthetic accounts (`seed:u
   13 PASS).
 - Local dev note: after `npm run build` in the same worktree, a stale `.next` made `next dev` reload every page in
   a loop (HMR "rebuilding" on connect, even on `/find`); deleting `.next` fixed it. Not a code issue.
+
+## Merge with main (021 health profile, `b6b331d`)
+
+- `git merge main`. Conflicts resolved keeping both sides: `lib/sharing/registry.ts` (both loaders:
+  `health_profile` and `documents`), `tests/sharing-grants.test.ts` (expects `reports`, `health_profile`,
+  `documents`), `app/family/(portal)/children/[id]/page.tsx` (`Care team`, `Documents` and `Health` links),
+  `docs/sharing.md`, `docs/system-design.md` (both sections, API rows and doc lists), `messages/{en,hi,te}.json`
+  (deep-merged; `caseTabs` has `health` and `documents`), `messages/REVIEW.md` regenerated (1156 rows).
+- `supabase db reset` on slot 6, then with the slot env: `npm run lint` exit 0, `npm run typecheck` exit 0,
+  `npx vitest run` 60 files, 870 passed, 10 skipped (only the opt-in `CT_DB_TESTS=1` suite; every other DB
+  suite ran, incl. documents, sharing and health profile), `npm run build` exit 0.

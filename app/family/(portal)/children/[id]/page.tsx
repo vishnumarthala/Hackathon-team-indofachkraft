@@ -14,7 +14,13 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
   await requireGuardianPage();
   const { id } = await params;
   const { child, session } = await requireChildGuardianPage(id);
-  const [t, tc, td, locale] = [await getT("family.children"), await getT("consent"), await getT("documents"), await getLocale()];
+  const [t, tc, th, td, locale] = [
+    await getT("family.children"),
+    await getT("consent"),
+    await getT("health"),
+    await getT("documents"),
+    await getLocale(),
+  ];
   const [state, docs] = await Promise.all([getConsentState(child.id), currentDocuments(locale)]);
 
   const views: PermissionView[] = CONSENT_FEATURES.map((feature) => {
@@ -54,6 +60,12 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
           className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
         >
           {td("link")}
+        </Link>
+        <Link
+          href={`/family/children/${child.id}/health`}
+          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+        >
+          {th("link")}
         </Link>
       </div>
       <section aria-labelledby="permissions-heading" className="space-y-3">
