@@ -305,6 +305,10 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `AUDIT_FAIL_ACTIONS` | dev/test only (041) | comma-separated audit actions whose audit write fails (checks fail-closed behaviour); ignored in production builds |
 | `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` | Google Calendar / Meet (037) | server-only; unset + `DEMO_MODE=true` -> local fake Google; unset otherwise -> providers add Meet links by hand (`docs/google-meet.md`) |
 | `TOKEN_ENCRYPTION_KEY` | Google refresh tokens (037) | 32 random bytes, base64; AES-256-GCM; required to connect Google Calendar |
+| `VOICE_DAILY_MINUTES_CAP` / `VOICE_MONTHLY_MINUTES_CAP` | voice cost guard (051) | platform voice budget in minutes, defaults 300 / 4000; overridable at runtime in `/admin/ops` |
+| `VOICE_QUOTA_{SCREEN,BOOKING,FOLLOWUP}_{DAY,30D}`, `VOICE_QUOTA_INTAKE_DEMO_DAY` | voice cost guard (051) | per-user voice starts; defaults 2/4, 3/10, 5/30, 1 per day (`docs/voice-cost-guard.md`) |
+| `VOICE_COST_PER_MINUTE_USD` / `USD_INR_RATE` | `/admin/ops` (051) | cost estimate, defaults 0.10 and 84 |
+| `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` | bot check (051) | optional; both set = Cloudflare Turnstile on voice starts (`/screen`, `/find`) and phone sign-in codes |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
 used). `npm run build` must succeed with no `.env.local`.
@@ -971,6 +975,23 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   answer read aloud by the browser's Web Speech API) through `POST /api/agents/followup/demo/answer_question`; the model
   step reads `demo/fixtures/gemini/follow-up.json` (keyword-picked canned answers citing `HOME1`/`PLAN1`/`RX1`/`NOTE1`)
   and logs `followup model call` for every read.
+
+## 13d. Voice cost guard (ticket 051)
+
+- **No anonymous voice.** Every voice start (`POST /api/screen/sessions` with `mode: "voice"`,
+  `POST /api/agents/booking/session`, `POST /api/agents/followup/session`, `POST /api/demo/voice-token`) runs
+  `voiceGate()` (`lib/voice/gate.ts`) before ElevenLabs: signed in (401 `sign_in_required`), Cloudflare Turnstile on
+  `/screen` and `/find` when configured (400 `bot_check_failed`), then one atomic SQL call
+  `voice_session_start(...)` for the per-user quota (429 `quota_day` / `quota_month`), one open call per user (429
+  `concurrent`) and the platform budget (503 `voice_paused`). Tapping stays anonymous and is always offered.
+- **Ledger** `voice_usage` (migration `20261113005100_voice_usage.sql`): account id, agent, reserved / actual seconds,
+  status, conversation id; no child data. Reserved = max call length (screen 6, booking 4, follow-up 10, demo 3 min).
+  The browser reports the end (`POST /api/voice/usage/:id/end`, clamped); the booking cron expires unreported calls
+  and fetches real durations from ElevenLabs. 180-day retention (privacy registry `voice_usage`).
+- **Landing demo**: the recorded sample for everyone; live only for providers / platform admins and verified demo
+  leads, 1 per day. **Admin**: `/admin/ops` Voice usage card (minutes, cost USD/INR, top users, blocked starts) and the
+  runtime cap override (`voice_settings`, audited `voice.caps_updated`). Alerts at 80% / 100% (`voice.budget_alert`).
+- Details, env vars and the checklist for new voice entry points: `docs/voice-cost-guard.md`.
 
 ## 14. Human setup checklist (not tickets)
 

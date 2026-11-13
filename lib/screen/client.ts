@@ -1,6 +1,8 @@
 // Ticket 033: browser side of the check-in, free of React so it can be tested with mocks (E-3). The page component
 // (components/screen/ScreenFlow.tsx) passes `fetch`, the microphone prompt and the ElevenLabs SDK's startSession.
 import type { RedFlagCode } from "@/lib/clinical/checkin";
+import { reportVoiceEnd, voiceStartHeaders } from "@/lib/voice/client";
+import { voiceRefusal, type VoiceRefusal } from "@/lib/voice/constants";
 import type { ScreenAgeBand, ScreenMode, ScreenQuestion, ScreenResult } from "./questions";
 
 export const SESSION_STORAGE_KEY = "dnm.screen.session";
@@ -9,13 +11,21 @@ export type StartedSession = { session_id: string; expires_at: string; questions
 
 type VoiceTarget = { conversationToken: string } | { agentId: string; connectionType: "webrtc" };
 
-export type StartError = "busy" | "voiceUnavailable" | "mic" | "failed";
+/** 051: a voice start refused by the cost guard maps to its own message; the tap path is always offered. */
+export type StartError = "busy" | "voiceUnavailable" | "mic" | "failed" | Exclude<VoiceRefusal, "notAllowed">;
 
 export type StartOutcome =
   | { kind: "form"; session: StartedSession }
   /** DEMO_MODE: no live call; the page continues with the tap-through form on the same session. */
   | { kind: "demo"; session: StartedSession }
-  | { kind: "voice"; session: StartedSession; target: VoiceTarget; dynamicVariables: Record<string, string> }
+  | {
+      kind: "voice";
+      session: StartedSession;
+      target: VoiceTarget;
+      dynamicVariables: Record<string, string>;
+      /** 051 FR-7: the ledger row to report the end against, and the maximum call length. */
+      usage: { id: string | null; maxSeconds: number | null };
+    }
   /** The session exists but the microphone was refused: continue by tapping. */
   | { kind: "micDenied"; session: StartedSession }
   | { kind: "error"; error: StartError };
@@ -23,6 +33,8 @@ export type StartOutcome =
 export type StartDeps = {
   fetchFn: typeof fetch;
   getMicrophone?: () => Promise<{ getTracks?: () => Array<{ stop: () => void }> }>;
+  /** 051 FR-8: the Cloudflare Turnstile token, when the page renders the widget (voice only). */
+  turnstileToken?: string | null;
 };
 
 /** POST /api/screen/sessions, then (voice only) the microphone prompt. */
@@ -31,11 +43,15 @@ export async function startScreen(ageBand: ScreenAgeBand, mode: ScreenMode, deps
   try {
     res = await deps.fetchFn("/api/screen/sessions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: voiceStartHeaders(mode === "voice" ? deps.turnstileToken : null),
       body: JSON.stringify({ age_band: ageBand, mode }),
     });
   } catch {
     return { kind: "error", error: "failed" };
+  }
+  if (mode === "voice" && !res.ok) {
+    const refusal = voiceRefusal(res.status, await res.clone().json().catch(() => null));
+    if (refusal && refusal !== "notAllowed") return { kind: "error", error: refusal };
   }
   if (res.status === 429) return { kind: "error", error: "busy" };
   if (mode === "voice" && (res.status === 502 || res.status === 503)) return { kind: "error", error: "voiceUnavailable" };
@@ -45,6 +61,8 @@ export async function startScreen(ageBand: ScreenAgeBand, mode: ScreenMode, deps
     conversation_token?: string | null;
     agent_id?: string;
     dynamic_variables?: Record<string, string>;
+    voice_usage_id?: string;
+    max_seconds?: number;
   };
   if (!body.session_id || !Array.isArray(body.questions)) return { kind: "error", error: "failed" };
   const session: StartedSession = { session_id: body.session_id, expires_at: body.expires_at ?? "", questions: body.questions };
@@ -62,9 +80,17 @@ export async function startScreen(ageBand: ScreenAgeBand, mode: ScreenMode, deps
     // Only needed for the permission prompt; the SDK opens its own stream.
     stream?.getTracks?.().forEach((t) => t.stop());
   } catch {
+    // 051: no call will happen; close the reservation (it still counts as a start, with 0 seconds).
+    await reportVoiceEnd(deps.fetchFn, body.voice_usage_id, 0);
     return { kind: "micDenied", session };
   }
-  return { kind: "voice", session, target, dynamicVariables: body.dynamic_variables ?? {} };
+  return {
+    kind: "voice",
+    session,
+    target,
+    dynamicVariables: body.dynamic_variables ?? {},
+    usage: { id: body.voice_usage_id ?? null, maxSeconds: body.max_seconds ?? null },
+  };
 }
 
 export type AnswerResponse =

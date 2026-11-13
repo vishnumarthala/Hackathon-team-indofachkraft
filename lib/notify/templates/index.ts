@@ -30,6 +30,7 @@ import provider_verified from "./provider_verified";
 import rating_prompt from "./rating_prompt";
 import sharing_granted from "./sharing_granted";
 import test_ping from "./test_ping";
+import voice_budget_alert from "./voice_budget_alert";
 
 export const TEMPLATES = {
   test_ping,
@@ -62,6 +63,7 @@ export const TEMPLATES = {
   google_calendar_reconnect,
   payment_refunded,
   rating_prompt,
+  voice_budget_alert,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

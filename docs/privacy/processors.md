@@ -11,6 +11,7 @@ Shown to families on `/privacy` and in every consent text (020 `consent_document
 | Meta WhatsApp Cloud API | Optional notifications (opt-in) | Recipient phone number, approved template parameters (a link only) | Outside India (Meta data centres) | Delivery log rows stripped after 90 days | Open: business verification, template approval (032) |
 | Google Calendar / Google Meet (037) | Video appointments: an event with a Meet conference on the **provider's own** Google calendar | Appointment start/end, `DoctorNearMe video consultation`, an app link. No child name, no guardian email (no attendees). Families join Meet with their own Google account (Google's own terms apply to them) | Outside India (Google data centres) | Event deleted from the provider's calendar when the appointment is cancelled (`meet.delete`); the provider's grant is revoked at Google on `Disconnect` | Open: OAuth app verification for the sensitive `calendar.events` scope (risk 4), Google Workspace / Cloud terms |
 | Razorpay (031, **test mode** until go-live) | Online prepayment and refunds for appointments | Order amount, appointment id (receipt/notes), the guardian's name (checkout prefill); card/UPI details are entered on Razorpay's checkout and never reach the app | India | Payment records are kept by Razorpay under RBI / accounting rules; nothing to delete per child (no child data sent) | Open: merchant agreement, live-mode activation (out of scope for the pilot build) |
+| Cloudflare Turnstile (051, **optional**: only with `TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`) | Bot check (anti-abuse, not analytics) before phone sign-in codes on `/family/login` (SMS pumping) and before voice starts on `/screen` and `/find` | The visitor's browser signals and IP address, seen by Cloudflare while the widget runs; our server sends the one-time token and the IP to `siteverify`. No account, child or health data. Nothing is stored by DoctorNearMe | Global (Cloudflare network, USA company) | Nothing to delete: no data is kept by the app; Cloudflare's Turnstile privacy terms apply (no advertising use) | Open: confirm Turnstile terms / DPA before enabling in production |
 | Supabase | Database, auth, file storage | Everything stored by the app | `SUPABASE_REGION_LABEL` (pilot: consider Mumbai, risk 6) | Rows/objects deleted by retention and erasure | Open: DPA, region decision |
 
 Notes
@@ -19,7 +20,11 @@ Notes
   no child data.
 - No analytics, advertising, tag manager or social pixel runs on any page for families (D-6, `tests/no-tracking.test.ts`).
   Approved third-party scripts on child pages: ElevenLabs SDK (voice agent routes, including the public check-in
-  `/screen`, 033, the voice booking widget on `/find`, 034, and `Ask by voice` on `/family/children/*/ask`, 040) and Razorpay checkout (payment routes), declared per route in `lib/privacy/third-party-allowlist.ts`.
+  `/screen`, 033, the voice booking widget on `/find`, 034, and `Ask by voice` on `/family/children/*/ask`, 040), Razorpay
+  checkout (payment routes) and Cloudflare Turnstile (bot check on `/family/login`, `/screen` and `/find`, 051, only when
+  configured), declared per route in `lib/privacy/third-party-allowlist.ts`.
+- Voice usage (051): `voice_usage` records which account had a voice call with which assistant and for how long (no child
+  data, no transcript), deleted after 180 days. Not sent to any processor.
 - Adding a processor: add it here, to the privacy notice (`privacy.notice.processors.*`), to the consent texts of the
   features that use it (new consent document version), to `Processor` in `lib/privacy/registry.ts`, and, if it has a
   deletion API, to the erasure job.

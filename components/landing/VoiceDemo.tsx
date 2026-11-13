@@ -3,8 +3,11 @@
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SAMPLE_CALL, SAMPLE_CALL_SRC, type SampleTurn } from "@/components/landing/sampleCall";
+import { useVoiceCallGuard } from "@/components/voice/useVoiceCallGuard";
 import { useT } from "@/lib/i18n/client";
 import type { TFunction } from "@/lib/i18n/keys";
+import { reportVoiceEnd } from "@/lib/voice/client";
+import { INTAKE_DEMO_MAX_SECONDS, voiceRefusal } from "@/lib/voice/constants";
 
 export type DemoLanguage = "en" | "hi" | "te";
 
@@ -14,13 +17,16 @@ export const DEMO_LANGUAGES: Array<{ value: DemoLanguage; label: string }> = [
   { value: "te", label: "తెలుగు (Telugu)" },
 ];
 
-export const DEMO_CALL_LIMIT_SEC = 180;
+export const DEMO_CALL_LIMIT_SEC = INTAKE_DEMO_MAX_SECONDS;
 
 // English defaults (also the en catalogue values); the component passes translated messages.
 export const DEMO_CONSENT =
   "I understand this is a demo with an AI voice assistant. I will not share real health information.";
 
-export type LiveMessages = Record<"mic" | "busy" | "unavailable" | "failed" | "connecting" | "speaking" | "listening" | "ended", string>;
+export type LiveMessages = Record<
+  "mic" | "busy" | "unavailable" | "failed" | "connecting" | "speaking" | "listening" | "ended" | "quota" | "paused" | "notAllowed" | "concurrent" | "silence",
+  string
+>;
 
 export const LIVE_MESSAGES: LiveMessages = {
   mic: "Microphone access is needed for the live demo. You can listen to the sample call instead.",
@@ -31,6 +37,11 @@ export const LIVE_MESSAGES: LiveMessages = {
   speaking: "Assistant is speaking",
   listening: "Listening… you are the parent of Ravi",
   ended: "Demo call ended. In the product, this call becomes the pre-session brief below.",
+  quota: "You've used today's live demo. Listen to the sample call, or try again tomorrow.",
+  paused: "Voice is resting right now. Please listen to the sample call.",
+  notAllowed: "The live demo is for clinics and booked demos. Please listen to the sample call.",
+  concurrent: "You already have a voice call open. End it first.",
+  silence: "We ended the call because it went quiet.",
 };
 
 export function liveMessages(t: TFunction<"landing.demo">): LiveMessages {
@@ -43,6 +54,11 @@ export function liveMessages(t: TFunction<"landing.demo">): LiveMessages {
     speaking: t("speaking"),
     listening: t("listening"),
     ended: t("ended"),
+    quota: t("quota"),
+    paused: t("paused"),
+    notAllowed: t("notAllowed"),
+    concurrent: t("concurrent"),
+    silence: t("silence"),
   };
 }
 
@@ -82,7 +98,7 @@ export type DemoStartDeps = {
   startSession: (options: DemoSessionOptions) => void;
 };
 
-export type DemoStartResult = { kind: "started" } | { kind: "error"; message: string };
+export type DemoStartResult = { kind: "started"; usageId: string | null } | { kind: "error"; message: string };
 
 // Microphone first (so the permission prompt comes before any credit is spent), then the server start.
 export async function startVoiceDemo(
@@ -103,6 +119,12 @@ export async function startVoiceDemo(
   } catch {
     return { kind: "error", message: messages.failed };
   }
+  // 051: cost-guard refusals (quota, budget, one call at a time, not a provider or demo lead) have their own message.
+  const refusal = res.ok ? null : voiceRefusal(res.status, await res.clone().json().catch(() => null));
+  if (refusal === "quotaDay" || refusal === "quotaMonth") return { kind: "error", message: messages.quota };
+  if (refusal === "paused") return { kind: "error", message: messages.paused };
+  if (refusal === "concurrent") return { kind: "error", message: messages.concurrent };
+  if (refusal === "notAllowed" || refusal === "signIn") return { kind: "error", message: messages.notAllowed };
   if (res.status === 429) return { kind: "error", message: messages.busy };
   if (res.status === 503) return { kind: "error", message: messages.unavailable };
   if (!res.ok) return { kind: "error", message: messages.failed };
@@ -111,20 +133,26 @@ export async function startVoiceDemo(
     conversation_token?: string | null;
     agent_id?: string;
     dynamic_variables?: Record<string, string>;
+    voice_usage_id?: string;
   };
   const target: SessionTarget | null = body.conversation_token
     ? { conversationToken: body.conversation_token }
     : body.agent_id
       ? { agentId: body.agent_id, connectionType: "webrtc" }
       : null;
-  if (!target) return { kind: "error", message: messages.failed };
+  if (!target) {
+    await reportVoiceEnd(deps.fetchFn, body.voice_usage_id, 0);
+    return { kind: "error", message: messages.failed };
+  }
 
   try {
     deps.startSession({ ...target, dynamicVariables: body.dynamic_variables ?? {}, overrides: { agent: { language } } });
   } catch {
+    // The call never started: close the reservation (FR-7).
+    await reportVoiceEnd(deps.fetchFn, body.voice_usage_id, 0);
     return { kind: "error", message: messages.failed };
   }
-  return { kind: "started" };
+  return { kind: "started", usageId: body.voice_usage_id ?? null };
 }
 
 export type Line = { key: string; role: "agent" | "parent"; text: string };
@@ -211,17 +239,27 @@ function LivePanel() {
   const [wasConnected, setWasConnected] = useState(false);
   const [remaining, setRemaining] = useState(DEMO_CALL_LIMIT_SEC);
   const connectedRef = useRef(false);
+  const usageRef = useRef<string | null>(null);
+  const conversationIdRef = useRef<string | null>(null);
 
   const conversation = useConversation({
-    onConnect: () => {
+    onConnect: ({ conversationId }) => {
       connectedRef.current = true;
+      conversationIdRef.current = conversationId || null;
+      guard.connected();
       setWasConnected(true);
       setRemaining(DEMO_CALL_LIMIT_SEC);
     },
     onMessage: ({ message, role, event_id }) => {
+      if (role === "user" && message?.trim()) guard.heard();
       setLines((prev) => upsertLine(prev, role, event_id, message ?? ""));
     },
     onDisconnect: () => {
+      // 051 FR-7: report the connected seconds (a call that never connected reports 0).
+      const usageId = usageRef.current;
+      usageRef.current = null;
+      void reportVoiceEnd(fetch, usageId, guard.seconds(), conversationIdRef.current);
+      if (guard.endedBySilence()) setError(messages.silence);
       if (!connectedRef.current) return;
       connectedRef.current = false;
       window.dispatchEvent(new Event(DEMO_CALL_ENDED_EVENT));
@@ -234,6 +272,8 @@ function LivePanel() {
   const status = conversation.status as LiveStatus;
   const live = status === "connecting" || status === "connected";
   const { endSession } = conversation;
+  // 051 FR-6: 30 seconds without speech from the visitor ends the call.
+  const guard = useVoiceCallGuard({ live: status === "connected", isSpeaking: conversation.isSpeaking, onSilence: () => endSession() });
 
   useEffect(() => {
     if (status !== "connected") return;
@@ -256,6 +296,7 @@ function LivePanel() {
       startSession: (options) => conversation.startSession(options),
     }, messages);
     if (result.kind === "error") setError(result.message);
+    else usageRef.current = result.usageId;
     setStarting(false);
   }
 
@@ -339,7 +380,9 @@ function LivePanel() {
   );
 }
 
-export function VoiceDemo() {
+// 051 FR-2: `liveAllowed` (server-side: provider / platform admin account, or a demo lead signed in with the verified
+// email) adds the live tab. Everyone else gets only the recorded sample: no /api/demo/voice-token request at all.
+export function VoiceDemo({ liveAllowed = false }: { liveAllowed?: boolean }) {
   const t = useT("landing.demo");
   const [tab, setTab] = useState<"sample" | "live">("sample");
   const tabClass = (t: typeof tab) =>
@@ -348,16 +391,20 @@ export function VoiceDemo() {
     }`;
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-900/5 sm:p-6">
-      <div role="tablist" aria-label={t("tabsLabel")} className="mb-5 flex gap-1 rounded-full bg-slate-100 p-1">
-        <button type="button" role="tab" aria-selected={tab === "sample"} onClick={() => setTab("sample")} className={tabClass("sample")}>
-          {t("sampleTab")}
-        </button>
-        <button type="button" role="tab" aria-selected={tab === "live"} onClick={() => setTab("live")} className={tabClass("live")}>
-          {t("liveTab")}
-        </button>
-      </div>
-      <div role="tabpanel">
-        {tab === "sample" ? (
+      {liveAllowed ? (
+        <div role="tablist" aria-label={t("tabsLabel")} className="mb-5 flex gap-1 rounded-full bg-slate-100 p-1">
+          <button type="button" role="tab" aria-selected={tab === "sample"} onClick={() => setTab("sample")} className={tabClass("sample")}>
+            {t("sampleTab")}
+          </button>
+          <button type="button" role="tab" aria-selected={tab === "live"} onClick={() => setTab("live")} className={tabClass("live")}>
+            {t("liveTab")}
+          </button>
+        </div>
+      ) : (
+        <h3 className="mb-4 text-base font-semibold text-slate-900">{t("sampleTab")}</h3>
+      )}
+      <div role={liveAllowed ? "tabpanel" : undefined}>
+        {tab === "sample" || !liveAllowed ? (
           <SamplePlayer />
         ) : (
           <ConversationProvider>
@@ -365,6 +412,7 @@ export function VoiceDemo() {
           </ConversationProvider>
         )}
       </div>
+      {liveAllowed ? null : <p className="mt-4 text-xs text-slate-500">{t("liveOnly")}</p>}
     </div>
   );
 }

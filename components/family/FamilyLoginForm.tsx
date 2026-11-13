@@ -10,10 +10,12 @@ type Props = {
   nextPath: string;
   googleEnabled: boolean;
   initialError?: "oauth" | null;
+  /** 051 FR-8: Cloudflare Turnstile site key for phone codes (null = no bot check). */
+  turnstileSiteKey?: string | null;
 };
 
 /** FR-1: Google or phone OTP. Server routes decide where the user lands (FR-3). */
-export function FamilyLoginForm({ appUrl, nextPath, googleEnabled, initialError = null }: Props) {
+export function FamilyLoginForm({ appUrl, nextPath, googleEnabled, initialError = null, turnstileSiteKey = null }: Props) {
   const t = useT("family.login");
   const [googleError, setGoogleError] = useState(initialError === "oauth");
   const [redirecting, setRedirecting] = useState(false);
@@ -69,6 +71,7 @@ export function FamilyLoginForm({ appUrl, nextPath, googleEnabled, initialError 
         sendUrl="/api/auth/phone/send"
         verifyUrl="/api/auth/phone/verify"
         verifyExtra={{ next: nextPath }}
+        turnstileSiteKey={turnstileSiteKey}
         onVerified={(body) => {
           const target = typeof body.redirect === "string" && body.redirect.startsWith("/") ? body.redirect : "/family";
           window.location.assign(target);

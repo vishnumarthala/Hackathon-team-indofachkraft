@@ -63,6 +63,7 @@ describe("third-party allowlist (D-6)", () => {
       "ElevenLabs SDK (voice agent)",
       "ElevenLabs SDK (developmental check-in)",
       "ElevenLabs SDK (voice booking)",
+      "Cloudflare Turnstile (bot check)",
       "Razorpay checkout",
     ]);
     for (const entry of THIRD_PARTY_ALLOWLIST) {
@@ -138,6 +139,8 @@ describe("static scan of /family/** modules (FR-13)", () => {
     for (const file of graph) {
       const rel = path.relative(ROOT, file);
       if (rel === "lib/privacy/third-party-allowlist.ts") continue;
+      // 051: the one approved loader for the allowlisted Cloudflare Turnstile script (only /family/login renders it).
+      if (rel === "components/security/Turnstile.tsx") continue;
       const source = readFileSync(file, "utf8");
       if (/from\s+["']next\/script["']/.test(source)) problems.push(`${rel}: next/script`);
       if (/<script[^>]*\bsrc\s*=\s*\{?["'`]https?:/i.test(source)) problems.push(`${rel}: external <script src>`);

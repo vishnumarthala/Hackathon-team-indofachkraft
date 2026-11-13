@@ -1,6 +1,6 @@
 # 051: Voice cost guard (no anonymous voice, per-user quotas, platform budget)
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** alongside (048 and 049 change the same voice pages afterwards)
 

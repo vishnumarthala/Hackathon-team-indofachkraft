@@ -13,8 +13,10 @@ import { SiteNav } from "@/components/landing/SiteNav";
 import { TherapistView } from "@/components/landing/TherapistView";
 import { Arrow, ButtonLink, CheckIcon, Eyebrow } from "@/components/landing/ui";
 import { VoiceDemo } from "@/components/landing/VoiceDemo";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 import { BriefSchema } from "@/lib/types";
+import { canUseLiveDemo } from "@/lib/voice/demo-access";
 import roomImage from "@/public/landing/room.jpg";
 
 // The brief the sample intake call turns into (synthetic, validated at build time). AI output: not translated.
@@ -36,6 +38,10 @@ const AUDIENCE_ICONS = {
 
 export default async function Home() {
   const t = await getT("landing");
+  // 051 FR-2: the live demo only for providers / platform admins and verified demo leads; everyone else hears the sample.
+  const liveDemo = process.env.ELEVENLABS_AGENT_ID
+    ? await canUseLiveDemo(await getAuthenticatedUser().catch(() => null)).catch(() => false)
+    : false;
   const ts = await getT("screen.landing");
 
   // Pitch deck slide 1 (sources listed under the section).
@@ -177,7 +183,7 @@ export default async function Home() {
               ))}
             </ol>
             <div className="lg:sticky lg:top-24">
-              <VoiceDemo />
+              <VoiceDemo liveAllowed={liveDemo} />
             </div>
           </div>
 

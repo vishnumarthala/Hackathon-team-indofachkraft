@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useId, useState, type FormEvent } from "react";
+import { useTurnstile } from "@/components/security/Turnstile";
 import { useT } from "@/lib/i18n/client";
 import { maskPhone, MOBILE_ERROR, normalizeIndianMobile, OTP_CODE_ERROR, WRONG_CODE_ERROR } from "@/lib/family/phone";
+import { voiceStartHeaders } from "@/lib/voice/client";
+import { VOICE_ERRORS } from "@/lib/voice/constants";
 
 export const RESEND_AFTER_SECONDS = 60;
 
@@ -13,12 +16,13 @@ export const primaryButtonClass =
 export const secondaryButtonClass =
   "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30 disabled:cursor-not-allowed disabled:opacity-50";
 
-type ErrorKey = "invalidMobile" | "invalidCode" | "wrongCode" | "tooMany" | "phoneInUse";
+type ErrorKey = "invalidMobile" | "invalidCode" | "wrongCode" | "tooMany" | "phoneInUse" | "botCheck";
 
 /** Maps API error bodies (English contract) to translated messages. */
 function errorKeyFor(status: number, error: unknown): ErrorKey | null {
   if (status === 429) return "tooMany";
   if (status === 409) return "phoneInUse";
+  if (status === VOICE_ERRORS.botCheck.status && error === VOICE_ERRORS.botCheck.code) return "botCheck";
   if (error === MOBILE_ERROR) return "invalidMobile";
   if (error === OTP_CODE_ERROR) return "invalidCode";
   if (status === 400 && error === WRONG_CODE_ERROR) return "wrongCode";
@@ -32,10 +36,12 @@ type Props = {
   verifyExtra?: Record<string, string>;
   onVerified: (body: Record<string, unknown>) => void;
   onCancel?: () => void;
+  /** 051 FR-8: Cloudflare Turnstile site key for the send request (sign-in page only; null = no bot check). */
+  turnstileSiteKey?: string | null;
 };
 
 /** FR-1 / FR-9: phone number with a fixed +91 prefix, then a 6-digit code; resend after 60 s. */
-export function PhoneOtpForm({ sendUrl, verifyUrl, verifyExtra, onVerified, onCancel }: Props) {
+export function PhoneOtpForm({ sendUrl, verifyUrl, verifyExtra, onVerified, onCancel, turnstileSiteKey = null }: Props) {
   const t = useT("family.login");
   const tCommon = useT("errors");
   const tSettings = useT("family.settings");
@@ -46,6 +52,7 @@ export function PhoneOtpForm({ sendUrl, verifyUrl, verifyExtra, onVerified, onCa
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const turnstile = useTurnstile(turnstileSiteKey);
 
   useEffect(() => {
     if (secondsLeft <= 0) return;
@@ -59,10 +66,10 @@ export function PhoneOtpForm({ sendUrl, verifyUrl, verifyExtra, onVerified, onCa
     return key ? t(key) : tCommon("generic");
   }
 
-  async function post(url: string, body: Record<string, string>) {
+  async function post(url: string, body: Record<string, string>, turnstileToken: string | null = null) {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: voiceStartHeaders(turnstileToken),
       body: JSON.stringify(body),
     });
     const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
@@ -73,7 +80,8 @@ export function PhoneOtpForm({ sendUrl, verifyUrl, verifyExtra, onVerified, onCa
     setBusy(true);
     setError("");
     try {
-      const { res, json } = await post(sendUrl, { phone: target.slice(2) });
+      const { res, json } = await post(sendUrl, { phone: target.slice(2) }, turnstile.token);
+      turnstile.reset();
       if (!res.ok) {
         setError(message(res.status, json));
         return false;
@@ -158,7 +166,8 @@ export function PhoneOtpForm({ sendUrl, verifyUrl, verifyExtra, onVerified, onCa
           </div>
         </div>
         {errorBox}
-        <button type="submit" className={primaryButtonClass} disabled={busy}>
+        {turnstile.widget}
+        <button type="submit" className={primaryButtonClass} disabled={busy || !turnstile.ready}>
           {busy ? t("sending") : t("sendCode")}
         </button>
         {onCancel ? (
@@ -195,11 +204,12 @@ export function PhoneOtpForm({ sendUrl, verifyUrl, verifyExtra, onVerified, onCa
       <button type="submit" className={primaryButtonClass} disabled={busy}>
         {busy ? t("verifying") : t("verify")}
       </button>
+      {secondsLeft > 0 ? null : turnstile.widget}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <button
           type="button"
           className={secondaryButtonClass}
-          disabled={busy || secondsLeft > 0}
+          disabled={busy || secondsLeft > 0 || !turnstile.ready}
           onClick={() => void send(phone)}
         >
           {secondsLeft > 0 ? t("resendIn", { seconds: secondsLeft }) : t("resend")}

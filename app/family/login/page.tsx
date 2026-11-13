@@ -7,6 +7,7 @@ import { homeForRole, safeRelativePath } from "@/lib/auth-access";
 import { env } from "@/lib/env";
 import { isGoogleAuthEnabled } from "@/lib/family/auth-settings";
 import { getT } from "@/lib/i18n/server";
+import { turnstileSiteKey } from "@/lib/turnstile";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,7 @@ export default async function FamilyLoginPage({
           nextPath={nextPath}
           googleEnabled={await isGoogleAuthEnabled()}
           initialError={error === "oauth" ? "oauth" : null}
+          turnstileSiteKey={turnstileSiteKey()}
         />
         <p className="mt-6 text-sm text-slate-600">
           {t("privacy")}{" "}

@@ -8,8 +8,8 @@ export const AGENT_SESSION_TTL_MS = 30 * 60_000;
 export const MAX_TOOL_CALLS = 20;
 /** FR-2: new booking sessions per IP per hour. */
 export const SESSIONS_PER_HOUR = 5;
-/** FR-1: the agent's maximum conversation length (also enforced by the widget). */
-export const VOICE_MAX_MINUTES = 6;
+/** FR-1: the agent's maximum conversation length (also enforced by the widget). 051 FR-6: was 6. */
+export const VOICE_MAX_MINUTES = 4;
 /** FR-3 result limits. */
 export const MAX_PROVIDERS = 5;
 export const MAX_SLOTS = 6;

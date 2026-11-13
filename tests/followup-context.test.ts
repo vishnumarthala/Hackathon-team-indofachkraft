@@ -15,6 +15,7 @@ import { buildFollowupContext, citationExcerpt, MAX_CONTEXT_CHARS, type ContextD
 import { todayInIndia } from "@/lib/iep/schema";
 import { URGENT_MESSAGE } from "@/lib/screen/questions";
 import { purgeTestAudit } from "./helpers/audit";
+import { closeOpenVoiceCalls, stubGenerousVoiceLimits } from "./helpers/voice";
 import { createWorld, ctx, post, type TestUser } from "./helpers/world";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
@@ -134,7 +135,11 @@ describe.skipIf(!enabled)("follow-up context and routes (database)", () => {
   const ask = async (childId: string, question: string) =>
     json(await (await routes()).ask.POST(post(`http://x/api/family/children/${childId}/ask`, { question }), ctx({ id: childId })));
   const history = async (childId: string) => json(await (await routes()).ask.GET(post("http://x", undefined, "GET"), ctx({ id: childId })));
-  const startVoice = async (childId: string) => json(await (await routes()).session.POST(post("http://x/api/agents/followup/session", { child_id: childId })));
+  // 051: one open voice call per user; the previous call of this guardian is closed first (as the page would).
+  const startVoice = async (childId: string) => {
+    if (session.user) await closeOpenVoiceCalls(sql, session.user.id);
+    return json(await (await routes()).session.POST(post("http://x/api/agents/followup/session", { child_id: childId })));
+  };
   const toolCall = (body: Record<string, unknown>, secret: string | null = "t040-secret") =>
     new Request("http://x/api/agents/followup/tools/answer_question", {
       method: "POST",
@@ -187,6 +192,7 @@ describe.skipIf(!enabled)("follow-up context and routes (database)", () => {
     vi.stubEnv("DEMO_MODE", "true");
     vi.stubEnv("DEMO_FIXTURES_DIR", "demo/fixtures");
     vi.stubEnv("ELEVENLABS_TOOL_SECRET", "t040-secret");
+    stubGenerousVoiceLimits();
     sql = postgres(process.env.DATABASE_URL as string, { max: 4, prepare: false, onnotice: () => {} });
     db = (await import("@/lib/db")).supabaseAdmin();
     world = createWorld(sql, db, "t040");
@@ -398,7 +404,9 @@ describe.skipIf(!enabled)("follow-up context and routes (database)", () => {
     as(guardianA);
     const started = await startVoice(childA);
     expect(started.status, JSON.stringify(started.body)).toBe(201);
-    expect(started.body).toMatchObject({ demo: true, conversation_token: null });
+    expect(started.body).toMatchObject({ demo: true, conversation_token: null, max_seconds: 600 });
+    // 051: the start is recorded against the guardian's `followup` voice quota.
+    expect((await sql`select agent, status from voice_usage where id = ${started.body.voice_usage_id as string}`)[0]).toEqual({ agent: "followup", status: "started" });
     const token = started.body.followup_session as string;
     expect(started.body.dynamic_variables).toEqual({ followup_session: token });
     const stored = await sql`select token_hash from followup_agent_sessions where child_id = ${childA}`;

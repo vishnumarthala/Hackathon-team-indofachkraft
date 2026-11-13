@@ -2,9 +2,10 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const m = vi.hoisted(() => ({ startAgentSession: vi.fn(), audit: vi.fn() }));
+const m = vi.hoisted(() => ({ startAgentSession: vi.fn(), audit: vi.fn(), user: null as null | { id: string } }));
 vi.mock("@/lib/elevenlabs/agent", () => ({ startAgentSession: m.startAgentSession, DEMO_CENTRE_NAME: "DoctorNearMe Demo Centre" }));
 vi.mock("@/lib/audit", () => ({ audit: m.audit }));
+vi.mock("@/lib/auth", () => ({ getAuthenticatedUser: vi.fn(async () => m.user), getUserRole: vi.fn() }));
 vi.mock("@elevenlabs/react", () => ({
   ConversationProvider: ({ children }: { children: unknown }) => children,
   useConversation: () => ({ status: "disconnected", isSpeaking: false, startSession: vi.fn(), endSession: vi.fn() }),
@@ -33,30 +34,21 @@ const req = (ip = "203.0.113.7") => new Request("http://x/api/demo/voice-token",
 beforeEach(() => {
   vi.resetAllMocks();
   resetVoiceDemoLimits();
+  m.user = null;
   vi.stubEnv("ELEVENLABS_AGENT_ID", "agent_test");
   vi.stubEnv("ELEVENLABS_API_KEY", SECRET);
 });
 afterEach(() => vi.unstubAllEnvs());
 
-describe("POST /api/demo/voice-token", () => {
-  it("returns the session and only synthetic, server-side variables", async () => {
-    m.startAgentSession.mockResolvedValue({ agent_id: "agent_test", conversation_token: "tok" });
+// Signed-in starts (provider once per day, guardian 403, ElevenLabs failure) run against the database in
+// tests/voice-usage-routes.test.ts (ticket 051).
+describe("POST /api/demo/voice-token (anonymous)", () => {
+  it("051 FR-2: anonymous -> 401 sign_in_required, ElevenLabs never called", async () => {
     const res = await POST(req());
-    expect(res.status).toBe(200);
-    const text = await res.text();
-    expect(JSON.parse(text)).toEqual({
-      agent_id: "agent_test",
-      conversation_token: "tok",
-      dynamic_variables: {
-        parent_name: "Lakshmi",
-        child_name: "Ravi",
-        centre_name: "DoctorNearMe Demo Centre",
-        therapist_name: "Demo Therapist",
-        case_id: "landing-demo",
-      },
-    });
-    expect(text).not.toContain(SECRET);
-    expect(m.audit).toHaveBeenCalledWith(expect.objectContaining({ action: "landing.voice_demo_started", actor: "system" }));
+    expect(res.status).toBe(401);
+    expect(await res.json()).toEqual({ error: "sign_in_required" });
+    expect(m.startAgentSession).not.toHaveBeenCalled();
+    expect(m.audit).not.toHaveBeenCalled();
   });
 
   it("503 without an agent id", async () => {
@@ -67,20 +59,13 @@ describe("POST /api/demo/voice-token", () => {
     expect(m.startAgentSession).not.toHaveBeenCalled();
   });
 
-  it("429 after the per-visitor limit", async () => {
-    m.startAgentSession.mockResolvedValue({ agent_id: "agent_test", conversation_token: null });
-    for (let i = 0; i < PER_IP_LIMIT; i++) expect((await POST(req())).status).toBe(200);
+  it("429 after the per-visitor limit (cheap first filter, before the sign-in check)", async () => {
+    for (let i = 0; i < PER_IP_LIMIT; i++) expect((await POST(req())).status).toBe(401);
     const res = await POST(req());
     expect(res.status).toBe(429);
     expect((await res.json()).error).toMatch(/busy/);
-    expect((await POST(req("198.51.100.2"))).status).toBe(200);
-  });
-
-  it("502 when ElevenLabs fails, without details", async () => {
-    m.startAgentSession.mockRejectedValue(new Error(`boom ${SECRET}`));
-    const res = await POST(req());
-    expect(res.status).toBe(502);
-    expect(await res.text()).not.toContain(SECRET);
+    expect((await POST(req("198.51.100.2"))).status).toBe(401);
+    expect(m.startAgentSession).not.toHaveBeenCalled();
   });
 });
 
@@ -119,7 +104,7 @@ describe("startVoiceDemo", () => {
 
   it("asks for the microphone before spending credits, then starts with the token and language", async () => {
     const { d, order } = deps(Response.json({ agent_id: "a", conversation_token: "tok", dynamic_variables: vars }));
-    await expect(startVoiceDemo("te", d)).resolves.toEqual({ kind: "started" });
+    await expect(startVoiceDemo("te", d)).resolves.toEqual({ kind: "started", usageId: null });
     expect(order).toEqual(["mic", "stop", "fetch", "session"]);
     expect(d.startSession).toHaveBeenCalledWith({ conversationToken: "tok", dynamicVariables: vars, overrides: { agent: { language: "te" } } });
   });
@@ -136,6 +121,18 @@ describe("startVoiceDemo", () => {
     expect(await startVoiceDemo("en", deps(new Response("", { status: 503 })).d)).toEqual({ kind: "error", message: LIVE_MESSAGES.unavailable });
     expect(await startVoiceDemo("en", deps(new TypeError("offline")).d)).toEqual({ kind: "error", message: LIVE_MESSAGES.failed });
     expect(await startVoiceDemo("en", deps(Response.json({})).d)).toEqual({ kind: "error", message: LIVE_MESSAGES.failed });
+    // 051: cost-guard refusals.
+    expect(await startVoiceDemo("en", deps(Response.json({ error: "quota_day" }, { status: 429 })).d)).toEqual({ kind: "error", message: LIVE_MESSAGES.quota });
+    expect(await startVoiceDemo("en", deps(Response.json({ error: "voice_paused" }, { status: 503 })).d)).toEqual({ kind: "error", message: LIVE_MESSAGES.paused });
+    expect(await startVoiceDemo("en", deps(Response.json({ error: "concurrent" }, { status: 429 })).d)).toEqual({ kind: "error", message: LIVE_MESSAGES.concurrent });
+    expect(await startVoiceDemo("en", deps(Response.json({ error: "live_demo_not_allowed" }, { status: 403 })).d)).toEqual({ kind: "error", message: LIVE_MESSAGES.notAllowed });
+    expect(await startVoiceDemo("en", deps(Response.json({ error: "sign_in_required" }, { status: 401 })).d)).toEqual({ kind: "error", message: LIVE_MESSAGES.notAllowed });
+  });
+
+  it("051 FR-7: returns the usage id to report the end against", async () => {
+    const vars = { parent_name: "Lakshmi", child_name: "Ravi", centre_name: "C", therapist_name: "T", case_id: "x" };
+    const { d } = deps(Response.json({ agent_id: "a", conversation_token: "tok", dynamic_variables: vars, voice_usage_id: "u-1" }));
+    await expect(startVoiceDemo("en", d)).resolves.toEqual({ kind: "started", usageId: "u-1" });
   });
 
   it("denied microphone never calls the server", async () => {
@@ -193,11 +190,20 @@ describe("helpers", () => {
     expect(activeTurnIndex(SAMPLE_CALL, SAMPLE_CALL[2].start + 0.1)).toBe(2);
   });
 
-  it("renders both tabs with the sample call first", () => {
-    const html = renderToStaticMarkup(withI18n(createElement(VoiceDemo)));
+  it("live allowed (provider / demo lead): both tabs with the sample call first", () => {
+    const html = renderToStaticMarkup(withI18n(createElement(VoiceDemo, { liveAllowed: true })));
     expect(html).toContain("Listen to a sample call");
     expect(html).toContain("Talk to it live");
     expect(html).toContain('src="/landing/sample-intake-call.mp3"');
     expect(html).toContain("I am an AI assistant");
+  });
+
+  it("051 FR-2 / E-4: everyone else gets only the recorded sample (no live tab, so no token request)", () => {
+    const html = renderToStaticMarkup(withI18n(createElement(VoiceDemo)));
+    expect(html).toContain('src="/landing/sample-intake-call.mp3"');
+    expect(html).toContain("I am an AI assistant");
+    expect(html).not.toContain("Talk to it live");
+    expect(html).not.toContain("Start demo call");
+    expect(html).toContain("The live demo is for clinics");
   });
 });

@@ -27,6 +27,7 @@ import {
 import { withI18n } from "./helpers/i18n";
 import { purgeTestAudit } from "./helpers/audit";
 import { answerSet, nextIp, screenFetch, screenReq, toList } from "./helpers/screen";
+import { closeOpenVoiceCalls, stubGenerousVoiceLimits } from "./helpers/voice";
 import { createWorld, type TestUser } from "./helpers/world";
 
 loadEnvConfig(process.cwd(), false, { info: () => {}, error: () => {} });
@@ -92,7 +93,7 @@ describe("question set per age band (FR-1, FR-3)", () => {
 });
 
 describe("/screen page chrome (FR-2, NFR-1)", () => {
-  it("renders the copy; both start buttons are disabled until an age is chosen and the box is ticked", async () => {
+  it("renders the copy; the tap start is disabled until an age is chosen and the box is ticked (051: voice needs sign-in)", async () => {
     const { ScreenFlow } = await import("@/components/screen/ScreenFlow");
     const html = renderToStaticMarkup(
       withI18n(createElement(ScreenFlow, { viewer: { kind: "anonymous" }, localities: [], voiceAvailable: true })),
@@ -106,10 +107,19 @@ describe("/screen page chrome (FR-2, NFR-1)", () => {
     expect(html).toContain("I understand this is not a diagnosis and agree to talk to an AI assistant.");
     for (const label of ["18-36 months", "3-5 years", "6-9 years", "10+ years", "Child&#x27;s age"]) expect(html).toContain(label);
     const buttons = [...html.matchAll(/<button[^>]*>([^<]*)<\/button>/g)];
-    const voice = buttons.find((b) => b[1] === "Start voice check-in");
-    const form = buttons.find((b) => b[1] === "Answer by tapping instead");
-    expect(voice?.[0]).toContain("disabled");
+    const form = buttons.find((b) => b[1] === "Start free check-in");
     expect(form?.[0]).toContain("disabled");
+    // 051 FR-1: anonymous visitors get no voice button, only the free sign-in link back to the voice step.
+    expect(buttons.find((b) => b[1] === "Start voice check-in")).toBeUndefined();
+    expect(html).toContain("Prefer to talk? Sign in to use voice (free)");
+    expect(html).toContain('href="/family/login?next=%2Fscreen%3Fvoice%3D1"');
+    const signedIn = renderToStaticMarkup(
+      withI18n(createElement(ScreenFlow, { viewer: { kind: "other" }, localities: [], voiceAvailable: true, voiceIntent: true })),
+    );
+    const voice = [...signedIn.matchAll(/<button[^>]*>([^<]*)<\/button>/g)].find((b) => b[1] === "Start voice check-in");
+    expect(voice?.[0]).toContain("disabled");
+    expect(signedIn).toContain("You are signed in. Choose your child&#x27;s age, tick the box and start the voice check-in.");
+    expect(signedIn).not.toContain("Sign in to use voice");
     // No booking anywhere before a result exists.
     expect(html).not.toMatch(/>Book</);
   });
@@ -157,6 +167,8 @@ describe("/screen page chrome (FR-2, NFR-1)", () => {
       const source = readFileSync(file, "utf8");
       const rel = path.relative(ROOT, file);
       if (rel === "lib/privacy/third-party-allowlist.ts") continue;
+      // 051: the one approved loader for the allowlisted Cloudflare Turnstile script (lib/csp.ts, allowlist).
+      if (rel === "components/security/Turnstile.tsx") continue;
       if (/from\s+["']next\/script["']/.test(source)) problems.push(`${rel}: next/script`);
       if (/<script[^>]*\bsrc\s*=/i.test(source)) problems.push(`${rel}: <script src>`);
       if (/createElement\(\s*["']script["']\s*\)/.test(source)) problems.push(`${rel}: injected script`);
@@ -176,7 +188,7 @@ describe("agent setup guide (E-5)", () => {
     // The fixed safety message in the prompt is exactly the page's FR-7 message.
     expect(doc.split(URGENT_MESSAGE).length - 1).toBeGreaterThanOrEqual(2);
     expect(doc).toContain("Never say whether the child has autism");
-    for (const name of ["record_answer", "record_red_flag", "item_id", "{{screen_session_id}}", "{{age_band}}", "{{questions}}", "ELEVENLABS_SCREEN_AGENT_ID", "480"]) {
+    for (const name of ["record_answer", "record_red_flag", "item_id", "{{screen_session_id}}", "{{age_band}}", "{{questions}}", "ELEVENLABS_SCREEN_AGENT_ID", "360"]) {
       expect(doc).toContain(name);
     }
     for (const code of ["skill_regression", "self_injury", "seizure", "breathing", "not_eating_drinking", "safety_concern"]) expect(doc).toContain(code);
@@ -199,12 +211,15 @@ describe("voice start without a database (FR-4)", () => {
     expect(agent.startAgentSession).not.toHaveBeenCalled();
   });
 
-  it("provider failure -> 502", async () => {
+  it("051 FR-1: anonymous voice -> 401 sign_in_required before ElevenLabs; tapping stays anonymous", async () => {
     vi.stubEnv("DEMO_MODE", "false");
     vi.stubEnv("ELEVENLABS_SCREEN_AGENT_ID", "agent_screen_test");
-    agent.startAgentSession.mockRejectedValue(new Error("boom"));
+    session.user = null;
     const { POST } = await import("@/app/api/screen/sessions/route");
-    expect((await POST(screenReq("/api/screen/sessions", { age_band: "3-5y", mode: "voice" }))).status).toBe(502);
+    const res = await POST(screenReq("/api/screen/sessions", { age_band: "3-5y", mode: "voice" }));
+    expect(res.status).toBe(401);
+    expect(await res.json()).toEqual({ error: "sign_in_required" });
+    expect(agent.startAgentSession).not.toHaveBeenCalled();
   });
 
   it("validates the body", async () => {
@@ -253,12 +268,18 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
   const fetchFn = screenFetch();
 
   async function start(age_band: string, mode: "form" | "voice" = "form", ip = nextIp()) {
+    // 051: voice needs a signed-in user (one open call at a time); tapping stays anonymous.
+    if (mode === "voice") {
+      await closeOpenVoiceCalls(sql, provider.id);
+      session.user = { id: provider.id, email: provider.email };
+    }
     const res = await fetchFn("/api/screen/sessions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-forwarded-for": ip },
       body: JSON.stringify({ age_band, mode }),
     });
     const body = await res.json();
+    session.user = null;
     if (res.status === 201) sessions.push(body.session_id);
     return { status: res.status, body };
   }
@@ -304,6 +325,7 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     (await import("@/lib/screen/rate-limit")).screenSessionLimiter.reset();
     agent.startAgentSession.mockReset();
     session.user = null;
+    stubGenerousVoiceLimits();
   });
   afterEach(() => vi.unstubAllEnvs());
 
@@ -444,6 +466,16 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
     expect(Object.keys(body.dynamic_variables).sort()).toEqual(["age_band", "questions", "screen_session_id"]);
     expect(body.dynamic_variables).toMatchObject({ screen_session_id: body.session_id, age_band: "6-9y" });
     expect(body.dynamic_variables.questions).toBe(agentQuestionList(screenQuestions("6-9y")));
+  });
+
+  it("provider failure -> 502, and the voice reservation is released", async () => {
+    vi.stubEnv("DEMO_MODE", "false");
+    vi.stubEnv("ELEVENLABS_SCREEN_AGENT_ID", "agent_screen_test");
+    agent.startAgentSession.mockRejectedValue(new Error("boom"));
+    const before = await sql`select count(*)::int as n from voice_usage where user_id = ${provider.id}`;
+    expect((await start("3-5y", "voice")).status).toBe(502);
+    const after = await sql`select count(*)::int as n from voice_usage where user_id = ${provider.id}`;
+    expect(after[0].n).toBe(before[0].n);
   });
 
   it("E-3: mocked SDK client tools record_answer x N then finish -> the same result as the form", async () => {

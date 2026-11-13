@@ -185,4 +185,26 @@ export const env = {
   get TOKEN_ENCRYPTION_KEY() {
     return read("TOKEN_ENCRYPTION_KEY");
   },
+  // 051: voice cost guard (lib/voice/config.ts parses and defaults these; docs/voice-cost-guard.md). Platform budget in
+  // minutes (reserved + actual), overridable at runtime in /admin/ops; per-user quotas per agent; cost estimate.
+  get VOICE_DAILY_MINUTES_CAP() {
+    return read("VOICE_DAILY_MINUTES_CAP");
+  },
+  get VOICE_MONTHLY_MINUTES_CAP() {
+    return read("VOICE_MONTHLY_MINUTES_CAP");
+  },
+  get VOICE_COST_PER_MINUTE_USD() {
+    return read("VOICE_COST_PER_MINUTE_USD");
+  },
+  get USD_INR_RATE() {
+    return read("USD_INR_RATE");
+  },
+  // 051 FR-8: Cloudflare Turnstile. Only when both are set do voice starts on /screen and /find and the phone sign-in
+  // code need a valid token; unset (local, DEMO_MODE) = no bot check. The site key is public by design.
+  get TURNSTILE_SITE_KEY() {
+    return read("TURNSTILE_SITE_KEY");
+  },
+  get TURNSTILE_SECRET_KEY() {
+    return read("TURNSTILE_SECRET_KEY");
+  },
 };

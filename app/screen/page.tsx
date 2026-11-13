@@ -8,6 +8,7 @@ import { isDemoMode } from "@/lib/demo";
 import { env } from "@/lib/env";
 import { KNOWN_LOCALITIES, lookupLocality } from "@/lib/geo/geocode";
 import { getLocale, getT } from "@/lib/i18n/server";
+import { turnstileSiteKey } from "@/lib/turnstile";
 
 export const dynamic = "force-dynamic";
 
@@ -33,8 +34,11 @@ async function saveViewer(): Promise<SaveViewer> {
 
 // Ticket 033: public developmental check-in (linked from the landing page). Strict CSP with only the ElevenLabs
 // endpoints added (lib/csp.ts, NFR-1); no analytics. Translated chrome; question text English (clinical review).
-export default async function ScreenPage() {
+// 051: tapping is anonymous; voice needs a sign-in (`?voice=1` marks the return from it) and, when configured, the
+// Turnstile bot check (its site key is public).
+export default async function ScreenPage({ searchParams }: { searchParams: Promise<{ voice?: string | string[] }> }) {
   const viewer = await saveViewer();
+  const voiceIntent = (await searchParams).voice === "1";
   const localities = [...new Set(KNOWN_LOCALITIES)]
     .map((name) => {
       const hit = lookupLocality(name);
@@ -46,7 +50,13 @@ export default async function ScreenPage() {
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
-      <ScreenFlow viewer={viewer} localities={localities} voiceAvailable={voiceAvailable} />
+      <ScreenFlow
+        viewer={viewer}
+        localities={localities}
+        voiceAvailable={voiceAvailable}
+        turnstileSiteKey={turnstileSiteKey()}
+        voiceIntent={voiceIntent}
+      />
     </div>
   );
 }
