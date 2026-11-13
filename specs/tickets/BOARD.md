@@ -87,7 +87,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 029 | PostGIS "near me" directory with Google Maps | done | solo | waits for 028 |
 | 030 | Availability and atomic one-off booking | done | solo | waits for 028, 032, 041 |
 | 031 | Razorpay payments (test mode) | draft | solo | waits for 030 |
-| 033 | Voice developmental check-in (public screen) | draft | solo | waits for 020, 024, 029, 041 |
+| 033 | Voice developmental check-in (public screen) | done | solo | waits for 020, 024, 029, 041 |
 | 034 | Voice booking agent (web widget on /find) | draft | solo | waits for 030, 033 |
 | 035 | Appointment-scoped pre-consult intake | draft | solo | waits for 021, 024, 030, 041 |
 | 036 | Ratings for completed appointments | draft | solo | waits for 030 |
