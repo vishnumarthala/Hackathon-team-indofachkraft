@@ -1,5 +1,6 @@
 import { env } from "@/lib/env";
 import { fail, ok } from "@/lib/http";
+import { isAppointmentPostCall, processAppointmentPostCall } from "@/lib/intake/appointment-process";
 import { InvalidPostCallError, processPostCall } from "@/lib/intake/process";
 import { verifySignature } from "@/lib/intake/signature";
 
@@ -33,6 +34,8 @@ export async function POST(req: Request) {
   }
 
   try {
+    // 035: appointment intake calls carry `intake_attempt_id`; case-level links (009/010) carry `intake_token`.
+    if (isAppointmentPostCall(payload.data)) return ok(await processAppointmentPostCall(payload.data));
     return ok(await processPostCall(payload.data));
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

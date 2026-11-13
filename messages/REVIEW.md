@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2222. Not yet approved: 2222.
+Rows: 2357. Not yet approved: 2357.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -627,6 +627,21 @@ Rows: 2222. Not yet approved: 2222.
 | `intake.simulate.done` | Call ended. Thank you! You can close this page. | कॉल ख़त्म हुई। धन्यवाद! आप यह पेज बंद कर सकते हैं। | కాల్ ముగిసింది. ధన్యవాదాలు! మీరు ఈ పేజీని మూసివేయవచ్చు. |  | pending |
 | `intake.simulate.failed` | Could not simulate the call. Please try again. | कॉल का नमूना नहीं चल सका। कृपया फिर से कोशिश करें। | కాల్‌ను అనుకరించలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `intake.expired` | This link has expired. Please ask your therapist for a new link. | यह लिंक समाप्त हो गया है। कृपया अपने थेरेपिस्ट से नया लिंक माँगें। | ఈ లింక్ గడువు ముగిసింది. దయచేసి మీ థెరపిస్ట్‌ను కొత్త లింక్ అడగండి. |  | pending |
+| `intake.appointment.title` | Before {child}'s visit with {provider} | {provider} के साथ {child} की मुलाक़ात से पहले | {provider} తో {child} సందర్శనకు ముందు |  | pending |
+| `intake.appointment.introChildDev` | You will talk to an AI assistant, not a person. It asks about {child}'s development so {provider} is prepared for the visit. The call takes up to 15 minutes and is recorded and summarised for {provider}. | आप एक AI सहायक से बात करेंगे, किसी व्यक्ति से नहीं। यह {child} के विकास के बारे में पूछता है ताकि {provider} मुलाक़ात के लिए तैयार रहें। कॉल 15 मिनट तक की होती है और {provider} के लिए रिकॉर्ड करके सारांश बनाई जाती है। | మీరు ఒక AI సహాయకుడితో మాట్లాడతారు, మనిషితో కాదు. {provider} సందర్శనకు సిద్ధంగా ఉండేందుకు ఇది {child} అభివృద్ధి గురించి అడుగుతుంది. కాల్ 15 నిమిషాల వరకు ఉంటుంది, {provider} కోసం రికార్డ్ చేసి సారాంశం చేయబడుతుంది. |  | pending |
+| `intake.appointment.introGeneric` | You will talk to an AI assistant, not a person. It asks why you booked this visit for {child} so {provider} is prepared. The call is in English, takes up to 10 minutes and is recorded and summarised for {provider}. The assistant does not give medical advice. | आप एक AI सहायक से बात करेंगे, किसी व्यक्ति से नहीं। यह पूछता है कि आपने {child} के लिए यह मुलाक़ात क्यों बुक की, ताकि {provider} तैयार रहें। कॉल अंग्रेज़ी में है, 10 मिनट तक की होती है और {provider} के लिए रिकॉर्ड करके सारांश बनाई जाती है। सहायक चिकित्सा सलाह नहीं देता। | మీరు ఒక AI సహాయకుడితో మాట్లాడతారు, మనిషితో కాదు. {provider} సిద్ధంగా ఉండేందుకు {child} కోసం ఈ సందర్శన ఎందుకు బుక్ చేశారో ఇది అడుగుతుంది. కాల్ ఇంగ్లీష్‌లో ఉంటుంది, 10 నిమిషాల వరకు ఉంటుంది, {provider} కోసం రికార్డ్ చేసి సారాంశం చేయబడుతుంది. సహాయకుడు వైద్య సలహా ఇవ్వదు. |  | pending |
+| `intake.appointment.consent` | I agree to talk to an AI assistant and for this call to be recorded and summarised for my child's provider. | मैं AI सहायक से बात करने और इस कॉल को रिकॉर्ड करके मेरे बच्चे के प्रोवाइडर के लिए सारांश बनाने की अनुमति देता/देती हूँ। | AI సహాయకుడితో మాట్లాడటానికి, ఈ కాల్‌ను రికార్డ్ చేసి నా పిల్లల ప్రొవైడర్ కోసం సారాంశం చేయడానికి నేను అంగీకరిస్తున్నాను. |  | pending |
+| `intake.appointment.expired` | This link has expired. The intake call is only available before the appointment starts. | यह लिंक समाप्त हो गया है। इनटेक कॉल केवल अपॉइंटमेंट शुरू होने से पहले उपलब्ध है। | ఈ లింక్ గడువు ముగిసింది. ఇన్‌టేక్ కాల్ అపాయింట్‌మెంట్ మొదలయ్యే ముందు మాత్రమే అందుబాటులో ఉంటుంది. |  | pending |
+| `intake.appointments.title` | Appointment intake calls | अपॉइंटमेंट इनटेक कॉल | అపాయింట్‌మెంట్ ఇన్‌టేక్ కాల్స్ |  | pending |
+| `intake.appointments.intro` | Pre-consult calls the family took before an appointment with your organisation. Parent-reported; check everything at the visit. | आपकी संस्था के साथ अपॉइंटमेंट से पहले परिवार द्वारा की गई कॉल। माता-पिता द्वारा बताया गया; मुलाक़ात में सब जाँचें। | మీ సంస్థతో అపాయింట్‌మెంట్‌కు ముందు కుటుంబం చేసిన కాల్స్. తల్లిదండ్రులు చెప్పినవి; సందర్శనలో అన్నీ తనిఖీ చేయండి. |  | pending |
+| `intake.appointments.heading` | {service}, {date} | {service}, {date} | {service}, {date} |  | pending |
+| `intake.appointments.childDev` | Child Development intake | बाल विकास इनटेक | పిల్లల అభివృద్ధి ఇన్‌టేక్ |  | pending |
+| `intake.appointments.generic` | General intake (English) | सामान्य इनटेक (अंग्रेज़ी) | సాధారణ ఇన్‌టేక్ (ఇంగ్లీష్) |  | pending |
+| `intake.appointments.notStarted` | Intake: not started | इनटेक: शुरू नहीं हुआ | ఇన్‌టేక్: ప్రారంభం కాలేదు |  | pending |
+| `intake.appointments.completed` | Intake: completed | इनटेक: पूरा हुआ | ఇన్‌టేక్: పూర్తయింది |  | pending |
+| `intake.appointments.briefFailed` | The call was received but the brief could not be generated. | कॉल मिल गई, लेकिन ब्रीफ़ नहीं बन सका। | కాల్ అందింది కానీ బ్రీఫ్ తయారు కాలేదు. |  | pending |
+| `intake.appointments.draft` | Draft | ड्राफ़्ट | డ్రాఫ్ట్ |  | pending |
+| `intake.appointments.reviewed` | Reviewed | समीक्षा हो गई | సమీక్షించబడింది |  | pending |
 | `family.meta.title` | Family account - DoctorNearMe | परिवार खाता - DoctorNearMe | కుటుంబ ఖాతా - DoctorNearMe |  | pending |
 | `family.login.title` | Sign in to your family account | अपने परिवार खाते में साइन इन करें | మీ కుటుంబ ఖాతాలోకి సైన్ ఇన్ చేయండి |  | pending |
 | `family.login.google` | Continue with Google | Google से जारी रखें | Google తో కొనసాగించండి |  | pending |
@@ -1030,6 +1045,7 @@ Rows: 2222. Not yet approved: 2222.
 | `caseTabs.goals` | Goals | लक्ष्य | లక్ష్యాలు |  | pending |
 | `caseTabs.messages` | Messages | संदेश | సందేశాలు |  | pending |
 | `caseTabs.homeProgram` | Home program | घर का कार्यक्रम | ఇంటి కార్యక్రమం |  | pending |
+| `caseTabs.prescriptions` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
 | `sharing.scopes.reports` | Reports | रिपोर्ट | రిపోర్ట్‌లు |  | pending |
 | `sharing.scopes.assessments` | Assessments | आकलन | అంచనాలు |  | pending |
 | `sharing.scopes.iep` | Goals (IEP) | लक्ष्य (IEP) | లక్ష్యాలు (IEP) |  | pending |
@@ -1738,6 +1754,10 @@ Rows: 2222. Not yet approved: 2222.
 | `booking.list.back` | Back to appointments | अपॉइंटमेंट पर वापस | అపాయింట్‌మెంట్‌లకు తిరిగి |  | pending |
 | `booking.list.cancelledDone` | The appointment was cancelled. | अपॉइंटमेंट रद्द हो गया। | అపాయింట్‌మెంట్ రద్దయింది. |  | pending |
 | `booking.list.demo` | Demo booking | डेमो बुकिंग | డెమో బుకింగ్ |  | pending |
+| `booking.list.intake.link` | Before the visit: take the short AI intake call | मुलाक़ात से पहले: छोटी AI इनटेक कॉल करें | సందర్శనకు ముందు: చిన్న AI ఇన్‌టేక్ కాల్ చేయండి |  | pending |
+| `booking.list.intake.consent` | Allow the AI intake call in your DoctorNearMe app to prepare for this visit. | इस मुलाक़ात की तैयारी के लिए अपने DoctorNearMe ऐप में AI इनटेक कॉल की अनुमति दें। | ఈ సందర్శనకు సిద్ధం కావడానికి మీ DoctorNearMe యాప్‌లో AI ఇన్‌టేక్ కాల్‌ను అనుమతించండి. |  | pending |
+| `booking.list.intake.allow` | Open permissions | अनुमतियाँ खोलें | అనుమతులు తెరవండి |  | pending |
+| `booking.list.intake.done` | Intake call done. Thank you! | इनटेक कॉल हो गई। धन्यवाद! | ఇన్‌టేక్ కాల్ పూర్తయింది. ధన్యవాదాలు! |  | pending |
 | `booking.schedule.nav` | Schedule | शेड्यूल | షెడ్యూల్ |  | pending |
 | `booking.schedule.title` | Schedule | शेड्यूल | షెడ్యూల్ |  | pending |
 | `booking.schedule.intro` | Set your services and weekly hours. Families book free times online; you see every booking here. | अपनी सेवाएँ और साप्ताहिक समय तय करें। परिवार खाली समय ऑनलाइन बुक करते हैं; हर बुकिंग यहाँ दिखती है। | మీ సేవలు, వారపు సమయాలు సెట్ చేయండి. కుటుంబాలు ఖాళీ సమయాలను ఆన్‌లైన్‌లో బుక్ చేస్తాయి; ప్రతి బుకింగ్ ఇక్కడ కనిపిస్తుంది. |  | pending |
@@ -1808,6 +1828,9 @@ Rows: 2222. Not yet approved: 2222.
 | `booking.schedule.agenda.cancelQuestion` | Cancel this appointment? The family is told. | यह अपॉइंटमेंट रद्द करें? परिवार को बताया जाएगा। | ఈ అపాయింట్‌మెంట్‌ను రద్దు చేయాలా? కుటుంబానికి తెలియజేయబడుతుంది. |  | pending |
 | `booking.schedule.agenda.warning` | Outside your hours now (blocked or changed). Contact the family or cancel. | अब आपके समय से बाहर है (ब्लॉक या बदला गया)। परिवार से संपर्क करें या रद्द करें। | ఇప్పుడు మీ సమయాలకు బయట ఉంది (బ్లాక్ లేదా మార్చబడింది). కుటుంబాన్ని సంప్రదించండి లేదా రద్దు చేయండి. |  | pending |
 | `booking.schedule.agenda.notStarted` | You can mark this after the appointment starts. | अपॉइंटमेंट शुरू होने के बाद आप इसे चिह्नित कर सकते हैं। | అపాయింట్‌మెంట్ మొదలైన తర్వాత దీనిని గుర్తించవచ్చు. |  | pending |
+| `booking.schedule.agenda.intake.not_started` | Intake: not started | इनटेक: शुरू नहीं हुआ | ఇన్‌టేక్: ప్రారంభం కాలేదు |  | pending |
+| `booking.schedule.agenda.intake.completed` | Intake: completed | इनटेक: पूरा हुआ | ఇన్‌టేక్: పూర్తయింది |  | pending |
+| `booking.schedule.agenda.intake.openBrief` | Open brief | ब्रीफ़ खोलें | బ్రీఫ్ తెరవండి |  | pending |
 | `booking.schedule.organisation` | Organisation | संगठन | సంస్థ |  | pending |
 | `booking.meet.join` | Join video call | वीडियो कॉल से जुड़ें | వీడియో కాల్‌లో చేరండి |  | pending |
 | `booking.meet.joinHint` | Join with your Google account. The provider will admit you from the waiting room. | अपने Google खाते से जुड़ें। प्रदाता आपको प्रतीक्षा कक्ष से अंदर लेंगे। | మీ Google ఖాతాతో చేరండి. ప్రొవైడర్ మిమ్మల్ని వెయిటింగ్ రూమ్ నుండి లోపలికి అనుమతిస్తారు. |  | pending |
@@ -2237,3 +2260,115 @@ Rows: 2222. Not yet approved: 2222.
 | `payments.pay.errors.hold_expired` | The time to pay has run out. Please pick the time again. | भुगतान का समय खत्म हो गया। कृपया फिर से समय चुनें। | చెల్లించే సమయం ముగిసింది. దయచేసి మళ్లీ సమయం ఎంచుకోండి. |  | pending |
 | `payments.pay.errors.already_paid` | This appointment is already paid. | इस अपॉइंटमेंट का भुगतान पहले ही हो चुका है। | ఈ అపాయింట్‌మెంట్‌కు ఇప్పటికే చెల్లించారు. |  | pending |
 | `payments.pay.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `voiceBooking.button` | Book by voice | आवाज़ से बुक करें | వాయిస్‌తో బుక్ చేయండి |  | pending |
+| `voiceBooking.title` | Book by voice | आवाज़ से बुक करें | వాయిస్‌తో బుక్ చేయండి |  | pending |
+| `voiceBooking.intro` | Tell our assistant what you need, for example a Telugu-speaking speech therapist near Kukatpally on Saturday morning. | हमारे सहायक को बताइए कि आपको क्या चाहिए, जैसे शनिवार सुबह कूकटपल्ली के पास तेलुगु बोलने वाला स्पीच थेरेपिस्ट। | మీకు ఏమి కావాలో మా సహాయకుడికి చెప్పండి, ఉదాహరణకు శనివారం ఉదయం కూకట్‌పల్లి దగ్గర తెలుగు మాట్లాడే స్పీచ్ థెరపిస్ట్. |  | pending |
+| `voiceBooking.disclosure` | You will talk to an AI assistant in English. It will not ask for your child's name. | आप अंग्रेज़ी में एक AI सहायक से बात करेंगे। यह आपके बच्चे का नाम नहीं पूछेगा। | మీరు ఇంగ్లీష్‌లో ఒక AI సహాయకుడితో మాట్లాడతారు. ఇది మీ పిల్లల పేరు అడగదు. |  | pending |
+| `voiceBooking.privacy` | Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe. The assistant can only hold a time for 10 minutes; you sign in and confirm on screen. | आपकी आवाज़ ElevenLabs (USA) द्वारा प्रोसेस की जाती है और DoctorNearMe इसे संग्रहीत नहीं करता। सहायक केवल 10 मिनट के लिए समय रोक सकता है; आप साइन इन करके स्क्रीन पर पुष्टि करते हैं। | మీ వాయిస్‌ను ElevenLabs (USA) ప్రాసెస్ చేస్తుంది, DoctorNearMe దాన్ని నిల్వ చేయదు. సహాయకుడు ఒక సమయాన్ని 10 నిమిషాలు మాత్రమే ఆపగలడు; మీరు సైన్ ఇన్ చేసి స్క్రీన్‌పై నిర్ధారిస్తారు. |  | pending |
+| `voiceBooking.start` | Start | शुरू करें | ప్రారంభించండి |  | pending |
+| `voiceBooking.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `voiceBooking.starting` | Starting... | शुरू हो रहा है... | ప్రారంభమవుతోంది... |  | pending |
+| `voiceBooking.demo` | Demo mode: a scripted conversation, no live voice call. | डेमो मोड: पहले से लिखी बातचीत, कोई लाइव वॉइस कॉल नहीं। | డెమో మోడ్: ముందే రాసిన సంభాషణ, లైవ్ వాయిస్ కాల్ లేదు. |  | pending |
+| `voiceBooking.connecting` | Connecting... | जुड़ रहा है... | కనెక్ట్ అవుతోంది... |  | pending |
+| `voiceBooking.listening` | Listening... | सुन रहा है... | వింటోంది... |  | pending |
+| `voiceBooking.speaking` | Speaking... | बोल रहा है... | మాట్లాడుతోంది... |  | pending |
+| `voiceBooking.end` | End call | कॉल समाप्त करें | కాల్ ముగించండి |  | pending |
+| `voiceBooking.ended` | The call has ended. | कॉल समाप्त हो गई। | కాల్ ముగిసింది. |  | pending |
+| `voiceBooking.again` | Start again | फिर से शुरू करें | మళ్ళీ ప్రారంభించండి |  | pending |
+| `voiceBooking.captions` | Live captions | लाइव कैप्शन | లైవ్ క్యాప్షన్లు |  | pending |
+| `voiceBooking.speakerAi` | Assistant | सहायक | సహాయకుడు |  | pending |
+| `voiceBooking.speakerYou` | You | आप | మీరు |  | pending |
+| `voiceBooking.holdTitle` | Time held for you | आपके लिए समय रोका गया | మీ కోసం సమయం ఆపబడింది |  | pending |
+| `voiceBooking.holdCard` | {provider} - {time} - held for 10 minutes | {provider} - {time} - 10 मिनट के लिए रोका गया | {provider} - {time} - 10 నిమిషాలు ఆపబడింది |  | pending |
+| `voiceBooking.timeLeft` | Time left: {time} | बचा समय: {time} | మిగిలిన సమయం: {time} |  | pending |
+| `voiceBooking.holdExpired` | This hold has expired. Start again or pick a time below. | यह रोक समाप्त हो गई। फिर से शुरू करें या नीचे समय चुनें। | ఈ హోల్డ్ ముగిసింది. మళ్ళీ ప్రారంభించండి లేదా కింద సమయం ఎంచుకోండి. |  | pending |
+| `voiceBooking.confirm` | Sign in and confirm | साइन इन करें और पुष्टि करें | సైన్ ఇన్ చేసి నిర్ధారించండి |  | pending |
+| `voiceBooking.confirmNote` | Not booked yet. Sign in, choose your child and tap Confirm to book. | अभी बुक नहीं हुआ है। साइन इन करें, अपना बच्चा चुनें और बुक करने के लिए पुष्टि करें पर टैप करें। | ఇంకా బుక్ కాలేదు. సైన్ ఇన్ చేసి, మీ పిల్లలను ఎంచుకుని, బుక్ చేయడానికి నిర్ధారించండి నొక్కండి. |  | pending |
+| `voiceBooking.payNote` | After you confirm, you pay {fee} online to complete the booking. | पुष्टि करने के बाद, बुकिंग पूरी करने के लिए आप {fee} ऑनलाइन भुगतान करेंगे। | నిర్ధారించిన తర్వాత, బుకింగ్ పూర్తి చేయడానికి మీరు {fee} ఆన్‌లైన్‌లో చెల్లిస్తారు. |  | pending |
+| `voiceBooking.errors.busy` | Too many voice bookings were started from this connection. Please try again in an hour. | इस कनेक्शन से बहुत सारी वॉइस बुकिंग शुरू की गईं। कृपया एक घंटे बाद फिर कोशिश करें। | ఈ కనెక్షన్ నుండి చాలా వాయిస్ బుకింగ్‌లు ప్రారంభించబడ్డాయి. దయచేసి ఒక గంట తర్వాత మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `voiceBooking.errors.unavailable` | Voice booking is not available right now. Please use the search below. | आवाज़ से बुकिंग अभी उपलब्ध नहीं है। कृपया नीचे खोज का उपयोग करें। | వాయిస్ బుకింగ్ ఇప్పుడు అందుబాటులో లేదు. దయచేసి కింద ఉన్న శోధనను ఉపయోగించండి. |  | pending |
+| `voiceBooking.errors.connect` | The call could not connect. Please use the search below. | कॉल कनेक्ट नहीं हो सकी। कृपया नीचे खोज का उपयोग करें। | కాల్ కనెక్ట్ కాలేదు. దయచేసి కింద ఉన్న శోధనను ఉపయోగించండి. |  | pending |
+| `rx.title` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
+| `rx.intro` | Only verified prescribers see this tab. AI drafts are suggestions: review every item before you sign. | यह टैब केवल सत्यापित पर्चा लिखने वाले डॉक्टर देखते हैं। AI ड्राफ़्ट केवल सुझाव हैं: साइन करने से पहले हर दवा जाँचें। | ఈ ట్యాబ్ ధృవీకరించబడిన ప్రిస్క్రైబర్లకు మాత్రమే కనిపిస్తుంది. AI డ్రాఫ్ట్‌లు సూచనలు మాత్రమే: సంతకం చేసే ముందు ప్రతి మందును తనిఖీ చేయండి. |  | pending |
+| `rx.aiLabel` | Suggested by DoctorNearMe - the clinician decides | DoctorNearMe का सुझाव - फ़ैसला क्लिनिशियन करते हैं | DoctorNearMe సూచన - నిర్ణయం క్లినీషియన్‌దే |  | pending |
+| `rx.new` | New prescription | नया पर्चा | కొత్త ప్రిస్క్రిప్షన్ |  | pending |
+| `rx.creating` | Starting… | शुरू हो रहा है… | ప్రారంభిస్తోంది… |  | pending |
+| `rx.fromDraft.title` | AI prescription draft | AI पर्चा ड्राफ़्ट | AI ప్రిస్క్రిప్షన్ డ్రాఫ్ట్ |  | pending |
+| `rx.fromDraft.intro` | Start a prescription from this draft, then review and edit every medicine before signing. | इस ड्राफ़्ट से पर्चा शुरू करें, फिर साइन करने से पहले हर दवा जाँचें और बदलें। | ఈ డ్రాఫ్ట్ నుండి ప్రిస్క్రిప్షన్ ప్రారంభించండి, తర్వాత సంతకం చేసే ముందు ప్రతి మందును తనిఖీ చేసి సవరించండి. |  | pending |
+| `rx.fromDraft.start` | Start from this draft | इस ड्राफ़्ट से शुरू करें | ఈ డ్రాఫ్ట్ నుండి ప్రారంభించండి |  | pending |
+| `rx.fromDraft.open` | Open the prescription started from this draft | इस ड्राफ़्ट से शुरू किया गया पर्चा खोलें | ఈ డ్రాఫ్ట్ నుండి ప్రారంభించిన ప్రిస్క్రిప్షన్‌ను తెరవండి |  | pending |
+| `rx.fromDraft.none` | The draft has no medicines. | इस ड्राफ़्ट में कोई दवा नहीं है। | ఈ డ్రాఫ్ట్‌లో మందులు లేవు. |  | pending |
+| `rx.list.heading` | All prescriptions | सभी पर्चे | అన్ని ప్రిస్క్రిప్షన్లు |  | pending |
+| `rx.list.empty` | No prescriptions yet. | अभी कोई पर्चा नहीं है। | ఇంకా ప్రిస్క్రిప్షన్లు లేవు. |  | pending |
+| `rx.list.items_one` | {count} medicine | {count} दवा | {count} మందు |  | pending |
+| `rx.list.items_other` | {count} medicines | {count} दवाएँ | {count} మందులు |  | pending |
+| `rx.list.signedOn` | Signed {date} by {name} | {date} को {name} ने साइन किया | {date}న {name} సంతకం చేశారు |  | pending |
+| `rx.list.startedOn` | Started {date} by {name} | {date} को {name} ने शुरू किया | {date}న {name} ప్రారంభించారు |  | pending |
+| `rx.list.fromAi` | From an AI draft | AI ड्राफ़्ट से | AI డ్రాఫ్ట్ నుండి |  | pending |
+| `rx.list.open` | Open | खोलें | తెరవండి |  | pending |
+| `rx.status.draft` | Draft | ड्राफ़्ट | డ్రాఫ్ట్ |  | pending |
+| `rx.status.signed` | Signed | साइन किया गया | సంతకం చేయబడింది |  | pending |
+| `rx.status.void` | Cancelled | रद्द | రద్దు |  | pending |
+| `rx.editor.heading` | Draft prescription | पर्चे का ड्राफ़्ट | ప్రిస్క్రిప్షన్ డ్రాఫ్ట్ |  | pending |
+| `rx.editor.signedHeading` | Signed prescription | साइन किया गया पर्चा | సంతకం చేసిన ప్రిస్క్రిప్షన్ |  | pending |
+| `rx.editor.medicines` | Medicines | दवाएँ | మందులు |  | pending |
+| `rx.editor.medicine` | Medicine {n} | दवा {n} | మందు {n} |  | pending |
+| `rx.editor.drug` | Medicine (generic name) | दवा (जेनेरिक नाम) | మందు (జెనెరిక్ పేరు) |  | pending |
+| `rx.editor.strength` | Strength | ताक़त | బలం |  | pending |
+| `rx.editor.form` | Form | रूप | రూపం |  | pending |
+| `rx.editor.dose` | Dose | खुराक | మోతాదు |  | pending |
+| `rx.editor.frequency` | How often | कितनी बार | ఎన్నిసార్లు |  | pending |
+| `rx.editor.duration` | Days | दिन | రోజులు |  | pending |
+| `rx.editor.route` | Route | कैसे लें | ఎలా తీసుకోవాలి |  | pending |
+| `rx.editor.instructions` | Instructions (optional) | निर्देश (वैकल्पिक) | సూచనలు (ఐచ్ఛికం) |  | pending |
+| `rx.editor.add` | Add medicine | दवा जोड़ें | మందు జోడించండి |  | pending |
+| `rx.editor.remove` | Remove medicine {n} | दवा {n} हटाएँ | మందు {n} తీసివేయండి |  | pending |
+| `rx.editor.maxItems` | A prescription can have at most 15 medicines. | एक पर्चे में अधिकतम 15 दवाएँ हो सकती हैं। | ఒక ప్రిస్క్రిప్షన్‌లో గరిష్ఠంగా 15 మందులు ఉండవచ్చు. |  | pending |
+| `rx.editor.advice` | Advice | सलाह | సలహా |  | pending |
+| `rx.editor.followUp` | Follow-up | फ़ॉलो-अप | ఫాలో-అప్ |  | pending |
+| `rx.editor.save` | Save draft | ड्राफ़्ट सेव करें | డ్రాఫ్ట్ సేవ్ చేయండి |  | pending |
+| `rx.editor.saving` | Saving… | सेव हो रहा है… | సేవ్ అవుతోంది… |  | pending |
+| `rx.editor.saved` | Draft saved | ड्राफ़्ट सेव हो गया | డ్రాఫ్ట్ సేవ్ అయింది |  | pending |
+| `rx.editor.unsaved` | Unsaved changes | बदलाव सेव नहीं हुए | మార్పులు సేవ్ కాలేదు |  | pending |
+| `rx.editor.sign` | Sign and generate PDF | साइन करें और PDF बनाएँ | సంతకం చేసి PDF రూపొందించండి |  | pending |
+| `rx.editor.readOnly` | Signed prescriptions cannot be changed. Void it and write a new one if something is wrong. | साइन किए गए पर्चे बदले नहीं जा सकते। कुछ गलत हो तो इसे रद्द करें और नया लिखें। | సంతకం చేసిన ప్రిస్క్రిప్షన్లను మార్చలేరు. ఏదైనా తప్పు ఉంటే దాన్ని రద్దు చేసి కొత్తది రాయండి. |  | pending |
+| `rx.editor.allergyMatch` | Matches a recorded allergy: {substance} | दर्ज एलर्जी से मेल खाती है: {substance} | నమోదైన అలర్జీతో సరిపోలుతోంది: {substance} |  | pending |
+| `rx.forms.tablet` | Tablet | गोली | టాబ్లెట్ |  | pending |
+| `rx.forms.syrup` | Syrup | सिरप | సిరప్ |  | pending |
+| `rx.forms.drops` | Drops | ड्रॉप्स | డ్రాప్స్ |  | pending |
+| `rx.forms.capsule` | Capsule | कैप्सूल | క్యాప్సూల్ |  | pending |
+| `rx.forms.other` | Other | अन्य | ఇతర |  | pending |
+| `rx.allergies.listed` | Allergies recorded by the family: {list} | परिवार द्वारा दर्ज एलर्जी: {list} | కుటుంబం నమోదు చేసిన అలర్జీలు: {list} |  | pending |
+| `rx.allergies.none` | The family recorded no known allergies. | परिवार ने दर्ज किया है कि कोई ज्ञात एलर्जी नहीं है। | తెలిసిన అలర్జీలు లేవని కుటుంబం నమోదు చేసింది. |  | pending |
+| `rx.allergies.unknown` | Allergies are not recorded. Ask the family before prescribing: the prescription will say the allergy status is unknown. | एलर्जी दर्ज नहीं है। पर्चा लिखने से पहले परिवार से पूछें: पर्चे पर लिखा होगा कि एलर्जी की स्थिति अज्ञात है। | అలర్జీలు నమోదు కాలేదు. ప్రిస్క్రైబ్ చేసే ముందు కుటుంబాన్ని అడగండి: అలర్జీ స్థితి తెలియదని ప్రిస్క్రిప్షన్‌లో ఉంటుంది. |  | pending |
+| `rx.allergies.medicines` | Current medicines (from the family): {list} | अभी चल रही दवाएँ (परिवार से): {list} | ప్రస్తుత మందులు (కుటుంబం నుండి): {list} |  | pending |
+| `rx.confirm.title` | Sign this prescription? | यह पर्चा साइन करें? | ఈ ప్రిస్క్రిప్షన్‌పై సంతకం చేయాలా? |  | pending |
+| `rx.confirm.text` | I have reviewed every item and take responsibility for this prescription. | मैंने हर दवा जाँच ली है और इस पर्चे की ज़िम्मेदारी लेता/लेती हूँ। | నేను ప్రతి అంశాన్ని సమీక్షించాను మరియు ఈ ప్రిస్క్రిప్షన్‌కు బాధ్యత తీసుకుంటున్నాను. |  | pending |
+| `rx.confirm.matches` | These medicines match a recorded allergy: {list} | ये दवाएँ दर्ज एलर्जी से मेल खाती हैं: {list} | ఈ మందులు నమోదైన అలర్జీతో సరిపోలుతున్నాయి: {list} |  | pending |
+| `rx.confirm.overrideLabel` | Reason to prescribe despite the allergy | एलर्जी के बावजूद यह दवा लिखने का कारण | అలర్జీ ఉన్నా ఈ మందు రాయడానికి కారణం |  | pending |
+| `rx.confirm.sign` | Sign | साइन करें | సంతకం చేయండి |  | pending |
+| `rx.confirm.signing` | Signing… | साइन हो रहा है… | సంతకం అవుతోంది… |  | pending |
+| `rx.confirm.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `rx.signed.by` | Signed by {name} on {date} | {name} ने {date} को साइन किया | {date}న {name} సంతకం చేశారు |  | pending |
+| `rx.signed.download` | Download PDF | PDF डाउनलोड करें | PDF డౌన్‌లోడ్ చేయండి |  | pending |
+| `rx.signed.hash` | Content hash (SHA-256): {hash} | कंटेंट हैश (SHA-256): {hash} | కంటెంట్ హాష్ (SHA-256): {hash} |  | pending |
+| `rx.signed.void` | Void | रद्द करें | రద్దు చేయండి |  | pending |
+| `rx.signed.voidTitle` | Void this prescription? | यह पर्चा रद्द करें? | ఈ ప్రిస్క్రిప్షన్‌ను రద్దు చేయాలా? |  | pending |
+| `rx.signed.voidIntro` | The family will see it as cancelled by the prescriber. This cannot be undone. | परिवार इसे डॉक्टर द्वारा रद्द किया गया देखेगा। यह वापस नहीं हो सकता। | ప్రిస్క్రైబర్ రద్దు చేసినట్లు కుటుంబానికి కనిపిస్తుంది. దీన్ని వెనక్కి తీసుకోలేరు. |  | pending |
+| `rx.signed.voidReason` | Reason | कारण | కారణం |  | pending |
+| `rx.signed.voidConfirm` | Void prescription | पर्चा रद्द करें | ప్రిస్క్రిప్షన్ రద్దు చేయండి |  | pending |
+| `rx.signed.voiding` | Voiding… | रद्द हो रहा है… | రద్దు చేస్తోంది… |  | pending |
+| `rx.signed.voided` | Cancelled on {date}. Reason: {reason} | {date} को रद्द किया गया। कारण: {reason} | {date}న రద్దు చేయబడింది. కారణం: {reason} |  | pending |
+| `rx.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर से कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `rx.errors.reasonRequired` | Give a reason. | कारण लिखें। | కారణం రాయండి. |  | pending |
+| `rx.errors.confirmRequired` | Tick the box to confirm. | पुष्टि के लिए बॉक्स पर टिक करें। | ధృవీకరించడానికి బాక్స్‌ను టిక్ చేయండి. |  | pending |
+| `rx.family.link` | Prescriptions | पर्चे | ప్రిస్క్రిప్షన్లు |  | pending |
+| `rx.family.back` | Back to {name} | {name} पर वापस जाएँ | {name} వద్దకు తిరిగి వెళ్ళండి |  | pending |
+| `rx.family.title` | {name}'s prescriptions | {name} के पर्चे | {name} ప్రిస్క్రిప్షన్లు |  | pending |
+| `rx.family.intro` | Prescriptions your child's doctors signed and shared with you. | आपके बच्चे के डॉक्टरों द्वारा साइन किए और आपके साथ साझा किए गए पर्चे। | మీ పిల్లల డాక్టర్లు సంతకం చేసి మీతో పంచుకున్న ప్రిస్క్రిప్షన్లు. |  | pending |
+| `rx.family.empty` | No prescriptions have been shared with you yet. | अभी तक आपके साथ कोई पर्चा साझा नहीं किया गया है। | ఇంకా మీతో ఏ ప్రిస్క్రిప్షన్ పంచుకోలేదు. |  | pending |
+| `rx.family.from` | From {org} | {org} से | {org} నుండి |  | pending |
+| `rx.family.signedBy` | Signed by {name} on {date} | {name} ने {date} को साइन किया | {date}న {name} సంతకం చేశారు |  | pending |
+| `rx.family.cancelled` | Cancelled by prescriber | डॉक्टर ने रद्द किया | ప్రిస్క్రైబర్ రద్దు చేశారు |  | pending |
+| `rx.family.cancelledNote` | Do not use this prescription. Contact your child's doctor if you have questions. | इस पर्चे का उपयोग न करें। सवाल हों तो अपने बच्चे के डॉक्टर से संपर्क करें। | ఈ ప్రిస్క్రిప్షన్‌ను ఉపయోగించవద్దు. ప్రశ్నలు ఉంటే మీ పిల్లల డాక్టర్‌ను సంప్రదించండి. |  | pending |
+| `rx.family.download` | Download PDF | PDF डाउनलोड करें | PDF డౌన్‌లోడ్ చేయండి |  | pending |

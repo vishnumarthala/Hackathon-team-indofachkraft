@@ -1,6 +1,6 @@
 # 039: E-prescriptions for verified prescribers
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 021, 028, 038: prescriber verification and `provider_can_prescribe` (028); AI Rx drafts (038); allergies and current medicines from the health profile (021)
 

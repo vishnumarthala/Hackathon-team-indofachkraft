@@ -58,17 +58,18 @@ describe("third-party allowlist (D-6)", () => {
     for (const route of ["/family", "/family/appointments", "/family/children/x/ask"]) expect(scriptAllowed(src, route, APP)).toBe(false);
   });
 
-  it("allowlist entries are approved vendors, scoped to /family routes (or 033's /screen, 031's payment page), and never trackers", () => {
+  it("allowlist entries are approved vendors, scoped to /family routes (or 033's /screen, 034's /find, 031's payment page), and never trackers", () => {
     expect(THIRD_PARTY_ALLOWLIST.map((e) => e.name)).toEqual([
       "ElevenLabs SDK (voice agent)",
       "ElevenLabs SDK (developmental check-in)",
+      "ElevenLabs SDK (voice booking)",
       "Razorpay checkout",
     ]);
     for (const entry of THIRD_PARTY_ALLOWLIST) {
       expect(entry.routes.length).toBeGreaterThan(0);
       // 031: Razorpay Checkout runs on the booking payment page `/book/<profileId>/pay/<appointmentId>` (rd FR-4).
       for (const route of entry.routes)
-        expect(route.startsWith("/family/") || route === "/screen" || (entry.name === "Razorpay checkout" && route === "/book/*/pay/*")).toBe(true);
+        expect(route.startsWith("/family/") || route === "/screen" || route === "/find" || (entry.name === "Razorpay checkout" && route === "/book/*/pay/*")).toBe(true);
       for (const origin of entry.origins) {
         expect(new URL(origin).origin).toBe(origin);
         expect(isBannedHost(new URL(origin).hostname)).toBe(false);

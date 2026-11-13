@@ -1,0 +1,14 @@
+{
+  "summary": "Parent-reported: the child has had pain in the right knee for about three weeks after twisting it during a football match. The swelling settled, but the pain returns with running and climbing stairs and she limps after school on some days. She rested for a week on the family doctor's advice and takes paracetamol syrup when the pain is bad. The parent reports a peanut allergy with hives. Everything here is parent-reported and needs to be checked at the visit.",
+  "reason_for_visit": "Right knee pain after football practice for about three weeks.",
+  "history": "Twisted the right knee during a match about three weeks ago. Swelling went down; pain comes back with running and stairs. Ice pack and one week of rest advised by the family doctor.",
+  "current_concerns": ["Pain when running or climbing stairs", "Limps after school on some days", "Worried she will stop playing sports"],
+  "medications": [{ "name": "Paracetamol syrup", "details": "5 ml when the pain is bad, about twice a week" }],
+  "allergies": [{ "substance": "Peanut", "reaction": "hives" }],
+  "red_flags": [],
+  "questions_for_provider": [
+    "When can she go back to football?",
+    "Which exercises can the family do at home?",
+    "Check knee stability and gait (limping after school reported)."
+  ]
+}

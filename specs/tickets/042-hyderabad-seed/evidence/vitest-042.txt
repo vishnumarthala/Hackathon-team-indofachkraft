@@ -1,0 +1,49 @@
+ ✓ tests/seed-hyderabad.test.ts > generateHyderabadDataset (FR-1, FR-2, NFR-2) > is deterministic: same seed -> same names, types and coordinates; another seed differs
+ ✓ tests/seed-hyderabad.test.ts > generateHyderabadDataset (FR-1, FR-2, NFR-2) > places every location in Hyderabad, within 800 m of its locality centre, across >= 12 localities
+ ✓ tests/seed-hyderabad.test.ts > generateHyderabadDataset (FR-1, FR-2, NFR-2) > covers all 9 provider types, 8 centres with 2-5 providers, languages, services and weekly hours
+ ✓ tests/seed-hyderabad.test.ts > generateHyderabadDataset (FR-1, FR-2, NFR-2) > uses only fictional, flagged details (FR-2, NFR-2)
+ ✓ tests/seed-hyderabad.test.ts > generateHyderabadDataset (FR-1, FR-2, NFR-2) > generates weekly hours that produce bookable slots for every service
+ ✓ tests/seed-hyderabad.test.ts > options and production guard (FR-1, E-5) > parses options
+ ✓ tests/seed-hyderabad.test.ts > options and production guard (FR-1, E-5) > allows only local Supabase + database unless ALLOW_SYNTHETIC_SEED=true
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > NFR-2: payload keys outside the schema are rejected (no PII can reach a tool)
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > normalises what an LLM says into the directory vocabulary
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > helpers: part of day, confirm URL, demo date
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > routes: public (self-authenticating), no confirm tool exists; CSP + allowlist list ElevenLabs for /find
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > E-4: the agent guide has the red-flag message, the no-PII rules and no confirm tool
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > 037: the demo script relays a Google-account refusal instead of failing
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > 042: the demo script reads the demo notice, takes the spoken acknowledgement and holds
+ ✓ tests/booking-agent-tools.test.ts > booking agent: schemas, helpers and access lists > NFR-3: the demo script stops cleanly when nothing is bookable
+ ✓ tests/import-providers.test.ts > CSV parsing and validation > parses quoted fields, escaped quotes, CRLF, a BOM and blank lines
+ ✓ tests/import-providers.test.ts > CSV parsing and validation > accepts the valid fixture
+ ✓ tests/import-providers.test.ts > CSV parsing and validation > reports every bad row with its row number and column
+ ✓ tests/import-providers.test.ts > import:providers against the database (FR-4, E-4) > invalid file: errors with row numbers, nothing imported (even the valid row)
+ ✓ tests/import-providers.test.ts > import:providers against the database (FR-4, E-4) > dry run prints what would be created and writes nothing
+ ✓ tests/seed-hyderabad.test.ts > seed:hyderabad against the database (FR-1, FR-2, FR-3) > seeds flagged, verified, listed, unclaimed profiles with services and hours, and refuses a second run
+ ✓ tests/import-providers.test.ts > import:providers against the database (FR-4, E-4) > imports unclaimed, unverified, unlisted profiles; claim links go to stdout only and work (028)
+ ✓ tests/seed-hyderabad.test.ts > seed:hyderabad against the database (FR-1, FR-2, FR-3) > --reset-synthetic removes only synthetic rows; a non-synthetic profile stays intact (E-3)
+ ✓ tests/demo-booking.test.ts > demo booking safeguard (042 FR-2a) > refuses a demo hold without the acknowledgement (422) and accepts it with demo_ack: true
+ ✓ tests/demo-booking.test.ts > demo booking safeguard (042 FR-2a) > stores is_demo, confirms without payment (free snapshot), and refuses a payment order
+ ✓ tests/demo-booking.test.ts > demo booking safeguard (042 FR-2a) > writes in-app notifications only: no email or WhatsApp rows for any demo event
+ ✓ tests/seed-hyderabad.test.ts > seed:hyderabad against the database (FR-1, FR-2, FR-3) > the CLI refuses a non-local Supabase before writing (E-5)
+ ✓ tests/demo-booking.test.ts > demo booking safeguard (042 FR-2a) > video demo bookings need no Google account and never create a Meet job
+ ✓ tests/demo-booking.test.ts > demo booking safeguard (042 FR-2a) > a rescheduled demo appointment stays a demo appointment
+ ✓ tests/demo-booking.test.ts > demo booking safeguard (042 FR-2a) > real profiles need no acknowledgement and are never demo bookings
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-2: session -> 201 { conversation_token, booking_session }, cookies set, only the hash stored
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-2: 5 sessions per IP per hour, then 429
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > live mode: no agent/secret -> 503; agent + secret -> conversation token from ElevenLabs (mocked)
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-3 / D-4: secret missing or wrong -> 401; unknown, expired or ended session -> 401
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > NFR-2 / E-4: payload keys outside the schema -> 400 (child_name, phone); bad JSON -> 400
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-3: the 21st tool call in a session -> 429
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > search_providers: geocoded server-side, top 5 bookable results with the FR-3 fields
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > get_slots: max 6 slots, part_of_day respected, unknown provider 404
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > E-1 / FR-5: hold_slot -> held, owned by the browser session (sha256 of the cookie), audit actor ai with the session hash only
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-3: a second hold in the session releases the first (one hold per session)
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > FR-3: slot_taken -> { held: false, reason: 'slot_taken' }; mismatched provider/service -> 404
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > 037: a video hold is refused for the agent (no Google identity) -> 200 { held: false, reason: 'google_account_required' }, nothing held
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > 042 FR-2a: a demo profile is held only after demo_acknowledged: true; the hold is a free demo booking
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > E-2 / E-3: confirm needs a signed-in guardian (401); another browser's cookie -> 404; the holding browser -> confirmed
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > 031: an agent hold on an online-payment service -> confirm moves it to pending_payment and the guardian gets the payment step
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > NFR-3: the DEMO_MODE script holds a slot through the cookie-bound demo route (same handlers)
+ ✓ tests/booking-agent-tools.test.ts > booking agent tools (database, route handlers) > NFR-1: tool calls answer well under 1.5 s p95 locally
+ Test Files  4 passed (4)
+      Tests  47 passed (47)

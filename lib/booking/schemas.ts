@@ -54,7 +54,8 @@ export const ServiceCreateSchema = z
     location_id: uuid.optional(),
     org_id: uuid.optional(),
     buffer_min: serviceFields.buffer_min.default(0),
-    intake_kind: serviceFields.intake_kind.default("none"),
+    // 035 D-4: omitted -> the provider type's default (lib/booking/intake-defaults.ts), applied in createService.
+    intake_kind: serviceFields.intake_kind.optional(),
   })
   .refine((s) => s.mode !== "in_clinic" || s.location_id, { path: ["location_id"], message: "Choose a location" })
   .refine((s) => s.payment_mode !== "free" || s.fee_inr === 0, { path: ["fee_inr"], message: "A free service has no fee" });

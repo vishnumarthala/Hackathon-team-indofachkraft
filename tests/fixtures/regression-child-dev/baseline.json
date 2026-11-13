@@ -6940,7 +6940,8 @@
       "status": "draft",
       "created_at": "<ts>",
       "updated_at": "<ts>",
-      "email_status": null
+      "email_status": null,
+      "appointment_id": null
     }
   },
   "report_final": {

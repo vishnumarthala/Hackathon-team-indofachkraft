@@ -88,8 +88,8 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 030 | Availability and atomic one-off booking | done | solo | waits for 028, 032, 041 |
 | 031 | Razorpay payments (test mode) | done | solo | waits for 030 |
 | 033 | Voice developmental check-in (public screen) | done | solo | waits for 020, 024, 029, 041 |
-| 034 | Voice booking agent (web widget on /find) | draft | solo | waits for 030, 033 |
-| 035 | Appointment-scoped pre-consult intake | draft | solo | waits for 021, 024, 030, 041 |
+| 034 | Voice booking agent (web widget on /find) | done | solo | waits for 030, 033 |
+| 035 | Appointment-scoped pre-consult intake | done | solo | waits for 021, 024, 030, 041 |
 | 036 | Ratings for completed appointments | draft | solo | waits for 030 |
 | 042 | Hyderabad directory seed data (synthetic demo + real-provider import) | draft | solo | waits for 029, 030 |
 
@@ -99,7 +99,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 |---|-------|--------|------|------|
 | 037 | Google Meet for video appointments | done | solo | waits for 030 |
 | 038 | AI scribe for any provider type | done | solo | waits for 024, 025, 028, 041 |
-| 039 | E-prescriptions for verified prescribers | draft | solo | waits for 021, 028, 038 |
+| 039 | E-prescriptions for verified prescribers | done | solo | waits for 021, 028, 038 |
 | 040 | Follow-up agent ("ask about my child's plan") | draft | solo | waits for 026, 033, 039 |
 
 ## Critical path (DoctorNearMe)

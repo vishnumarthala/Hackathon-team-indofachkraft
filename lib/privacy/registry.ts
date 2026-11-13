@@ -323,6 +323,56 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    key: "prescriptions",
+    label: "Prescriptions: drafts, signed versions with child/allergy/prescriber snapshots, and their PDFs (039)",
+    owner: "case",
+    tables: ["prescriptions", "prescription_versions"],
+    buckets: ["prescriptions"],
+    retention:
+      "Signed prescriptions are clinical records kept while the child is in care at the organisation (signed versions cannot be changed or deleted); deleted with the child's cases on erasure.",
+    processors: ["supabase"],
+    // Exactly the guardian's portal view (FR-5): signed prescriptions whose latest published version is visible to
+    // the guardian, with that text and (unless cancelled) the PDF. Drafts and void reasons are never exported.
+    export: async ({ sql, childId }) => {
+      const rows = await sql<{ id: string; status: string; version: number; signed_at: Date; voided_at: Date | null; content_md: string; pdf_path: string | null }[]>`
+        select p.id, p.status, v.version, v.signed_at, p.voided_at, pv.content_md, v.pdf_path
+        from public.prescriptions p
+        join public.prescription_versions v on v.prescription_id = p.id and v.version = p.current_version and v.signed_at is not null
+        join lateral (
+          select content_md, visible_to_guardian from public.published_versions
+          where entity_type = 'prescription' and entity_id = p.id order by version desc limit 1
+        ) pv on pv.visible_to_guardian
+        where p.child_id = ${childId} and p.status in ('signed', 'void')
+        order by v.signed_at`;
+      const file = (r: (typeof rows)[number]) => `prescriptions/${r.id}-v${r.version}.pdf`;
+      return {
+        data: rows.map((r) => ({
+          id: r.id,
+          status: r.status === "void" ? "cancelled" : "signed",
+          signed_at: iso(r.signed_at),
+          cancelled_at: iso(r.voided_at),
+          content_md: r.content_md,
+          file: r.status === "signed" && r.pdf_path ? file(r) : null,
+        })),
+        files: rows
+          .filter((r) => r.status === "signed" && r.pdf_path)
+          .map((r) => ({ path: file(r), bucket: "prescriptions", objectPath: r.pdf_path as string })),
+      };
+    },
+    // Rows go with the child's cases in the final erasure step (signed rows only through the case cascade, triggers in
+    // 20261113003900_prescriptions.sql); the PDFs are removed first.
+    erase: {
+      scopes: EVERYTHING,
+      objects: async (sql, ctx) => {
+        const rows = await sql<{ path: string }[]>`
+          select v.pdf_path as path from public.prescription_versions v
+          join public.prescriptions p on p.id = v.prescription_id
+          where p.child_id = ${ctx.childId} and v.pdf_path is not null`;
+        return rows.map((r) => ({ bucket: "prescriptions", path: r.path }));
+      },
+    },
+  },
+  {
     key: "documents",
     label: "Document vault (uploads by the family and the care team)",
     owner: "child",
@@ -536,6 +586,23 @@ export const REGISTRY: PrivacyCategory[] = [
       rows: async (tx, ctx) => {
         const [row] = await tx<{ n: number }[]>`select public.booking_erase_child(${ctx.childId}) as n`;
         return row.n;
+      },
+    },
+  },
+  {
+    // 035: appointment-bound pre-consult intake links. Calls and briefs are `case_records` / `intake_conversations`.
+    key: "intake_attempts",
+    label: "Pre-consult intake links of appointments (link hash, status, call reference)",
+    owner: "case",
+    tables: ["intake_attempts"],
+    retention:
+      "Kept with the case and deleted with it. Only a hash of the link is stored; the link stops working when the appointment starts or is cancelled.",
+    processors: ["supabase"],
+    erase: {
+      scopes: EVERYTHING,
+      rows: async (tx, ctx) => {
+        if (ctx.caseIds.length === 0) return 0;
+        return (await tx`delete from public.intake_attempts where case_id in ${tx(ctx.caseIds)}`).count;
       },
     },
   },

@@ -2,6 +2,7 @@
 import type { Template } from "../types";
 import appointment_cancelled from "./appointment_cancelled";
 import appointment_confirmed from "./appointment_confirmed";
+import appointment_intake_link from "./appointment_intake_link";
 import appointment_meet_failed from "./appointment_meet_failed";
 import appointment_meet_ready from "./appointment_meet_ready";
 import appointment_reminder_24h from "./appointment_reminder_24h";
@@ -15,6 +16,8 @@ import google_calendar_reconnect from "./google_calendar_reconnect";
 import home_program_published from "./home_program_published";
 import iep_published from "./iep_published";
 import message_created from "./message_created";
+import prescription_signed from "./prescription_signed";
+import prescription_voided from "./prescription_voided";
 import payment_refunded from "./payment_refunded";
 import provider_claimed from "./provider_claimed";
 import provider_rejected from "./provider_rejected";
@@ -45,11 +48,14 @@ export const TEMPLATES = {
   privacy_deletion_requested,
   privacy_deletion_completed,
   privacy_deletion_rejected,
+  prescription_signed,
+  prescription_voided,
   appointment_confirmed,
   appointment_reminder_24h,
   appointment_reminder_2h,
   appointment_cancelled,
   appointment_rescheduled,
+  appointment_intake_link,
   appointment_meet_ready,
   appointment_meet_failed,
   google_calendar_reconnect,

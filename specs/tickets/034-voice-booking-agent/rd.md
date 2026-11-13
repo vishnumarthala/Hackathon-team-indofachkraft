@@ -1,6 +1,6 @@
 # 034: Voice booking agent (web widget on /find)
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 030, 033: uses slots/holds (030) and the screen's safety rules and agent patterns (033)
 

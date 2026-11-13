@@ -48,6 +48,12 @@ message and system prompt exactly as written, with double curly braces:
 > id in the browser. Do not rename, remove or hard-code it. If the dashboard asks for placeholder
 > values for testing, use obviously fake ones.
 
+**Appointment intake calls (ticket 035)** use the same agent for Child Development services, started from
+`/intake/a/<token>`. They send `intake_attempt_id` instead of `intake_token` (the webhook routes on it), the child's
+and guardian's names, the provider as `therapist_name`, the organisation as `centre_name`, and the placeholder
+`case_id = appointment-intake` (the published agent requires the variable; the real case id is never sent). The
+generic (English-only) agent for other services is described in `docs/elevenlabs-generic-intake-agent.md`.
+
 ## 5. First message
 
 Copy exactly:

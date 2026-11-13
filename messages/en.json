@@ -707,7 +707,26 @@
       "done": "Call ended. Thank you! You can close this page.",
       "failed": "Could not simulate the call. Please try again."
     },
-    "expired": "This link has expired. Please ask your therapist for a new link."
+    "expired": "This link has expired. Please ask your therapist for a new link.",
+    "appointment": {
+      "title": "Before {child}'s visit with {provider}",
+      "introChildDev": "You will talk to an AI assistant, not a person. It asks about {child}'s development so {provider} is prepared for the visit. The call takes up to 15 minutes and is recorded and summarised for {provider}.",
+      "introGeneric": "You will talk to an AI assistant, not a person. It asks why you booked this visit for {child} so {provider} is prepared. The call is in English, takes up to 10 minutes and is recorded and summarised for {provider}. The assistant does not give medical advice.",
+      "consent": "I agree to talk to an AI assistant and for this call to be recorded and summarised for my child's provider.",
+      "expired": "This link has expired. The intake call is only available before the appointment starts."
+    },
+    "appointments": {
+      "title": "Appointment intake calls",
+      "intro": "Pre-consult calls the family took before an appointment with your organisation. Parent-reported; check everything at the visit.",
+      "heading": "{service}, {date}",
+      "childDev": "Child Development intake",
+      "generic": "General intake (English)",
+      "notStarted": "Intake: not started",
+      "completed": "Intake: completed",
+      "briefFailed": "The call was received but the brief could not be generated.",
+      "draft": "Draft",
+      "reviewed": "Reviewed"
+    }
   },
   "family": {
     "meta": {
@@ -1196,7 +1215,8 @@
     "assessments": "Assessments",
     "goals": "Goals",
     "messages": "Messages",
-    "homeProgram": "Home program"
+    "homeProgram": "Home program",
+    "prescriptions": "Prescriptions"
   },
   "sharing": {
     "scopes": {
@@ -2065,7 +2085,13 @@
       "rescheduled": "Your appointment was moved.",
       "back": "Back to appointments",
       "cancelledDone": "The appointment was cancelled.",
-      "demo": "Demo booking"
+      "demo": "Demo booking",
+      "intake": {
+        "link": "Before the visit: take the short AI intake call",
+        "consent": "Allow the AI intake call in your DoctorNearMe app to prepare for this visit.",
+        "allow": "Open permissions",
+        "done": "Intake call done. Thank you!"
+      }
     },
     "schedule": {
       "nav": "Schedule",
@@ -2150,7 +2176,12 @@
         "cancel": "Cancel",
         "cancelQuestion": "Cancel this appointment? The family is told.",
         "warning": "Outside your hours now (blocked or changed). Contact the family or cancel.",
-        "notStarted": "You can mark this after the appointment starts."
+        "notStarted": "You can mark this after the appointment starts.",
+        "intake": {
+          "not_started": "Intake: not started",
+          "completed": "Intake: completed",
+          "openBrief": "Open brief"
+        }
       },
       "organisation": "Organisation"
     },
@@ -2657,6 +2688,144 @@
         "already_paid": "This appointment is already paid.",
         "generic": "Something went wrong. Please try again."
       }
+    }
+  },
+  "voiceBooking": {
+    "button": "Book by voice",
+    "title": "Book by voice",
+    "intro": "Tell our assistant what you need, for example a Telugu-speaking speech therapist near Kukatpally on Saturday morning.",
+    "disclosure": "You will talk to an AI assistant in English. It will not ask for your child's name.",
+    "privacy": "Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe. The assistant can only hold a time for 10 minutes; you sign in and confirm on screen.",
+    "start": "Start",
+    "cancel": "Cancel",
+    "starting": "Starting...",
+    "demo": "Demo mode: a scripted conversation, no live voice call.",
+    "connecting": "Connecting...",
+    "listening": "Listening...",
+    "speaking": "Speaking...",
+    "end": "End call",
+    "ended": "The call has ended.",
+    "again": "Start again",
+    "captions": "Live captions",
+    "speakerAi": "Assistant",
+    "speakerYou": "You",
+    "holdTitle": "Time held for you",
+    "holdCard": "{provider} - {time} - held for 10 minutes",
+    "timeLeft": "Time left: {time}",
+    "holdExpired": "This hold has expired. Start again or pick a time below.",
+    "confirm": "Sign in and confirm",
+    "confirmNote": "Not booked yet. Sign in, choose your child and tap Confirm to book.",
+    "payNote": "After you confirm, you pay {fee} online to complete the booking.",
+    "errors": {
+      "busy": "Too many voice bookings were started from this connection. Please try again in an hour.",
+      "unavailable": "Voice booking is not available right now. Please use the search below.",
+      "connect": "The call could not connect. Please use the search below."
+    }
+  },
+  "rx": {
+    "title": "Prescriptions",
+    "intro": "Only verified prescribers see this tab. AI drafts are suggestions: review every item before you sign.",
+    "aiLabel": "Suggested by DoctorNearMe - the clinician decides",
+    "new": "New prescription",
+    "creating": "Starting…",
+    "fromDraft": {
+      "title": "AI prescription draft",
+      "intro": "Start a prescription from this draft, then review and edit every medicine before signing.",
+      "start": "Start from this draft",
+      "open": "Open the prescription started from this draft",
+      "none": "The draft has no medicines."
+    },
+    "list": {
+      "heading": "All prescriptions",
+      "empty": "No prescriptions yet.",
+      "items_one": "{count} medicine",
+      "items_other": "{count} medicines",
+      "signedOn": "Signed {date} by {name}",
+      "startedOn": "Started {date} by {name}",
+      "fromAi": "From an AI draft",
+      "open": "Open"
+    },
+    "status": {
+      "draft": "Draft",
+      "signed": "Signed",
+      "void": "Cancelled"
+    },
+    "editor": {
+      "heading": "Draft prescription",
+      "signedHeading": "Signed prescription",
+      "medicines": "Medicines",
+      "medicine": "Medicine {n}",
+      "drug": "Medicine (generic name)",
+      "strength": "Strength",
+      "form": "Form",
+      "dose": "Dose",
+      "frequency": "How often",
+      "duration": "Days",
+      "route": "Route",
+      "instructions": "Instructions (optional)",
+      "add": "Add medicine",
+      "remove": "Remove medicine {n}",
+      "maxItems": "A prescription can have at most 15 medicines.",
+      "advice": "Advice",
+      "followUp": "Follow-up",
+      "save": "Save draft",
+      "saving": "Saving…",
+      "saved": "Draft saved",
+      "unsaved": "Unsaved changes",
+      "sign": "Sign and generate PDF",
+      "readOnly": "Signed prescriptions cannot be changed. Void it and write a new one if something is wrong.",
+      "allergyMatch": "Matches a recorded allergy: {substance}"
+    },
+    "forms": {
+      "tablet": "Tablet",
+      "syrup": "Syrup",
+      "drops": "Drops",
+      "capsule": "Capsule",
+      "other": "Other"
+    },
+    "allergies": {
+      "listed": "Allergies recorded by the family: {list}",
+      "none": "The family recorded no known allergies.",
+      "unknown": "Allergies are not recorded. Ask the family before prescribing: the prescription will say the allergy status is unknown.",
+      "medicines": "Current medicines (from the family): {list}"
+    },
+    "confirm": {
+      "title": "Sign this prescription?",
+      "text": "I have reviewed every item and take responsibility for this prescription.",
+      "matches": "These medicines match a recorded allergy: {list}",
+      "overrideLabel": "Reason to prescribe despite the allergy",
+      "sign": "Sign",
+      "signing": "Signing…",
+      "cancel": "Cancel"
+    },
+    "signed": {
+      "by": "Signed by {name} on {date}",
+      "download": "Download PDF",
+      "hash": "Content hash (SHA-256): {hash}",
+      "void": "Void",
+      "voidTitle": "Void this prescription?",
+      "voidIntro": "The family will see it as cancelled by the prescriber. This cannot be undone.",
+      "voidReason": "Reason",
+      "voidConfirm": "Void prescription",
+      "voiding": "Voiding…",
+      "voided": "Cancelled on {date}. Reason: {reason}"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "reasonRequired": "Give a reason.",
+      "confirmRequired": "Tick the box to confirm."
+    },
+    "family": {
+      "link": "Prescriptions",
+      "back": "Back to {name}",
+      "title": "{name}'s prescriptions",
+      "intro": "Prescriptions your child's doctors signed and shared with you.",
+      "empty": "No prescriptions have been shared with you yet.",
+      "from": "From {org}",
+      "signedBy": "Signed by {name} on {date}",
+      "cancelled": "Cancelled by prescriber",
+      "cancelledNote": "Do not use this prescription. Contact your child's doctor if you have questions.",
+      "download": "Download PDF"
     }
   }
 }

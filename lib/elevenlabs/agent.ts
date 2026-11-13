@@ -33,6 +33,7 @@ const PUBLIC_FALLBACK_STATUSES = new Set([401, 403, 404]);
 
 // Server only. Returns a conversation token when possible, otherwise the agent ID for a public start.
 // Throws when no agent is configured, or on other provider failures (network, 5xx).
+// 035: `agentId` selects another agent (the generic pre-consult intake agent); default the Child Development one.
 export async function startAgentSession(agentId: string = env.ELEVENLABS_AGENT_ID): Promise<AgentStart> {
   if (!process.env.ELEVENLABS_API_KEY) return { agent_id: agentId, conversation_token: null };
   try {

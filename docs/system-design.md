@@ -144,6 +144,13 @@ flowchart LR
   (`home_program_publications`); guardians (`/family/children/[id]/home-program`, `Done today`), the
   `home_program` share scope and 040 (`getGuardianHomePrograms`) see only the published snapshot. Adherence weeks
   start Monday in the guardian's time zone. See `docs/home-program.md`.
+- **E-prescriptions (ticket 039).** Verified prescribers (028 `provider_can_prescribe`, re-checked at signing in the
+  route, the signing transaction and a database trigger) sign prescriptions started blank or from a 038 `rx_draft`
+  (`prescriptions`, `prescription_versions`). A signed version is immutable, stores child / allergy (021; "not
+  recorded" = unknown) / prescriber snapshots, `content_md` + sha256 and a deterministic `pdf-lib` PDF in the private
+  `prescriptions` bucket, is published to the guardian (`publishVersion`, `prescription`), strictly audited
+  (`rx.signed`, `rx.voided`) and notified (`prescription.signed` / `.voided`, in-app + email). Case tab
+  `Prescriptions` (prescribers only) and `/family/children/[id]/prescriptions`. See `docs/prescriptions.md`.
 - **Real patient data** still waits for the privacy/audit baseline (041) and legal review of the consent
   texts.
 - Parent intake and specialist pages remain accessible only with an unguessable token. The matching
@@ -176,6 +183,16 @@ flowchart LR
   `/api/cron/outbox`, `CRON_SECRET`) plus an immediate `after()` drain (`drainSoon`); locally
   `npm run outbox:run`. Bell + `/notifications`, preferences in settings, `/admin/notifications`.
   See `docs/notifications.md`.
+- **Appointment -> case -> pre-consult intake (ticket 035).** A confirmed appointment (030) gets its org's case for
+  the child (newest existing, else a new one) with the provider on the care team, through the outbox consumer
+  `appointment.link_case` that runs while `appointment.confirmed` is fanned out (`lib/notify/consumers.ts`; consumers
+  do idempotent domain work inside the fan-out transaction and may add ids to the payload). Services with an intake
+  kind get one appointment-bound intake attempt (`intake_attempts`: token = HMAC of the attempt id, only its hash
+  stored, expires at the appointment start, revoked on cancel / consent withdrawal, moved on reschedule); the
+  confirmation carries `<APP_URL>/intake/a/<token>` or the consent hint. Child Development services use the existing
+  en/hi/te agent and 010's brief; other services an English-only generic agent and a `generic_intake_brief` checked
+  against the health profile. Calls are matched by `intake_attempt_id` (never a case id), processed idempotently by
+  conversation id and stored with `appointment_id`. See `docs/booking.md` and `docs/elevenlabs-generic-intake-agent.md`.
 - **Secure messaging (ticket 027).** Case-scoped threads between a child's guardians and the care team of
   one organisation (`message_threads`, `messages`, `thread_reads`). Access is one SQL rule
   (`thread_access_level`: linked guardian, or 022 case access) used by the routes and by RLS
@@ -239,7 +256,8 @@ scripts/  env-from-supabase.mjs db-check.ts sql.ts dev/*.mjs (001)
 demo/fixtures/ ...  demo/audio/sample-short.wav                                  (002)
 tests/    *.test.ts (Vitest)
 docs/     system-design.md  elevenlabs-agent.md  i18n.md  guardian-auth.md  consent.md  sharing.md  health-profile.md
-          documents.md  assessments.md  notifications.md  iep.md  home-program.md  messaging.md  pilot-seeding.md
+          documents.md  assessments.md  notifications.md  iep.md  home-program.md  messaging.md  prescriptions.md
+          pilot-seeding.md
 scripts/  seed-hyderabad.ts import-providers.ts data/{hyderabad-localities,demo-names}.json (042)
 ```
 
@@ -265,6 +283,7 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `ELEVENLABS_API_KEY` | Scribe, conversation token, TTS | |
 | `ELEVENLABS_AGENT_ID` | intake page | agent configured per `docs/elevenlabs-agent.md` |
 | `ELEVENLABS_SCREEN_AGENT_ID` | `/screen` voice check-in (033) | optional; English-only public agent per `docs/elevenlabs-screen-agent.md`; unset (and not `DEMO_MODE`) -> the page offers only the tap-through form |
+| `ELEVENLABS_BOOKING_AGENT_ID` / `ELEVENLABS_TOOL_SECRET` | `/find` voice booking (034) | optional; English-only booking agent per `docs/elevenlabs-booking-agent.md` and the shared secret its server tools send as `X-Agent-Secret`; without both (and not `DEMO_MODE`) `/find` has no voice widget and every tool call is 401 |
 | `ELEVENLABS_WEBHOOK_SECRET` | webhook HMAC | only needed when the webhook is used (deployed or tunnel) |
 | `ELEVENLABS_VOICE_ID_EN` / `_HI` / `_TE` | parent voice note | |
 | `GEMINI_API_KEY` | Gemini | |
@@ -588,6 +607,8 @@ The AI scribe (ticket 038, `docs/scribe.md`) generalises the session pipeline to
 published by `finalizeSessionNote` (not by the `reports_publish_final` trigger, which skips both kinds) with the
 clinician's `visible_to_guardian` choice.
 Home programs publish with `entity_type = 'home_program'` (ticket 026, `docs/home-program.md`).
+Prescriptions publish with `entity_type = 'prescription'` when signed, and again (a `Prescription cancelled` notice) when
+voided (ticket 039, `docs/prescriptions.md`).
 
 ## 8. API contracts
 
@@ -626,6 +647,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/family/children/:id/documents`, `GET\|POST /api/cases/:id/documents`, `POST /api/documents/:docId/complete`, `GET\|PATCH\|DELETE /api/documents/:docId`, `GET /api/documents/:docId/download`, `POST\|DELETE .../documents/:docId/shares[/:orgId]` | 023 | see `docs/documents.md` | 201 `{ document_id, signed_upload_url, token, path }`; 413 / 415 / 422; download 302 |
 | `GET\|POST /api/cases/:id/iep-plans`, `GET\|PATCH /api/iep-plans/:planId`, `POST /api/iep-plans/:planId/publish`, `GET\|POST /api/iep-plans/:planId/goals`, `PATCH\|DELETE /api/iep-goals/:goalId`, `GET\|POST /api/iep-goals/:goalId/progress`, `GET /api/family/children/:id/plan` | 025 | plan/goal writes carry the plan `version` | 201/200; 409 stale `This plan was changed by someone else. Reload to see the latest version.`; 400 field errors; 422 no goals / > 20 goals (`docs/iep.md`) |
 | `GET\|POST /api/cases/:id/home-programs`, `GET\|PATCH /api/home-programs/:pid`, `POST /api/home-programs/:pid/activities`, `POST /api/home-programs/:pid/publish`, `PATCH\|DELETE /api/home-activities/:aid`, `GET /api/family/children/:id/home-program`, `POST /api/family/home-activities/:aid/logs`, `DELETE /api/family/home-activity-logs/:id` | 026 | program PATCH / publish carry the program `version` | 201/200; 409 stale; 422 `Choose a goal from this child's plan` / > 15 active activities; guardian logs 201 new / 200 same day again, 400 future or > 14 days ago (`docs/home-program.md`) |
+| `GET\|POST /api/cases/:id/prescriptions`, `GET\|PATCH /api/prescriptions/:id`, `POST /api/prescriptions/:id/sign`, `POST /api/prescriptions/:id/void`, `GET /api/prescriptions/:id/pdf`, `GET /api/family/children/:id/prescriptions`, `GET /api/family/prescriptions/:id/pdf` | 039 | PATCH carries the prescription `version`; sign `{ confirm: true, allergy_override_reason? }` | 201/200; 403 `Only verified prescribers can write prescriptions`; 409 stale / signed; 422 incomplete or allergy match (`details.matches`); 503 strict audit (`docs/prescriptions.md`) |
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
@@ -638,6 +660,9 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `GET\|POST /api/cron/retention` (daily), `GET\|POST /api/cron/privacy` (every 5 min) | 041 | `Authorization: Bearer <CRON_SECRET>` | 200 `{ counts }` / `{ exports, deletions }`; 401 |
 | `GET /api/health` | 041 | public | 200 `{ ok: true, db: "ok", version }`; 503 `{ ok: false, db: "unreachable" }` |
 | `POST /api/screen/sessions`, `GET /api/screen/sessions/:id`, `POST /api/screen/sessions/:id/answers\|red-flag\|finish` | 033 | public; `{ age_band, mode }`, `{ answers: [{ item_id, answer }] }`, `{ code }`, finish `{ conversation_id? }` | 201 `{ session_id, questions, conversation_token?, dynamic_variables? }` or `{ demo: true }`; answers 200 `{ missing, stop }`; red-flag 200 `{ stop: true }`; finish 200 `{ result_band, domains, red_flag, message }`; 404 / 409 stopped or finished / 410 expired (2 h) / 422 incomplete / 429 5 per IP per hour (section 13a) |
+| `POST\|GET\|DELETE /api/agents/booking/session` | 034 | public; POST 5 per IP per hour; GET/DELETE bound to the `dnm_booking_session` cookie | 201 `{ booking_session, conversation_token, agent_id?, demo?, dynamic_variables: { booking_session, today } }`; GET 200 `{ active, expires_at, hold }`; DELETE 200 `{ ended: true }`; 404 no session; 429; 503 not configured (section 13b) |
+| `POST /api/agents/booking/tools/{search_providers\|get_slots\|hold_slot}` | 034 | `X-Agent-Secret` + `{ booking_session, ... }` (strict) | 200 tool result; 401 secret / session; 400 unknown keys; 429 after 20 calls per session; 404 unknown provider/service (`docs/elevenlabs-booking-agent.md`) |
+| `POST /api/agents/booking/demo/:tool` | 034 | DEMO_MODE only (else 404); cookie-bound | same handlers as the tools |
 | `POST /api/family/screen-results` | 033 | `{ session_id, child_id }` | 201 (200 again) `{ saved: true }`; 401; 404 not your child; 422 `screen_result_save` consent; 409 unfinished / red flag / other child; 410 expired |
 | `POST /api/reports/:id/parent-voice-note` | 015 | - | 200 `{ report, emailed, email_status }` (`email_status`: `sent` \| `demo` \| `no_email` \| `failed`) |
 
@@ -742,6 +767,10 @@ confidence capped at 0.5. `start_sec`/`end_sec` come from the segment.
   id (default: the intake agent). Dynamic variables `{ screen_session_id, age_band, questions }` only; answers come
   back through the client tools `record_answer({ item_id, answer })` / `record_red_flag({ code })`
   (`lib/screen/client.ts`); no webhook, no data collection.
+- **Voice booking agent** (034): a third, English-only private agent (`ELEVENLABS_BOOKING_AGENT_ID`,
+  `docs/elevenlabs-booking-agent.md`) with **server (webhook) tools** `search_providers`, `get_slots`, `hold_slot`
+  authenticated by `X-Agent-Secret` (`ELEVENLABS_TOOL_SECRET`) plus the per-conversation `{{booking_session}}`, and a
+  client tool `record_red_flag`. No webhook, no data collection. Section 13b.
 
 ## 12. Flows
 
@@ -803,6 +832,8 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
 - Messaging (027): RLS select policies are the browser's path to `message_threads` / `messages` /
   `thread_reads` (also for Realtime); message text is never logged, audited or put in notifications
   (`docs/messaging.md`).
+- Prescriptions (039): PDFs in a private bucket, streamed only after the access check (no signed URLs); signed
+  versions immutable in the database; prescribing rights derived server-side on every request (`docs/prescriptions.md`).
 - Consent: intake page requires a consent checkbox before Start. Since 020 every gated step also needs the
   guardian's recorded consent for that feature (server-side; a client `parent_consent` flag is ignored);
   see `docs/consent.md`.
@@ -843,6 +874,43 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   conversation); retention step `unsaved_screen_sessions` deletes unsaved rows after 30 days. `/screen` gets the
   strict family CSP (nonce, no analytics) plus the ElevenLabs API/LiveKit `connect-src` (`lib/csp.ts`,
   `lib/privacy/third-party-allowlist.ts`).
+
+## 13b. Voice booking agent on /find (ticket 034)
+
+- `/find` shows `Book by voice` (`components/voice/BookingWidget.tsx`) when `DEMO_MODE` is on or both
+  `ELEVENLABS_BOOKING_AGENT_ID` and `ELEVENLABS_TOOL_SECRET` are set; otherwise the page is unchanged. Disclosure `You
+  will talk to an AI assistant in English. It will not ask for your child's name.` -> `Start` -> live captions -> hold
+  card `<provider> - <date time> - held for 10 minutes` with a countdown and `Sign in and confirm`
+  (`/book/<profileId>?appointment=<id>`; 030's page accepts `appointment` as an alias of `hold`).
+- **Sessions** (`lib/agents/booking/session.ts`, migration `20261113003400_booking_agent.sql`, table
+  `booking_agent_sessions`): `POST /api/agents/booking/session` creates a random 32-byte `booking_session` (only its
+  SHA-256 is stored; valid 30 minutes; 20 tool calls, counted atomically in SQL) and sets it as the httpOnly
+  `dnm_booking_session` cookie (path `/api/agents/booking`). **Hold ownership** is the browser's 030 anonymous booking
+  session (`dnm_booking` cookie, `hashBookingSession`), stored as `owner_session_hash`; the agent token is never an
+  ownership credential, so the agent (or anyone who sees its variables) cannot attach a hold. One hold per session: the
+  SQL releases the owner's older hold.
+- **Tool calls** (`lib/agents/booking/handler.ts`): `X-Agent-Secret` (constant-time) -> per-IP burst limit -> JSON
+  object -> session charged (401 unknown/expired/ended, 429 over 20) -> strict schema (`lib/agents/booking/schemas.ts`,
+  unknown keys such as `child_name` -> 400) -> tool (`lib/agents/booking/tools.ts`). `search_providers` geocodes the
+  text server-side (029 `getGeocoder()`), searches 10 km then 25 km and keeps providers with an active service (max 5);
+  `get_slots` merges the provider's active services of that mode (030 `getSlots`, 7 days, part of day in the clinic's
+  zone, max 6); `hold_slot` runs `checkHoldPreconditions` (037/042 hooks) and `booking_hold` with the owner session in
+  one transaction with the strict audit row `booking_agent.hold_created` (actor `ai`, details `{ session_hash }` only).
+  There is no confirm tool: `POST /api/appointments/:id/confirm` still needs a signed-in guardian and the holding
+  browser's cookie (D-2). Online-payment services (031): `get_slots` / `hold_slot` / the widget card carry
+  `payment_mode` + `fee_inr`; after sign-in the guardian's confirm moves the hold to `pending_payment` and the 030 page
+  continues to `/book/<profileId>/pay/<appointmentId>` (031). Video services (037) need a signed-in guardian with a
+  linked Google identity, which an agent hold (anonymous) never has: `hold_slot` answers 200 `{ held: false, reason:
+  "google_account_required", booking_url, message }` and the agent offers in-clinic times or sends the parent to the
+  booking page. Logs carry tool, status and duration only; payloads and transcripts are never stored.
+- **Safety:** the agent prompt reuses 033's red-flag rule and fixed 108/112 message; its `record_red_flag` client tool
+  makes the widget show 033's `UrgentNotice` only and `DELETE` the session (later tool calls 401).
+- **DEMO_MODE:** the widget runs `lib/agents/booking/demo-script.ts` (scripted English conversation) against
+  `POST /api/agents/booking/demo/:tool`, which authenticates with the cookie instead of the secret and calls the same
+  handlers; 404 outside DEMO_MODE.
+- `/find` has no nonce CSP (029 loads Google Maps); the ElevenLabs endpoints are declared for `/find` in `lib/csp.ts`
+  and `lib/privacy/third-party-allowlist.ts` (approved) for when it gets one. Expired sessions are purged 1 day after
+  expiry when new sessions start; the table holds hashes and counters only (not a privacy-registry category).
 
 ## 14. Human setup checklist (not tickets)
 
