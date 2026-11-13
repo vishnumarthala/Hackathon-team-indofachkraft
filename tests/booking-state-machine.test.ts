@@ -107,6 +107,7 @@ describe.skipIf(!enabled)("booking state machine (database, route handlers)", { 
     atClinic45Video = await world.service(providerA, { mode: "video", duration: 45, payment: "at_clinic", fee: 800 });
     online30 = await world.service(providerA, { duration: 30, payment: "online", fee: 600 });
     guardianA = await world.guardian("ga");
+    await world.linkGoogle(guardianA.user); // 037 FR-5a: video bookings need a linked Google account
     guardianB = await world.guardian("gb");
     routes = {
       slots: await import("@/app/api/public/providers/[profileId]/slots/route"),

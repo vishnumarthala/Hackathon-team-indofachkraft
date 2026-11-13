@@ -12,7 +12,8 @@ export class TokenRequestError extends Error {
   }
 }
 
-// Server only: issues a short-lived WebRTC conversation token for the private intake agent (035: or another agent).
+// Server only: issues a short-lived WebRTC conversation token for a private agent (default: the intake agent;
+// 033 passes ELEVENLABS_SCREEN_AGENT_ID).
 export async function getConversationToken(agentId: string = env.ELEVENLABS_AGENT_ID): Promise<string> {
   const url = `${CONVERSATION_TOKEN_URL}?agent_id=${encodeURIComponent(agentId)}`;
   const res = await fetch(url, { method: "GET", headers: { "xi-api-key": env.ELEVENLABS_API_KEY } });

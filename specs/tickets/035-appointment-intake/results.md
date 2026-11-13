@@ -75,3 +75,26 @@ test users), synthetic clinics, children and providers only. Evidence: `evidence
 - Parallel tickets: 031 (payments) needs nothing extra - `booking_enqueue_confirmed` emits `appointment.confirmed` and
   the consumer links the case. 039 should extend (not restate) `reports_kind_check`. 037 can add the Meet link to
   the same consumer pattern.
+
+## Merge of main (031 Razorpay test mode, 033 voice screen, 037 Google Meet)
+
+`git merge main`; conflicts resolved keeping both sides: `lib/notify/worker.ts` (037's job topics run first, then
+035's consumers, then the notification fan-out), `lib/notify/topics.ts` / `templates/index.ts` /
+`tests/notify-templates.test.ts` (intake link + Meet + reconnect + refund topics), `lib/privacy/registry.ts`
+(`intake_attempts` + `payments`), `lib/elevenlabs/agent.ts` (033's comment, same `agentId` parameter),
+`app/dashboard/schedule/page.tsx` and `app/family/(portal)/appointments/page.tsx` (intake status / link next to the
+Meet panel and payment labels), docs (`booking.md`, `notifications.md` consumers + job topics sections,
+`privacy/retention.md`); `messages/REVIEW.md` regenerated (2238 rows). After `$H 5 <worktree> reset` (28 migrations):
+
+| Check | Result | Evidence |
+|-------|--------|----------|
+| `npm run lint`, `npm run typecheck`, `npm run build` | PASS | exit 0 |
+| `npx vitest run` | PASS | **82 files, 1328 passed, 11 skipped** (same pre-existing opt-in skips; every DB suite ran) |
+| `tests/appointment-intake.test.ts` | PASS | 15 tests (`evidence/appointment-intake-tests-verbose.txt`), 2 new: |
+| Paid booking (031) | PASS | online child_dev service -> `pending_payment`, no confirmation and no attempt yet; payment order + `payment_apply_captured` (the path shared by `/api/payments/verify` and the Razorpay webhook) -> `confirmed` -> `appointment.confirmed` consumer links the case and issues the attempt; guardian confirmation carries the link |
+| Video confirmation (037) | PASS | video generic service, guardian with a linked Google identity -> `meet.create` job queued (`meet:<id>:create`, pending) **and** the confirmation's consumer issues the intake attempt (`payload.intake.status = link`); enriching the payload does not queue a second Meet job (037's trigger is insert-only) |
+
+Merge fix: `next build` failed with TS2589 ("type instantiation is excessively deep") in
+`lib/i18n/translate.ts` once the merged catalogue reached ~2200 keys (plain `tsc --noEmit` passed).
+`createTranslator` now types its inner function loosely and casts once to `TFunction<N>` (no behaviour change; the
+i18n suites pass).

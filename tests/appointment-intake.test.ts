@@ -210,6 +210,8 @@ describe.skipIf(!enabled)("appointment intake (database, route handlers, outbox)
     vi.stubEnv("ELEVENLABS_AGENT_ID", CHILD_DEV_AGENT);
     vi.stubEnv("ELEVENLABS_GENERIC_INTAKE_AGENT_ID", GENERIC_AGENT);
     vi.stubEnv("DEMO_FIXTURES_DIR", "demo/fixtures");
+    vi.stubEnv("RAZORPAY_KEY_ID", "");
+    vi.stubEnv("RAZORPAY_KEY_SECRET", "t035_key_secret_synthetic");
     sql = postgres(process.env.DATABASE_URL as string, { max: 4, prepare: false, onnotice: () => {} });
     const db = (await import("@/lib/db")).supabaseAdmin();
     world = bookingWorld(sql, db, "t035i");
@@ -524,6 +526,51 @@ describe.skipIf(!enabled)("appointment intake (database, route handlers, outbox)
     expect((await attempts(other))[0].status).toBe("issued");
     // Via the webhook the call can only ever attach to the attempt it names (X): a replay is a duplicate of X.
     expect((await webhook(callX)).json).toEqual({ received: true, duplicate: true });
+  });
+
+  it("031: a paid booking links the case and issues the intake link once the payment is captured", async () => {
+    const online = await world.service(providerA, { duration: 30, payment: "online", fee: 500, name: "Paid development consult (synthetic)" });
+    await sql`update services set intake_kind = 'child_dev' where id = ${online}`;
+    as(guardian);
+    const h = await call(routes.hold.POST, post("http://localhost/api/appointments/hold", { service_id: online, start: nextStart().toISOString(), idempotency_key: key() }));
+    expect(h.status, JSON.stringify(h.json)).toBe(201);
+    const id = h.json.appointment_id as string;
+    appointmentIds.push(id);
+    const c = await call(routes.confirm.POST, post(`http://localhost/api/appointments/${id}/confirm`, { child_id: consented }), { id });
+    expect((c.json.appointment as Json).status).toBe("pending_payment");
+    expect(await eventsOf(id, "appointment.confirmed")).toEqual([]);
+    expect(await attempts(id)).toEqual([]);
+    const { POST: orderPOST } = await import("@/app/api/appointments/[id]/payment-order/route");
+    const o = await call(orderPOST, post(`http://localhost/api/appointments/${id}/payment-order`), { id });
+    expect(o.status, JSON.stringify(o.json)).toBe(200);
+    // The shared capture path (verify route and Razorpay webhook both call it).
+    const [captured] = await sql<{ r: Json }[]>`select payment_apply_captured(${o.json.order_id as string}, ${`pay_T035${Date.now()}`}) as r`;
+    expect(captured.r.outcome).toBe("confirmed");
+    const event = await drainConfirmation(id);
+    const appt = await appointment(id);
+    expect(appt).toMatchObject({ status: "confirmed" });
+    expect(appt.case_id).toBeTruthy();
+    const [attempt] = await attempts(id);
+    expect(attempt).toMatchObject({ status: "issued", agent_kind: "child_dev", case_id: appt.case_id });
+    expect(event.payload.intake).toEqual({ status: "link", attempt_id: attempt.id, agent_kind: "child_dev" });
+    for (const n of await guardianNotes("appointment.confirmed", id)) expect(n.body).toContain(`/intake/a/${tokenOf(attempt.id)}`);
+  });
+
+  it("037: a video confirmation queues both the Meet job and the intake link", async () => {
+    const video = await world.service(providerA, { mode: "video", duration: 30, payment: "free", name: "Video review (synthetic)" });
+    await sql`update services set intake_kind = 'generic' where id = ${video}`;
+    await world.linkGoogle(guardian);
+    const id = await book(video, consented);
+    const meetJobs = await sql<{ topic: string; status: string }[]>`
+      select topic, status from outbox_events where dedup_key = ${`meet:${id}:create`}`;
+    expect(meetJobs).toEqual([{ topic: "meet.create", status: "pending" }]);
+    const event = await drainConfirmation(id);
+    const [attempt] = await attempts(id);
+    expect(attempt).toMatchObject({ status: "issued", agent_kind: "generic" });
+    expect(event.payload).toMatchObject({ mode: "video", intake: { status: "link", attempt_id: attempt.id, agent_kind: "generic" } });
+    // Enriching the confirmation's payload does not queue a second Meet job.
+    expect(await sql`select 1 from outbox_events where topic = 'meet.create' and payload ->> 'appointment_id' = ${id}`).toHaveLength(1);
+    for (const n of await guardianNotes("appointment.confirmed", id)) expect(n.body).toContain(`/intake/a/${tokenOf(attempt.id)}`);
   });
 
   it("D-4: a new service without intake_kind gets the provider type's default", async () => {

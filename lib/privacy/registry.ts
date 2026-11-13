@@ -17,7 +17,7 @@
 import type { Queryable, Tx } from "@/lib/pg";
 
 export type DataOwner = "child" | "case" | "user";
-export type Processor = "elevenlabs" | "gemini" | "resend" | "whatsapp" | "supabase";
+export type Processor = "elevenlabs" | "gemini" | "resend" | "whatsapp" | "supabase" | "razorpay" | "google";
 export type DeletionScope = "all_ai_processing" | "everything";
 
 export type ExportContext = { sql: Queryable; childId: string; guardianUserId: string };
@@ -229,6 +229,39 @@ export const REGISTRY: PrivacyCategory[] = [
     erase: {
       scopes: EVERYTHING,
       rows: async (tx, ctx) => (await tx`delete from public.iep_plans where child_id = ${ctx.childId}`).count,
+    },
+  },
+  {
+    // 033: public developmental check-ins. Anonymous rows (no child link, no IP, no free text) are deleted after 30
+    // days by the retention job; a check-in the guardian saved to a child (020 consent `screen_result_save`) stays
+    // with the child until erasure. Voice check-ins have an ElevenLabs conversation id (processor copy).
+    key: "screen_results",
+    label: "Developmental check-ins from the public check-in page (033)",
+    owner: "child",
+    tables: ["screen_sessions"],
+    retention: "Check-ins that were not saved to a child are deleted after 30 days; saved check-ins stay with the child until erasure.",
+    processors: ["supabase", "elevenlabs"],
+    // Exactly the portal's `Check-ins` list (date, age band, result band).
+    export: async ({ sql, childId }) => {
+      const rows = await sql`
+        select id, created_at, age_band, mode, result_band from public.screen_sessions
+        where saved_child_id = ${childId} order by created_at`;
+      return { data: rowsJson(rows) };
+    },
+    erase: {
+      scopes: AI_SCOPES,
+      externalRefs: async (sql, ctx) => {
+        const rows = await sql<{ conversation_id: string }[]>`
+          select conversation_id from public.screen_sessions where saved_child_id = ${ctx.childId} and conversation_id is not null`;
+        return rows.map((r) => ({ processor: "elevenlabs", ref: r.conversation_id }));
+      },
+      rows: async (tx, ctx) => {
+        if (ctx.scope === "everything") return (await tx`delete from public.screen_sessions where saved_child_id = ${ctx.childId}`).count;
+        // all_ai_processing: the voice conversation goes (above); the tap/voice answers and the band stay.
+        return (
+          await tx`update public.screen_sessions set conversation_id = null where saved_child_id = ${ctx.childId} and conversation_id is not null`
+        ).count;
+      },
     },
   },
   {
@@ -524,6 +557,28 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 031 NFR-3: online prepayments. Amounts, statuses and Razorpay ids only; never card, UPI, bank or wallet details
+    // (webhook payloads are allowlisted before storage, lib/payments/webhook.ts).
+    key: "payments",
+    label: "Payments for appointments (amount, status, refunds)",
+    owner: "user",
+    tables: ["payments", "payment_events"],
+    retention:
+      "Kept as a financial record (period pending legal review; Indian accounting rules usually require 8 years), also after erasure. Holds no child data and no card or UPI details.",
+    processors: ["supabase", "razorpay"],
+    retainedOnErasure: true,
+    export: async ({ sql, childId, guardianUserId }) => {
+      // Only the requesting guardian's own payments for this child's appointments.
+      const rows = await sql`
+        select p.appointment_id, p.amount_paise, p.currency, p.status, p.refund_reason, p.created_at, p.captured_at, p.refunded_at,
+               p.razorpay_order_id, p.razorpay_payment_id
+        from public.payments p join public.appointments a on a.id = p.appointment_id
+        where a.child_id = ${childId} and a.guardian_user_id = ${guardianUserId}
+        order by p.created_at`;
+      return { data: rowsJson(rows) };
+    },
+  },
+  {
     key: "audit_events",
     label: "Audit log",
     owner: "case",
@@ -550,6 +605,30 @@ export const REGISTRY: PrivacyCategory[] = [
     retention: "Deleted after 24 months.",
     retentionEnv: "RETENTION_PILOT_SIGNUP_MONTHS",
     processors: ["supabase"],
+  },
+  {
+    // 037: Google Meet for video appointments. The provider's Google grant (refresh token, AES-256-GCM encrypted, never
+    // sent to a browser) and the Meet link / calendar event id on each video appointment. The calendar event holds
+    // the time, `DoctorNearMe video consultation` and an app link only: no child data, no guardian email (D-5).
+    key: "google_meet",
+    label: "Video calls: providers' Google Calendar connections and Google Meet links",
+    owner: "user",
+    tables: ["provider_google_connections", "appointments.meet_url", "appointments.google_event_id", "appointments.meet_status", "outbox_job_attempts"],
+    retention:
+      "A provider's Google connection is kept until they disconnect it (the token is then revoked at Google and deleted). Meet links stay with the appointment record; a cancelled video appointment's calendar event is deleted from the provider's calendar.",
+    processors: ["supabase", "google"],
+    export: async ({ sql, childId, guardianUserId }) => {
+      // The links the guardian can already see on /family/appointments.
+      const rows = await sql`
+        select id as appointment_id, meet_status, meet_url
+        from public.appointments
+        where child_id = ${childId} and guardian_user_id = ${guardianUserId} and service_snapshot ->> 'mode' = 'video'
+          and status not in ('held', 'expired')
+        order by lower(slot)`;
+      return { data: rowsJson(rows) };
+    },
+    // Erasure: the `appointments` category cancels the child's future appointments; their `appointment.cancelled`
+    // events enqueue `meet.delete`, which removes the calendar events. Links and event ids carry no child data.
   },
 ];
 

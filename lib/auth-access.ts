@@ -18,8 +18,12 @@ export function isPublicApiPath(pathname: string): boolean {
     /^\/api\/public\/providers\/[^/]+\/slots$/.test(pathname) ||
     pathname === "/api/appointments/hold" ||
     pathname === "/api/webhooks/elevenlabs" ||
+    // 031: Razorpay webhooks authenticate with X-Razorpay-Signature inside the handler.
+    pathname === "/api/webhooks/razorpay" ||
     // 041 FR-12: public health check (no data).
     pathname === "/api/health" ||
+    // 033: the public developmental check-in (anonymous sessions; the save route is under /api/family).
+    pathname.startsWith("/api/screen/") ||
     pathname === "/api/auth/phone/send" ||
     pathname === "/api/auth/phone/verify" ||
     /^\/api\/cases\/[^/]+\/ask$/.test(pathname) ||
@@ -101,7 +105,8 @@ export function postSignInPath(role: AppRole, next: string | null | undefined): 
   if (!safe) return homeForRole(role);
   const path = safe.split(/[?#]/)[0];
   if (isProviderOnboardingPath(path)) return safe;
-  if (role === "guardian") return isFamilyPortalPath(path) || isBookingPath(path) ? safe : homeForRole(role);
+  // 033: a guardian who signs in to save a check-in result comes back to `/screen`.
+  if (role === "guardian") return isFamilyPortalPath(path) || isBookingPath(path) || underPrefix(path, "/screen") ? safe : homeForRole(role);
   return isFamilyPath(path) ? homeForRole(role) : safe;
 }
 

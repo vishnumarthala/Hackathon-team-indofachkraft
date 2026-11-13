@@ -2,15 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CancelAppointmentButton, CompleteButtons } from "@/components/booking/AppointmentActions";
 import { HoursEditor, OverridesEditor, ServicesEditor } from "@/components/booking/ScheduleEditors";
+import { MeetPanel } from "@/components/google/MeetPanel";
 import { requireProviderPage } from "@/lib/authz";
 import { hasStarted } from "@/lib/booking/display";
 import { getProviderContext, listAgenda, listOverrides, listRules, listServices } from "@/lib/booking/store";
 import { addDays, isValidDate, todayIn, wallToUtc, weekdayOf } from "@/lib/booking/time";
+import { getMeetInfo } from "@/lib/google/meet";
 import { ageLabel } from "@/lib/children/age";
 import { agendaIntakeStatus } from "@/lib/intake/attempts";
 import { defaultIntakeKind } from "@/lib/booking/intake-defaults";
 import { createFormatter } from "@/lib/i18n/format";
 import { getLocale, getT } from "@/lib/i18n/server";
+import { PAYMENT_LABEL_STYLE, paymentLabel } from "@/lib/payments/display";
+import { listPaymentsForAppointments } from "@/lib/payments/store";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +63,11 @@ export default async function SchedulePage({ searchParams }: Props) {
   ]);
   // 035 FR-6: intake status per appointment, linking to the brief in the case.
   const intakes = await agendaIntakeStatus(agenda.map((a) => a.id));
+  // 037: Meet link state of the video appointments on the agenda (Join video call / Add a video link).
+  const meet = await getMeetInfo(agenda.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
+  // 031 FR-8: `Paid online` / `Pay at clinic` on the agenda.
+  const tpay = await getT("payments");
+  const payments = await listPaymentsForAppointments(agenda.map((a) => a.id));
   const days = Array.from({ length: span }, (_, i) => addDays(first, i));
   const dayOf = (iso: string) => todayIn(tz, new Date(iso));
   const nav = (date: string, v = view) => `/dashboard/schedule?view=${v}&date=${date}`;
@@ -111,7 +120,17 @@ export default async function SchedulePage({ searchParams }: Props) {
                               {a.child_name ? t("schedule.agenda.child", { child: a.child_name, age: ageLabel(tc, a.child_date_of_birth) }) : t("schedule.agenda.noChild")}
                             </p>
                           </div>
-                          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">{t(`status.${a.status}`)}</span>
+                          <div className="flex flex-wrap gap-1">
+                            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">{t(`status.${a.status}`)}</span>
+                            {(() => {
+                              const pay = paymentLabel(a, payments.get(a.id), "provider");
+                              return pay ? (
+                                <span data-testid="payment-label" className={`rounded-full px-3 py-1 text-xs font-semibold ${PAYMENT_LABEL_STYLE[pay]}`}>
+                                  {tpay(`labels.${pay}`)}
+                                </span>
+                              ) : null;
+                            })()}
+                          </div>
                         </div>
                         {intakes.get(a.id) ? (
                           <p className="flex flex-wrap items-center gap-2 text-slate-800" data-testid="agenda-intake">
@@ -127,6 +146,7 @@ export default async function SchedulePage({ searchParams }: Props) {
                         {a.outside_availability ? (
                           <p role="note" className="rounded bg-amber-50 p-2 text-amber-900">{t("schedule.agenda.warning")}</p>
                         ) : null}
+                        {a.service_snapshot.mode === "video" ? <MeetPanel appointment={a} meet={meet.get(a.id)} side="provider" /> : null}
                         {a.status === "confirmed" ? (
                           <div className="flex flex-wrap items-center gap-2">
                             <CompleteButtons appointmentId={a.id} started={hasStarted(a.starts_at)} />

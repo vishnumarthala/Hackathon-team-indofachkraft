@@ -263,7 +263,10 @@ export async function listGuardianAppointments(userId: string): Promise<Appointm
   const sql = await pg();
   const rows = await sql`
     ${APPOINTMENT_SELECT(sql)}
-    where a.guardian_user_id = ${userId} and a.status not in ('held', 'expired')
+    where a.guardian_user_id = ${userId}
+      and (a.status not in ('held', 'expired')
+           -- 031: an expired booking whose late payment is being refunded stays visible (payment status).
+           or exists (select 1 from public.payments p where p.appointment_id = a.id and p.status in ('captured', 'refund_pending', 'refunded')))
     order by lower(a.slot) desc
     limit 200`;
   return rows.map(toView);

@@ -23,6 +23,8 @@ async function main() {
 
   const { pg } = await import("../lib/pg");
   const { runOutbox } = await import("../lib/notify/worker");
+  // 031: the payment refund job runs in the same local loop (Vercel: /api/cron/payments).
+  const { runPaymentJobs } = await import("../lib/payments/jobs");
   type Senders = NonNullable<Parameters<typeof runOutbox>[0]>["senders"];
 
   const senders: Senders = mockLog
@@ -48,7 +50,8 @@ async function main() {
   try {
     for (;;) {
       const result = await runOutbox({ sql, senders, timeBudgetMs: 5_000 });
-      console.log(JSON.stringify({ at: new Date().toISOString(), pid: process.pid, ...result }));
+      const payments = await runPaymentJobs({ sql });
+      console.log(JSON.stringify({ at: new Date().toISOString(), pid: process.pid, ...result, payments }));
       if (once || stop || Date.now() - started + intervalMs > durationMs) break;
       await sleep(intervalMs);
       if (stop) break;

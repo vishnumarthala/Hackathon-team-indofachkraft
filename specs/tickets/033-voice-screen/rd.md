@@ -1,6 +1,6 @@
 # 033: Voice developmental check-in (public screen)
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 020, 024, 029, 041: saving a result to a child needs consent (020); results point to nearby providers (029); the ISAA-derived parent question set lives in the instrument registry (024); real child data needs the privacy/audit baseline (041)
 

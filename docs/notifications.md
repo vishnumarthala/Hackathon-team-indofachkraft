@@ -137,9 +137,13 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `privacy.deletion_requested` (041) | platform admins | in-app, email | `privacy_deletion_requested` |
 | `appointment.confirmed` / `.reminder_day_before` / `.reminder_two_hours` / `.cancelled` / `.rescheduled` (030, enqueued by the booking SQL functions; dedup `appt:<id>:confirmed` / `:r24` / `:r2` / `:cancelled` / `:rescheduled`, cancelled with `outbox_cancel('appt:<id>:')`) | the booking guardian + the provider bound to the profile (reminders: guardian only), while the appointment is still in the matching status | in-app, email, WhatsApp | `appointment_*` (email `.ics` REQUEST / CANCEL; provider name, time in the clinic's zone, mode, place - never the child; see `docs/booking.md`) |
 | `appointment.intake_link` (035, enqueued by the `consent.granted` consumer when a guardian allows the AI intake call after booking; aggregate = the intake attempt, dedup `appt:<id>:intake_link:<attempt>`; payload = 030's appointment values + `intake_attempt_id`) | the booking guardian, while the appointment is confirmed and the attempt still active | in-app, email, WhatsApp | `appointment_intake_link` (in-app/email carry `<APP_URL>/intake/a/<token>`, re-derived from the attempt id; WhatsApp {{1}} = `/family/appointments`) |
+| `appointment.meet_ready` (037, enqueued by the `meet.create` job or a manual link; dedup `appt:<id>:meet_ready`) | booking guardian + profile provider while the appointment is confirmed and has a link | in-app, email, WhatsApp | `appointment_meet_ready` (app page only, never the Meet URL) |
+| `appointment.meet_failed` (037, final `meet.create` failure) | profile provider while still `failed` | in-app, email | `appointment_meet_failed` (`Add a video link`) |
+| `google_calendar.reconnect_required` (037, `invalid_grant` on refresh) | profile provider while the connection is `expired` | in-app, email | `google_calendar_reconnect` |
+| `payment.refunded` (031, enqueued by `payment_mark_refunded` in the refunding transaction, dedup `payment:<id>:refunded`, payload `{ payment_id, appointment_id, reason }`) | the booking guardian, while the payment is refunded | in-app, email | `payment_refunded` (`Your payment was refunded because the time was no longer available.` for late payments; links to `/family/appointments`; see `docs/payments.md`) |
 | `privacy.deletion_completed` / `privacy.deletion_rejected` (041) | the requesting guardian (account only: the erasure revokes the link) | in-app, email | `privacy_deletion_completed` / `privacy_deletion_rejected` (reason shown in the app only) |
 
-Later tickets register their own (030 done: `appointment.*` with `.ics`; 031 payments; 037 Meet links). Topic names
+Later tickets register their own (030 done: `appointment.*` with `.ics`; 031 payments; 037 done: Meet links). Topic names
 allow no digits (`outbox_events_topic_check`), so 030's 24 h / 2 h reminders are `appointment.reminder_day_before` /
 `appointment.reminder_two_hours`.
 
@@ -155,6 +159,18 @@ retried by the next run, so consumers must be idempotent.
 |-------|----------|------|
 | `appointment.confirmed`, `appointment.rescheduled` | `appointment.link_case` | appointment -> org case + provider assignment + intake attempt; adds `intake` (`{ status: "link", attempt_id, agent_kind }` or `{ status: "consent_needed", agent_kind }`) so the guardian's confirmation carries the call link or the consent hint |
 | `consent.granted` (consumer-only, enqueued by a trigger on `consent_records` for `ai_intake_call` grants that can serve an upcoming appointment) | `appointment.intake_on_consent` | issues the missing intake attempts and enqueues `appointment.intake_link` |
+
+## Job topics (037)
+
+Some events run server work instead of notifying anyone. Register a **job topic** in `lib/notify/jobs.ts`
+(`JobDefinition` from `lib/notify/job-types.ts`: strict `payload`, `maxAttempts`, `retryDelaysMs`, `run`, optional
+`onFailure`); the worker (`fanOutEvent`) hands those events to `runJob()` inside the fan-out transaction while the event
+row is locked. Attempts and the last error code are kept in `outbox_job_attempts`; a failed attempt moves
+`deliver_after` (back-off) and keeps the event `pending`; success or a final failure marks it `fanned_out`. Throw
+`JobError(code, true)` to stop retrying. Job topics are not in `TOPICS` (no recipients, no template) and are enqueued
+from SQL. In use: `meet.create`, `meet.update`, `meet.delete` (037), enqueued by the `meet_jobs_from_outbox` trigger
+when the booking functions insert `appointment.confirmed` / `.rescheduled` / `.cancelled` for a video appointment
+(dedup `meet:<id>:create|update|delete`). See `docs/google-meet.md`.
 
 ## Delivery
 
@@ -249,8 +265,9 @@ for the text; for example:
 | `appointment_confirmed_intake` (035: confirmation with an intake call link) | UTILITY | `{{1}}` app link, `{{2}}` intake call link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Before your visit, please take a short voice call with our AI assistant: {{2}} |
 | `appointment_confirmed_allow_intake` (035: the child has no AI intake consent yet) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Allow the AI intake call in your DoctorNearMe app to prepare for this visit. |
 | `appointment_intake_link` (035) | UTILITY | `{{1}}` app link | Prepare for your DoctorNearMe visit: take the short AI intake call. Open: {{1}} |
+| `appointment_meet_ready` (037) | UTILITY | `{{1}}` app link | The video call link for your DoctorNearMe appointment is ready. Join from: {{1}} |
 
-030 added `appointment_*` (rows above); each later ticket adds its rows here. The
+030 added `appointment_*` and 037 `appointment_meet_ready` (rows above); each later ticket adds its rows here. The
 template name sent to Meta is the DoctorNearMe template name; the language code is the recipient's UI
 locale. Until a template is approved, set nothing: deliveries stay `skipped` (`whatsapp_not_configured`).
 

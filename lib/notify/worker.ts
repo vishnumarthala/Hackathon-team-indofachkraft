@@ -3,12 +3,13 @@
 // scripts/outbox-run.ts. Logs carry counts and ids only (NFR-3).
 import { env } from "@/lib/env";
 import { isLocale, type Locale } from "@/lib/i18n/config";
-import { pg, type Queryable, type Sql } from "@/lib/pg";
+import { pg, type Queryable, type Sql, type Tx } from "@/lib/pg";
 import type { UserRole } from "@/lib/auth";
 import { runConsumers } from "./consumers";
 import { deliverEmail } from "./email";
 import { icsUid } from "./ics";
 import { failureDecision, MAX_ATTEMPTS, sanitizeError } from "./retry";
+import { getJob, runJob } from "./jobs";
 import { getTemplate } from "./templates";
 import { getTopic, topicEnabled } from "./topics";
 import { NotifyError, type Channel, type OutboxEventRow, type Rendered, type SendOutcome } from "./types";
@@ -102,6 +103,9 @@ function clip(value: string, max: number): string {
 }
 
 async function fanOutEvent(tx: Queryable, claimed: OutboxEventRow, appUrl: string): Promise<number> {
+  // 037: job topics (e.g. `meet.create`) run server work instead of fanning out (lib/notify/jobs.ts).
+  const job = getJob(claimed.topic);
+  if (job) return runJob(tx as Tx, claimed, job);
   const markDone = () => tx`update public.outbox_events set status = 'fanned_out', fanned_out_at = now() where id = ${claimed.id}`;
   // 035: consumers (lib/notify/consumers.ts) do their domain work first and may enrich the payload.
   const { event, ran } = await runConsumers(tx, claimed);
