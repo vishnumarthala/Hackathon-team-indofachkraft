@@ -121,6 +121,11 @@ Until a scope registers a loader, a grant for it shows `Shared, but this type of
 DoctorNearMe yet.` The `reports` scope (this ticket) = `reports` rows with `kind = 'assessment'` and
 `status = 'final'` from the source orgs' cases for the child. `health_profile` is registered by ticket 021.
 
+Since ticket 024 loaders show **published versions** (`published_versions`, `lib/clinical/publish.ts`), never
+drafts: `reports` = the current published version of each final assessment report (item id = report id);
+`assessments` = the current published summary of each reviewed questionnaire (item id = assessment id,
+`lib/sharing/loaders/assessments.ts`, see `docs/assessments.md`). Loaders for 025/026 should do the same.
+
 ## RLS (browser reads only; the server uses the service role and the gates above)
 
 - `cases`: `can_access_case(id)` (replaces 017's org-member policy). `can_read_child_via_org` (020) now

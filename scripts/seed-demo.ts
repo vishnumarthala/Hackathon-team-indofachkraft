@@ -1,5 +1,8 @@
 // Seeds a complete synthetic demo case. Usage: npm run -s seed:demo [-- --new] [--confirmed] [--stage transcribed]
-//   [--no-guardian]
+//   [--no-guardian] [--final-report]
+// Ticket 024 (FR-6): `--final-report` (implies `--confirmed`) also adds the session's assessment report, built from
+// the demo report fixture exactly like POST /api/sessions/:id/report, as `final`: the database publishes it as
+// version 1 in published_versions (trigger reports_publish_final) like PATCH /api/reports/:id does.
 // Ticket 020 (FR-18): the synthetic case gets a synthetic guardian, an active link and v1 consents for every
 // feature (user_agent `seed:synthetic`) so the demo flow keeps working. `--no-guardian` leaves the child
 // unclaimed and without consent (every gated step is blocked).
@@ -8,11 +11,14 @@ import { existsSync, readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { z } from "zod";
+import { computeReport, decidedFacts, filterDraft } from "../lib/report/draft";
 import {
   BriefSchema,
   IsaaExtractionSchema,
+  ReportDraftSchema,
   SegmentSchema,
   type Brief,
+  type CaseRow,
   type Evidence,
   type FactValue,
   type IsaaExtraction,
@@ -81,14 +87,21 @@ export const PostCallSchema = z.object({
 });
 export type PostCall = z.infer<typeof PostCallSchema>;
 
-export type SeedOptions = { isNew: boolean; confirmed: boolean; stage: "extracted" | "transcribed"; noGuardian: boolean };
+export type SeedOptions = {
+  isNew: boolean;
+  confirmed: boolean;
+  stage: "extracted" | "transcribed";
+  noGuardian: boolean;
+  finalReport: boolean;
+};
 
 export function parseArgs(argv: string[]): SeedOptions {
-  const options: SeedOptions = { isNew: false, confirmed: false, stage: "extracted", noGuardian: false };
+  const options: SeedOptions = { isNew: false, confirmed: false, stage: "extracted", noGuardian: false, finalReport: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--new") options.isNew = true;
     else if (arg === "--confirmed") options.confirmed = true;
+    else if (arg === "--final-report") options.finalReport = options.confirmed = true;
     else if (arg === "--no-guardian") options.noGuardian = true;
     else if (arg === "--stage" || arg.startsWith("--stage=")) {
       const value = arg === "--stage" ? argv[++i] : arg.slice("--stage=".length);
@@ -96,6 +109,7 @@ export function parseArgs(argv: string[]): SeedOptions {
       options.stage = value;
     } else throw new Error(`Unknown option: ${arg}`);
   }
+  if (options.finalReport && options.stage === "transcribed") throw new Error("--final-report needs the extracted stage");
   return options;
 }
 
@@ -288,6 +302,16 @@ export function buildIsaaFacts(args: {
   return [...facts.values()].sort((a, b) => Number(a.item_id) - Number(b.item_id));
 }
 
+/** 024 FR-6: the session's assessment report as the report route would draft it from the demo fixture, final. */
+export function buildFinalReport(args: { caseId: string; sessionId: string; isaaFacts: FactInsert[]; date: string }) {
+  const fixture = readJson("gemini/report.json", ReportDraftSchema);
+  const facts = decidedFacts(args.isaaFacts);
+  const { draft } = filterDraft(fixture, facts);
+  const caseRow = { id: args.caseId, ...SEED_CASE, org_id: BOOTSTRAP_ORG_ID } as unknown as CaseRow;
+  const { content_md } = computeReport({ caseRow, sessionNumber: 1, date: args.date, facts, draft });
+  return { case_id: args.caseId, recording_id: args.sessionId, kind: "assessment", content: draft, content_md, status: "final" };
+}
+
 async function main() {
   loadEnvConfig(process.cwd(), false, { info: () => {}, error: console.error });
   const options = parseArgs(process.argv.slice(2));
@@ -431,6 +455,18 @@ async function main() {
         now,
       });
       check("insert ISAA facts", (await db.from("facts").insert(isaaFacts)).error);
+
+      if (options.finalReport) {
+        const report = buildFinalReport({ caseId, sessionId, isaaFacts, date: now.slice(0, 10) });
+        const { data, error } = await db.from("reports").insert(report).select("id").single();
+        check("insert final report", error);
+        const { data: published } = await db
+          .from("published_versions")
+          .select("version")
+          .eq("entity_type", "report")
+          .eq("entity_id", (data as { id: string }).id);
+        console.log(`final report=${(data as { id: string }).id} published versions=${(published ?? []).length}`);
+      }
     }
 
     console.log(`seeded case=${caseId} session=${sessionId} intake=${intakeId} token=${token}`);
