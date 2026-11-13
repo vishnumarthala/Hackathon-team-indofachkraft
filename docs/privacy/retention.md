@@ -43,7 +43,9 @@ guardian's own practice logs; drafts and other guardians' notes never exported; 
 their own read markers; attachments as document ids), 038 `ai_scribe` (session-note/Rx drafts and goal-progress
 suggestions; shared notes are exported through `published_versions`), documents, health profile, consent records, sharing/care team,
 notifications, exports, audit, provider credentials, pilot sign-ups, 030 `appointments` (export: the requesting
-guardian's own bookings of the child; erase: `booking_erase_child`). `published_versions` is append-only (024): rows with a
+guardian's own bookings of the child; erase: `booking_erase_child`), 037 `google_meet` (providers' Google connections,
+Meet links and calendar event ids; export: the Meet links of the guardian's own video bookings; erasure: the cancelled
+appointments' `meet.delete` jobs remove the calendar events, links carry no child data). `published_versions` is append-only (024): rows with a
 case go with the case; case-less rows are removed only by `privacy_delete_published_versions()` (migration
 `20261113004102`).
 

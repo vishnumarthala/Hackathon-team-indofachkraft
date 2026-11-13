@@ -64,12 +64,24 @@ export function bookingWorld(sql: Sql, db: Db, prefix: string) {
     return { user, childId: child.id };
   }
 
+  /** 037 FR-5a: a linked Google identity (as after 019's `linkIdentity`), required for video bookings. */
+  async function linkGoogle(user: TestUser): Promise<void> {
+    const sub = `${Date.now()}${Math.floor(Math.random() * 1e9)}`;
+    await sql`
+      insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+      values (${sub}, ${user.id}, ${sql.json({ sub, email: user.email, email_verified: true })}, 'google', now(), now(), now())`;
+  }
+
   async function cleanup() {
     if (profiles.length) {
       const appts = await sql<{ id: string }[]>`select id from appointments where provider_profile_id in ${sql(profiles)}`;
       const ids = appts.map((a) => a.id);
+      // 037: provider-level events (Google reconnect notices) and their audit rows.
+      await sql`delete from outbox_events where aggregate_type = 'provider_profile' and aggregate_id in ${sql(profiles)}`;
+      await purgeTestAudit(sql, (tx) => tx`delete from audit_events where entity = 'provider_profile' and entity_id in ${tx(profiles)}`);
       if (ids.length) {
-        await sql`delete from outbox_events where aggregate_type = 'appointment' and (aggregate_id in ${sql(ids)} or payload ->> 'appointment_id' in ${sql(ids)})`;
+        // 037: Meet jobs and Meet notifications carry the appointment id in the payload under their own aggregate types.
+        await sql`delete from outbox_events where (aggregate_type = 'appointment' and aggregate_id in ${sql(ids)}) or payload ->> 'appointment_id' in ${sql(ids)}`;
         await purgeTestAudit(sql, (tx) => tx`delete from audit_events where entity = 'appointment' and entity_id in ${tx(ids)}`);
         await sql`delete from appointments where id in ${sql(ids)}`;
       }
@@ -79,7 +91,7 @@ export function bookingWorld(sql: Sql, db: Db, prefix: string) {
     await world.cleanup();
   }
 
-  return { ...world, provider, service, guardian, cleanup };
+  return { ...world, provider, service, guardian, linkGoogle, cleanup };
 }
 
 const IST_OFFSET = 330 * 60_000;

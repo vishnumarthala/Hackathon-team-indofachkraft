@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 2000. Not yet approved: 2000.
+Rows: 2059. Not yet approved: 2059.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -1473,6 +1473,7 @@ Rows: 2000. Not yet approved: 2000.
 | `privacy.notice.collect.scribe` | AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you. | AI सत्र नोट (केवल आपकी अनुमति से): क्लिनिक में की गई रिकॉर्डिंग से AI द्वारा तैयार नोट, लक्ष्य की प्रगति और प्रिस्क्रिप्शन के मसौदे। क्लिनिशियन हर सुझाव की जाँच करते हैं; आप कोई नोट तभी देखते हैं जब क्लिनिशियन उसे आपके साथ साझा करें। | AI సెషన్ నోట్‌లు (మీ అనుమతితో మాత్రమే): క్లినిక్‌లో చేసిన రికార్డింగ్‌ల నుండి AI తయారు చేసిన నోట్‌లు, లక్ష్యాల పురోగతి మరియు ప్రిస్క్రిప్షన్ ముసాయిదాలు. క్లినిషియన్ ప్రతి సూచనను పరిశీలిస్తారు; క్లినిషియన్ మీతో పంచుకున్నప్పుడే మీరు నోట్‌ను చూస్తారు. |  | pending |
 | `privacy.notice.collect.homeProgram` | Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes). | घर की गतिविधियाँ: आपकी देखभाल टीम घर पर अभ्यास के लिए जो गतिविधियाँ प्रकाशित करती है, और आप जो दर्ज करते हैं (किया, कैसा रहा, मिनट, नोट)। | ఇంటి కార్యకలాపాలు: ఇంట్లో సాధన కోసం మీ సంరక్షణ బృందం ప్రచురించే కార్యకలాపాలు, మీరు నమోదు చేసేవి (చేశాం, ఎలా జరిగింది, నిమిషాలు, గమనికలు). |  | pending |
 | `privacy.notice.collect.messages` | Messages with the care team: what you and the care team write in DoctorNearMe conversations, attached document links, and when you last read them. | देखभाल टीम के साथ संदेश: DoctorNearMe बातचीत में आप और देखभाल टीम जो लिखते हैं, जोड़े गए दस्तावेज़ों के लिंक, और आपने उन्हें आखिरी बार कब पढ़ा। | సంరక్షణ బృందంతో సందేశాలు: DoctorNearMe సంభాషణల్లో మీరు మరియు సంరక్షణ బృందం రాసేవి, జోడించిన పత్రాల లింకులు, మరియు మీరు వాటిని చివరిసారి ఎప్పుడు చదివారు. |  | pending |
+| `privacy.notice.collect.videoCalls` | Video appointments: the Google Meet link. You join signed in to your own Google account; your email is never added to the provider's calendar. | वीडियो अपॉइंटमेंट: Google Meet लिंक। आप अपने Google खाते में साइन इन करके जुड़ते हैं; आपका ईमेल कभी प्रदाता के कैलेंडर में नहीं जोड़ा जाता। | వీడియో అపాయింట్‌మెంట్‌లు: Google Meet లింక్. మీరు మీ స్వంత Google ఖాతాలో సైన్ ఇన్ చేసి చేరతారు; మీ ఇమెయిల్ ఎప్పుడూ ప్రొవైడర్ క్యాలెండర్‌కు జోడించబడదు. |  | pending |
 | `privacy.notice.purposesTitle` | Why we use it | हम इसका उपयोग क्यों करते हैं | మేము దీన్ని ఎందుకు ఉపయోగిస్తాము |  | pending |
 | `privacy.notice.purposes` | To run your family account and your child's care with the professionals you choose; to prepare intake summaries, transcripts and draft reports that a professional checks; to send you reminders and updates; to keep records the law requires; and to keep the service secure. We never sell data and never use it for advertising. | आपका पारिवारिक खाता और आपके चुने विशेषज्ञों के साथ बच्चे की देखभाल चलाने के लिए; इनटेक सारांश, लिखित रूप और मसौदा रिपोर्ट तैयार करने के लिए जिन्हें एक विशेषज्ञ जाँचता है; आपको रिमाइंडर और अपडेट भेजने के लिए; कानून द्वारा ज़रूरी रिकॉर्ड रखने के लिए; और सेवा को सुरक्षित रखने के लिए। हम डेटा कभी नहीं बेचते और विज्ञापन के लिए कभी उपयोग नहीं करते। | మీ కుటుంబ ఖాతాను మరియు మీరు ఎంచుకున్న నిపుణులతో మీ పిల్లల సంరక్షణను నడపడానికి; ఒక నిపుణుడు తనిఖీ చేసే ఇన్‌టేక్ సారాంశాలు, లిఖిత రూపాలు మరియు ముసాయిదా రిపోర్టులు సిద్ధం చేయడానికి; మీకు రిమైండర్లు మరియు అప్‌డేట్లు పంపడానికి; చట్టం కోరే రికార్డులను ఉంచడానికి; మరియు సేవను సురక్షితంగా ఉంచడానికి. మేము డేటాను ఎప్పుడూ అమ్మము, ప్రకటనల కోసం ఎప్పుడూ ఉపయోగించము. |  | pending |
 | `privacy.notice.processorsTitle` | Who processes it for us, and where | हमारे लिए इसे कौन प्रोसेस करता है, और कहाँ | మా కోసం దీన్ని ఎవరు ప్రాసెస్ చేస్తారు, ఎక్కడ |  | pending |
@@ -1494,6 +1495,9 @@ Rows: 2000. Not yet approved: 2000.
 | `privacy.notice.processors.supabase.name` | Supabase | Supabase | Supabase |  | pending |
 | `privacy.notice.processors.supabase.purpose` | Database and file storage | डेटाबेस और फ़ाइल भंडारण | డేటాబేస్ మరియు ఫైల్ నిల్వ |  | pending |
 | `privacy.notice.processors.supabase.location` | {region} | {region} | {region} |  | pending |
+| `privacy.notice.processors.google.name` | Google Calendar and Google Meet | Google Calendar और Google Meet | Google Calendar మరియు Google Meet |  | pending |
+| `privacy.notice.processors.google.purpose` | Video calls: an event on the provider's own Google calendar (time and an app link only, no child details) | वीडियो कॉल: प्रदाता के अपने Google कैलेंडर में एक इवेंट (केवल समय और ऐप लिंक, बच्चे का कोई विवरण नहीं) | వీడియో కాల్‌లు: ప్రొవైడర్ స్వంత Google క్యాలెండర్‌లో ఒక ఈవెంట్ (సమయం మరియు యాప్ లింక్ మాత్రమే, పిల్లల వివరాలు లేవు) |  | pending |
+| `privacy.notice.processors.google.location` | Outside India (Google data centres) | भारत के बाहर (Google डेटा सेंटर) | భారతదేశం వెలుపల (Google డేటా సెంటర్‌లు) |  | pending |
 | `privacy.notice.crossBorder` | AI features send your child's data outside India. They run only after you allow them for that child, and you can withdraw at any time. | AI सुविधाएँ आपके बच्चे का डेटा भारत के बाहर भेजती हैं। वे तभी चलती हैं जब आप उस बच्चे के लिए अनुमति देते हैं, और आप कभी भी अनुमति वापस ले सकते हैं। | AI సౌకర్యాలు మీ పిల్లల డేటాను భారతదేశం బయటకు పంపుతాయి. ఆ పిల్లల కోసం మీరు అనుమతించిన తర్వాతే అవి పనిచేస్తాయి, మరియు మీరు ఎప్పుడైనా ఉపసంహరించుకోవచ్చు. |  | pending |
 | `privacy.notice.retentionTitle` | How long we keep it | हम इसे कितने समय तक रखते हैं | మేము దీన్ని ఎంతకాలం ఉంచుతాము |  | pending |
 | `privacy.notice.retentionWhat` | Data | डेटा | డేటా |  | pending |
@@ -1661,6 +1665,7 @@ Rows: 2000. Not yet approved: 2000.
 | `booking.errors.invalid_transition` | This appointment cannot be changed now. | यह अपॉइंटमेंट अभी बदला नहीं जा सकता। | ఈ అపాయింట్‌మెంట్‌ను ఇప్పుడు మార్చలేరు. |  | pending |
 | `booking.errors.rate_limited` | Too many tries. Please wait a few minutes. | बहुत बार कोशिश हुई। कृपया कुछ मिनट रुकें। | చాలా ప్రయత్నాలు. దయచేసి కొన్ని నిమిషాలు ఆగండి. |  | pending |
 | `booking.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर से कोशिश करें। | ఏదో పొరపాటు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `booking.errors.google_account_required` | Link your Google account to book a video consultation | वीडियो परामर्श बुक करने के लिए अपना Google खाता जोड़ें | వీడియో సంప్రదింపు బుక్ చేయడానికి మీ Google ఖాతాను లింక్ చేయండి |  | pending |
 | `booking.flow.metaTitle` | Book with {name} | {name} के साथ बुक करें | {name} తో బుక్ చేయండి |  | pending |
 | `booking.flow.title` | Book an appointment | अपॉइंटमेंट बुक करें | అపాయింట్‌మెంట్ బుక్ చేయండి |  | pending |
 | `booking.flow.with` | with {name} | {name} के साथ | {name} తో |  | pending |
@@ -1692,6 +1697,9 @@ Rows: 2000. Not yet approved: 2000.
 | `booking.flow.bookedDetail` | We sent you a confirmation. You can cancel or move it up to 2 hours before it starts. | हमने आपको पुष्टि भेजी है। आप शुरू होने से 2 घंटे पहले तक इसे रद्द कर सकते हैं या बदल सकते हैं। | మీకు ధృవీకరణ పంపాం. ఇది మొదలయ్యే 2 గంటల ముందు వరకు రద్దు చేయవచ్చు లేదా మార్చవచ్చు. |  | pending |
 | `booking.flow.pendingPayment` | Your booking is waiting for payment. Online payment opens soon; until then this booking is kept for 15 minutes. | आपकी बुकिंग भुगतान की प्रतीक्षा में है। ऑनलाइन भुगतान जल्द शुरू होगा; तब तक यह बुकिंग 15 मिनट रखी जाती है। | మీ బుకింగ్ చెల్లింపు కోసం వేచి ఉంది. ఆన్‌లైన్ చెల్లింపు త్వరలో వస్తుంది; అప్పటివరకు ఈ బుకింగ్ 15 నిమిషాలు ఉంచబడుతుంది. |  | pending |
 | `booking.flow.viewAppointments` | My appointments | मेरे अपॉइंटमेंट | నా అపాయింట్‌మెంట్‌లు |  | pending |
+| `booking.flow.googleRequired` | Link your Google account to book a video consultation | वीडियो परामर्श बुक करने के लिए अपना Google खाता जोड़ें | వీడియో సంప్రదింపు బుక్ చేయడానికి మీ Google ఖాతాను లింక్ చేయండి |  | pending |
+| `booking.flow.googleRequiredHint` | You join video calls signed in to your Google account, and the provider admits you from the waiting room. Your email is never added to the provider's calendar. | आप अपने Google खाते में साइन इन करके वीडियो कॉल से जुड़ते हैं, और प्रदाता आपको प्रतीक्षा कक्ष से अंदर लेते हैं। आपका ईमेल कभी प्रदाता के कैलेंडर में नहीं जोड़ा जाता। | మీరు మీ Google ఖాతాలో సైన్ ఇన్ చేసి వీడియో కాల్‌లో చేరతారు, ప్రొవైడర్ మిమ్మల్ని వెయిటింగ్ రూమ్ నుండి లోపలికి అనుమతిస్తారు. మీ ఇమెయిల్ ఎప్పుడూ ప్రొవైడర్ క్యాలెండర్‌కు జోడించబడదు. |  | pending |
+| `booking.flow.connectGoogle` | Connect Google | Google जोड़ें | Google కనెక్ట్ చేయండి |  | pending |
 | `booking.list.title` | Appointments | अपॉइंटमेंट | అపాయింట్‌మెంట్‌లు |  | pending |
 | `booking.list.upcoming` | Upcoming | आने वाले | రాబోయేవి |  | pending |
 | `booking.list.past` | Past and cancelled | पिछले और रद्द | గతవి మరియు రద్దయినవి |  | pending |
@@ -1786,6 +1794,23 @@ Rows: 2000. Not yet approved: 2000.
 | `booking.schedule.agenda.warning` | Outside your hours now (blocked or changed). Contact the family or cancel. | अब आपके समय से बाहर है (ब्लॉक या बदला गया)। परिवार से संपर्क करें या रद्द करें। | ఇప్పుడు మీ సమయాలకు బయట ఉంది (బ్లాక్ లేదా మార్చబడింది). కుటుంబాన్ని సంప్రదించండి లేదా రద్దు చేయండి. |  | pending |
 | `booking.schedule.agenda.notStarted` | You can mark this after the appointment starts. | अपॉइंटमेंट शुरू होने के बाद आप इसे चिह्नित कर सकते हैं। | అపాయింట్‌మెంట్ మొదలైన తర్వాత దీనిని గుర్తించవచ్చు. |  | pending |
 | `booking.schedule.organisation` | Organisation | संगठन | సంస్థ |  | pending |
+| `booking.meet.join` | Join video call | वीडियो कॉल से जुड़ें | వీడియో కాల్‌లో చేరండి |  | pending |
+| `booking.meet.joinHint` | Join with your Google account. The provider will admit you from the waiting room. | अपने Google खाते से जुड़ें। प्रदाता आपको प्रतीक्षा कक्ष से अंदर लेंगे। | మీ Google ఖాతాతో చేరండి. ప్రొవైడర్ మిమ్మల్ని వెయిటింగ్ రూమ్ నుండి లోపలికి అనుమతిస్తారు. |  | pending |
+| `booking.meet.opensSoon` | Join video call appears 10 minutes before the start. | वीडियो कॉल से जुड़ें बटन शुरू होने से 10 मिनट पहले दिखेगा। | వీడియో కాల్‌లో చేరండి బటన్ ప్రారంభానికి 10 నిమిషాల ముందు కనిపిస్తుంది. |  | pending |
+| `booking.meet.linkSoon` | Your provider will share the video link soon. | आपके प्रदाता जल्द ही वीडियो लिंक साझा करेंगे। | మీ ప్రొవైడర్ త్వరలో వీడియో లింక్ పంచుకుంటారు. |  | pending |
+| `booking.meet.pending` | Creating the Google Meet link… | Google Meet लिंक बनाया जा रहा है… | Google Meet లింక్ సృష్టిస్తున్నాం… |  | pending |
+| `booking.meet.ready` | Google Meet link ready. | Google Meet लिंक तैयार है। | Google Meet లింక్ సిద్ధంగా ఉంది. |  | pending |
+| `booking.meet.failed` | We could not create a Google Meet link. | हम Google Meet लिंक नहीं बना सके। | Google Meet లింక్ సృష్టించలేకపోయాము. |  | pending |
+| `booking.meet.manual` | Video link added by you. | वीडियो लिंक आपने जोड़ा है। | వీడియో లింక్ మీరు జోడించారు. |  | pending |
+| `booking.meet.providerHint` | Admit the family from the Meet waiting room. The AI scribe is not available on video calls. | परिवार को Meet प्रतीक्षा कक्ष से अंदर लें। वीडियो कॉल पर AI स्क्राइब उपलब्ध नहीं है। | కుటుంబాన్ని Meet వెయిటింగ్ రూమ్ నుండి లోపలికి అనుమతించండి. వీడియో కాల్‌లపై AI స్క్రైబ్ అందుబాటులో లేదు. |  | pending |
+| `booking.meet.addLink` | Add a video link | वीडियो लिंक जोड़ें | వీడియో లింక్ జోడించండి |  | pending |
+| `booking.meet.changeLink` | Change video link | वीडियो लिंक बदलें | వీడియో లింక్ మార్చండి |  | pending |
+| `booking.meet.linkLabel` | Google Meet link | Google Meet लिंक | Google Meet లింక్ |  | pending |
+| `booking.meet.save` | Save link | लिंक सहेजें | లింక్ సేవ్ చేయండి |  | pending |
+| `booking.meet.saving` | Saving… | सहेजा जा रहा है… | సేవ్ చేస్తున్నాం… |  | pending |
+| `booking.meet.cancel` | Cancel | रद्द करें | రద్దు చేయండి |  | pending |
+| `booking.meet.invalidLink` | Paste a Google Meet link (https://meet.google.com/...). | Google Meet लिंक चिपकाएँ (https://meet.google.com/...)। | Google Meet లింక్ అతికించండి (https://meet.google.com/...). |  | pending |
+| `booking.meet.saveFailed` | Could not save the link. Please try again. | लिंक सहेजा नहीं जा सका। कृपया फिर कोशिश करें। | లింక్ సేవ్ చేయలేకపోయాము. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
 | `messaging.title` | Messages | संदेश | సందేశాలు |  | pending |
 | `messaging.navLink` | Messages | संदेश | సందేశాలు |  | pending |
 | `messaging.familyIntro` | Write to your child's care team. Their replies appear here. | अपने बच्चे की देखभाल टीम को लिखें। उनके जवाब यहाँ दिखेंगे। | మీ పిల్లల సంరక్షణ బృందానికి రాయండి. వారి జవాబులు ఇక్కడ కనిపిస్తాయి. |  | pending |
@@ -2015,3 +2040,37 @@ Rows: 2000. Not yet approved: 2000.
 | `scribe.family.empty` | No session notes have been shared with you yet. | अभी तक आपके साथ कोई सत्र नोट साझा नहीं किया गया है। | ఇంకా మీతో ఏ సెషన్ నోట్‌లు పంచుకోలేదు. |  | pending |
 | `scribe.family.from` | From {org} | {org} से | {org} నుండి |  | pending |
 | `scribe.family.sharedOn` | Shared on {date} | {date} को साझा किया गया | {date}న పంచుకున్నారు |  | pending |
+| `integrations.title` | Integrations | इंटीग्रेशन | ఇంటిగ్రేషన్‌లు |  | pending |
+| `integrations.settingsLink` | Google Calendar for video appointments | वीडियो अपॉइंटमेंट के लिए Google Calendar | వీడియో అపాయింట్‌మెంట్‌ల కోసం Google Calendar |  | pending |
+| `integrations.settingsIntro` | Connect Google Calendar so video appointments get a Google Meet link automatically. | Google Calendar जोड़ें ताकि वीडियो अपॉइंटमेंट को अपने-आप Google Meet लिंक मिले। | వీడియో అపాయింట్‌మెంట్‌లకు ఆటోమేటిక్‌గా Google Meet లింక్ రావడానికి Google Calendar కనెక్ట్ చేయండి. |  | pending |
+| `integrations.noProfile` | Create your public profile first. | पहले अपनी सार्वजनिक प्रोफ़ाइल बनाएँ। | ముందుగా మీ పబ్లిక్ ప్రొఫైల్ సృష్టించండి. |  | pending |
+| `integrations.openProfile` | Open profile | प्रोफ़ाइल खोलें | ప్రొఫైల్ తెరవండి |  | pending |
+| `integrations.google.title` | Google Calendar and Google Meet | Google Calendar और Google Meet | Google Calendar మరియు Google Meet |  | pending |
+| `integrations.google.intro` | Connect your own Google account (free Gmail or Google Workspace). When a video appointment is confirmed, DoctorNearMe creates a Google Calendar event with a Google Meet link on your calendar. | अपना Google खाता जोड़ें (मुफ़्त Gmail या Google Workspace)। वीडियो अपॉइंटमेंट पक्का होने पर DoctorNearMe आपके कैलेंडर में Google Meet लिंक के साथ Google Calendar इवेंट बनाता है। | మీ స్వంత Google ఖాతాను కనెక్ట్ చేయండి (ఉచిత Gmail లేదా Google Workspace). వీడియో అపాయింట్‌మెంట్ ధృవీకరించబడినప్పుడు DoctorNearMe మీ క్యాలెండర్‌లో Google Meet లింక్‌తో Google Calendar ఈవెంట్ సృష్టిస్తుంది. |  | pending |
+| `integrations.google.privacy` | Families are never added as guests: they join from DoctorNearMe signed in to Google, and you admit them from the Meet waiting room. The event shows no child details. | परिवारों को कभी मेहमान के रूप में नहीं जोड़ा जाता: वे Google में साइन इन करके DoctorNearMe से जुड़ते हैं, और आप उन्हें Meet प्रतीक्षा कक्ष से अंदर लेते हैं। इवेंट में बच्चे का कोई विवरण नहीं होता। | కుటుంబాలను ఎప్పుడూ అతిథులుగా జోడించము: వారు Google లో సైన్ ఇన్ చేసి DoctorNearMe నుండి చేరతారు, మీరు వారిని Meet వెయిటింగ్ రూమ్ నుండి లోపలికి అనుమతిస్తారు. ఈవెంట్‌లో పిల్లల వివరాలు ఉండవు. |  | pending |
+| `integrations.google.scribeNote` | The AI scribe is not available on Google Meet calls. | Google Meet कॉल पर AI स्क्राइब उपलब्ध नहीं है। | Google Meet కాల్‌లపై AI స్క్రైబ్ అందుబాటులో లేదు. |  | pending |
+| `integrations.google.connect` | Connect Google Calendar | Google Calendar जोड़ें | Google Calendar కనెక్ట్ చేయండి |  | pending |
+| `integrations.google.reconnect` | Reconnect Google Calendar | Google Calendar फिर से जोड़ें | Google Calendar మళ్లీ కనెక్ట్ చేయండి |  | pending |
+| `integrations.google.disconnect` | Disconnect | डिस्कनेक्ट करें | డిస్‌కనెక్ట్ చేయండి |  | pending |
+| `integrations.google.disconnecting` | Disconnecting… | डिस्कनेक्ट हो रहा है… | డిస్‌కనెక్ట్ చేస్తున్నాం… |  | pending |
+| `integrations.google.disconnectQuestion` | Disconnect Google Calendar? New video appointments will need a link added by hand. | Google Calendar डिस्कनेक्ट करें? नए वीडियो अपॉइंटमेंट में लिंक हाथ से जोड़ना होगा। | Google Calendar డిస్‌కనెక్ట్ చేయాలా? కొత్త వీడియో అపాయింట్‌మెంట్‌లకు లింక్ చేతితో జోడించాలి. |  | pending |
+| `integrations.google.keep` | Keep connected | जुड़ा रहने दें | కనెక్ట్‌గా ఉంచండి |  | pending |
+| `integrations.google.connectedAs` | Connected as {email} | {email} के रूप में जुड़ा है | {email} గా కనెక్ట్ అయింది |  | pending |
+| `integrations.google.connectedOn` | Connected on {date} | {date} को जोड़ा गया | {date} న కనెక్ట్ అయింది |  | pending |
+| `integrations.google.status.active` | Connected | जुड़ा है | కనెక్ట్ అయింది |  | pending |
+| `integrations.google.status.expired` | Needs reconnecting | फिर से जोड़ना होगा | మళ్లీ కనెక్ట్ చేయాలి |  | pending |
+| `integrations.google.status.revoked` | Disconnected | डिस्कनेक्ट है | డిస్‌కనెక్ట్ అయింది |  | pending |
+| `integrations.google.expiredHelp` | Google stopped accepting DoctorNearMe's access. Reconnect to keep creating Meet links. | Google ने DoctorNearMe की पहुँच स्वीकार करना बंद कर दिया है। Meet लिंक बनाते रहने के लिए फिर से जोड़ें। | Google DoctorNearMe యాక్సెస్‌ను అంగీకరించడం ఆపేసింది. Meet లింక్‌లు సృష్టిస్తూ ఉండటానికి మళ్లీ కనెక్ట్ చేయండి. |  | pending |
+| `integrations.google.notConnected` | Not connected. Video appointments will need a link added by hand. | जुड़ा नहीं है। वीडियो अपॉइंटमेंट में लिंक हाथ से जोड़ना होगा। | కనెక్ట్ కాలేదు. వీడియో అపాయింట్‌మెంట్‌లకు లింక్ చేతితో జోడించాలి. |  | pending |
+| `integrations.google.unavailable` | Google Calendar is not set up on this site yet. | इस साइट पर Google Calendar अभी सेट नहीं है। | ఈ సైట్‌లో Google Calendar ఇంకా సెటప్ కాలేదు. |  | pending |
+| `integrations.google.demo` | Demo mode: no real Google account is used and the Meet links are not real. | डेमो मोड: कोई असली Google खाता उपयोग नहीं होता और Meet लिंक असली नहीं हैं। | డెమో మోడ్: నిజమైన Google ఖాతా ఉపయోగించబడదు, Meet లింక్‌లు నిజమైనవి కావు. |  | pending |
+| `integrations.google.connected` | Google Calendar connected. | Google Calendar जुड़ गया। | Google Calendar కనెక్ట్ అయింది. |  | pending |
+| `integrations.google.disconnected` | Google Calendar disconnected. | Google Calendar डिस्कनेक्ट हो गया। | Google Calendar డిస్‌కనెక్ట్ అయింది. |  | pending |
+| `integrations.google.revokeFailed` | Disconnected here, but Google could not be reached. Remove DoctorNearMe in your Google account's security settings to be sure. | यहाँ डिस्कनेक्ट हो गया, पर Google तक नहीं पहुँच सके। पक्का करने के लिए अपने Google खाते की सुरक्षा सेटिंग्स में DoctorNearMe हटाएँ। | ఇక్కడ డిస్‌కనెక్ట్ అయింది, కానీ Google ను చేరుకోలేకపోయాము. ఖచ్చితంగా ఉండటానికి మీ Google ఖాతా భద్రతా సెట్టింగ్స్‌లో DoctorNearMe ను తీసివేయండి. |  | pending |
+| `integrations.google.errors.state` | That Google sign-in was not valid or has expired. Please try again. | यह Google साइन-इन मान्य नहीं था या समाप्त हो गया। कृपया फिर कोशिश करें। | ఆ Google సైన్ ఇన్ చెల్లదు లేదా గడువు ముగిసింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `integrations.google.errors.denied` | Google access was not allowed. | Google पहुँच की अनुमति नहीं दी गई। | Google యాక్సెస్ అనుమతించబడలేదు. |  | pending |
+| `integrations.google.errors.exchange` | Google sign-in failed. Please try again. | Google साइन-इन विफल रहा। कृपया फिर कोशिश करें। | Google సైన్ ఇన్ విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `integrations.google.errors.no_refresh_token` | Google did not allow offline access. Please try again and allow access. | Google ने ऑफ़लाइन पहुँच की अनुमति नहीं दी। कृपया फिर कोशिश करें और अनुमति दें। | Google ఆఫ్‌లైన్ యాక్సెస్ అనుమతించలేదు. దయచేసి మళ్లీ ప్రయత్నించి అనుమతించండి. |  | pending |
+| `integrations.google.errors.scope` | Allow access to Google Calendar events so DoctorNearMe can create Meet links. | Google Calendar इवेंट की पहुँच दें ताकि DoctorNearMe Meet लिंक बना सके। | DoctorNearMe Meet లింక్‌లు సృష్టించగలిగేలా Google Calendar ఈవెంట్‌లకు యాక్సెస్ ఇవ్వండి. |  | pending |
+| `integrations.google.errors.unavailable` | Google Calendar is not set up on this site yet. | इस साइट पर Google Calendar अभी सेट नहीं है। | ఈ సైట్‌లో Google Calendar ఇంకా సెటప్ కాలేదు. |  | pending |
+| `integrations.google.errors.generic` | Something went wrong. Please try again. | कुछ गलत हो गया। कृपया फिर कोशिश करें। | ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |

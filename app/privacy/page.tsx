@@ -10,8 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: `${t("metaTitle")} | DoctorNearMe` };
 }
 
-const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "scribe", "assessments", "plans", "homeProgram", "appointments", "messages", "notifications", "website"] as const;
-const PROCESSORS = ["elevenlabs", "gemini", "resend", "whatsapp", "supabase"] as const;
+const COLLECT = ["account", "children", "consent", "health", "documents", "intake", "sessions", "scribe", "assessments", "plans", "homeProgram", "appointments", "videoCalls", "messages", "notifications", "website"] as const;
+const PROCESSORS = ["elevenlabs", "gemini", "resend", "whatsapp", "supabase", "google"] as const;
 const RIGHTS = ["access", "correction", "erasure", "withdraw", "grievance", "nominate"] as const;
 
 // 041 FR-10: public privacy notice (en/hi/te). The draft badge stays until a human sets PRIVACY_NOTICE_REVIEWED=true

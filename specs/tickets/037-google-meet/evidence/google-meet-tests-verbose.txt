@@ -1,0 +1,24 @@
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/037
+ ✓ tests/google-meet.test.ts > token encryption (AES-256-GCM) > round-trips and never stores the plaintext 1ms
+ ✓ tests/google-meet.test.ts > token encryption (AES-256-GCM) > detects tampering, another row (AAD) and another key 0ms
+ ✓ tests/google-meet.test.ts > token encryption (AES-256-GCM) > rejects keys that are not 32 bytes 0ms
+ ✓ tests/google-meet.test.ts > token encryption (AES-256-GCM) > sealed JSON opens only with the same purpose 0ms
+ ✓ tests/google-meet.test.ts > OAuth state bound to the session > accepts the sealed state for the same user only 1ms
+ ✓ tests/google-meet.test.ts > Meet links and the join window > accepts only Google Meet rooms (normalised) 0ms
+ ✓ tests/google-meet.test.ts > Meet links and the join window > opens 10 minutes before the start and closes 30 minutes after the end 1ms
+ ✓ tests/google-meet.test.ts > Meet links and the join window > event body: Meet conference keyed by the appointment, no attendees, no child data 0ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > FR-2 connect: PKCE + state, encrypted refresh token, nothing secret in the response 36ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > FR-2 OAuth state mismatch (or another user's flow) is rejected and stores nothing 18ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > E-3 provider_b cannot read provider_a's connection (404); guardians get 403 13ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > FR-5a / E-1a: no Google account -> 422 for video holds and confirms; in-clinic unaffected 57ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > FR-3 / E-1: confirm -> meet.create -> event without attendees (sendUpdates=none) -> meet_ready for both 82ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > FR-3 meet.create retried 3x after timeouts creates exactly one event (extended-property lookup) 69ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > FR-3 reschedule patches the same event (same link); cancel deletes it 77ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > cancel before the link exists: the create job removes an event an earlier timed-out attempt made 66ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > FR-2 invalid_grant on refresh -> connection expired, provider notified, appointment failed 66ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > E-2 disconnect revokes and deletes; next booking fails -> manual Meet link (non-Meet 400, provider_b 404) 90ms
+ ✓ tests/google-meet.test.ts > Google Meet (database, route handlers, outbox worker, mocked Google) > NFR-1: no refresh token in any log line 0ms
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  04:43:58
+   Duration  1.77s (transform 315ms, setup 0ms, import 306ms, tests 1.37s, environment 0ms)

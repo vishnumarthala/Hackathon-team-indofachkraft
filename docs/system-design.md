@@ -272,6 +272,8 @@ Each ticket adds read helpers in its own `lib/queries/<area>.ts` file.
 | `SUPABASE_REGION_LABEL` | `/privacy` (041) | where Supabase stores data, as shown to families (e.g. `India (Mumbai)`) |
 | `RETENTION_AUDIO_DAYS` | retention job (041) | raw audio kept after transcription, default 90; other `RETENTION_*` overrides in `.env.example` and `docs/privacy/retention.md` |
 | `AUDIT_FAIL_ACTIONS` | dev/test only (041) | comma-separated audit actions whose audit write fails (checks fail-closed behaviour); ignored in production builds |
+| `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` | Google Calendar / Meet (037) | server-only; unset + `DEMO_MODE=true` -> local fake Google; unset otherwise -> providers add Meet links by hand (`docs/google-meet.md`) |
+| `TOKEN_ENCRYPTION_KEY` | Google refresh tokens (037) | 32 random bytes, base64; AES-256-GCM; required to connect Google Calendar |
 
 `lib/env.ts` reads variables lazily (a getter per variable that throws `Missing env var: NAME` when
 used). `npm run build` must succeed with no `.env.local`.
@@ -424,6 +426,17 @@ named `<YYYYMMDDHHMMSS>_<name>.sql`, additive only, never edited after they reac
 (`booking_hold`, `booking_attach`, `booking_confirm`, `booking_cancel`, `booking_reschedule`, `booking_complete`,
 `booking_expire_stale`). Migration `20261113003000_booking.sql`; details, API and extension points for 031/034/035/037/042
 in `docs/booking.md`.
+
+### Google Meet (ticket 037)
+
+`provider_google_connections` (the provider's own Google grant; refresh token AES-256-GCM encrypted with
+`TOKEN_ENCRYPTION_KEY`, no browser access), `appointments.meet_url` / `google_event_id` / `meet_status`, and
+`outbox_job_attempts`. A trigger on `outbox_events` turns the booking functions' `appointment.confirmed` /
+`.rescheduled` / `.cancelled` events for video appointments into the outbox **job topics** `meet.create` / `meet.update`
+/ `meet.delete` (same transaction), run by the outbox worker with retries and an extended-property lookup so retries
+never duplicate events. Events have no attendees (`sendUpdates=none`); guardians need a linked Google account to book
+video (`lib/booking/hooks.ts`). Migration `20261113003700_google_meet.sql`; setup (Google Cloud, OAuth verification lead
+time) and details in `docs/google-meet.md`.
 
 ## 6. Shared types (`lib/types.ts`, Zod v4 + inferred TS types)
 
@@ -595,6 +608,7 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 | `/api/providers/**`, `/api/admin/providers/**`, `/api/admin/verifications/**`, `/api/claims/:token`, `PATCH /api/orgs/:id/public` | 028 | see `docs/providers.md` | |
 | `GET /api/public/providers?lat=&lng=&radius_km=&type=&language=&mode=&page=` | 029 | public, 60/min per IP | 200 `{ results, page, has_more }`; 400; 422 outside India; 429 (`docs/maps.md`) |
 | `GET /api/public/providers/:profileId/slots`, `POST /api/appointments/hold`, `POST /api/appointments/:id/{confirm,cancel,reschedule,complete}`, `GET /api/appointments/:id/ics`, `/api/provider/{services,availability}/**`, `GET\|POST /api/cron/booking` | 030 | see `docs/booking.md` | 201 hold / 200; 409 `This slot was just taken. Please pick another time.`; 410 `Your hold expired. Please pick the time again.`; 404 other owners |
+| `GET /api/integrations/google/{connect,callback,connection}`, `POST /api/integrations/google/disconnect`, `POST /api/appointments/:id/meet-link` | 037 | see `docs/google-meet.md` | 303 redirects (connect/callback, `?error=state` on a state mismatch); 404 other providers' profiles/appointments; 400 non-Meet link; 422 `Link your Google account to book a video consultation` on video holds/confirms |
 | `GET\|POST /api/threads`, `GET\|POST /api/threads/:id/messages`, `POST /api/threads/:id/read`, `POST /api/threads/:id/archive`, `DELETE /api/messages/:id` | 027 | see `docs/messaging.md` | 201 `{ thread, message }` / `{ message }` (200 on a repeated `client_id`); 422 no parent / attachment; 409 archived / delete window; 429 |
 | `GET\|POST /api/cron/outbox`, `GET /api/notifications?cursor=`, `POST /api/notifications/read`, `GET\|PUT /api/notification-preferences`, `POST /api/admin/notifications/:id/retry` | 032 | see `docs/notifications.md` | |
 | `GET\|POST /api/family/children/:id/exports`, `GET /api/family/exports/:id/download` | 041 | - | 202 `{ export_id }`; 429 one running / 3 per day; download 302 (requester only, else 404) (`docs/privacy/retention.md`) |
@@ -768,6 +782,9 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
   export and deletion (incl. ElevenLabs conversations) per `docs/privacy/retention.md`; incident procedure in
   `docs/privacy/incident-response.md`; no third-party scripts on `/family/**` outside the per-route allowlist; server
   logs redact emails, phones and tokens (`lib/log.ts`), and the dev request log skips token URLs.
+- 037: providers' Google refresh tokens are AES-256-GCM encrypted (`TOKEN_ENCRYPTION_KEY`, row-bound AAD), never sent
+  to a browser or logged; OAuth uses PKCE and a state sealed to the signed-in session; calendar events never include
+  the guardian (no attendees, `sendUpdates=none`) or child data.
 - Copy rules: never "diagnose/diagnosis" (except "not a diagnosis"), never "HIPAA compliant".
 
 ## 14. Human setup checklist (not tickets)
@@ -781,6 +798,7 @@ Resend email with `/specialist/<token>`) -> specialist opens page -> `POST /api/
 | D | Resend account (free), API key; `DEMO_EMAIL_TO` = the Resend account email |
 | D | Record the role-play audio as `demo/audio/session-1.mp3` (commit on `int/d-pitch`); then one live run with `DEMO_MODE=false` and refresh fixtures if needed |
 | D (15:30) | Decide the product link: deploy (Vercel + Supabase cloud) or tunnel during judging |
+| Product owner (037, start now: weeks of lead time) | Google Cloud OAuth client + consent screen with the sensitive `calendar.events` scope, test users (max 100, 7-day tokens) and the OAuth verification submission; see `docs/google-meet.md` |
 | Merge captain | Verify configured public-repo branch protection remains active; merge reviewed checkpoint PRs, smoke-test `main`, tag `cp<n>`; require `ci` only after 001 creates it and it has run ([workflow](team-workflow.md)) |
 
 ## 15. Build plan

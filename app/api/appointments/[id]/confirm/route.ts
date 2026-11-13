@@ -1,10 +1,13 @@
+import { NextResponse } from "next/server";
 import { audit } from "@/lib/audit";
 import { requireGuardian } from "@/lib/authz";
 import { withBookingErrors } from "@/lib/booking/errors";
+import { checkConfirmPreconditions } from "@/lib/booking/hooks";
 import { ConfirmSchema } from "@/lib/booking/schemas";
 import { currentBookingSessionHash } from "@/lib/booking/session";
-import { confirmHold, getAppointment } from "@/lib/booking/store";
+import { confirmHold, getAppointment, getOwnedHold } from "@/lib/booking/store";
 import { isUuid } from "@/lib/cases/validation";
+import { drainMeetJobs } from "@/lib/google/meet";
 import { fail, ok, parseJson } from "@/lib/http";
 import { drainSoon } from "@/lib/notify/outbox";
 
@@ -24,11 +27,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   // An anonymous hold made before sign-in is proven by the booking-session cookie.
   const sessionHash = await currentBookingSessionHash();
+  // 037 FR-5a: a video hold the caller owns needs a linked Google account (someone else's hold stays a 404 below).
+  const owned = await getOwnedHold(id, { userId: session.user.id, sessionHash });
+  const blocked = owned ? await checkConfirmPreconditions({ mode: owned.service_snapshot.mode, userId: session.user.id }) : null;
+  if (blocked) return NextResponse.json({ error: blocked.error, code: blocked.code }, { status: blocked.status });
   const result = await withBookingErrors(() =>
     confirmHold({ appointmentId: id, guardianId: session.user.id, childId: parsed.data.child_id, sessionHash }),
   );
   if ("response" in result) return result.response;
   if (result.data.event_id) drainSoon([String(result.data.event_id)]);
+  await drainMeetJobs(id);
 
   const appointment = await getAppointment(id);
   await audit({
