@@ -3,13 +3,14 @@ import type { ReactNode } from "react";
 import { FamilyNav } from "@/components/family/FamilyNav";
 import { FamilySignOutButton } from "@/components/family/FamilySignOutButton";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { requireGuardianPage } from "@/lib/authz";
 
 export const dynamic = "force-dynamic";
 
 // FR-6 portal shell. Every page below also calls requireGuardianPage() itself (layouts are not a gate).
 export default async function FamilyPortalLayout({ children }: { children: ReactNode }) {
-  const { profile } = await requireGuardianPage();
+  const { user, profile } = await requireGuardianPage();
   return (
     <>
       <header className="border-b border-slate-200 bg-white">
@@ -24,6 +25,7 @@ export default async function FamilyPortalLayout({ children }: { children: React
                   {profile.display_name}
                 </span>
               ) : null}
+              <NotificationBell userId={user.id} href="/family/notifications" />
               <LanguageSwitcher className="text-slate-700" />
               <FamilySignOutButton />
             </div>

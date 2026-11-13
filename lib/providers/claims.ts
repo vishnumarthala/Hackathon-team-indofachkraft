@@ -2,7 +2,7 @@
 // SHA-256 hash is stored. Creating a new link revokes the previous ones; a link works once.
 import type { z } from "zod";
 import { supabaseAdmin } from "@/lib/db";
-import { notifyLater, PROVIDER_TOPICS } from "@/lib/notify/topics";
+import { drainSoon } from "@/lib/notify/outbox";
 import { hashToken, slugify } from "@/lib/orgs";
 import { newToken } from "@/lib/tokens";
 import { CLAIM_TTL_DAYS, profileSlug } from "./constants";
@@ -121,6 +121,6 @@ export async function claimProfile(token: string, userId: string): Promise<Resul
   if (outcome.result === "has_profile") return { ok: false, status: 409, error: "You already have a profile" };
   if (outcome.result === "forbidden") return { ok: false, status: 403, error: "This account cannot claim a provider profile" };
   if (outcome.result !== "claimed") return { ok: false, status: 404, error: "This link is not valid." };
-  await notifyLater(PROVIDER_TOPICS.claimed, { provider_profile_id: outcome.profile_id as string });
+  drainSoon(); // 032: provider.claimed was enqueued by a trigger in the claim transaction.
   return { ok: true, data: { profileId: outcome.profile_id as string, slug: outcome.slug as string } };
 }
