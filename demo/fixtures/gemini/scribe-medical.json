@@ -1,0 +1,127 @@
+{
+  "sections": [
+    {
+      "key": "history",
+      "statements": [
+        {
+          "text": "Parent reports poor sleep with waking three or four times every night for about six months, since moving house.",
+          "citations": [
+            {
+              "segment_id": "s2",
+              "quote": "She wakes up three or four times every night."
+            },
+            {
+              "segment_id": "s4",
+              "quote": "For about six months, since we moved house."
+            }
+          ]
+        },
+        {
+          "text": "Parent reports daytime restlessness.",
+          "citations": [
+            {
+              "segment_id": "s4",
+              "quote": "During the day she is very restless."
+            }
+          ]
+        },
+        {
+          "text": "No current medicines. Parent reports an allergy to amoxicillin (rash).",
+          "citations": [
+            {
+              "segment_id": "s6",
+              "quote": "No medicines now. She is allergic to amoxicillin, she got a rash."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "observations",
+      "statements": [
+        {
+          "text": "Active, brief eye contact, growth normal for age.",
+          "citations": [
+            {
+              "segment_id": "s7",
+              "quote": "On examination she is active, makes brief eye contact and her growth is normal for her age."
+            }
+          ]
+        },
+        {
+          "text": "Asked for bubbles with two words three times during play.",
+          "citations": [
+            {
+              "segment_id": "s8",
+              "quote": "During play she asked me for the bubbles with two words three times."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "assessment_impressions",
+      "statements": [
+        {
+          "text": "Clinician to confirm: impression of a sleep onset and night waking problem; low iron to be checked.",
+          "citations": [
+            {
+              "segment_id": "s9",
+              "quote": "My impression is a sleep onset and night waking problem, and I want to check for low iron."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "plan",
+      "statements": [
+        {
+          "text": "Blood count and ferritin.",
+          "citations": [
+            {
+              "segment_id": "s10",
+              "quote": "we will check a blood count and ferritin."
+            }
+          ]
+        },
+        {
+          "text": "Start melatonin 2 mg tablet, one tablet by mouth 30 minutes before bed, for 30 days.",
+          "citations": [
+            {
+              "segment_id": "s10",
+              "quote": "Start melatonin two milligram tablet, one tablet by mouth thirty minutes before bed, for thirty days."
+            }
+          ]
+        },
+        {
+          "text": "Fixed bedtime routine with no screens for one hour before bed.",
+          "citations": [
+            {
+              "segment_id": "s11",
+              "quote": "Keep a fixed bedtime routine with no screens for one hour before bed."
+            }
+          ]
+        },
+        {
+          "text": "Follow up in four weeks with a sleep diary.",
+          "citations": [
+            {
+              "segment_id": "s12",
+              "quote": "Please come back for follow up in four weeks with a sleep diary."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "goal_suggestions": [
+    {
+      "goal_ref": "G1",
+      "suggested_value": 3,
+      "segment_id": "s8",
+      "quote": "During play she asked me for the bubbles with two words three times.",
+      "rationale": "The clinician counted three two-word requests for bubbles during play."
+    }
+  ]
+}

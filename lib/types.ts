@@ -148,7 +148,7 @@ export type RecordingStatus = "created" | "transcribing" | "transcribed" | "extr
 export type RecordingRow = {
   id: string;
   case_id: string;
-  kind: "intake_call" | "session";
+  kind: "intake_call" | "session" | "consult";
   session_number: number | null;
   storage_path: string | null;
   mime_type: string | null;
@@ -161,13 +161,17 @@ export type RecordingRow = {
   red_flags: IsaaExtraction["red_flags"];
   language_code: string | null;
   created_at: string;
+  /** 038: scribe template (`child_dev_isaa` = the ISAA path), uploader and optional appointment. */
+  template?: "child_dev_isaa" | "therapy_session_note" | "medical_consult_note";
+  uploaded_by?: string | null;
+  appointment_id?: string | null;
 };
 
 export type ReportRow = {
   id: string;
   case_id: string;
   recording_id: string | null;
-  kind: "pre_session_brief" | "assessment" | "parent_summary";
+  kind: "pre_session_brief" | "assessment" | "parent_summary" | "session_note" | "rx_draft";
   content: unknown;
   content_md: string;
   audio_path: string | null;

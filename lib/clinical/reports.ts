@@ -37,8 +37,10 @@ export const REPORT_KINDS = {
     producer: "015 parent voice note (app/api/reports/[id]/parent-voice-note)",
     inUse: true,
   },
-  session_note: { audience: "provider", publishable: true, producer: "038 AI scribe", inUse: false },
-  rx_draft: { audience: "provider", publishable: false, producer: "038 AI scribe draft, signed by 039 e-prescription", inUse: false },
+  // 038: published by finalizeSessionNote (lib/scribe/notes.ts) with the clinician's visible_to_guardian choice
+  // (default off), not by the reports_publish_final trigger.
+  session_note: { audience: "provider", publishable: true, producer: "038 AI scribe (lib/scribe/run.ts)", inUse: true },
+  rx_draft: { audience: "provider", publishable: false, producer: "038 AI scribe draft, signed by 039 e-prescription", inUse: true },
   generic_intake_brief: { audience: "provider", publishable: false, producer: "035 appointment intake", inUse: false },
 } as const satisfies Record<string, ReportKindSpec>;
 

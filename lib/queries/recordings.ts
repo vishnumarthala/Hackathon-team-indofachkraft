@@ -16,7 +16,7 @@ export async function nextSessionNumber(caseId: string): Promise<number> {
     .from("recordings")
     .select("session_number")
     .eq("case_id", caseId)
-    .eq("kind", "session")
+    .in("kind", ["session", "consult"])
     .not("session_number", "is", null)
     .order("session_number", { ascending: false })
     .limit(1);
@@ -30,10 +30,15 @@ export async function insertSessionRecording(row: {
   session_number: number;
   storage_path: string;
   mime_type: string;
+  /** 038: AI scribe recordings (default: the ISAA session path). */
+  kind?: "session" | "consult";
+  template?: string;
+  uploaded_by?: string | null;
+  appointment_id?: string | null;
 }): Promise<void> {
   const { error } = await supabaseAdmin()
     .from("recordings")
-    .insert({ ...row, kind: "session", status: "created" });
+    .insert({ ...row, kind: row.kind ?? "session", status: "created" });
   if (error) throw new Error(`Could not create the recording: ${error.message}`);
 }
 

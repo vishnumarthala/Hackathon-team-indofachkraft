@@ -532,13 +532,18 @@ captured before 024 (`tests/fixtures/regression-child-dev/baseline.json`).
 |---|---|---|
 | Instrument registry | `lib/clinical/instruments.ts` (`getInstrument`, `InstrumentDefinition`, `score`), table `clinical_instruments` | Keys `ISAA`, `CASE_SHEET`, `ISAA_PARENT_CHECKIN`; `definition` = the `schemas/*.json` file (a test fails on drift). `facts.instrument` is a foreign key to it. `score("ISAA", facts)` delegates to `scoreIsaa` unchanged. New standardised instruments need a licensing review. |
 | Parent check-in | `schemas/isaa-parent-checkin.json`, `lib/clinical/checkin.ts` (`scoreCheckin`, `checkinRedFlags`, `URGENT_COPY`) | 15 ISAA-derived parent questions (never/sometimes/often/always, some reverse-worded) + 6 yes/no red-flag questions (`skill_regression`, `self_injury`, `seizure`, `breathing`, `not_eating_drinking`, `safety_concern`). Bands `no_strong_signs` (0-9) / `discuss_with_professional` (10-19) / `see_professional_soon` (20-45, or any red flag). Copy always says `This is a developmental check-in, not a diagnosis.`; any red flag shows `Please contact your child's doctor now. In an emergency call 108 (ambulance) or 112.` English only; thresholds and wording await clinical review. |
-| Report kinds | `lib/clinical/reports.ts` (`REPORT_KINDS`) | In use: `pre_session_brief`, `assessment`, `parent_summary`; reserved: `session_note` (038), `rx_draft` (038/039), `generic_intake_brief` (035). Each has `audience`, `publishable`, `producer`. The ticket that starts writing a reserved kind extends the `reports.kind` check in its migration. |
+| Report kinds | `lib/clinical/reports.ts` (`REPORT_KINDS`) | In use: `pre_session_brief`, `assessment`, `parent_summary`, `session_note` and `rx_draft` (038, `docs/scribe.md`); reserved: `generic_intake_brief` (035). Each has `audience`, `publishable`, `producer`. The ticket that starts writing a reserved kind extends the `reports.kind` check in its migration. |
 | Published versions | `lib/clinical/publish.ts` (`publishVersion(tx, input)`, `getLatestPublished`, `listGuardianVisible`, `contentHash`, `setActor`), table `published_versions`, SQL `publish_version(jsonb)` | **`content_md` is authoritative**; `reports.content` (jsonb) is only the AI draft input. One append-only row per (entity_type, entity_id, version): `report`, `iep_plan`, `home_program`, `prescription`, `assessment`; `content_hash` = sha256(content_md); update/delete raise (rows go only with their case; `child_id` follows its case when 020's claim merges a placeholder child, trigger `cases_child_follow`). `publish_version` is the only writer (service role cannot insert); call `publishVersion(tx, ...)` inside the transaction that changes the entity. A report becoming `final` publishes itself in the same transaction (trigger `reports_publish_final`; `assessment` -> provider only, `parent_summary` -> visible to the guardian; a changed final `content_md` -> next version). The latest version decides guardian visibility. Guardians read only `visible_to_guardian` versions; other orgs only through a sharing grant. Existing final reports were backfilled (`backfill_published_reports()`); `npm run db:check` reports final reports without a version. |
 | Speaker roles | `lib/clinical/speakers.ts`, `SpeakerRoleSchema` | Stored values unchanged: `therapist` = the clinician of any provider type, `parent` = guardian/caregiver, `agent` = AI assistant, `unknown`; new `child`, `other_adult`. UI labels via i18n `speakers.*` (`Clinician`, `Parent or caregiver`, `Child`, `Other adult`, `AI assistant`, `Unknown`); prompts keep the stored value. The 008 swap only exchanges therapist <-> parent. |
 
 The assessment portal (questionnaires sent to guardians, review, publishing, `assessments` share scope) is
 described in `docs/assessments.md`.
 IEP plans publish with `entity_type = 'iep_plan'` (ticket 025, `docs/iep.md`).
+The AI scribe (ticket 038, `docs/scribe.md`) generalises the session pipeline to every provider type: recordings carry a
+`template` (`child_dev_isaa` = the unchanged ISAA path, `therapy_session_note`, `medical_consult_note` with `kind =
+'consult'`), and produce `session_note` / `rx_draft` reports and `goal_progress_suggestions`. Session notes are
+published by `finalizeSessionNote` (not by the `reports_publish_final` trigger, which skips both kinds) with the
+clinician's `visible_to_guardian` choice.
 Home programs publish with `entity_type = 'home_program'` (ticket 026, `docs/home-program.md`).
 
 ## 8. API contracts
@@ -553,9 +558,11 @@ All JSON. Errors: `{ "error": "<message>", "details"?: any }` with 400 validatio
 |---|---|---|---|
 | `POST /api/cases` | 004 | `{ child_alias, child_age_months?, parent_alias, parent_email?, parent_phone?, language, therapist_name? }` | 201 `{ case }` |
 | `PATCH /api/cases/:id` | 004 | any of `{ facp_score: 0..100 \| null, language, parent_email, parent_phone }` | 200 `{ case }` |
-| `POST /api/cases/:id/sessions` | 005 | `{ file_name, mime_type, size_bytes, consent?: boolean }` | 201 `{ recording_id, session_number, bucket, path, token, signed_url }` |
+| `POST /api/cases/:id/sessions` | 005, 038 | `{ file_name, mime_type, size_bytes, consent?: boolean, template?, appointment_id? }` | 201 `{ recording_id, session_number, template, bucket, path, token, signed_url }`; 422 video appointment (`The AI scribe is available for in-clinic sessions only`) |
 | `POST /api/sessions/:id/transcribe` | 005 | - | 200 `{ recording_id, status, segments_count, duration_sec, speaker_map }` |
-| `POST /api/sessions/:id/extract` | 006 | - | 200 `{ recording_id, facts, red_flags, therapist_notes_applied }` |
+| `POST /api/sessions/:id/extract` | 006 | - | 200 `{ recording_id, facts, red_flags, therapist_notes_applied }` (409 for AI scribe templates) |
+| `POST\|GET\|PATCH /api/sessions/:id/scribe` | 038 | PATCH `{ content_md?, status?: "final", visible_to_guardian? }` | POST 200 `{ session_note_id, session_note_status, goal_suggestions, rx_draft_id? }`; 409 ISAA session / running / not transcribed; 422 consent or video appointment (`docs/scribe.md`) |
+| `PATCH /api/goal-suggestions/:id` | 038 | `{ status: "accepted" \| "rejected", value? }` | 200 `{ suggestion, entry?, trend? }` (goal_progress `ai_suggested_confirmed`); 409 already decided; 404 other org |
 | `PATCH /api/facts/:id` | 007 | `{ action: "confirm" }` or `{ action: "edit", value: 1..5 }` | 200 `{ fact, score }` |
 | `POST /api/sessions/:id/bulk` | 007 | `{ action: "confirm_suggested" }` or `{ action: "rate_unrated", value: 1 }` | 200 `{ updated, score }` |
 | `PATCH /api/sessions/:id/speakers` | 008 | `{ swap: true }` | 200 `{ speaker_map, segments_count }` |
@@ -599,7 +606,8 @@ Every mutation writes an `audit_events` row via `lib/audit.ts` (041: security-cr
 | Call | Fixture |
 |------|---------|
 | Scribe v2 | `demo/fixtures/scribe-response.json` (generated from `roleplay-segments.json` by `scripts/make-scribe-fixture.ts`) |
-| Gemini task `<task>` | `demo/fixtures/gemini/<task>.json` for `extract`, `brief`, `report`, `referral`, `ask`, `parent-summary` |
+| Gemini task `<task>` | `demo/fixtures/gemini/<task>.json` for `extract`, `brief`, `report`, `referral`, `ask`, `parent-summary`, `scribe-therapy`, `scribe-medical`, `scribe-rx` (038) |
+| Scribe v2 for AI scribe templates (038) | `scribe-response-therapy.json` / `scribe-response-consult.json` (from `roleplay-{therapy,consult}-segments.json`, `npm run fixtures:scribe`) |
 | ElevenLabs conversation token | none: start endpoint returns `{ demo: true }`, intake page shows "Simulate completed call" |
 | ElevenLabs finished conversation | `demo/fixtures/elevenlabs-post-call.json` (`data`) returned by `/api/intake/:token/complete` and replayed by `/api/dev/simulate-intake/:token` |
 | ElevenLabs TTS | skipped: report saved without audio, page shows "Voice note skipped in demo mode" |

@@ -1708,6 +1708,7 @@
         "documents": "Documents you or the care team upload (reports, prescriptions, school letters).",
         "intake": "AI intake voice call (only with your permission): the call audio and its transcript, and the summary prepared for the therapist.",
         "sessions": "Session recordings (only with your permission): audio recorded at the centre, transcripts, observations suggested by AI and confirmed by the therapist, reports and referrals.",
+        "scribe": "AI session notes (only with your permission): notes, goal progress and prescription drafts prepared by AI from recordings made at the clinic. The clinician checks every suggestion; you see a note only when the clinician shares it with you.",
         "assessments": "Questionnaires your care team sends you (for example the developmental check-in): your answers and the summary the team publishes.",
         "plans": "Therapy plans (IEP): goals, progress the care team records, and the plan versions published to you.",
         "homeProgram": "Home activities: the activities your care team publishes for practice at home, and what you log (done, how it went, minutes, notes).",
@@ -2123,6 +2124,75 @@
       "invalid": "Please check the highlighted fields.",
       "saveFailed": "Could not save. Please try again.",
       "reload": "Reload"
+    }
+  },
+  "scribe": {
+    "label": "Suggested by DoctorNearMe - the clinician decides",
+    "templates": {
+      "child_dev_isaa": "Child Development (ISAA form)",
+      "therapy_session_note": "Therapy session note",
+      "medical_consult_note": "Medical consult note"
+    },
+    "upload": {
+      "sessionType": "Session type",
+      "inClinicOnly": "In-clinic recordings only. The AI scribe is not available for video calls.",
+      "appointment": "Appointment (optional)",
+      "noAppointment": "No appointment",
+      "clinicAppointment": "{date} - in clinic",
+      "videoAppointment": "{date} - video call (not available)",
+      "stepScribe": "Draft session note (Gemini)"
+    },
+    "review": {
+      "title": "Session {number} · {type}",
+      "status": "This session is {status}.",
+      "failed": "Last attempt failed: {error}",
+      "run": "Run AI scribe",
+      "rerun": "Run AI scribe again",
+      "rerunHint": "Replaces the draft note and open suggestions. Final notes and your decisions are kept.",
+      "running": "Running…",
+      "error": "Something went wrong. Please try again.",
+      "noteTitle": "Session note",
+      "noNote": "No session note yet.",
+      "draft": "Draft",
+      "final": "Final",
+      "sharedYes": "shared with the family",
+      "sharedNo": "not shared with the family",
+      "editLabel": "Note text (Markdown)",
+      "preview": "Note preview",
+      "save": "Save draft",
+      "saved": "Saved",
+      "playFrom": "Play the recording from {time}",
+      "noAudio": "Audio not available",
+      "shareCheckbox": "Share with the family (they see it in their DoctorNearMe app)",
+      "finalize": "Finalize note",
+      "share": "Share with family",
+      "unshare": "Stop sharing",
+      "goalsTitle": "Goal progress",
+      "noGoals": "No progress suggestions. They need an active plan with goals and a measurement said in the session.",
+      "openGoals": "Open the Goals tab",
+      "suggested": "Suggested value: {value}",
+      "valueLabel": "Value",
+      "accept": "Accept",
+      "editValue": "Edit value",
+      "acceptEdited": "Save and accept",
+      "reject": "Reject",
+      "cancel": "Cancel",
+      "accepted": "Accepted: {value} recorded",
+      "rejected": "Rejected",
+      "rxTitle": "Prescription draft",
+      "rxIntro": "For the prescriber to review, edit and sign. Nothing is sent to the family.",
+      "rxNone": "No medicines suggested.",
+      "rxItem": "{drug} {strength} {form}: {dose}, {frequency}, {days} days ({route})",
+      "rxReview": "Review in prescriptions"
+    },
+    "family": {
+      "link": "Session notes",
+      "back": "Back to {name}",
+      "title": "{name}'s session notes",
+      "intro": "Notes your child's clinicians chose to share with you after a session.",
+      "empty": "No session notes have been shared with you yet.",
+      "from": "From {org}",
+      "sharedOn": "Shared on {date}"
     }
   }
 }

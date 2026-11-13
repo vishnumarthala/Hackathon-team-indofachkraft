@@ -224,6 +224,21 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "reviewDeletionRequest",
     impl: { kind: "auditStrict", module: "lib/privacy/deletion.ts" },
   },
+  // ---------- 038 AI scribe: publishing a session note (guardian visibility) ----------
+  {
+    action: "scribe.note_finalized",
+    description: "Provider finalizes an AI-drafted session note (published, optionally visible to the guardian)",
+    routes: ["app/api/sessions/[id]/scribe/route.ts"],
+    call: "finalizeSessionNote",
+    impl: { kind: "auditStrict", module: "lib/scribe/notes.ts" },
+  },
+  {
+    action: "scribe.note_sharing_changed",
+    description: "Provider shares or stops sharing a final session note with the guardian",
+    routes: ["app/api/sessions/[id]/scribe/route.ts"],
+    call: "setSessionNoteSharing",
+    impl: { kind: "auditStrict", module: "lib/scribe/notes.ts" },
+  },
   // ---------- 026 home program ----------
   {
     action: "home_program.published",

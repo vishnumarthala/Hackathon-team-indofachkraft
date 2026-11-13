@@ -76,6 +76,12 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
           {ti("link")}
         </Link>
         <Link
+          href={`/family/children/${child.id}/notes`}
+          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+        >
+          {(await getT("scribe.family"))("link")}
+        </Link>
+        <Link
           href={`/family/children/${child.id}/home-program`}
           className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
         >

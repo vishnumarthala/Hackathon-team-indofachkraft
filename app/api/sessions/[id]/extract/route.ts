@@ -14,6 +14,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   if (denied) return denied;
   const recording = await getRecording(id);
   if (!recording) return fail(404, "Session not found");
+  // 038 (route by template): only Child Development sessions run the ISAA extraction.
+  if ((recording.template ?? "child_dev_isaa") !== "child_dev_isaa") {
+    return fail(409, "This session uses the AI scribe: POST /api/sessions/:id/scribe");
+  }
   const blocked = await requireCaseConsent(recording.case_id, "ai_extraction");
   if (blocked) return blocked;
   let outcome: ExtractionOutcome;

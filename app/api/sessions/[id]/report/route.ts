@@ -23,6 +23,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   if (denied) return denied;
   const recording = await getRecording(id);
   if (!recording || recording.kind !== "session") return fail(404, "Session not found");
+  // 038: the assessment report drafts from ISAA facts; AI scribe sessions use their session note instead.
+  if ((recording.template ?? "child_dev_isaa") !== "child_dev_isaa") return fail(409, "This session uses the AI scribe; use its session note");
   // 020 FR-7: report drafting is AI analysis (ai_extraction).
   const childId = await childIdForCase(recording.case_id);
   const blocked = await requireConsent(childId, "ai_extraction");

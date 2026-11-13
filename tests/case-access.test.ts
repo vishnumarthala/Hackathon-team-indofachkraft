@@ -31,7 +31,7 @@ function routeFiles(dir: string): string[] {
 }
 
 // Gates that resolve the case and check access (017 requireCaseAccess and stricter wrappers).
-const GATE = /await (requireCaseAccess|requireCaseActor|requireRecordingAccess|requireReportAccess|requireFactAccess|requireChildAccessViaCase)\(/;
+const GATE = /await (requireCaseAccess|requireCaseActor|requireRecordingAccess|requireRecordingActor|requireReportAccess|requireFactAccess|requireChildAccessViaCase)\(/;
 // Anything that reads case data.
 const DB_READ = /supabaseAdmin\(|await (get|list|load|find|fetch)[A-Z]\w*\(/;
 
