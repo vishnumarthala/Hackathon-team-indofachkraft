@@ -22,7 +22,7 @@ const SAMPLES: Record<keyof typeof TOPICS, Record<string, unknown>> = {
   "home_program.published": { program_id: ID, child_id: CHILD },
   "assessment.assigned": { assessment_id: ID, child_id: CHILD },
   "assessment.red_flag": { assessment_id: ID, child_id: CHILD, case_id: CASE },
-  "sharing.granted": { grant_id: ID, child_id: CHILD, org_id: ID },
+  "sharing.granted": { grant_id: ID, child_id: CHILD, source_org_id: ID, grantee_org_id: USER, grantee_case_id: CASE },
   "provider.verified": { provider_profile_id: ID, submission_id: ID },
   "provider.rejected": { provider_profile_id: ID, submission_id: ID },
   "provider.suspended": { provider_profile_id: ID },
@@ -118,6 +118,18 @@ describe("templates", () => {
     );
     expect(guardian).toBe("/family/messages");
     expect(provider).toBe(`/cases/${CASE}`);
+  });
+
+  it("sharing_granted links grantee admins to the case's Shared with us tab", () => {
+    const out = TEMPLATES.sharing_granted.render({
+      payload: SAMPLES["sharing.granted"] as never,
+      locale: "en",
+      role: "provider",
+      appUrl: APP,
+      event: { id: "1", aggregate_type: "sharing_grant", aggregate_id: ID },
+    });
+    expect(out.link).toBe(`/cases/${CASE}/shared`);
+    expect(out.whatsapp).toBeUndefined();
   });
 
   it("test_ping adds a 30-minute calendar invite only when asked", () => {

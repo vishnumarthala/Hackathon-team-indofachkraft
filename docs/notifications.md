@@ -75,7 +75,7 @@ SQL functions (service role only):
      v_appt.starts_at - interval '24 hours');
    ```
 
-   Triggers work too: 028's provider decisions (`provider.verified` / `.rejected` / `.suspended` / `.claimed`)
+   Triggers work too: 022's `sharing.granted` (trigger on `sharing_grants`) and 028's provider decisions (`provider.verified` / `.rejected` / `.suspended` / `.claimed`)
    are enqueued by triggers on `credential_submissions` and `provider_profiles` in the deciding transaction;
    the TypeScript caller only calls `drainSoon()`.
 
@@ -105,7 +105,7 @@ Rules:
 2. **Topic**: add an entry to `TOPICS` in `lib/notify/topics.ts`: strict `payload` schema, `channels`,
    `template`, and `recipients(payload, { sql, event })`. Recipients run **at fan-out time inside the fan-out
    transaction** and must re-check access (helpers in `lib/notify/recipients.ts`: `activeGuardians`,
-   `childAccessFilter`, `caseProviders`, `orgMembers`, `profileOwner`). Users who lost access get no row.
+   `childAccessFilter`, `caseProviders`, `orgMembers`, `activeGrantRecipients`, `profileOwner`). Users who lost access get no row.
 3. **Emit** it as above. Add a test that renders the template in en/hi/te (`tests/notify-templates.test.ts`
    loops over every topic: add a sample payload there).
 4. **WhatsApp**: if the template has WhatsApp, add it to the Meta list below and submit it.
@@ -129,8 +129,8 @@ worker that built 032 and needs native review with the rest of `messages/REVIEW.
 | `iep.published` (025) | active guardians of the child | in-app, email, WhatsApp | `iep_published` |
 | `home_program.published` (026) | active guardians of the child | in-app, email, WhatsApp | `home_program_published` |
 | `assessment.assigned` (024) | active guardians of the child | in-app, email, WhatsApp | `assessment_assigned` |
-| `assessment.red_flag` (024) | active provider members of the case's org (optionally only `recipient_user_ids`) | in-app, email | `assessment_red_flag` |
-| `sharing.granted` (022) | owners/admins of the grantee org (022 should add a "grant still active" check) | in-app, email | `sharing_granted` |
+| `assessment.red_flag` (024) | providers who can access the case under 022's rule (org owners/admins + assigned care team; optionally only `recipient_user_ids`) | in-app, email | `assessment_red_flag` |
+| `sharing.granted` (022, enqueued by a trigger on `sharing_grants` inside `create_sharing_grant`) | active owners/admins of the grantee org, only while the grant is in force (not revoked/expired, child live) and the granting guardian's link is active; org and child read from the grant row | in-app, email | `sharing_granted` (links to the grantee case's `Shared with us` tab) |
 | `provider.verified` / `.rejected` / `.suspended` / `.claimed` (028) | the provider bound to the profile | in-app, email | `provider_*` |
 
 Later tickets register their own (030: `appointment.*` with `.ics`; 031 payments; 037 Meet links).

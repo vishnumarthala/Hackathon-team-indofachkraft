@@ -7,10 +7,13 @@ import { isUuid } from "@/lib/cases/validation";
 import { getActiveGuardianLink, type ChildRow, type GuardianLinkRow } from "@/lib/children";
 import { supabaseAdmin } from "@/lib/db";
 import { fail } from "@/lib/http";
+import { getActiveGrants, sourceOrgIdsOf, type ActiveGrant } from "@/lib/sharing/access";
+import type { ShareScope } from "@/lib/sharing/scopes";
 
 // Resource-level authorisation. The server reads clinical tables with the service-role client, which
 // bypasses RLS, so every route and page must pass one of these gates before touching case data.
-// A provider may access a case only while they are an active member of the case's organisation.
+// A provider may access a case only while they are an active member of the case's organisation and, unless
+// they are an owner/admin of it, assigned to the case (022).
 // Missing, invalid and other-tenant ids all give the same 404 so ids from other tenants leak nothing.
 
 export type Actor = { user: User; role: UserRole };
@@ -76,16 +79,22 @@ async function lookupCaseId(table: "recordings" | "reports" | "facts", id: strin
   return (data as { case_id: string } | null)?.case_id ?? null;
 }
 
-async function caseOrgId(caseId: string | null): Promise<string | null> {
+export type CaseAccessLevel = "manage" | "assigned";
+
+/**
+ * 022 FR-2 (one rule, defined in SQL `case_access_level`): `manage` = active owner/admin of the case's org,
+ * `assigned` = active member with an active assignment, null = no access (unassigned or removed member,
+ * revoked membership, other org, platform admin without membership, missing or malformed id).
+ */
+export async function getCaseAccessLevel(userId: string, caseId: string | null): Promise<CaseAccessLevel | null> {
   if (!caseId || !isUuid(caseId)) return null;
-  const { data, error } = await supabaseAdmin().from("cases").select("org_id").eq("id", caseId).maybeSingle();
-  if (error) throw new Error(`Could not load case: ${error.message}`);
-  return (data as { org_id: string } | null)?.org_id ?? null;
+  const { data, error } = await supabaseAdmin().rpc("case_access_level", { p_user: userId, p_case: caseId });
+  if (error) throw new Error(`Could not check case access: ${error.message}`);
+  return (data as CaseAccessLevel | null) ?? null;
 }
 
 async function canAccessCase(userId: string, caseId: string | null): Promise<boolean> {
-  const orgId = await caseOrgId(caseId);
-  return orgId !== null && (await isActiveMember(userId, orgId));
+  return (await getCaseAccessLevel(userId, caseId)) !== null;
 }
 
 async function gate(resolveCaseId: () => Promise<string | null>, notFoundMessage: string): Promise<Response | null> {
@@ -215,4 +224,27 @@ export async function requireCaseActor(caseId: string): Promise<{ actor: Actor }
   if ("response" in result) return result;
   if (!(await canAccessCase(result.actor.user.id, caseId))) return { response: fail(404, "Case not found") };
   return result;
+}
+
+// ---------- 022: cross-organisation sharing (rule 2) ----------
+
+export type SharedAccess = { actor: Actor; sourceOrgIds: string[]; grants: ActiveGrant[] };
+
+/**
+ * FR-2: read-only access to another organisation's records of a child. The caller's org must hold an
+ * unrevoked, unexpired guardian grant for the child with `scope`, and the caller must be able to access a case
+ * of that child in the grantee org. `granteeOrgId` narrows to one org (the case workspace's). Returns the
+ * source orgs whose records the scope's loader may read. Never grants write access to anything.
+ * No grant (none, wrong scope, expired, revoked) -> 404.
+ */
+export async function requireSharedAccess(
+  childId: string,
+  scope: ShareScope,
+  options: { granteeOrgId?: string } = {},
+): Promise<SharedAccess | Response> {
+  const result = await requireProviderApi();
+  if ("response" in result) return result.response;
+  const grants = await getActiveGrants(result.actor.user.id, childId, scope, options.granteeOrgId);
+  if (grants.length === 0) return fail(404, "Not found");
+  return { actor: result.actor, sourceOrgIds: sourceOrgIdsOf(grants), grants };
 }

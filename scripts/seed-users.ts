@@ -1,5 +1,6 @@
 // Synthetic test accounts for local development (ticket 019 FR-12). Local Supabase only.
-// Usage: npm run -s seed:users -- --prefix <acct>
+// Usage: npm run -s seed:users -- --prefix <acct> [--extra-member]
+// --extra-member (022) adds `provider_a2`, a second plain member of org A who is not assigned to any case.
 // Prints JSON with the accounts, their passwords (new random password on every run) and the two orgs.
 // Later tickets extend ACCOUNTS / the org setup here instead of writing their own seed script.
 import { loadEnvConfig } from "@next/env";
@@ -18,6 +19,8 @@ const ACCOUNTS: Account[] = [
   { key: "provider_b", role: "provider" },
   { key: "platform_admin", role: "platform_admin" },
 ];
+
+const EXTRA_MEMBER: Account = { key: "provider_a2", role: "provider" };
 
 const SEED_EMAIL_DOMAIN = "example.test";
 
@@ -45,6 +48,7 @@ async function main() {
     throw new Error("seed:users only runs against a local Supabase (NEXT_PUBLIC_SUPABASE_URL on 127.0.0.1 or localhost)");
   }
   const prefix = parsePrefix(process.argv.slice(2));
+  const extraMember = process.argv.includes("--extra-member");
   const { default: postgres } = await import("postgres");
   const { env } = await import("../lib/env");
   const { supabaseAdmin } = await import("../lib/db");
@@ -54,7 +58,7 @@ async function main() {
 
   try {
     const result: Record<string, { id: string; email: string; password: string; role: Role; phone: string | null }> = {};
-    for (const account of ACCOUNTS) {
+    for (const account of extraMember ? [...ACCOUNTS, EXTRA_MEMBER] : ACCOUNTS) {
       const email = `${prefix}-${account.key.replace(/_/g, "-")}@${SEED_EMAIL_DOMAIN}`;
       const password = `${prefix}-${randomBytes(9).toString("base64url")}`;
 
@@ -111,6 +115,23 @@ async function main() {
     await sql`
       insert into org_members (org_id, user_id, org_role, status) values (${orgA.id}, ${result.provider_a.id}, 'member', 'active')
       on conflict (org_id, user_id) do update set org_role = 'member', status = 'active', revoked_at = null`;
+    if (extraMember) {
+      await sql`
+        insert into org_members (org_id, user_id, org_role, status) values (${orgA.id}, ${result.provider_a2.id}, 'member', 'active')
+        on conflict (org_id, user_id) do update set org_role = 'member', status = 'active', revoked_at = null`;
+    }
+
+    // 022: members only see cases they are assigned to, so provider_a joins the care team of org A's cases
+    // (new cases get their creator as lead automatically). provider_a2 stays unassigned on purpose.
+    const unassigned = await sql<{ id: string }[]>`
+      select c.id from cases c
+      where c.org_id = ${orgA.id}
+        and not exists (
+          select 1 from case_assignments a where a.case_id = c.id and a.user_id = ${result.provider_a.id} and a.removed_at is null
+        )`;
+    for (const row of unassigned) {
+      await sql`select public.add_case_assignment(${row.id}, ${result.provider_a.id}, 'member', null, ${result.org_admin_a.id})`;
+    }
 
     console.log(
       JSON.stringify(

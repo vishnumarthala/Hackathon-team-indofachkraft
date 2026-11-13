@@ -174,6 +174,57 @@ describe.skipIf(!enabled)("notifications outbox (database)", { timeout: 120_000 
     expect((await rowsFor(flag)).map((r) => r.channel)).toEqual(["email", "in_app"]);
   });
 
+  it("022 sharing.granted: enqueued in the grant transaction; grantee owners/admins only, re-checked at fan-out", async () => {
+    const ownerA = await world.user("sowner", "provider");
+    const ownerB = await world.user("gowner", "provider");
+    const adminB = await world.user("gadmin", "provider");
+    const memberB = await world.user("gmember", "provider");
+    const orgA = await world.org(ownerA, "Source");
+    const orgB = await world.org(ownerB, "Grantee");
+    await world.member(orgB, memberB);
+    await sql`insert into org_members (org_id, user_id, org_role) values (${orgB}, ${adminB.id}, 'admin')`;
+    const { childId } = await world.kase(orgA);
+    const { caseId: caseB } = await world.kase(orgB, { childId });
+    const guardian = await world.user("sguardian", "guardian");
+    const linkId = await world.link(childId, guardian);
+    const grant = async () => {
+      const [row] = await sql<{ g: { id: string } }[]>`
+        select public.create_sharing_grant(${childId}, ${orgA}, ${orgB}, ${["reports"]}::text[], null, ${guardian.id}) as g`;
+      const [event] = await sql<{ id: string; payload: Record<string, unknown> }[]>`
+        select id, payload from outbox_events where topic = 'sharing.granted' and aggregate_id = ${row.g.id}`;
+      return { grantId: row.g.id, event };
+    };
+    const recipients = async (eventId: string) =>
+      (await sql<{ recipient_user_id: string; channel: string; link: string }[]>`
+        select recipient_user_id, channel, link from notifications where event_id = ${eventId} order by channel`);
+
+    // A failed grant transaction leaves no event.
+    await expect(sql`select public.create_sharing_grant(${childId}, ${orgA}, ${orgA}, ${["reports"]}::text[], null, ${guardian.id})`).rejects.toThrow(/same_org/);
+
+    const active = await grant();
+    expect(active.event.payload).toEqual({ grant_id: active.grantId, child_id: childId, source_org_id: orgA, grantee_org_id: orgB, grantee_case_id: caseB });
+    await worker.fanOutDue(sql, { eventIds: [active.event.id], appUrl: APP });
+    const rows = await recipients(active.event.id);
+    expect(new Set(rows.map((r) => r.recipient_user_id))).toEqual(new Set([ownerB.id, adminB.id]));
+    expect(new Set(rows.map((r) => r.channel))).toEqual(new Set(["email", "in_app"]));
+    expect(rows.every((r) => r.link === `/cases/${caseB}/shared`)).toBe(true);
+    const [inApp] = await sql`select title, body from notifications where event_id = ${active.event.id} and channel = 'in_app' limit 1`;
+    expect(inApp.body).not.toContain("(synthetic)");
+
+    // Revoked before fan-out -> no rows.
+    const revoked = await grant();
+    await sql`select public.revoke_sharing_grant(${childId}, ${revoked.grantId}, ${guardian.id})`;
+    await worker.fanOutDue(sql, { eventIds: [revoked.event.id], appUrl: APP });
+    expect(await recipients(revoked.event.id)).toHaveLength(0);
+
+    // The granting guardian's link revoked before fan-out -> no rows.
+    const unlinked = await grant();
+    await sql`update guardian_links set status = 'revoked', revoked_at = now() where id = ${linkId}`;
+    await worker.fanOutDue(sql, { eventIds: [unlinked.event.id], appUrl: APP });
+    expect(await recipients(unlinked.event.id)).toHaveLength(0);
+    await sql`delete from outbox_events where topic = 'sharing.granted' and aggregate_id in ${sql([active.grantId, revoked.grantId, unlinked.grantId])}`;
+  });
+
   it("NFR-2: two concurrent notifications_claim calls on two connections never return the same row", async () => {
     const ids = await Promise.all(Array.from({ length: 30 }, (_, i) => ping(guardianB, `claim-${i}`)));
     await worker.fanOutDue(sql, { eventIds: ids, eventBatch: 100, appUrl: APP });

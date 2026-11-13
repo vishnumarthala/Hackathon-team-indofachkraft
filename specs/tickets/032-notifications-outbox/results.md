@@ -60,10 +60,9 @@ inbox/read authz + pagination (E-1/E-4), admin retry, cron auth, 028 triggers (1
   older `/admin/*` pages, which answer 404. The retry API answers 403.
 - **Recipients `recipients(payload, { sql, event })`** take the fan-out transaction as a second argument
   (FR-2 shows `recipients(payload)`), so access checks run inside the fan-out transaction.
-- **Topics whose tables do not exist yet** (`message.created`, `sharing.granted`): `message.created` uses
-  producer-named `recipient_user_ids` re-checked against the child (027 replaces it with thread participants
-  who have not read the thread); `sharing.granted` goes to grantee org owners/admins and 022 should add the
-  "grant still active" check. 028's provider topics were added to the registry.
+- **`message.created`** (027 not built yet) uses producer-named `recipient_user_ids` re-checked against the
+  child (027 replaces it with thread participants who have not read the thread). 028's provider topics and
+  022's `sharing.granted` (see the merge section) were added to the registry.
 - **Template strings** (en/hi/te) live in the template files, not in `messages/*.json`, so the browser bundle
   does not carry them; hi/te are first drafts listed for native review in `docs/notifications.md`. UI strings
   are in `messages/*.json` (`notifications` namespace, `REVIEW.md` regenerated, rows `pending`).
@@ -85,6 +84,7 @@ inbox/read authz + pagination (E-1/E-4), admin retry, cron auth, 028 triggers (1
   `credential_submissions_outbox` and `provider_profiles_outbox` (028 topics).
 - **Env:** `CRON_SECRET` (required for cron), `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`,
   `WHATSAPP_API_VERSION` (default `v21.0`) in `.env.example` and `lib/env.ts`.
+- **022 `sharing.granted`** is wired (merge section below); no `notifyLater` remains in code or docs.
 - **030** adds its `/api/cron/booking` entry to `vercel.json` next to `/api/cron/outbox`; `/api/cron/*` is
   already public to the proxy (handlers check the secret).
 - **Shared files touched additively:** `lib/auth-access.ts` (one public prefix), `lib/email.ts`
@@ -98,3 +98,42 @@ inbox/read authz + pagination (E-1/E-4), admin retry, cron auth, 028 triggers (1
   The drain check was then run with curl and a private cookie jar.
 - The E2E data (`e032-*@example.test` accounts, `ping-*-e032` / `e5-e032-*` events, the synthetic
   `e032-dr-b` profile) is left in the slot 5 database.
+
+## Merge with `main` (022 care team + sharing grants)
+
+- `git merge main` into `ticket/032-notifications-outbox`. Conflicts: `lib/notify/topics.ts` (032 registry kept,
+  022's `SHARING_TOPICS` kept as a registry-typed constant, 022's `notifyLater` stub dropped),
+  `messages/{en,hi,te}.json` (both namespaces kept, deep-merged, no value clashes), `messages/REVIEW.md`
+  (regenerated with `npx tsx scripts/i18n-review.ts`, 1013 rows). `lib/authz.ts`, `lib/auth-access.ts`,
+  `docs/system-design.md`, `.env.example`, seed scripts and tests merged automatically. No 032 code calls
+  `listCases`.
+- **`sharing.granted` wired to the outbox.** New migration `20261113003201_sharing_outbox.sql`: an `after insert`
+  trigger on `sharing_grants` enqueues `sharing.granted` (payload `grant_id, child_id, source_org_id,
+  grantee_org_id, grantee_case_id`, dedup `sharing.granted:<grant id>`) inside `create_sharing_grant`'s
+  transaction; `createSharingGrant` calls `drainSoon()` instead of `notifyLater`. Recipients
+  (`activeGrantRecipients`): active owners/admins of the grantee org, re-checked at fan-out that the grant is
+  not revoked or expired, the child is live and the granting guardian's link is still active (org and child
+  read from the grant row, not the payload). In-app + email (no WhatsApp), template `sharing_granted`
+  ("A family shared their child's records with your organisation.", no child name, no scopes), linking to
+  the grantee case's `Shared with us` tab (`/cases/<id>/shared`). `docs/sharing.md`, `docs/providers.md` and
+  `docs/notifications.md` updated; `grep notifyLater` finds nothing outside `specs/`.
+- **Aligned with 022's access rule:** `caseProviders` (`assessment.red_flag`) and `childAccessFilter`
+  (`message.created`) now use `case_access_level()` (org owners/admins + assigned care team) instead of any
+  active org member.
+- Tests: `tests/outbox.test.ts` adds "022 sharing.granted" (failed grant transaction -> no event; event payload;
+  grantee owner + admin get in-app + email, grantee member and source org get nothing; revoked grant and
+  departed guardian -> no rows); `tests/sharing-grants.test.ts` asserts the outbox event instead of the
+  `notifyLater` mock; `tests/notify-templates.test.ts` checks the `Shared with us` link;
+  `tests/helpers/world.ts` cleanup also deletes outbox events of its synthetic children.
+- After `dnm-db.sh 5 <worktree> reset` (12 migrations): `npm run lint` and `npm run typecheck` exit 0;
+  `npx vitest run` 57 files, 816 passed, 10 skipped (the pre-existing 010 block; all DB suites ran, including
+  022's `case-access` / `sharing-grants`); no outbox rows left behind; `npm run build` exit 0.
+- Live re-check (dev server 3050, `CRON_SECRET=test-3050`, fresh `seed:users --prefix e032`):
+  - E-1: cron without header 401, with header `200 {"fanned_out":1,"sent":1,"failed":0,"skipped":1}`;
+    guardian_a's `GET /api/notifications` lists `Test notification` (unread 1) and `/family` renders the bell
+    `Notifications, 1 unread`; guardian_b sees `items: []`; email `sent` / `demo`, WhatsApp `skipped` /
+    `whatsapp_not_configured`.
+  - Sharing: guardian_a `POST /api/family/children/<child>/sharing-grants` (org B -> org A, reports, 90 days)
+    -> 201; without any cron call the event was fanned out 27 ms later (`after()` drain): org A's owner
+    (`org_admin_a`) got in-app + email (`demo`) linking to `/cases/<org A case>/shared` (200 for them, 404 for
+    provider_b); org A's plain member `provider_a` and source-org owner `provider_b` got nothing.

@@ -114,7 +114,7 @@ answer 401/403 (`requirePlatformAdminApi`); admin pages 404 for everyone else (`
 
 ## Notifications
 
-There is no outbox yet (032). `lib/notify/topics.ts` defines `PROVIDER_TOPICS` (`provider.verified`,
-`provider.rejected`, `provider.suspended`, `provider.claimed`) and a `notifyLater(topic, payload)` hook
-that only logs. 032 replaces it with `outbox_enqueue` (ids only in the payload). Until then the provider
-sees the decision on `/dashboard/profile`.
+Since 032, triggers on `credential_submissions` and `provider_profiles` enqueue `provider.verified`,
+`provider.rejected`, `provider.suspended` and `provider.claimed` outbox events (ids only) in the deciding
+transaction; the TypeScript callers call `drainSoon()`. The provider gets an in-app notification and an email
+linking to `/dashboard/profile`. See `docs/notifications.md`.

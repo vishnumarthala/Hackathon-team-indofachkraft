@@ -6,11 +6,11 @@ import { z } from "zod";
 import { env } from "@/lib/env";
 import type { Queryable } from "@/lib/pg";
 import {
+  activeGrantRecipients,
   activeGuardians,
   caseProviders,
   childAccessFilter,
   existingUser,
-  orgMembers,
   profileOwner,
 } from "./recipients";
 import type { TemplateName } from "./templates";
@@ -102,12 +102,15 @@ export const TOPICS = {
       return p.recipient_user_ids ? providers.filter((id) => p.recipient_user_ids?.includes(id)) : providers;
     },
   }),
-  // 022: owners/admins of the grantee organisation. 022 should also re-check here that the grant is still active.
+  // 022: emitted by a trigger on sharing_grants inside create_sharing_grant (migration 20261113003201). Owners/admins
+  // of the grantee org, only while the grant is in force and the granting guardian's link is still active.
   "sharing.granted": topic({
-    payload: z.object({ grant_id: uuid, child_id: uuid, org_id: uuid }).strict(),
+    payload: z
+      .object({ grant_id: uuid, child_id: uuid, source_org_id: uuid, grantee_org_id: uuid, grantee_case_id: uuid.optional() })
+      .strict(),
     channels: PROVIDER_CHANNELS,
     template: "sharing_granted",
-    recipients: (p, { sql }) => orgMembers(sql, p.org_id, ["owner", "admin"]),
+    recipients: (p, { sql }) => activeGrantRecipients(sql, p.grant_id),
   }),
   // 028: emitted by triggers inside the verification / claim transactions (migration 20261113003200_outbox.sql).
   "provider.verified": topic({
@@ -144,6 +147,10 @@ export const PROVIDER_TOPICS = {
   rejected: "provider.rejected",
   suspended: "provider.suspended",
   claimed: "provider.claimed",
+} as const satisfies Record<string, Topic>;
+
+export const SHARING_TOPICS = {
+  granted: "sharing.granted",
 } as const satisfies Record<string, Topic>;
 
 export function isTopic(value: string): value is Topic {

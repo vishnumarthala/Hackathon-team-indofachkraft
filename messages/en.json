@@ -860,6 +860,39 @@
         "leave": "Remove this child from my account",
         "leaveConfirm": "Remove {name} from your account? You will lose access until a new code links you again.",
         "leaving": "Removing..."
+      },
+      "team": {
+        "link": "Care team and sharing",
+        "back": "Back to {name}",
+        "title": "Care team",
+        "intro": "The providers looking after {name}, by organisation.",
+        "noOrgs": "No organisation is treating {name} yet. When your therapist gives you a code, add it under My children.",
+        "noProviders": "No providers assigned yet.",
+        "lead": "Lead",
+        "member": "Member",
+        "unnamed": "Care team member",
+        "sharingTitle": "Sharing",
+        "sharingIntro": "Share records between your providers",
+        "sharingExplain": "Each organisation sees only its own records unless you share. You choose what to share and you can stop at any time.",
+        "needTwo": "Sharing is possible when two or more organisations are treating {name}.",
+        "pair": "From {from} to {to}",
+        "what": "What to share",
+        "howLong": "For how long",
+        "forever": "Until I stop it",
+        "months3": "3 months",
+        "months12": "12 months",
+        "share": "Share",
+        "saving": "Saving…",
+        "stop": "Stop sharing",
+        "stopping": "Stopping…",
+        "stopConfirm": "Stop sharing with {org}? They lose access straight away.",
+        "sharedScopes": "Shared: {scopes}",
+        "sharedUntil": "Until {date}",
+        "sharedUntilStopped": "Until you stop it",
+        "notShared": "Not shared",
+        "chooseScope": "Choose at least one type of record.",
+        "notTreating": "This organisation is not treating your child",
+        "saveFailed": "Could not save. Please try again."
       }
     }
   },
@@ -1104,5 +1137,67 @@
       "retried": "Queued again.",
       "retryFailed": "Could not retry."
     }
+  },
+  "caseTabs": {
+    "label": "Case sections",
+    "overview": "Overview",
+    "brief": "Brief",
+    "sessions": "Sessions",
+    "report": "Report",
+    "referral": "Referral",
+    "team": "Team",
+    "shared": "Shared with us"
+  },
+  "sharing": {
+    "scopes": {
+      "reports": "Reports",
+      "assessments": "Assessments",
+      "iep": "Goals (IEP)",
+      "home_program": "Home program",
+      "documents": "Documents",
+      "health_profile": "Health profile"
+    }
+  },
+  "careTeam": {
+    "title": "Care team",
+    "intro": "Providers assigned to this case. Organisation owners and admins can open every case of the organisation; other members only the cases they are assigned to.",
+    "empty": "Nobody is assigned to this case yet.",
+    "lead": "Lead",
+    "member": "Member",
+    "you": "(you)",
+    "unnamed": "Unnamed provider",
+    "leftOrg": "No longer in the organisation",
+    "remove": "Remove",
+    "removing": "Removing…",
+    "removeConfirm": "Remove {name} from the care team? Unless they are an organisation owner or admin, they lose access to this case straight away.",
+    "makeLead": "Make lead",
+    "addTitle": "Add provider",
+    "person": "Provider",
+    "choose": "Choose a person",
+    "discipline": "Discipline",
+    "disciplineHint": "For example Speech therapist. Leave empty to use their profile.",
+    "role": "Role on this case",
+    "add": "Add provider",
+    "adding": "Adding…",
+    "noCandidates": "Everyone in your organisation is already on this care team.",
+    "managersOnly": "Only the case lead or an organisation owner or admin can change the care team.",
+    "lastLead": "Assign another lead first",
+    "notInOrg": "This person is not in your organisation",
+    "alreadyOnTeam": "This person is already on the care team",
+    "saveFailed": "Could not save. Please try again."
+  },
+  "sharedWithUs": {
+    "title": "Shared with us",
+    "intro": "Records that the child's parent has shared with your organisation from their other providers. Read only.",
+    "empty": "Nothing has been shared with your organisation for this child.",
+    "from": "From {org}",
+    "until": "Shared until {date}",
+    "untilStopped": "Shared until the parent stops it",
+    "notAvailable": "Shared, but this type of record is not available in DoctorNearMe yet.",
+    "noItems": "Nothing of this type has been shared yet.",
+    "open": "Open",
+    "back": "Back to shared records",
+    "readOnly": "Shared by {org}. Read only.",
+    "openFailed": "Could not open this record. Please try again."
   }
 }

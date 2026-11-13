@@ -29,6 +29,9 @@ async function main() {
       await tx`update user_profiles set role = 'provider' where id = ${userId} and role = 'guardian'`;
     });
     console.log(`${email} is now ${role} of organisation ${orgId}`);
+    if (role === "member") {
+      console.log("Note (022): members only see cases they are assigned to (case Team tab); owners/admins see all.");
+    }
   } finally {
     await sql.end({ timeout: 2 });
   }

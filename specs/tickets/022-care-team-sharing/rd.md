@@ -1,6 +1,6 @@
 # 022: Care team, provider assignments and cross-org sharing grants
 
-**Status:** draft
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 020: needs children, guardian links and case `child_id`
 

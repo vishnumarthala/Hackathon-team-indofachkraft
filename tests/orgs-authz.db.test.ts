@@ -72,6 +72,8 @@ describe.skipIf(!enabled)("organisations and resource-level access (database)", 
     await sql`insert into reports (id, case_id, recording_id, kind, content, content_md) values (${reportA}, ${caseA}, ${recordingA}, 'assessment', '{}'::jsonb, 'x')`;
     [{ id: factA }] = await sql<{ id: string }[]>`
       insert into facts (case_id, recording_id, instrument, item_id, source) values (${caseA}, ${recordingA}, 'ISAA', '1', 'session') returning id`;
+    // 022: plain members reach only cases they are assigned to.
+    await sql`insert into case_assignments (case_id, user_id) values (${caseA}, ${memberA.id})`;
   });
 
   afterAll(async () => {
@@ -190,6 +192,9 @@ describe.skipIf(!enabled)("organisations and resource-level access (database)", 
       const [profile] = await sql<{ role: string }[]>`select role from user_profiles where id = ${guardian.id}`;
       expect(profile.role).toBe("provider");
       as(guardian);
+      // 022: a new plain member reaches a case once assigned to it.
+      expect((await authz.requireCaseAccess(caseA))?.status).toBe(404);
+      await sql`insert into case_assignments (case_id, user_id) values (${caseA}, ${guardian.id})`;
       expect(await authz.requireCaseAccess(caseA)).toBeNull();
     });
 
@@ -217,6 +222,7 @@ describe.skipIf(!enabled)("organisations and resource-level access (database)", 
 
       const temp = await makeUser("temp");
       await sql`insert into org_members (org_id, user_id, org_role) values (${orgA}, ${temp.id}, 'member')`;
+      await sql`insert into case_assignments (case_id, user_id) values (${caseA}, ${temp.id})`;
       as(temp);
       expect(await authz.requireCaseAccess(caseA)).toBeNull();
       expect(await orgs.revokeMember(orgA, temp.id)).toEqual({ ok: true, data: null });
