@@ -82,7 +82,42 @@ export function intakeSentence(ctx: TemplateContext<AppointmentPayload>): { text
   return null;
 }
 
-type IntakeOption = { intake?: boolean; whatsappIntakeVariants?: boolean };
+// 052 FR-6: the confirmation tells the guardian what happens next, in the same order as the app's timeline
+// (lib/family/journey.ts): Permissions -> Intake call (only when the service has one) -> Visit -> Home program.
+// Plain text; nothing clinical, no child name (D-5).
+export const NEXT_STEPS_TEXT: Record<Locale, { intro: string; permissions: string; intake: string; visit: (when: string) => string; home: string }> = {
+  en: {
+    intro: "What happens next:",
+    permissions: "Permissions: check them in your DoctorNearMe app.",
+    intake: "Intake call: a short voice call before the visit.",
+    visit: (when) => `Visit: ${when}.`,
+    home: "Home program: after the visit, activities to practise at home.",
+  },
+  hi: {
+    intro: "आगे क्या होगा:",
+    permissions: "अनुमतियाँ: अपने DoctorNearMe ऐप में देख लें।",
+    intake: "इनटेक कॉल: मुलाक़ात से पहले एक छोटी वॉइस कॉल।",
+    visit: (when) => `मुलाक़ात: ${when}।`,
+    home: "होम प्रोग्राम: मुलाक़ात के बाद, घर पर अभ्यास की गतिविधियाँ।",
+  },
+  te: {
+    intro: "తర్వాత ఏమి జరుగుతుంది:",
+    permissions: "అనుమతులు: మీ DoctorNearMe యాప్‌లో చూసుకోండి.",
+    intake: "ఇన్‌టేక్ కాల్: సందర్శనకు ముందు ఒక చిన్న వాయిస్ కాల్.",
+    visit: (when) => `సందర్శన: ${when}.`,
+    home: "హోమ్ ప్రోగ్రామ్: సందర్శన తర్వాత, ఇంట్లో సాధన చేయాల్సిన కార్యకలాపాలు.",
+  },
+};
+
+/** The numbered steps for a guardian's confirmation (null for providers). */
+export function nextStepsSentence(ctx: TemplateContext<AppointmentPayload>, when: string): string | null {
+  if (ctx.role !== "guardian") return null;
+  const text = NEXT_STEPS_TEXT[ctx.locale] ?? NEXT_STEPS_TEXT.en;
+  const steps = [text.permissions, ...(ctx.payload.intake ? [text.intake] : []), text.visit(when), text.home];
+  return `${text.intro} ${steps.map((step, i) => `${i + 1}. ${step}`).join(" ")}`;
+}
+
+type IntakeOption = { intake?: boolean; whatsappIntakeVariants?: boolean; nextSteps?: boolean };
 
 export function appointmentTemplate(
   name: string,
@@ -95,7 +130,11 @@ export function appointmentTemplate(
     render(ctx) {
       const v = appointmentValues(ctx);
       const intake = opts.intake ? intakeSentence(ctx) : null;
-      const withIntake = (s: TemplateStrings): TemplateStrings => (intake ? { ...s, body: `${s.body} ${intake.text}` } : s);
+      const steps = opts.nextSteps ? nextStepsSentence(ctx, v.when) : null;
+      const withIntake = (s: TemplateStrings): TemplateStrings => {
+        const body = [s.body, intake?.text, steps].filter(Boolean).join(" ");
+        return { ...s, body };
+      };
       const rendered = defineTemplate<AppointmentPayload>({
         name,
         strings: { en: withIntake(strings.en(v)), hi: withIntake(strings.hi(v)), te: withIntake(strings.te(v)) },

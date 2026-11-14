@@ -34,6 +34,7 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
   const t = await getT("booking");
   const format = await getFormatter();
   const { moved } = await searchParams;
+  const tj = await getT("family.journey");
   const all = await listGuardianAppointments(user.id);
   // 031 FR-8: payment status next to the appointment status.
   const tp = await getT("payments");
@@ -138,6 +139,12 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
           </div>
         </div>
         {actions ? intakeNote(intakes.get(a.id)) : null}
+        {/* 052 FR-6: the visit page with "What happens next". */}
+        {a.status !== "held" && a.status !== "expired" ? (
+          <Link href={`/family/appointments/${a.id}`} className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline" data-testid="appointment-details">
+            {actions ? tj("open") : tj("details")}
+          </Link>
+        ) : null}
         {actions && snap.mode === "video" ? <MeetPanel appointment={a} meet={meet.get(a.id)} side="guardian" /> : null}
         {actions && (a.status === "confirmed" || a.status === "pending_payment") ? (
           <div className="flex flex-wrap items-center gap-2">

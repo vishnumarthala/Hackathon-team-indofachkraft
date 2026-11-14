@@ -38,7 +38,12 @@ export default async function CaseOverviewPage({ params }: { params: Promise<{ i
         ))}
       </dl>
 
-      {caseRow.child_id ? <ConsentPanel caseRow={{ ...caseRow, child_id: caseRow.child_id }} /> : null}
+      {/* 052: the dashboard's `Invite parent` links here (`#parent-code`). */}
+      {caseRow.child_id ? (
+        <div id="parent-code" className="scroll-mt-4">
+          <ConsentPanel caseRow={{ ...caseRow, child_id: caseRow.child_id }} />
+        </div>
+      ) : null}
 
       {/* 043 FR-6: weekly series of the child (staff who may schedule get the forms). */}
       <TimetableCard caseId={caseRow.id} userId={actor.user.id} />

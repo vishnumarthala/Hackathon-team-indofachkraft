@@ -238,7 +238,7 @@
       "consultModes": "Consultation modes",
       "consultModesSoon": "Video and in-clinic options will be shown here soon.",
       "book": "Book",
-      "bookSoon": "Online booking is coming soon.",
+      "bookSoon": "Online booking is not open for this provider yet.",
       "providers": "Providers",
       "centre": "Centre",
       "solo": "Solo practice",
@@ -806,16 +806,116 @@
       "signingOut": "Signing out...",
       "signOutFailed": "Could not sign out. Please try again.",
       "emergency": "In an emergency call 108 (ambulance) or 112.",
-      "assessments": "Questionnaires"
+      "assessments": "Questionnaires",
+      "visits": "Visits",
+      "account": "Account",
+      "bottomNavLabel": "Main menu",
+      "unread_one": "{count} unread message",
+      "unread_other": "{count} unread messages",
+      "records": "Your records"
     },
     "home": {
-      "hello": "Hello, {name}",
+      "greeting": "Namaste, {name}",
       "there": "there",
-      "addChild": "Add your child",
-      "addChildText": "Keep your child's care, appointments and documents in one place.",
-      "findSpecialist": "Find a specialist near you",
-      "findSpecialistText": "Developmental paediatricians, therapists and centres in Hyderabad.",
-      "comingSoon": "Coming soon"
+      "thisWeek": "Here is what's happening with {children} this week",
+      "thisWeekNone": "Let's set up your child's care. It takes two minutes.",
+      "nextStep": "Next step",
+      "steps": {
+        "addChild": {
+          "title": "Add your child",
+          "text": "Enter the code your clinic gave you, or find a therapist near you.",
+          "code": "Enter your clinic code",
+          "find": "Find a therapist"
+        },
+        "permission": {
+          "title": "Give permission for {child}'s intake call",
+          "text": "The visit with {provider} on {when} starts with a short AI intake call. It needs your permission first.",
+          "action": "Give permission"
+        },
+        "intake": {
+          "title": "Start the intake call",
+          "text": "A short voice call about {child} helps {provider} prepare for the visit on {when}.",
+          "linkSoon": "Your call link is on its way. Open the visit to check.",
+          "action": "Start the intake call",
+          "openVisit": "Open the visit"
+        },
+        "pay": {
+          "title": "Payment due for {child}",
+          "textAppointment": "Pay to confirm your booking. The time is held for 15 minutes.",
+          "textPackage": "{centre} offered a package of sessions for {amount}.",
+          "textBalance": "{centre} is waiting for {amount}.",
+          "action": "Pay {amount}"
+        },
+        "visit": {
+          "titleNow": "Your visit is now",
+          "titleToday": "Visit today",
+          "titleTomorrow": "Visit tomorrow",
+          "text": "For {child}",
+          "directions": "Directions",
+          "details": "What happens next"
+        },
+        "practice": {
+          "title": "Practise at home today",
+          "text": "{child} has activities from the care team. A few minutes a day helps.",
+          "action": "Log today's practice"
+        },
+        "message": {
+          "title": "New message",
+          "text_one": "You have {count} unread message.",
+          "text_other": "You have {count} unread messages.",
+          "action": "Read message from {name}",
+          "actionNoName": "Read message"
+        },
+        "allSet": {
+          "title": "You're all set",
+          "next": "Your next visit:",
+          "none": "No visits booked right now.",
+          "find": "Find a therapist"
+        }
+      },
+      "children": {
+        "title": "Your children",
+        "all": "All children",
+        "empty": "No child added yet.",
+        "add": "Add your child",
+        "open": "Open {name}",
+        "careTeam": "Care team: {names}",
+        "noTeam": "No care team yet",
+        "nextVisit": "Next visit: {when}",
+        "noVisit": "No visit booked",
+        "streak_one": "{count}-day practice streak",
+        "streak_other": "{count}-day practice streak",
+        "noStreak": "No practice logged yet"
+      },
+      "addAnother": "Add another child",
+      "useCode": "Use a clinic code",
+      "visits": {
+        "title": "Upcoming visits",
+        "all": "All visits",
+        "empty": "No visits booked yet.",
+        "find": "Find a therapist",
+        "weekly": "Weekly",
+        "details": "What happens next"
+      },
+      "updates": {
+        "title": "From your care team",
+        "empty": "Nothing shared yet. Plans, session notes and home activities appear here when your care team shares them.",
+        "messages": "Open messages",
+        "kinds": {
+          "plan": "Therapy plan",
+          "note": "Session note",
+          "home_program": "Home program",
+          "prescription": "Prescription"
+        },
+        "from": "{centre} · {date}"
+      },
+      "quick": {
+        "title": "Quick links",
+        "find": "Find a therapist",
+        "checkin": "Developmental check-in",
+        "assessments": "Questionnaires",
+        "documents": "Documents"
+      }
     },
     "empty": {
       "children": "No children added yet.",
@@ -995,6 +1095,60 @@
         "stale": "These answers were changed in another window. Reload to continue.",
         "saveFailed": "Could not save. Please try again."
       }
+    },
+    "journey": {
+      "title": "What happens next",
+      "booked": "Booked. Here is what happens next.",
+      "heading": "Visit with {provider}",
+      "summary": "Visit details",
+      "back": "All visits",
+      "open": "What happens next",
+      "details": "Details",
+      "directions": "Directions",
+      "status": {
+        "done": "Done",
+        "due": "To do now",
+        "waiting": "Waiting",
+        "upcoming": "Later",
+        "skipped": "Not needed"
+      },
+      "steps": {
+        "permissions": {
+          "title": "Permissions",
+          "needed": "Allow the AI intake call so the care team can prepare the visit.",
+          "given": "Permission given for the intake call.",
+          "notNeeded": "Nothing is needed before this visit. You can review permissions any time.",
+          "give": "Give permission",
+          "review": "Review permissions"
+        },
+        "intake": {
+          "title": "Intake call",
+          "done": "Done. Thank you.",
+          "ready": "A short voice call about your child before the visit.",
+          "afterPermission": "Opens after you give permission.",
+          "linkSoon": "Your call link is on its way. We will also send it to you.",
+          "skipped": "Not done before the visit.",
+          "start": "Start the intake call"
+        },
+        "visit": {
+          "title": "Visit",
+          "now": "Now",
+          "today": "Today, {time}",
+          "tomorrow": "Tomorrow, {time}",
+          "attended": "Attended",
+          "missed": "Missed",
+          "cancelled": "Cancelled",
+          "awaitingCentre": "The centre will update this visit soon.",
+          "payToConfirm": "Pay to confirm this booking.",
+          "pay": "Pay now"
+        },
+        "home": {
+          "title": "Home program",
+          "ready": "Activities to practise at home are ready.",
+          "afterVisit": "After the visit, your therapist shares activities to practise at home.",
+          "open": "Open home program"
+        }
+      }
     }
   },
   "directory": {
@@ -1034,7 +1188,7 @@
       "consultation": "Consultation",
       "viewProfile": "View profile",
       "book": "Book",
-      "bookSoon": "Online booking is coming soon.",
+      "bookSoon": "Online booking is not open for this provider yet.",
       "empty": "No providers found nearby. Try a larger distance.",
       "start": "Type a locality or PIN code, or use your location, to see providers near you.",
       "notFound": "We couldn't find that place. Try a locality or PIN code in Hyderabad.",
@@ -3798,5 +3952,124 @@
         "medicineChange": "double the syrup dose, double the dose"
       }
     }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Good morning, {name}",
+      "afternoon": "Good afternoon, {name}",
+      "evening": "Good evening, {name}"
+    },
+    "there": "there",
+    "subtitle": "{org} · {date}",
+    "invite": {
+      "button": "Invite parent",
+      "title": "Invite a parent",
+      "intro": "These children have no parent account yet. Open one to create a parent code.",
+      "none": "Every child here already has a parent account.",
+      "import": "Import many children"
+    },
+    "import": "Import children",
+    "newCase": "New case",
+    "noOrg": "You are not in an organisation yet. Create your practice or accept an invitation on the Team page.",
+    "noOrgAction": "Open Team",
+    "stats": {
+      "label": "At a glance",
+      "activeChildren": "Active children",
+      "activeChildrenHint": "Seen in the last 30 days or booked in the next 30",
+      "sessionsWeek": "Sessions this week",
+      "sessionsWeekHint": "Booked, attended or missed",
+      "attendance": "Attendance",
+      "attendanceHint": "Last 30 days",
+      "none": "-",
+      "homeLogs": "Home practice logs",
+      "homeLogsHint": "This week"
+    },
+    "today": {
+      "title": "Today",
+      "orgScope": "Everyone in your organisation",
+      "ownScope": "Your sessions",
+      "sessionsTitle_one": "{count} session today",
+      "sessionsTitle_other": "{count} sessions today",
+      "empty": "No sessions today.",
+      "emptyAction": "Open the schedule",
+      "noChild": "No child linked",
+      "video": "Video",
+      "markLabel": "Mark attendance",
+      "marked": "Marked: {value}",
+      "writeNote": "Write note",
+      "openCase": "Open case",
+      "notStarted": "Can be marked from {time}",
+      "error": "Could not save this.",
+      "register": "Open the register"
+    },
+    "todo": {
+      "title": "To do",
+      "allDone": "Nothing is waiting. Well done.",
+      "items": {
+        "notes_one": "{count} note to write",
+        "notes_other": "{count} notes to write",
+        "attendance_one": "{count} session not marked (over 24 hours)",
+        "attendance_other": "{count} sessions not marked (over 24 hours)",
+        "isaa_one": "{count} ISAA item to confirm",
+        "isaa_other": "{count} ISAA items to confirm",
+        "briefs_one": "{count} intake brief to review",
+        "briefs_other": "{count} intake briefs to review",
+        "messages_one": "{count} unread message",
+        "messages_other": "{count} unread messages",
+        "conflicts_one": "{count} timetable conflict",
+        "conflicts_other": "{count} timetable conflicts",
+        "balances_one": "{count} family with a balance due",
+        "balances_other": "{count} families with a balance due"
+      }
+    },
+    "cases": {
+      "title": "Cases",
+      "filters": {
+        "label": "Filter cases",
+        "all": "All",
+        "review": "Needs review",
+        "booked": "Booked",
+        "referred": "Referred"
+      },
+      "search": "Search",
+      "searchLabel": "Search by child or parent",
+      "child": "Child",
+      "age": "Age",
+      "language": "Language",
+      "status": "Status",
+      "created": "Created",
+      "empty": "No cases yet.",
+      "emptyAction": "Create the first case",
+      "noMatch": "No cases match.",
+      "showAll": "Show all cases",
+      "ageMonths_one": "{count} month",
+      "ageMonths_other": "{count} months"
+    },
+    "status": {
+      "booked": "Booked",
+      "intake_done": "Intake done",
+      "in_assessment": "In assessment",
+      "referred": "Referred"
+    },
+    "languages": {
+      "en": "English",
+      "hi": "Hindi",
+      "te": "Telugu"
+    }
+  },
+  "caseSessions": {
+    "goalsTitle": "Goal progress",
+    "goalsAction": "Open goals",
+    "goalsEmpty": "No active goals yet.",
+    "goalsEmptyAction": "Write the plan",
+    "latest": "Latest: {value} on {date}",
+    "noProgress": "No progress recorded yet",
+    "target": "Target: {value}",
+    "notesTitle": "Sessions and notes",
+    "newSession": "New session",
+    "empty": "No sessions yet.",
+    "emptyAction": "Record the first session",
+    "session": "Session {number}",
+    "open": "Open"
   }
 }

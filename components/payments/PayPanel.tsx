@@ -133,7 +133,8 @@ export function PayPanel({ appointmentId, profileId, initialState, expiresAt, de
       <div role="status" className="space-y-3 rounded-2xl border border-teal-200 bg-teal-50 p-4 sm:p-6">
         <h2 className="text-xl font-semibold text-teal-900">{state === "paid" ? t("paid") : t("refundStarted")}</h2>
         {state === "paid" ? <p className="text-sm text-slate-700">{t("paidDetail")}</p> : null}
-        <Link href="/family/appointments" className={buttonClass}>
+        {/* 052 FR-6: after paying, "What happens next" on the appointment page. */}
+        <Link href={state === "paid" ? `/family/appointments/${appointmentId}?booked=1` : "/family/appointments"} className={buttonClass}>
           {t("viewAppointments")}
         </Link>
       </div>
