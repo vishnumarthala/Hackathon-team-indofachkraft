@@ -1,6 +1,6 @@
 # 052: Clear next steps – family home, provider "Today", booking "what happens next"
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 043, 044, 045, 051: the cards read their data (series, attendance, balances, voice quotas)
 
