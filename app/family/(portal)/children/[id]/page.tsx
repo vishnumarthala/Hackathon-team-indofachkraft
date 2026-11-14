@@ -113,6 +113,10 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
         >
           {(await getT("fees.family"))("link")}
         </Link>
+        {/* 052 FR-3: questionnaires moved off the mobile nav into the child page and Account. */}
+        <Link href="/family/assessments" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
+          {(await getT("family.shell"))("assessments")}
+        </Link>
         <Link
           href={`/family/children/${child.id}/privacy`}
           className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
@@ -145,7 +149,8 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
           {ts("checkins.take")}
         </Link>
       </section>
-      <section aria-labelledby="permissions-heading" className="space-y-3">
+      {/* 052: the Next step card and "What happens next" link here (`#permissions`). */}
+      <section id="permissions" aria-labelledby="permissions-heading" className="scroll-mt-4 space-y-3">
         <h2 id="permissions-heading" className="text-xl font-semibold text-slate-900">
           {t("overview.permissions")}
         </h2>

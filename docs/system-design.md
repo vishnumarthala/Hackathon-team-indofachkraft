@@ -1128,6 +1128,29 @@ Details and the clinical review list: [screen-recommendations.md](screen-recomme
 - No `hreflang` alternates: the UI language is a cookie (018), so every language shares one URL; both pages set a
   canonical URL instead.
 
+## 13f. Clear next steps: family home, provider Today, "what happens next" (ticket 052)
+
+Full description: [docs/next-steps.md](next-steps.md).
+
+- **Family home** (`/family`): `lib/family/next-step.ts` `loadFamilyFacts(userId, { timeZone })` reads everything
+  in a fixed number of queries (no per-child queries) and `pickNextStep(facts)` returns ONE action in the FR-1 order:
+  add a child → give permission → start the intake call → pay → visit today/tomorrow → log today's practice → read
+  a message → you're all set. Then children cards, upcoming visits (3), "From your care team" and quick links.
+- **Mobile bottom nav** (`components/family/FamilyBottomNav.tsx`, < 640 px): Home, Children, Visits, Messages (unread
+  badge from `familyUnreadCount`), Account. Desktop keeps the top nav. `app/family/layout.tsx` pads pages that render
+  it (`has-[[data-bottom-nav]]`).
+- **What happens next** (`lib/family/journey.ts`, `components/family/home/JourneyTimeline.tsx`): Permissions →
+  Intake call (only for services with one) → Visit → Home program, on `/family/appointments/[id]` (`?booked=1` is the
+  booking confirmation; the booking flow and the payment page land there). The guardian confirmation text
+  (`appointment_confirmed`, `NEXT_STEPS_TEXT` in `lib/notify/templates/appointment.ts`) lists the same steps.
+- **Provider dashboard** (`/dashboard`, translated): `lib/dashboard/today.ts` `loadDashboardToday` = today's sessions
+  (owner/admin: the organisation; member: their own profile), To-do counts with links (notes to write, attendance not
+  marked > 24 h, ISAA items, intake briefs, unread messages, series conflicts, balances due for owner/admin) and the
+  four stat cards. One-tap Present / Absent posts to 044's attendance route.
+- **Case default tab** (`lib/cases/default-tab.ts`): past the assessment (referred, final assessment report, active
+  plan or weekly series) → `/cases/<id>/sessions` (goal progress + sessions); otherwise the Overview. Dashboard links
+  use it.
+
 ## 14. Human setup checklist (not tickets)
 
 | Who | Task |

@@ -1,0 +1,26 @@
+PASS E-1 /family for a new parent shows the add-child next step :: status 200, rule add_child, links: clinic code 1, find 3; scrollWidth 390
+PASS E-1 no 'Coming soon' on /family :: matches 0
+PASS E-1 both actions work :: clinic code -> /family/children/claim (heading visible true); find -> /find
+PASS E-2 next step is `Give permission` :: rule permission, action "Give permission" -> /family/children/56078fd8-475f-41fc-b378-09785102d87a#permissions
+PASS E-3 bottom nav at 390 px: 5 items, Messages badge = unread count :: items 5 (Home / Children / Visits / 2Messages / Account), badge "2", Messages aria-label "Messages, 2 unread messages", fixed at y=787, top nav hidden true
+PASS E-3 bottom nav marks Home current and is keyboard reachable :: aria-current on "Home"
+PASS E-2 timeline before permission :: permissions:due, intake:waiting, visit:upcoming, home:upcoming
+PASS E-2 permission given in the app :: POST consents -> 201
+PASS setup: outbox worker pass (consent.granted -> intake link) :: exit 0 {"at":"2026-11-14T00:23:26.641Z","pid":69018,"fanned_out":1,"sent":0,"failed":0,"skipped":0,"payments":{"refunded":0,"pending":0,"failed":0},"fees":{"links":0,"refunds":{"processed":0,"pending":0,"failed":0},"expired_offers":0,"expired_packages":0,"reminders":0}}
+PASS E-2 after permission the next step is `Start the intake call` :: rule intake, action "Start the intake call", link /intake/a/<token>; attempts 1
+PASS E-2 timeline after permission :: permissions:done, intake:due, visit:upcoming, home:upcoming
+PASS E-2 timeline fits 390 px :: scrollWidth 390
+PASS FR-6 confirmation page shows the booked notice and the timeline :: notice "Booked. Here is what happens next.", steps 4
+PASS FR-3 Account links Documents and Questionnaires :: links present
+PASS FR-1/FR-3 Telugu home fits 390 px :: scrollWidth 390; nav హోమ్ / పిల్లలు / సందర్శనలు / 2సందేశాలు / ఖాతా
+PASS NFR-2 another guardian gets 404 for the appointment page :: status 404
+PASS E-4 Today shows 4 sessions, 1 note to write, 2 ISAA items (and the unmarked count) :: status 200 in 847 ms; sessions 4; to do notes=1, isaa=2
+PASS FR-4 four stat cards :: children: 4 | sessions: 5 | attendance: 100% | home: 0
+PASS FR-4 greeting :: Good morning, Dr Arjun Reddy (synthetic)
+PASS E-4 one-tap Present from the dashboard :: label "Marked: Present", DB present/completed, Write note -> /cases/a0c5a4bf-4cdd-4b2f-88cd-0babd502067c/sessions/new?appointment=06ddcc81-29c8-463e-941c-cba43deaeb98
+PASS E-4 after Present the notes to write go up :: notes=2, isaa=2
+PASS FR-5 case links use the default tab :: Anu -> /cases/a0c5a4bf-4cdd-4b2f-88cd-0babd502067c/sessions; Bala -> /cases/9387871c-3450-4323-bf50-a8c1124d2b3b
+PASS FR-5 Sessions tab leads with goal progress :: status 200
+PASS FR-4 filter chip Needs review :: rows 1
+PASS FR-4 dashboard translated (hi) :: Today "आज", Cases "केस"
+PASS FR-4 owner sees the organisation's sessions :: sessions 4

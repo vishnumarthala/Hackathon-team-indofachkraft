@@ -265,13 +265,13 @@ for the text; for example:
 | `home_program_published` | UTILITY | `{{1}}` app link | Your child's care team shared new activities to do at home. Open: {{1}} |
 | `assessment_assigned` | UTILITY | `{{1}}` app link | Your child's care team sent you a questionnaire to fill in. Open: {{1}} |
 | `test_ping` (optional, ops check) | UTILITY | `{{1}}` app link | Notifications are working for your DoctorNearMe account. Open: {{1}} |
-| `appointment_confirmed` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} |
+| `appointment_confirmed` (030; 052 adds the steps) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} What happens next: 1. Permissions: check them in your DoctorNearMe app. 2. Visit: on the date above. 3. Home program: after the visit, activities to practise at home. |
 | `appointment_reminder_24h` (030) | UTILITY | `{{1}}` app link | Reminder: you have a DoctorNearMe appointment tomorrow. Details: {{1}} |
 | `appointment_reminder_2h` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment starts in 2 hours. Details: {{1}} |
 | `appointment_cancelled` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment was cancelled. Details: {{1}} |
 | `appointment_rescheduled` (030) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment was moved to a new time. Details: {{1}} |
-| `appointment_confirmed_intake` (035: confirmation with an intake call link) | UTILITY | `{{1}}` app link, `{{2}}` intake call link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Before your visit, please take a short voice call with our AI assistant: {{2}} |
-| `appointment_confirmed_allow_intake` (035: the child has no AI intake consent yet) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Allow the AI intake call in your DoctorNearMe app to prepare for this visit. |
+| `appointment_confirmed_intake` (035: confirmation with an intake call link; 052 adds the steps) | UTILITY | `{{1}}` app link, `{{2}}` intake call link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Before your visit, please take a short voice call with our AI assistant: {{2}} What happens next: 1. Permissions: check them in your DoctorNearMe app. 2. Intake call: a short voice call before the visit. 3. Visit: on the date above. 4. Home program: after the visit, activities to practise at home. |
+| `appointment_confirmed_allow_intake` (035: the child has no AI intake consent yet; 052 adds the steps) | UTILITY | `{{1}}` app link | Your DoctorNearMe appointment is confirmed. Details: {{1}} Allow the AI intake call in your DoctorNearMe app to prepare for this visit. What happens next: 1. Permissions: check them in your DoctorNearMe app. 2. Intake call: a short voice call before the visit. 3. Visit: on the date above. 4. Home program: after the visit, activities to practise at home. |
 | `appointment_intake_link` (035) | UTILITY | `{{1}}` app link | Prepare for your DoctorNearMe visit: take the short AI intake call. Open: {{1}} |
 | `appointment_meet_ready` (037) | UTILITY | `{{1}}` app link | The video call link for your DoctorNearMe appointment is ready. Join from: {{1}} |
 | `series_created` (043) | UTILITY | `{{1}}` app link | Weekly sessions have been booked for your child on DoctorNearMe. Details: {{1}} |
@@ -281,7 +281,10 @@ for the text; for example:
 | `balance_reminder` (045) | UTILITY | `{{1}}` app link | A payment for your child's sessions is due on DoctorNearMe. Open Payments to pay with UPI or card: {{1}} |
 | `package_reminder` (045) | UTILITY | `{{1}}` app link | Your child's session package is ending soon. Talk to the centre about the next package. Details: {{1}} |
 
-030 added `appointment_*` and 037 `appointment_meet_ready` (rows above); each later ticket adds its rows here. The
+030 added `appointment_*` and 037 `appointment_meet_ready` (rows above); each later ticket adds its rows here.
+052 changed the three `appointment_confirmed*` bodies (the "What happens next" steps, same order as the app's
+timeline and the in-app/email text from `NEXT_STEPS_TEXT` in `lib/notify/templates/appointment.ts`): re-submit them
+to Meta in en/hi/te before switching WhatsApp on; the parameters are unchanged. The
 template name sent to Meta is the DoctorNearMe template name; the language code is the recipient's UI
 locale. Until a template is approved, set nothing: deliveries stay `skipped` (`whatsapp_not_configured`).
 

@@ -222,7 +222,9 @@ describe("templates", () => {
     const payload = SAMPLES["appointment.confirmed"] as never;
     const confirmed = TEMPLATES.appointment_confirmed.render({ ...base, role: "guardian", payload });
     expect(confirmed.body).toBe(
-      "Your appointment with Dr Synthetic Rao on 20 Nov 2026, 10:30 am IST is confirmed. In clinic: Synthetic Clinic, Road 1, Banjara Hills, Hyderabad 500034.",
+      "Your appointment with Dr Synthetic Rao on 20 Nov 2026, 10:30 am IST is confirmed. In clinic: Synthetic Clinic, Road 1, Banjara Hills, Hyderabad 500034." +
+        // 052 FR-6: the guardian's confirmation lists what happens next.
+        " What happens next: 1. Permissions: check them in your DoctorNearMe app. 2. Visit: 20 Nov 2026, 10:30 am IST. 3. Home program: after the visit, activities to practise at home.",
     );
     expect(confirmed.link).toBe("/family/appointments");
     expect(confirmed.email?.ics).toMatchObject({ method: "REQUEST", start: "2026-11-20T05:00:00Z", end: "2026-11-20T05:30:00Z" });

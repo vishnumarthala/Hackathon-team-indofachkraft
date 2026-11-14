@@ -1,83 +1,104 @@
 import Link from "next/link";
-import { NeedsAttention } from "@/components/attendance/NeedsAttention";
-import { StatusBadge } from "@/components/case/StatusBadge";
-import { ageLabel, formatDateTime, languageName } from "@/lib/cases/format";
+import { CaseList } from "@/components/dashboard/CaseList";
+import { StatCards, TodayPanel } from "@/components/dashboard/TodayPanel";
 import { getActiveOrgIds, requireProviderPage } from "@/lib/authz";
-import { getT, getTimeZone } from "@/lib/i18n/server";
+import { caseHref, defaultCaseTab, loadCaseTabFacts } from "@/lib/cases/default-tab";
+import { parseCaseFilter } from "@/lib/dashboard/cases-filter";
+import { greetingPart, listCasesWithoutParent, loadDashboardToday, providerDisplayName } from "@/lib/dashboard/today";
+import { getFormatter, getT, getTimeZone } from "@/lib/i18n/server";
 import { listCases } from "@/lib/queries/cases";
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage() {
+const primary = "inline-flex min-h-11 items-center justify-center rounded-lg bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800";
+const secondary = "inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50";
+
+// 052 FR-4 (Figma /dashboard — Cases 18:11): greeting with organisation and date, Invite parent / New case, the four
+// stat cards, the Today panel (today's sessions + To do), then the case list. Translated (en/hi/te). Today first,
+// cases second (D-3).
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ filter?: string; q?: string }> }) {
   const { user } = await requireProviderPage();
   const orgIds = await getActiveOrgIds(user.id);
-  const cases = orgIds.length > 0 ? await listCases(user.id) : [];
   const timeZone = await getTimeZone();
-  const ti = await getT("childImport");
+  const t = await getT("dashboard");
+  const format = await getFormatter();
+  const { filter: rawFilter, q: rawQ } = await searchParams;
+  const filter = parseCaseFilter(rawFilter);
+  const q = typeof rawQ === "string" ? rawQ.slice(0, 100) : "";
+
+  const [cases, today, invite, displayName] = await Promise.all([
+    orgIds.length > 0 ? listCases(user.id) : Promise.resolve([]),
+    loadDashboardToday(user.id, { timeZone }),
+    orgIds.length > 0 ? listCasesWithoutParent(user.id) : Promise.resolve([]),
+    providerDisplayName(user.id),
+  ]);
+  const tabFacts = await loadCaseTabFacts([...cases.map((c) => c.id), ...today.sessions.flatMap((s) => (s.case_id ? [s.case_id] : []))]);
+  const caseLinks: Record<string, string> = {};
+  for (const [id, facts] of tabFacts) caseLinks[id] = caseHref(id, defaultCaseTab(facts));
+
+  const name = displayName ?? user.email?.split("@")[0] ?? t("there");
+  const orgNames = today.memberships.map((m) => m.org.name).join(", ");
+  const dateLabel = format.date(new Date(), "long");
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold">Cases</h1>
-        <div className="flex flex-wrap items-center gap-2">
-          {/* 047: bulk import; the page itself explains that only owners/admins can import. */}
-          <Link href="/dashboard/import" className="rounded border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-900">
-            {ti("nav")}
-          </Link>
-          <Link href="/cases/new" className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white">
-            New case
-          </Link>
+    <div className="mx-auto max-w-5xl space-y-8 px-4 py-6">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold break-words text-slate-900">{t(`greeting.${greetingPart(timeZone)}`, { name })}</h1>
+          <p className="mt-1 text-sm text-slate-600">{orgNames ? t("subtitle", { org: orgNames, date: dateLabel }) : dateLabel}</p>
         </div>
-      </div>
-
-      {/* 044 FR-4: unmarked sessions older than 24 h (renders nothing when there are none). */}
-      {orgIds.length > 0 ? (
-        <div className="mb-6">
-          <NeedsAttention userId={user.id} />
-        </div>
-      ) : null}
+        {orgIds.length > 0 ? (
+          <div className="flex flex-wrap items-start gap-2">
+            <details className="group relative">
+              <summary className={`${secondary} cursor-pointer list-none`} data-testid="invite-parent">
+                {t("invite.button")}
+              </summary>
+              <div className="absolute right-0 z-20 mt-2 w-80 max-w-[90vw] space-y-2 rounded-xl border border-slate-200 bg-white p-4 text-sm shadow-lg">
+                <p className="font-semibold text-slate-900">{t("invite.title")}</p>
+                {invite.length ? (
+                  <>
+                    <p className="text-slate-600">{t("invite.intro")}</p>
+                    <ul className="max-h-64 overflow-y-auto">
+                      {invite.map((c) => (
+                        <li key={c.id}>
+                          <Link href={`/cases/${c.id}#parent-code`} className="flex min-h-11 items-center rounded px-2 font-medium text-teal-800 underline hover:bg-slate-50">
+                            {c.child_alias}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <p className="text-slate-600">{t("invite.none")}</p>
+                )}
+                <Link href="/dashboard/import" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
+                  {t("invite.import")}
+                </Link>
+              </div>
+            </details>
+            <Link href="/dashboard/import" className={secondary}>
+              {t("import")}
+            </Link>
+            <Link href="/cases/new" className={primary}>
+              {t("newCase")}
+            </Link>
+          </div>
+        ) : null}
+      </header>
 
       {orgIds.length === 0 ? (
-        <p className="text-slate-600">
-          You are not in an organisation yet. Create your practice or accept an invitation on the{" "}
-          <Link href="/dashboard/team" className="font-medium underline">
-            Team
-          </Link>{" "}
-          page.
-        </p>
-      ) : cases.length === 0 ? (
-        <p className="text-slate-600">No cases yet. Create the first one.</p>
-      ) : (
-        <div className="max-w-full overflow-x-auto rounded border border-slate-200">
-          <table className="min-w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-700">
-              <tr>
-                <th className="px-3 py-2 font-medium">Child</th>
-                <th className="px-3 py-2 font-medium">Age</th>
-                <th className="px-3 py-2 font-medium">Language</th>
-                <th className="px-3 py-2 font-medium">Status</th>
-                <th className="px-3 py-2 font-medium">Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cases.map((c) => (
-                <tr key={c.id} className="border-t border-slate-200">
-                  <td className="px-3 py-2">
-                    <Link href={`/cases/${c.id}`} className="font-medium text-slate-900 underline">
-                      {c.child_alias}
-                    </Link>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-2">{ageLabel(c.child_age_months)}</td>
-                  <td className="px-3 py-2">{languageName(c.language)}</td>
-                  <td className="px-3 py-2">
-                    <StatusBadge status={c.status} />
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-2">{formatDateTime(c.created_at, timeZone)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-3 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-slate-700">
+          <p>{t("noOrg")}</p>
+          <Link href="/dashboard/team" className={primary}>
+            {t("noOrgAction")}
+          </Link>
         </div>
+      ) : (
+        <>
+          <StatCards stats={today.stats} />
+          <TodayPanel today={today} userId={user.id} caseLinks={caseLinks} />
+          <CaseList cases={cases} filter={filter} q={q} caseLinks={caseLinks} />
+        </>
       )}
     </div>
   );

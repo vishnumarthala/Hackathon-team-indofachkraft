@@ -259,7 +259,7 @@ Everything published shows up in the **family portal**.
 | Area | Docs |
 |---|---|
 | Platform | [system-design](system-design.md) · [team-workflow](team-workflow.md) · [i18n](i18n.md) |
-| Families | [guardian-auth](guardian-auth.md) · [consent](consent.md) · [health-profile](health-profile.md) · [documents](documents.md) · [sharing](sharing.md) |
+| Families | [next steps (home, bottom nav, timeline, provider Today)](next-steps.md) · [guardian-auth](guardian-auth.md) · [consent](consent.md) · [health-profile](health-profile.md) · [documents](documents.md) · [sharing](sharing.md) |
 | Directory and booking | [providers](providers.md) · [maps](maps.md) · [booking](booking.md) · [payments](payments.md) · [google-meet](google-meet.md) · [ratings](ratings.md) · [pilot-seeding](pilot-seeding.md) |
 | Clinical | [assessments](assessments.md) · [scribe](scribe.md) · [iep](iep.md) · [home-program](home-program.md) · [prescriptions](prescriptions.md) · [messaging](messaging.md) · [notifications](notifications.md) |
 | Voice agents | [screen](elevenlabs-screen-agent.md) · [intake](elevenlabs-agent.md) · [generic intake](elevenlabs-generic-intake-agent.md) · [booking](elevenlabs-booking-agent.md) · [follow-up](elevenlabs-followup-agent.md) |

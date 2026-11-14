@@ -12,6 +12,7 @@ Copy rules in every language: no word for "diagnose" or "diagnosis" except "not 
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
 Rows: 3292. Not yet approved: 3292.
+Rows: 3363. Not yet approved: 3363.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -212,7 +213,7 @@ Rows: 3292. Not yet approved: 3292.
 | `providers.public.consultModes` | Consultation modes | परामर्श के तरीके | సంప్రదింపు విధానాలు |  | pending |
 | `providers.public.consultModesSoon` | Video and in-clinic options will be shown here soon. | वीडियो और क्लिनिक के विकल्प जल्द यहाँ दिखेंगे। | వీడియో, క్లినిక్ ఎంపికలు త్వరలో ఇక్కడ కనిపిస్తాయి. |  | pending |
 | `providers.public.book` | Book | बुक करें | బుక్ చేయండి |  | pending |
-| `providers.public.bookSoon` | Online booking is coming soon. | ऑनलाइन बुकिंग जल्द आ रही है। | ఆన్‌లైన్ బుకింగ్ త్వరలో వస్తోంది. |  | pending |
+| `providers.public.bookSoon` | Online booking is not open for this provider yet. | इस प्रदाता के लिए ऑनलाइन बुकिंग अभी खुली नहीं है। | ఈ ప్రొవైడర్‌కు ఆన్‌లైన్ బుకింగ్ ఇంకా తెరవలేదు. |  | pending |
 | `providers.public.providers` | Providers | प्रदाता | ప్రొవైడర్లు |  | pending |
 | `providers.public.centre` | Centre | केंद्र | కేంద్రం |  | pending |
 | `providers.public.solo` | Solo practice | एकल प्रैक्टिस | సోలో ప్రాక్టీస్ |  | pending |
@@ -709,13 +710,85 @@ Rows: 3292. Not yet approved: 3292.
 | `family.shell.signOutFailed` | Could not sign out. Please try again. | साइन आउट नहीं हो सका। कृपया फिर से कोशिश करें। | సైన్ అవుట్ కాలేదు. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `family.shell.emergency` | In an emergency call 108 (ambulance) or 112. | आपात स्थिति में 108 (एम्बुलेंस) या 112 पर कॉल करें। | అత్యవసర పరిస్థితిలో 108 (అంబులెన్స్) లేదా 112 కు కాల్ చేయండి. |  | pending |
 | `family.shell.assessments` | Questionnaires | प्रश्नावली | ప్రశ్నావళులు |  | pending |
-| `family.home.hello` | Hello, {name} | नमस्ते, {name} | నమస్తే, {name} |  | pending |
-| `family.home.there` | there | जी | మిత్రమా |  | pending |
-| `family.home.addChild` | Add your child | अपने बच्चे को जोड़ें | మీ బిడ్డను జోడించండి |  | pending |
-| `family.home.addChildText` | Keep your child's care, appointments and documents in one place. | अपने बच्चे की देखभाल, अपॉइंटमेंट और दस्तावेज़ एक जगह रखें। | మీ బిడ్డ సంరక్షణ, అపాయింట్‌మెంట్లు మరియు పత్రాలు ఒకే చోట ఉంచండి. |  | pending |
-| `family.home.findSpecialist` | Find a specialist near you | अपने पास विशेषज्ञ खोजें | మీ దగ్గర నిపుణుడిని వెతకండి |  | pending |
-| `family.home.findSpecialistText` | Developmental paediatricians, therapists and centres in Hyderabad. | हैदराबाद में विकासात्मक बाल रोग विशेषज्ञ, थेरेपिस्ट और केंद्र। | హైదరాబాద్‌లో డెవలప్‌మెంటల్ పీడియాట్రీషియన్లు, థెరపిస్టులు మరియు కేంద్రాలు. |  | pending |
-| `family.home.comingSoon` | Coming soon | जल्द आ रहा है | త్వరలో వస్తుంది |  | pending |
+| `family.shell.visits` | Visits | मुलाक़ातें | సందర్శనలు |  | pending |
+| `family.shell.account` | Account | खाता | ఖాతా |  | pending |
+| `family.shell.bottomNavLabel` | Main menu | मुख्य मेनू | ప్రధాన మెనూ |  | pending |
+| `family.shell.unread_one` | {count} unread message | {count} बिना पढ़ा संदेश | {count} చదవని సందేశం |  | pending |
+| `family.shell.unread_other` | {count} unread messages | {count} बिना पढ़े संदेश | {count} చదవని సందేశాలు |  | pending |
+| `family.shell.records` | Your records | आपके रिकॉर्ड | మీ రికార్డులు |  | pending |
+| `family.home.greeting` | Namaste, {name} | नमस्ते, {name} | నమస్తే, {name} |  | pending |
+| `family.home.there` | there | जी | గారు |  | pending |
+| `family.home.thisWeek` | Here is what's happening with {children} this week | इस हफ़्ते {children} के साथ क्या हो रहा है | ఈ వారం {children} తో ఏమి జరుగుతోంది |  | pending |
+| `family.home.thisWeekNone` | Let's set up your child's care. It takes two minutes. | चलिए, आपके बच्चे की देखभाल शुरू करते हैं। इसमें दो मिनट लगते हैं। | మీ బిడ్డ సంరక్షణను ప్రారంభిద్దాం. దీనికి రెండు నిమిషాలు పడుతుంది. |  | pending |
+| `family.home.nextStep` | Next step | अगला कदम | తదుపరి అడుగు |  | pending |
+| `family.home.steps.addChild.title` | Add your child | अपने बच्चे को जोड़ें | మీ బిడ్డను జోడించండి |  | pending |
+| `family.home.steps.addChild.text` | Enter the code your clinic gave you, or find a therapist near you. | क्लिनिक से मिला कोड डालें, या अपने पास कोई थेरेपिस्ट खोजें। | క్లినిక్ ఇచ్చిన కోడ్‌ను నమోదు చేయండి, లేదా మీ దగ్గరలో థెరపిస్ట్‌ను వెతకండి. |  | pending |
+| `family.home.steps.addChild.code` | Enter your clinic code | क्लिनिक कोड डालें | క్లినిక్ కోడ్ నమోదు చేయండి |  | pending |
+| `family.home.steps.addChild.find` | Find a therapist | थेरेपिस्ट खोजें | థెరపిస్ట్‌ను వెతకండి |  | pending |
+| `family.home.steps.permission.title` | Give permission for {child}'s intake call | {child} की इनटेक कॉल के लिए अनुमति दें | {child} ఇన్‌టేక్ కాల్‌కు అనుమతి ఇవ్వండి |  | pending |
+| `family.home.steps.permission.text` | The visit with {provider} on {when} starts with a short AI intake call. It needs your permission first. | {when} को {provider} के साथ मुलाक़ात एक छोटी AI इनटेक कॉल से शुरू होती है। इसके लिए पहले आपकी अनुमति चाहिए। | {when} న {provider} తో సందర్శన ఒక చిన్న AI ఇన్‌టేక్ కాల్‌తో మొదలవుతుంది. దానికి ముందుగా మీ అనుమతి కావాలి. |  | pending |
+| `family.home.steps.permission.action` | Give permission | अनुमति दें | అనుమతి ఇవ్వండి |  | pending |
+| `family.home.steps.intake.title` | Start the intake call | इनटेक कॉल शुरू करें | ఇన్‌టేక్ కాల్ ప్రారంభించండి |  | pending |
+| `family.home.steps.intake.text` | A short voice call about {child} helps {provider} prepare for the visit on {when}. | {child} के बारे में एक छोटी वॉइस कॉल से {provider} को {when} की मुलाक़ात की तैयारी में मदद मिलती है। | {child} గురించి ఒక చిన్న వాయిస్ కాల్ {when} సందర్శనకు {provider} సిద్ధం కావడానికి సహాయపడుతుంది. |  | pending |
+| `family.home.steps.intake.linkSoon` | Your call link is on its way. Open the visit to check. | आपकी कॉल का लिंक आ रहा है। देखने के लिए मुलाक़ात खोलें। | మీ కాల్ లింక్ వస్తోంది. చూడటానికి సందర్శనను తెరవండి. |  | pending |
+| `family.home.steps.intake.action` | Start the intake call | इनटेक कॉल शुरू करें | ఇన్‌టేక్ కాల్ ప్రారంభించండి |  | pending |
+| `family.home.steps.intake.openVisit` | Open the visit | मुलाक़ात खोलें | సందర్శనను తెరవండి |  | pending |
+| `family.home.steps.pay.title` | Payment due for {child} | {child} के लिए भुगतान बाकी है | {child} కోసం చెల్లింపు బాకీ ఉంది |  | pending |
+| `family.home.steps.pay.textAppointment` | Pay to confirm your booking. The time is held for 15 minutes. | बुकिंग पक्की करने के लिए भुगतान करें। समय 15 मिनट के लिए रोका गया है। | బుకింగ్‌ను ధృవీకరించడానికి చెల్లించండి. సమయం 15 నిమిషాలు ఉంచబడింది. |  | pending |
+| `family.home.steps.pay.textPackage` | {centre} offered a package of sessions for {amount}. | {centre} ने {amount} में सत्रों का पैकेज दिया है। | {centre} {amount} కు సెషన్‌ల ప్యాకేజీని అందించింది. |  | pending |
+| `family.home.steps.pay.textBalance` | {centre} is waiting for {amount}. | {centre} को {amount} मिलने बाकी हैं। | {centre} కు {amount} రావాల్సి ఉంది. |  | pending |
+| `family.home.steps.pay.action` | Pay {amount} | {amount} भुगतान करें | {amount} చెల్లించండి |  | pending |
+| `family.home.steps.visit.titleNow` | Your visit is now | आपकी मुलाक़ात अभी है | మీ సందర్శన ఇప్పుడు |  | pending |
+| `family.home.steps.visit.titleToday` | Visit today | आज मुलाक़ात | ఈరోజు సందర్శన |  | pending |
+| `family.home.steps.visit.titleTomorrow` | Visit tomorrow | कल मुलाक़ात | రేపు సందర్శన |  | pending |
+| `family.home.steps.visit.text` | For {child} | {child} के लिए | {child} కోసం |  | pending |
+| `family.home.steps.visit.directions` | Directions | रास्ता देखें | దారి చూడండి |  | pending |
+| `family.home.steps.visit.details` | What happens next | आगे क्या होगा | తర్వాత ఏమి జరుగుతుంది |  | pending |
+| `family.home.steps.practice.title` | Practise at home today | आज घर पर अभ्यास करें | ఈరోజు ఇంట్లో సాధన చేయండి |  | pending |
+| `family.home.steps.practice.text` | {child} has activities from the care team. A few minutes a day helps. | {child} के लिए देखभाल टीम ने गतिविधियाँ दी हैं। रोज़ कुछ मिनट मदद करते हैं। | {child} కోసం సంరక్షణ బృందం కార్యకలాపాలు ఇచ్చింది. రోజూ కొన్ని నిమిషాలు సహాయపడతాయి. |  | pending |
+| `family.home.steps.practice.action` | Log today's practice | आज का अभ्यास दर्ज करें | ఈరోజు సాధనను నమోదు చేయండి |  | pending |
+| `family.home.steps.message.title` | New message | नया संदेश | కొత్త సందేశం |  | pending |
+| `family.home.steps.message.text_one` | You have {count} unread message. | आपका {count} संदेश बिना पढ़ा है। | మీకు {count} చదవని సందేశం ఉంది. |  | pending |
+| `family.home.steps.message.text_other` | You have {count} unread messages. | आपके {count} संदेश बिना पढ़े हैं। | మీకు {count} చదవని సందేశాలు ఉన్నాయి. |  | pending |
+| `family.home.steps.message.action` | Read message from {name} | {name} का संदेश पढ़ें | {name} నుండి సందేశం చదవండి |  | pending |
+| `family.home.steps.message.actionNoName` | Read message | संदेश पढ़ें | సందేశం చదవండి |  | pending |
+| `family.home.steps.allSet.title` | You're all set | सब तैयार है | అంతా సిద్ధంగా ఉంది |  | pending |
+| `family.home.steps.allSet.next` | Your next visit: | आपकी अगली मुलाक़ात: | మీ తదుపరి సందర్శన: |  | pending |
+| `family.home.steps.allSet.none` | No visits booked right now. | अभी कोई मुलाक़ात बुक नहीं है। | ప్రస్తుతం సందర్శనలు ఏవీ బుక్ కాలేదు. |  | pending |
+| `family.home.steps.allSet.find` | Find a therapist | थेरेपिस्ट खोजें | థెరపిస్ట్‌ను వెతకండి |  | pending |
+| `family.home.children.title` | Your children | आपके बच्चे | మీ పిల్లలు |  | pending |
+| `family.home.children.all` | All children | सभी बच्चे | పిల్లలందరూ |  | pending |
+| `family.home.children.empty` | No child added yet. | अभी कोई बच्चा नहीं जोड़ा गया। | ఇంకా పిల్లలను జోడించలేదు. |  | pending |
+| `family.home.children.add` | Add your child | अपने बच्चे को जोड़ें | మీ బిడ్డను జోడించండి |  | pending |
+| `family.home.children.open` | Open {name} | {name} खोलें | {name} ను తెరవండి |  | pending |
+| `family.home.children.careTeam` | Care team: {names} | देखभाल टीम: {names} | సంరక్షణ బృందం: {names} |  | pending |
+| `family.home.children.noTeam` | No care team yet | अभी कोई देखभाल टीम नहीं | ఇంకా సంరక్షణ బృందం లేదు |  | pending |
+| `family.home.children.nextVisit` | Next visit: {when} | अगली मुलाक़ात: {when} | తదుపరి సందర్శన: {when} |  | pending |
+| `family.home.children.noVisit` | No visit booked | कोई मुलाक़ात बुक नहीं | సందర్శన బుక్ కాలేదు |  | pending |
+| `family.home.children.streak_one` | {count}-day practice streak | लगातार {count} दिन अभ्यास | వరుసగా {count} రోజు సాధన |  | pending |
+| `family.home.children.streak_other` | {count}-day practice streak | लगातार {count} दिन अभ्यास | వరుసగా {count} రోజుల సాధన |  | pending |
+| `family.home.children.noStreak` | No practice logged yet | अभी कोई अभ्यास दर्ज नहीं | ఇంకా సాధన నమోదు కాలేదు |  | pending |
+| `family.home.addAnother` | Add another child | एक और बच्चा जोड़ें | మరో బిడ్డను జోడించండి |  | pending |
+| `family.home.useCode` | Use a clinic code | क्लिनिक कोड इस्तेमाल करें | క్లినిక్ కోడ్ ఉపయోగించండి |  | pending |
+| `family.home.visits.title` | Upcoming visits | आने वाली मुलाक़ातें | రాబోయే సందర్శనలు |  | pending |
+| `family.home.visits.all` | All visits | सभी मुलाक़ातें | అన్ని సందర్శనలు |  | pending |
+| `family.home.visits.empty` | No visits booked yet. | अभी कोई मुलाक़ात बुक नहीं है। | ఇంకా సందర్శనలు బుక్ కాలేదు. |  | pending |
+| `family.home.visits.find` | Find a therapist | थेरेपिस्ट खोजें | థెరపిస్ట్‌ను వెతకండి |  | pending |
+| `family.home.visits.weekly` | Weekly | साप्ताहिक | వారానికోసారి |  | pending |
+| `family.home.visits.details` | What happens next | आगे क्या होगा | తర్వాత ఏమి జరుగుతుంది |  | pending |
+| `family.home.updates.title` | From your care team | आपकी देखभाल टीम से | మీ సంరక్షణ బృందం నుండి |  | pending |
+| `family.home.updates.empty` | Nothing shared yet. Plans, session notes and home activities appear here when your care team shares them. | अभी कुछ साझा नहीं किया गया। देखभाल टीम जब योजना, सत्र नोट और घर की गतिविधियाँ साझा करेगी, वे यहाँ दिखेंगी। | ఇంకా ఏమీ పంచుకోలేదు. మీ సంరక్షణ బృందం ప్రణాళికలు, సెషన్ నోట్‌లు, ఇంటి కార్యకలాపాలు పంచుకున్నప్పుడు అవి ఇక్కడ కనిపిస్తాయి. |  | pending |
+| `family.home.updates.messages` | Open messages | संदेश खोलें | సందేశాలు తెరవండి |  | pending |
+| `family.home.updates.kinds.plan` | Therapy plan | थेरेपी योजना | థెరపీ ప్రణాళిక |  | pending |
+| `family.home.updates.kinds.note` | Session note | सत्र नोट | సెషన్ నోట్ |  | pending |
+| `family.home.updates.kinds.home_program` | Home program | होम प्रोग्राम | హోమ్ ప్రోగ్రామ్ |  | pending |
+| `family.home.updates.kinds.prescription` | Prescription | पर्चा | ప్రిస్క్రిప్షన్ |  | pending |
+| `family.home.updates.from` | {centre} · {date} | {centre} · {date} | {centre} · {date} |  | pending |
+| `family.home.quick.title` | Quick links | त्वरित लिंक | త్వరిత లింక్‌లు |  | pending |
+| `family.home.quick.find` | Find a therapist | थेरेपिस्ट खोजें | థెరపిస్ట్‌ను వెతకండి |  | pending |
+| `family.home.quick.checkin` | Developmental check-in | विकास जाँच | అభివృద్ధి చెక్-ఇన్ |  | pending |
+| `family.home.quick.assessments` | Questionnaires | प्रश्नावली | ప్రశ్నావళులు |  | pending |
+| `family.home.quick.documents` | Documents | दस्तावेज़ | పత్రాలు |  | pending |
 | `family.empty.children` | No children added yet. | अभी तक कोई बच्चा नहीं जोड़ा गया। | ఇంకా పిల్లలను జోడించలేదు. |  | pending |
 | `family.empty.appointments` | No appointments yet. | अभी तक कोई अपॉइंटमेंट नहीं। | ఇంకా అపాయింట్‌మెంట్లు లేవు. |  | pending |
 | `family.empty.messages` | No messages yet. | अभी तक कोई संदेश नहीं। | ఇంకా సందేశాలు లేవు. |  | pending |
@@ -873,6 +946,46 @@ Rows: 3292. Not yet approved: 3292.
 | `family.assessments.errors.cancelled` | This questionnaire was cancelled. | यह प्रश्नावली रद्द कर दी गई थी। | ఈ ప్రశ్నావళి రద్దు చేయబడింది. |  | pending |
 | `family.assessments.errors.stale` | These answers were changed in another window. Reload to continue. | ये जवाब किसी दूसरी विंडो में बदले गए थे। जारी रखने के लिए पेज दोबारा लोड करें। | ఈ జవాబులు మరో విండోలో మార్చబడ్డాయి. కొనసాగించడానికి పేజీని మళ్ళీ లోడ్ చేయండి. |  | pending |
 | `family.assessments.errors.saveFailed` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `family.journey.title` | What happens next | आगे क्या होगा | తర్వాత ఏమి జరుగుతుంది |  | pending |
+| `family.journey.booked` | Booked. Here is what happens next. | बुक हो गया। आगे यह होगा। | బుక్ అయింది. తర్వాత ఇలా జరుగుతుంది. |  | pending |
+| `family.journey.heading` | Visit with {provider} | {provider} के साथ मुलाक़ात | {provider} తో సందర్శన |  | pending |
+| `family.journey.summary` | Visit details | मुलाक़ात का विवरण | సందర్శన వివరాలు |  | pending |
+| `family.journey.back` | All visits | सभी मुलाक़ातें | అన్ని సందర్శనలు |  | pending |
+| `family.journey.open` | What happens next | आगे क्या होगा | తర్వాత ఏమి జరుగుతుంది |  | pending |
+| `family.journey.details` | Details | विवरण | వివరాలు |  | pending |
+| `family.journey.directions` | Directions | रास्ता देखें | దారి చూడండి |  | pending |
+| `family.journey.status.done` | Done | हो गया | పూర్తయింది |  | pending |
+| `family.journey.status.due` | To do now | अभी करें | ఇప్పుడు చేయండి |  | pending |
+| `family.journey.status.waiting` | Waiting | इंतज़ार | వేచి ఉంది |  | pending |
+| `family.journey.status.upcoming` | Later | बाद में | తర్వాత |  | pending |
+| `family.journey.status.skipped` | Not needed | ज़रूरी नहीं | అవసరం లేదు |  | pending |
+| `family.journey.steps.permissions.title` | Permissions | अनुमतियाँ | అనుమతులు |  | pending |
+| `family.journey.steps.permissions.needed` | Allow the AI intake call so the care team can prepare the visit. | AI इनटेक कॉल की अनुमति दें ताकि देखभाल टीम मुलाक़ात की तैयारी कर सके। | సంరక్షణ బృందం సందర్శనకు సిద్ధం కావడానికి AI ఇన్‌టేక్ కాల్‌ను అనుమతించండి. |  | pending |
+| `family.journey.steps.permissions.given` | Permission given for the intake call. | इनटेक कॉल के लिए अनुमति दे दी गई है। | ఇన్‌టేక్ కాల్‌కు అనుమతి ఇచ్చారు. |  | pending |
+| `family.journey.steps.permissions.notNeeded` | Nothing is needed before this visit. You can review permissions any time. | इस मुलाक़ात से पहले कुछ ज़रूरी नहीं है। आप कभी भी अनुमतियाँ देख सकते हैं। | ఈ సందర్శనకు ముందు ఏమీ అవసరం లేదు. మీరు ఎప్పుడైనా అనుమతులను చూడవచ్చు. |  | pending |
+| `family.journey.steps.permissions.give` | Give permission | अनुमति दें | అనుమతి ఇవ్వండి |  | pending |
+| `family.journey.steps.permissions.review` | Review permissions | अनुमतियाँ देखें | అనుమతులు చూడండి |  | pending |
+| `family.journey.steps.intake.title` | Intake call | इनटेक कॉल | ఇన్‌టేక్ కాల్ |  | pending |
+| `family.journey.steps.intake.done` | Done. Thank you. | हो गया। धन्यवाद। | పూర్తయింది. ధన్యవాదాలు. |  | pending |
+| `family.journey.steps.intake.ready` | A short voice call about your child before the visit. | मुलाक़ात से पहले आपके बच्चे के बारे में एक छोटी वॉइस कॉल। | సందర్శనకు ముందు మీ బిడ్డ గురించి ఒక చిన్న వాయిస్ కాల్. |  | pending |
+| `family.journey.steps.intake.afterPermission` | Opens after you give permission. | अनुमति देने के बाद खुलेगी। | మీరు అనుమతి ఇచ్చిన తర్వాత తెరుచుకుంటుంది. |  | pending |
+| `family.journey.steps.intake.linkSoon` | Your call link is on its way. We will also send it to you. | आपकी कॉल का लिंक आ रहा है। हम इसे आपको भेजेंगे भी। | మీ కాల్ లింక్ వస్తోంది. మేము దాన్ని మీకు పంపుతాము కూడా. |  | pending |
+| `family.journey.steps.intake.skipped` | Not done before the visit. | मुलाक़ात से पहले नहीं हुई। | సందర్శనకు ముందు జరగలేదు. |  | pending |
+| `family.journey.steps.intake.start` | Start the intake call | इनटेक कॉल शुरू करें | ఇన్‌టేక్ కాల్ ప్రారంభించండి |  | pending |
+| `family.journey.steps.visit.title` | Visit | मुलाक़ात | సందర్శన |  | pending |
+| `family.journey.steps.visit.now` | Now | अभी | ఇప్పుడు |  | pending |
+| `family.journey.steps.visit.today` | Today, {time} | आज, {time} | ఈరోజు, {time} |  | pending |
+| `family.journey.steps.visit.tomorrow` | Tomorrow, {time} | कल, {time} | రేపు, {time} |  | pending |
+| `family.journey.steps.visit.attended` | Attended | आए | హాజరయ్యారు |  | pending |
+| `family.journey.steps.visit.missed` | Missed | छूट गई | తప్పిపోయింది |  | pending |
+| `family.journey.steps.visit.cancelled` | Cancelled | रद्द | రద్దయింది |  | pending |
+| `family.journey.steps.visit.awaitingCentre` | The centre will update this visit soon. | सेंटर जल्द ही इस मुलाक़ात की जानकारी अपडेट करेगा। | సెంటర్ త్వరలో ఈ సందర్శనను అప్‌డేట్ చేస్తుంది. |  | pending |
+| `family.journey.steps.visit.payToConfirm` | Pay to confirm this booking. | यह बुकिंग पक्की करने के लिए भुगतान करें। | ఈ బుకింగ్‌ను ధృవీకరించడానికి చెల్లించండి. |  | pending |
+| `family.journey.steps.visit.pay` | Pay now | अभी भुगतान करें | ఇప్పుడు చెల్లించండి |  | pending |
+| `family.journey.steps.home.title` | Home program | होम प्रोग्राम | హోమ్ ప్రోగ్రామ్ |  | pending |
+| `family.journey.steps.home.ready` | Activities to practise at home are ready. | घर पर अभ्यास की गतिविधियाँ तैयार हैं। | ఇంట్లో సాధన చేయాల్సిన కార్యకలాపాలు సిద్ధంగా ఉన్నాయి. |  | pending |
+| `family.journey.steps.home.afterVisit` | After the visit, your therapist shares activities to practise at home. | मुलाक़ात के बाद आपके थेरेपिस्ट घर पर अभ्यास की गतिविधियाँ साझा करेंगे। | సందర్శన తర్వాత, మీ థెరపిస్ట్ ఇంట్లో సాధన చేయాల్సిన కార్యకలాపాలను పంచుకుంటారు. |  | pending |
+| `family.journey.steps.home.open` | Open home program | होम प्रोग्राम खोलें | హోమ్ ప్రోగ్రామ్ తెరవండి |  | pending |
 | `directory.title` | Find a provider near you | अपने पास कोई विशेषज्ञ खोजें | మీ దగ్గర నిపుణులను కనుగొనండి |  | pending |
 | `directory.intro` | Verified child-development specialists and centres in Hyderabad. Search by locality or PIN code. | हैदराबाद में सत्यापित बाल-विकास विशेषज्ञ और केंद्र। इलाके या पिन कोड से खोजें। | హైదరాబాద్‌లో ధృవీకరించబడిన పిల్లల అభివృద్ధి నిపుణులు మరియు కేంద్రాలు. ప్రాంతం లేదా పిన్ కోడ్‌తో వెతకండి. |  | pending |
 | `directory.metaTitle` | Find child-development specialists near you in Hyderabad \| DoctorNearMe | हैदराबाद में अपने पास बाल-विकास विशेषज्ञ खोजें \| DoctorNearMe | హైదరాబాద్‌లో మీ దగ్గర పిల్లల అభివృద్ధి నిపుణులను కనుగొనండి \| DoctorNearMe |  | pending |
@@ -904,7 +1017,7 @@ Rows: 3292. Not yet approved: 3292.
 | `directory.results.consultation` | Consultation | परामर्श | సంప్రదింపు |  | pending |
 | `directory.results.viewProfile` | View profile | प्रोफ़ाइल देखें | ప్రొఫైల్ చూడండి |  | pending |
 | `directory.results.book` | Book | बुक करें | బుక్ చేయండి |  | pending |
-| `directory.results.bookSoon` | Online booking is coming soon. | ऑनलाइन बुकिंग जल्द आ रही है। | ఆన్‌లైన్ బుకింగ్ త్వరలో వస్తుంది. |  | pending |
+| `directory.results.bookSoon` | Online booking is not open for this provider yet. | इस प्रदाता के लिए ऑनलाइन बुकिंग अभी खुली नहीं है। | ఈ ప్రొవైడర్‌కు ఆన్‌లైన్ బుకింగ్ ఇంకా తెరవలేదు. |  | pending |
 | `directory.results.empty` | No providers found nearby. Try a larger distance. | आसपास कोई विशेषज्ञ नहीं मिला। ज़्यादा दूरी चुनकर देखें। | దగ్గరలో నిపుణులు ఎవరూ దొరకలేదు. ఎక్కువ దూరం ఎంచుకుని చూడండి. |  | pending |
 | `directory.results.start` | Type a locality or PIN code, or use your location, to see providers near you. | अपने पास के विशेषज्ञ देखने के लिए इलाका या पिन कोड लिखें, या अपना स्थान इस्तेमाल करें। | మీ దగ్గర ఉన్న నిపుణులను చూడడానికి ప్రాంతం లేదా పిన్ కోడ్ టైప్ చేయండి, లేదా మీ లొకేషన్ ఉపయోగించండి. |  | pending |
 | `directory.results.notFound` | We couldn't find that place. Try a locality or PIN code in Hyderabad. | हमें वह जगह नहीं मिली। हैदराबाद का कोई इलाका या पिन कोड लिखें। | ఆ ప్రదేశం దొరకలేదు. హైదరాబాద్‌లోని ఒక ప్రాంతం లేదా పిన్ కోడ్ ప్రయత్నించండి. |  | pending |
@@ -3307,3 +3420,98 @@ Rows: 3292. Not yet approved: 3292.
 | `payouts.admin.saved` | Saved. | सेव हो गया। | సేవ్ అయింది. |  | pending |
 | `payouts.admin.failedSave` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `payouts.admin.invalid` | Check the highlighted fields. | चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
+| `dashboard.greeting.morning` | Good morning, {name} | सुप्रभात, {name} | శుభోదయం, {name} |  | pending |
+| `dashboard.greeting.afternoon` | Good afternoon, {name} | नमस्ते, {name} | నమస్కారం, {name} |  | pending |
+| `dashboard.greeting.evening` | Good evening, {name} | शुभ संध्या, {name} | శుభ సాయంత్రం, {name} |  | pending |
+| `dashboard.there` | there | जी | గారు |  | pending |
+| `dashboard.subtitle` | {org} · {date} | {org} · {date} | {org} · {date} |  | pending |
+| `dashboard.invite.button` | Invite parent | अभिभावक को आमंत्रित करें | తల్లిదండ్రులను ఆహ్వానించండి |  | pending |
+| `dashboard.invite.title` | Invite a parent | अभिभावक को आमंत्रित करें | తల్లిదండ్రులను ఆహ్వానించండి |  | pending |
+| `dashboard.invite.intro` | These children have no parent account yet. Open one to create a parent code. | इन बच्चों का अभी कोई अभिभावक खाता नहीं है। अभिभावक कोड बनाने के लिए एक खोलें। | ఈ పిల్లలకు ఇంకా తల్లిదండ్రుల ఖాతా లేదు. తల్లిదండ్రుల కోడ్ సృష్టించడానికి ఒకదాన్ని తెరవండి. |  | pending |
+| `dashboard.invite.none` | Every child here already has a parent account. | यहाँ हर बच्चे का अभिभावक खाता पहले से है। | ఇక్కడ ప్రతి బిడ్డకు ఇప్పటికే తల్లిదండ్రుల ఖాతా ఉంది. |  | pending |
+| `dashboard.invite.import` | Import many children | कई बच्चे इम्पोर्ट करें | చాలా మంది పిల్లలను ఇంపోర్ట్ చేయండి |  | pending |
+| `dashboard.import` | Import children | बच्चे इम्पोर्ट करें | పిల్లలను ఇంపోర్ట్ చేయండి |  | pending |
+| `dashboard.newCase` | New case | नया केस | కొత్త కేసు |  | pending |
+| `dashboard.noOrg` | You are not in an organisation yet. Create your practice or accept an invitation on the Team page. | आप अभी किसी संगठन में नहीं हैं। Team पेज पर अपनी प्रैक्टिस बनाएँ या आमंत्रण स्वीकार करें। | మీరు ఇంకా ఏ సంస్థలోనూ లేరు. Team పేజీలో మీ ప్రాక్టీస్‌ను సృష్టించండి లేదా ఆహ్వానాన్ని అంగీకరించండి. |  | pending |
+| `dashboard.noOrgAction` | Open Team | Team खोलें | Team తెరవండి |  | pending |
+| `dashboard.stats.label` | At a glance | एक नज़र में | ఒక చూపులో |  | pending |
+| `dashboard.stats.activeChildren` | Active children | सक्रिय बच्चे | యాక్టివ్ పిల్లలు |  | pending |
+| `dashboard.stats.activeChildrenHint` | Seen in the last 30 days or booked in the next 30 | पिछले 30 दिनों में देखे गए या अगले 30 दिनों में बुक | గత 30 రోజుల్లో చూసినవారు లేదా రాబోయే 30 రోజుల్లో బుక్ అయినవారు |  | pending |
+| `dashboard.stats.sessionsWeek` | Sessions this week | इस हफ़्ते के सत्र | ఈ వారం సెషన్‌లు |  | pending |
+| `dashboard.stats.sessionsWeekHint` | Booked, attended or missed | बुक, आए या छूटे | బుక్, హాజరు లేదా తప్పినవి |  | pending |
+| `dashboard.stats.attendance` | Attendance | उपस्थिति | హాజరు |  | pending |
+| `dashboard.stats.attendanceHint` | Last 30 days | पिछले 30 दिन | గత 30 రోజులు |  | pending |
+| `dashboard.stats.none` | - | - | - |  | pending |
+| `dashboard.stats.homeLogs` | Home practice logs | घर के अभ्यास की प्रविष्टियाँ | ఇంటి సాధన నమోదులు |  | pending |
+| `dashboard.stats.homeLogsHint` | This week | इस हफ़्ते | ఈ వారం |  | pending |
+| `dashboard.today.title` | Today | आज | ఈరోజు |  | pending |
+| `dashboard.today.orgScope` | Everyone in your organisation | आपके संगठन के सभी लोग | మీ సంస్థలోని అందరూ |  | pending |
+| `dashboard.today.ownScope` | Your sessions | आपके सत्र | మీ సెషన్‌లు |  | pending |
+| `dashboard.today.sessionsTitle_one` | {count} session today | आज {count} सत्र | ఈరోజు {count} సెషన్ |  | pending |
+| `dashboard.today.sessionsTitle_other` | {count} sessions today | आज {count} सत्र | ఈరోజు {count} సెషన్‌లు |  | pending |
+| `dashboard.today.empty` | No sessions today. | आज कोई सत्र नहीं है। | ఈరోజు సెషన్‌లు లేవు. |  | pending |
+| `dashboard.today.emptyAction` | Open the schedule | शेड्यूल खोलें | షెడ్యూల్ తెరవండి |  | pending |
+| `dashboard.today.noChild` | No child linked | कोई बच्चा जुड़ा नहीं | బిడ్డ లింక్ కాలేదు |  | pending |
+| `dashboard.today.video` | Video | वीडियो | వీడియో |  | pending |
+| `dashboard.today.markLabel` | Mark attendance | उपस्थिति दर्ज करें | హాజరు నమోదు చేయండి |  | pending |
+| `dashboard.today.marked` | Marked: {value} | दर्ज: {value} | నమోదు: {value} |  | pending |
+| `dashboard.today.writeNote` | Write note | नोट लिखें | నోట్ రాయండి |  | pending |
+| `dashboard.today.openCase` | Open case | केस खोलें | కేసు తెరవండి |  | pending |
+| `dashboard.today.notStarted` | Can be marked from {time} | {time} से दर्ज किया जा सकता है | {time} నుండి నమోదు చేయవచ్చు |  | pending |
+| `dashboard.today.error` | Could not save this. | यह सेव नहीं हो सका। | దీన్ని సేవ్ చేయలేకపోయాం. |  | pending |
+| `dashboard.today.register` | Open the register | रजिस्टर खोलें | రిజిస్టర్ తెరవండి |  | pending |
+| `dashboard.todo.title` | To do | करने को | చేయాల్సినవి |  | pending |
+| `dashboard.todo.allDone` | Nothing is waiting. Well done. | कुछ भी बाकी नहीं है। बहुत अच्छे। | ఏమీ పెండింగ్‌లో లేదు. చాలా బాగుంది. |  | pending |
+| `dashboard.todo.items.notes_one` | {count} note to write | {count} नोट लिखना है | రాయాల్సిన {count} నోట్ |  | pending |
+| `dashboard.todo.items.notes_other` | {count} notes to write | {count} नोट लिखने हैं | రాయాల్సిన {count} నోట్‌లు |  | pending |
+| `dashboard.todo.items.attendance_one` | {count} session not marked (over 24 hours) | {count} सत्र दर्ज नहीं (24 घंटे से ज़्यादा) | నమోదు కాని {count} సెషన్ (24 గంటలకు పైగా) |  | pending |
+| `dashboard.todo.items.attendance_other` | {count} sessions not marked (over 24 hours) | {count} सत्र दर्ज नहीं (24 घंटे से ज़्यादा) | నమోదు కాని {count} సెషన్‌లు (24 గంటలకు పైగా) |  | pending |
+| `dashboard.todo.items.isaa_one` | {count} ISAA item to confirm | पुष्टि के लिए {count} ISAA आइटम | ధృవీకరించాల్సిన {count} ISAA అంశం |  | pending |
+| `dashboard.todo.items.isaa_other` | {count} ISAA items to confirm | पुष्टि के लिए {count} ISAA आइटम | ధృవీకరించాల్సిన {count} ISAA అంశాలు |  | pending |
+| `dashboard.todo.items.briefs_one` | {count} intake brief to review | देखने के लिए {count} इनटेक ब्रीफ़ | సమీక్షించాల్సిన {count} ఇన్‌టేక్ బ్రీఫ్ |  | pending |
+| `dashboard.todo.items.briefs_other` | {count} intake briefs to review | देखने के लिए {count} इनटेक ब्रीफ़ | సమీక్షించాల్సిన {count} ఇన్‌టేక్ బ్రీఫ్‌లు |  | pending |
+| `dashboard.todo.items.messages_one` | {count} unread message | {count} बिना पढ़ा संदेश | {count} చదవని సందేశం |  | pending |
+| `dashboard.todo.items.messages_other` | {count} unread messages | {count} बिना पढ़े संदेश | {count} చదవని సందేశాలు |  | pending |
+| `dashboard.todo.items.conflicts_one` | {count} timetable conflict | समय-सारणी में {count} टकराव | టైమ్‌టేబుల్‌లో {count} ఘర్షణ |  | pending |
+| `dashboard.todo.items.conflicts_other` | {count} timetable conflicts | समय-सारणी में {count} टकराव | టైమ్‌టేబుల్‌లో {count} ఘర్షణలు |  | pending |
+| `dashboard.todo.items.balances_one` | {count} family with a balance due | {count} परिवार का भुगतान बाकी | బాకీ ఉన్న {count} కుటుంబం |  | pending |
+| `dashboard.todo.items.balances_other` | {count} families with a balance due | {count} परिवारों का भुगतान बाकी | బాకీ ఉన్న {count} కుటుంబాలు |  | pending |
+| `dashboard.cases.title` | Cases | केस | కేసులు |  | pending |
+| `dashboard.cases.filters.label` | Filter cases | केस छाँटें | కేసులను వడపోయండి |  | pending |
+| `dashboard.cases.filters.all` | All | सभी | అన్నీ |  | pending |
+| `dashboard.cases.filters.review` | Needs review | समीक्षा ज़रूरी | సమీక్ష అవసరం |  | pending |
+| `dashboard.cases.filters.booked` | Booked | बुक | బుక్ అయినవి |  | pending |
+| `dashboard.cases.filters.referred` | Referred | रेफ़र किए गए | రిఫర్ చేసినవి |  | pending |
+| `dashboard.cases.search` | Search | खोजें | వెతకండి |  | pending |
+| `dashboard.cases.searchLabel` | Search by child or parent | बच्चे या अभिभावक के नाम से खोजें | బిడ్డ లేదా తల్లిదండ్రుల పేరుతో వెతకండి |  | pending |
+| `dashboard.cases.child` | Child | बच्चा | బిడ్డ |  | pending |
+| `dashboard.cases.age` | Age | उम्र | వయస్సు |  | pending |
+| `dashboard.cases.language` | Language | भाषा | భాష |  | pending |
+| `dashboard.cases.status` | Status | स्थिति | స్థితి |  | pending |
+| `dashboard.cases.created` | Created | बनाया गया | సృష్టించినది |  | pending |
+| `dashboard.cases.empty` | No cases yet. | अभी कोई केस नहीं है। | ఇంకా కేసులు లేవు. |  | pending |
+| `dashboard.cases.emptyAction` | Create the first case | पहला केस बनाएँ | మొదటి కేసును సృష్టించండి |  | pending |
+| `dashboard.cases.noMatch` | No cases match. | कोई केस मेल नहीं खाता। | ఏ కేసూ సరిపోలలేదు. |  | pending |
+| `dashboard.cases.showAll` | Show all cases | सभी केस दिखाएँ | అన్ని కేసులను చూపండి |  | pending |
+| `dashboard.cases.ageMonths_one` | {count} month | {count} महीना | {count} నెల |  | pending |
+| `dashboard.cases.ageMonths_other` | {count} months | {count} महीने | {count} నెలలు |  | pending |
+| `dashboard.status.booked` | Booked | बुक | బుక్ అయింది |  | pending |
+| `dashboard.status.intake_done` | Intake done | इनटेक हो गया | ఇన్‌టేక్ పూర్తయింది |  | pending |
+| `dashboard.status.in_assessment` | In assessment | आकलन जारी | అంచనాలో ఉంది |  | pending |
+| `dashboard.status.referred` | Referred | रेफ़र किया गया | రిఫర్ చేశారు |  | pending |
+| `dashboard.languages.en` | English | अंग्रेज़ी | ఇంగ్లీష్ |  | pending |
+| `dashboard.languages.hi` | Hindi | हिंदी | హిందీ |  | pending |
+| `dashboard.languages.te` | Telugu | तेलुगु | తెలుగు |  | pending |
+| `caseSessions.goalsTitle` | Goal progress | लक्ष्य की प्रगति | లక్ష్యాల పురోగతి |  | pending |
+| `caseSessions.goalsAction` | Open goals | लक्ष्य खोलें | లక్ష్యాలు తెరవండి |  | pending |
+| `caseSessions.goalsEmpty` | No active goals yet. | अभी कोई सक्रिय लक्ष्य नहीं है। | ఇంకా యాక్టివ్ లక్ష్యాలు లేవు. |  | pending |
+| `caseSessions.goalsEmptyAction` | Write the plan | योजना लिखें | ప్రణాళిక రాయండి |  | pending |
+| `caseSessions.latest` | Latest: {value} on {date} | नवीनतम: {date} को {value} | తాజాది: {date} న {value} |  | pending |
+| `caseSessions.noProgress` | No progress recorded yet | अभी कोई प्रगति दर्ज नहीं | ఇంకా పురోగతి నమోదు కాలేదు |  | pending |
+| `caseSessions.target` | Target: {value} | लक्ष्य: {value} | లక్ష్యం: {value} |  | pending |
+| `caseSessions.notesTitle` | Sessions and notes | सत्र और नोट | సెషన్‌లు మరియు నోట్‌లు |  | pending |
+| `caseSessions.newSession` | New session | नया सत्र | కొత్త సెషన్ |  | pending |
+| `caseSessions.empty` | No sessions yet. | अभी कोई सत्र नहीं है। | ఇంకా సెషన్‌లు లేవు. |  | pending |
+| `caseSessions.emptyAction` | Record the first session | पहला सत्र रिकॉर्ड करें | మొదటి సెషన్‌ను రికార్డ్ చేయండి |  | pending |
+| `caseSessions.session` | Session {number} | सत्र {number} | సెషన్ {number} |  | pending |
+| `caseSessions.open` | Open | खोलें | తెరవండి |  | pending |

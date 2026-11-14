@@ -1,0 +1,52 @@
+
+ RUN  v4.1.12 /Users/vishnu/Documents/git/dnm-worktrees/052
+
+ ✓ tests/next-step-family.test.ts > 052 family home next step (database) > E-1: a guardian with no child gets `Enter your clinic code` and `Find a therapist`
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > lists the rules in the ticket's order
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 1. no child linked -> add a child (clinic code / find a therapist), whatever else is known
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 2. a permission is needed for an upcoming intake -> Give permission on that child's page
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 2. the earliest appointment wins when several children need permission
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 3. intake not done (permission given) -> Start the intake call with the appointment-scoped link
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 3. a completed intake is not a next step
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 4. balance due or unpaid package -> Pay; an expiring booking hold comes first, then the biggest balance
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 5. a visit today or tomorrow -> the visit card (pay outranks it)
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 6. home activities not logged today and behind this week -> Log today's practice
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 7. unread messages -> Read message from <therapist>
+ ✓ tests/next-step-rules.test.ts > FR-1 next step priority (pickNextStep) > 8. otherwise -> You're all set, with the next visit (or none)
+ ✓ tests/next-step-rules.test.ts > helpers > visitDay uses the viewer's zone (23:30 IST is still today)
+ ✓ tests/next-step-rules.test.ts > helpers > practiceStreak counts back from today, or from yesterday while today is open
+ ✓ tests/next-step-rules.test.ts > helpers > directions: coordinates first, then the address; none for video
+ ✓ tests/next-step-rules.test.ts > FR-6 what happens next (journeySteps) > before the first visit: permission due, intake waiting for it, visit later, home program after the visit
+ ✓ tests/next-step-rules.test.ts > FR-6 what happens next (journeySteps) > after permission: the intake call is the action
+ ✓ tests/next-step-rules.test.ts > FR-6 what happens next (journeySteps) > no intake service: three steps, nothing needed before the visit
+ ✓ tests/next-step-rules.test.ts > FR-6 what happens next (journeySteps) > after an attended visit with a published home program: home program due
+ ✓ tests/next-step-rules.test.ts > FR-6 what happens next (journeySteps) > waiting for payment: the visit step asks to pay; cancelled: steps are skipped
+ ✓ tests/next-step-rules.test.ts > FR-3 bottom nav > has the five Figma items and marks one active
+ ✓ tests/next-step-rules.test.ts > FR-4 / FR-5 provider helpers > filter chips and search
+ ✓ tests/next-step-rules.test.ts > FR-4 / FR-5 provider helpers > case default tab: Overview while in assessment, Sessions after it
+ ✓ tests/next-step-rules.test.ts > FR-6 confirmation text (outbox) > guardians get the numbered steps (with the intake call only when the service has one); providers do not
+ ✓ tests/next-step-rules.test.ts > catalogues > no 'Coming soon' left in messages/*.json
+ ✓ tests/next-step-family.test.ts > 052 family home next step (database) > E-2: invited parent before the first visit: Give permission, then Start the intake call; the timeline follows
+ ✓ tests/dashboard-today-db.test.ts > 052 provider dashboard Today (database) > E-4: the therapist (member) sees their 4 sessions today, 1 note to write, 1 unmarked session and 2 ISAA items
+ ✓ tests/dashboard-today-db.test.ts > 052 provider dashboard Today (database) > E-4: one-tap Present from the dashboard marks the session (044 route) and adds it to the notes to write
+ ✓ tests/next-step-family.test.ts > 052 family home next step (database) > NFR-2: other guardians' children, appointments and timelines never appear
+ ✓ tests/next-step-family.test.ts > 052 family home next step (database) > FR-1 rule 4: a balance due (045 ledger) and an unpaid package offer -> Pay ₹X
+ ✓ tests/dashboard-today-db.test.ts > 052 provider dashboard Today (database) > owner and admin see the whole organisation's sessions today and the balances due
+ ✓ tests/dashboard-today-db.test.ts > 052 provider dashboard Today (database) > another organisation's provider sees none of it; a user in no organisation gets an empty panel
+ ✓ tests/dashboard-today-db.test.ts > 052 provider dashboard Today (database) > stat cards: active children, sessions this week, attendance rate (30 days), home-practice logs this week
+ ✓ tests/dashboard-today-db.test.ts > 052 provider dashboard Today (database) > FR-5: the case opens on Sessions after the assessment, on Overview while in assessment
+ ✓ tests/next-step-family.test.ts > 052 family home next step (database) > FR-1 rules 5-7 and FR-2: visit tomorrow, practice with a streak, unread message with the therapist's name
+stdout | tests/dashboard-today-db.test.ts > 052 provider dashboard Today (database) > NFR-1: an owner with 50 children loads the Today panel in under 800 ms
+052 NFR-1 dashboard today: 36 sessions today, 50 active children in 4 ms
+
+ ✓ tests/dashboard-today-db.test.ts > 052 provider dashboard Today (database) > NFR-1: an owner with 50 children loads the Today panel in under 800 ms
+stdout | tests/next-step-family.test.ts > 052 family home next step (database) > NFR-1: 50 children with appointments load in under 800 ms (a fixed number of queries)
+052 NFR-1 family facts: 50 children, 50 visits in 4 ms
+
+ ✓ tests/next-step-family.test.ts > 052 family home next step (database) > NFR-1: 50 children with appointments load in under 800 ms (a fixed number of queries)
+
+ Test Files  3 passed (3)
+      Tests  37 passed (37)
+   Start at  01:26:11
+   Duration  1.20s (transform 469ms, setup 0ms, import 594ms, tests 2.08s, environment 0ms)
+
