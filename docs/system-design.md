@@ -524,6 +524,19 @@ link), or undoes it on a correction. `fees_consultations()` is 046's seam (consu
 billable appointment). Migration `20261113004500_packages_family_payments.sql`; details in `docs/payments.md`
 "Packages and the family account".
 
+### Payouts to centres and the platform fee (ticket 046, decision 8)
+
+DoctorNearMe pays each centre per delivered consultation through **Razorpay Route** (test mode): one `payout_items` row
+per billable, funded consultation (unique `appointment_id`), a Route transfer of `consultation - fee - GST` from the
+family's payment to the centre's linked account (`org_payout_accounts`), retried with back-off and alerted to admins.
+Fees come from `platform_fee_policies` (percent / flat, min, cap, `waived_until`, versioned; default
+`PLATFORM_FEE_DEFAULT_BPS`), GST `PLATFORM_GST_BPS`. Refunds reverse transfers first (045 `registerRefundPrecondition`,
+031 `lib/payments/jobs.ts`). Paid services and packages need an active payout account and the accepted fee (409
+`payout_account_inactive` / `fee_policy_not_accepted`); expired packages are paid out or refunded per
+`organizations.package_expiry_policy`; monthly platform-fee invoices `DNM-INV/<FY>/<0001>` and a daily reconciliation
+run from `/api/cron/payouts`. Pages `/dashboard/payouts` (owner/admin) and `/admin/payouts`. Migration
+`20261113004600_payouts.sql`; details in `docs/payouts.md`.
+
 ### Ratings (ticket 036)
 
 `ratings` (one per completed appointment, written by its booking guardian within 30 days, editable for 7 days; 1-5
@@ -1127,6 +1140,7 @@ Details and the clinical review list: [screen-recommendations.md](screen-recomme
 | D | Record the role-play audio as `demo/audio/session-1.mp3` (commit on `int/d-pitch`); then one live run with `DEMO_MODE=false` and refresh fixtures if needed |
 | D (15:30) | Decide the product link: deploy (Vercel + Supabase cloud) or tunnel during judging |
 | Product owner (037, start now: weeks of lead time) | Google Cloud OAuth client + consent screen with the sensitive `calendar.events` scope, test users (max 100, 7-day tokens) and the OAuth verification submission; see `docs/google-meet.md` |
+| Product owner + CA + legal (046) | Pilot fee rate; GST on the fee, TDS 194-O / GST TCS, invoice format, record retention (CA); Razorpay Route agreement and centre marketplace terms (legal). Per centre: create the Route linked account and complete KYC in the Razorpay dashboard, then enter `acc_…` in `/admin/payouts`; subscribe the webhook to `transfer.processed` / `transfer.failed`. See `docs/payouts.md` |
 | Merge captain | Verify configured public-repo branch protection remains active; merge reviewed checkpoint PRs, smoke-test `main`, tag `cp<n>`; require `ci` only after 001 creates it and it has run ([workflow](team-workflow.md)) |
 
 ## 15. Build plan

@@ -468,7 +468,7 @@ describe.skipIf(!enabled)("payouts and the platform fee (database, route handler
       expect(text.split("\n").filter((l) => l.includes("661.50")).length).toBeGreaterThanOrEqual(3);
     });
 
-    it("FR-5: a session refund after the transfer reverses the transfer first, then refunds the family (045 path)", async () => {
+    it("FR-5: a correction (present -> absent) after the transfer reverses it; present again -> paid out again", async () => {
       as(orgA.user);
       const target = sessions[0];
       // Correction: present -> absent (not billable) -> the package session comes back (045); the transfer is reversed.
