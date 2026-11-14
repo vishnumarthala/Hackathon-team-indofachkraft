@@ -5,6 +5,8 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import type { CaseIntakeEntry } from "@/lib/intake/attempts";
+import { Badge } from "@/components/ui/Badge";
+import { Alert } from "@/components/ui/Alert";
 
 // Stored briefs start at `##`; inside this section they sit below the h3 of their appointment.
 const MARKDOWN: Components = {
@@ -45,22 +47,16 @@ export async function AppointmentIntakes({ entries }: { entries: CaseIntakeEntry
               <h3 className="font-semibold text-slate-900">
                 {t("heading", { service: e.service_name, date: format.dateTime(e.starts_at) })}
               </h3>
-              <span className="rounded-full bg-sky-100 px-2.5 py-0.5 text-xs font-medium text-sky-900">
-                {t(e.agent_kind === "generic" ? "generic" : "childDev")}
-              </span>
-              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-800">
-                {t(e.status === "completed" ? "completed" : "notStarted")}
-              </span>
+              <Badge tone="info">{t(e.agent_kind === "generic" ? "generic" : "childDev")}</Badge>
+              <Badge>{t(e.status === "completed" ? "completed" : "notStarted")}</Badge>
               {e.report ? (
-                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-800">
-                  {t(e.report.status === "final" ? "reviewed" : "draft")}
-                </span>
+                <Badge>{t(e.report.status === "final" ? "reviewed" : "draft")}</Badge>
               ) : null}
             </div>
             {e.status === "completed" && !e.report ? (
-              <p role="status" className="rounded bg-amber-50 p-3 text-sm text-amber-900">
+              <Alert as="p" tone="warning" role="status">
                 {t("briefFailed")}
-              </p>
+              </Alert>
             ) : null}
             {e.report ? (
               <div className="text-slate-900" data-report-kind={e.report.kind}>

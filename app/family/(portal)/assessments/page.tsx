@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { STATUS_KEYS, STATUS_STYLES } from "@/components/assessments/view";
+import { STATUS_KEYS, STATUS_TONES } from "@/components/assessments/view";
 import { listGuardianAssessments } from "@/lib/assessments";
 import { requireGuardianPage } from "@/lib/authz";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { Badge } from "@/components/ui/Badge";
 
 export const dynamic = "force-dynamic";
 
@@ -42,9 +43,9 @@ export default async function FamilyAssessmentsPage() {
                         {a.due_on ? t("due", { date: format.date(`${a.due_on}T12:00:00+05:30`, "long") }) : t("noDue")}
                       </span>
                     </span>
-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLES[a.status]}`}>
+                    <Badge tone={STATUS_TONES[a.status]} size="md">
                       {ts(STATUS_KEYS[a.status])}
-                    </span>
+                    </Badge>
                   </span>
                   <span className="mt-2 block text-sm font-semibold text-teal-800">
                     {open ? (a.status === "assigned" ? t("start") : t("continue")) : a.has_summary ? t("viewResult") : t("view")}

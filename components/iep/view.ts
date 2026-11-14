@@ -3,6 +3,7 @@ import type { Formatter } from "@/lib/i18n/format";
 import type { TFunction } from "@/lib/i18n/keys";
 import type { GoalTrend } from "@/lib/iep/progress";
 import { MSG, type GoalDomain, type GoalStatus, type MeasureType, type PlanStatus } from "@/lib/iep/schema";
+import type { BadgeTone } from "@/components/ui/Badge";
 
 export const DOMAIN_KEYS = {
   communication: "communication",
@@ -23,17 +24,17 @@ export const MEASURE_KEYS = {
   yes_no: "yesNo",
 } as const satisfies Record<MeasureType, string>;
 
-export const PLAN_STATUS_STYLES: Record<PlanStatus, string> = {
-  draft: "bg-slate-100 text-slate-800",
-  active: "bg-emerald-100 text-emerald-900",
-  completed: "bg-sky-100 text-sky-900",
-  archived: "bg-slate-100 text-slate-600",
+export const PLAN_STATUS_TONES: Record<PlanStatus, BadgeTone> = {
+  draft: "neutral",
+  active: "success",
+  completed: "info",
+  archived: "neutral",
 };
 
-export const GOAL_STATUS_STYLES: Record<GoalStatus, string> = {
-  active: "bg-teal-50 text-teal-900",
-  achieved: "bg-emerald-100 text-emerald-900",
-  discontinued: "bg-slate-100 text-slate-600",
+export const GOAL_STATUS_TONES: Record<GoalStatus, BadgeTone> = {
+  active: "brand",
+  achieved: "success",
+  discontinued: "neutral",
 };
 
 /** API field names -> translated field-error keys (`iep.fieldErrors.*`). */

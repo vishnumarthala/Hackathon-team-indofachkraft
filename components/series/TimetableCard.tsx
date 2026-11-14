@@ -6,10 +6,11 @@ import { seriesSummary } from "@/lib/booking/series-display";
 import { minutesToTime, todayIn, utcToWall } from "@/lib/booking/time";
 import { formatDate } from "@/lib/i18n/format";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { Badge, type BadgeTone } from "@/components/ui/Badge";
 
 /** Next sessions listed openly per series; the rest of the 8 weeks sit behind `Show all`. */
 const VISIBLE_SESSIONS = 6;
-const STATUS_STYLE = { active: "bg-teal-50 text-teal-900", paused: "bg-amber-50 text-amber-900", ended: "bg-slate-100 text-slate-700" } as const;
+const STATUS_TONE = { active: "brand", paused: "warning", ended: "neutral" } as const satisfies Record<string, BadgeTone>;
 
 /** Clinic-clock date and HH:MM of an instant (form defaults for Move / Pick another time). */
 function clinicWall(iso: string, timeZone: string) {
@@ -82,7 +83,7 @@ export async function TimetableCard({ caseId, userId }: { caseId: string; userId
                   {format.dateTime(o.starts_at)}
                   {clinic ? <span className="text-slate-600"> · {tb("clinicTime", { time: clinic })}</span> : null}
                   {o.occurrence_date === null ? (
-                    <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">{t("moved")}</span>
+                    <Badge className="ml-2">{t("moved")}</Badge>
                   ) : null}
                 </span>
                 {s.can_manage ? (
@@ -116,7 +117,7 @@ export async function TimetableCard({ caseId, userId }: { caseId: string; userId
                     <p className="text-sm text-amber-900">{t("pausedRange", { from: day(s.paused_from), to: day(s.paused_until) })}</p>
                   ) : null}
                 </div>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLE[s.status]}`}>{t(`status.${s.status}`)}</span>
+                <Badge tone={STATUS_TONE[s.status]} size="md">{t(`status.${s.status}`)}</Badge>
               </div>
 
               {s.status !== "ended" ? (

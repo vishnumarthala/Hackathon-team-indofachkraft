@@ -3,6 +3,7 @@ import { LedgerTable } from "@/components/fees/LedgerTable";
 import { requireFeesCasePage } from "@/lib/fees/authz";
 import { listOpenLinks, listPackages, listRefundableSessions, loadAccount, packageSeriesWithoutCover } from "@/lib/fees/store";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { Alert } from "@/components/ui/Alert";
 
 export const dynamic = "force-dynamic";
 
@@ -95,7 +96,7 @@ export default async function CaseFeesPage({ params }: { params: Promise<{ id: s
               {t("caseTab.offerOpenUntil", { date: format.date(p.offer_expires_at) })}
             </p>
           ))}
-          {seriesWarning ? <p className="rounded bg-amber-50 p-2 text-sm text-amber-950">{t("caseTab.seriesWarning")}</p> : null}
+          {seriesWarning ? <Alert as="p" tone="warning">{t("caseTab.seriesWarning")}</Alert> : null}
         </section>
       </div>
 

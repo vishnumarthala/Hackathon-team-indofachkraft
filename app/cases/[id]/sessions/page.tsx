@@ -4,6 +4,7 @@ import { getCase, listSessions } from "@/lib/queries/cases";
 import { requireCasePage } from "@/lib/authz";
 import { listCaseGoalSummary, type GoalSummary } from "@/lib/cases/goal-summary";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { Button } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -65,9 +66,7 @@ export default async function SessionsPage({ params }: { params: Promise<{ id: s
           <h2 id="session-list" className="text-lg font-semibold">
             {tc("notesTitle")}
           </h2>
-          <Link href={`/cases/${id}/sessions/new`} className="inline-flex min-h-11 items-center rounded bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800">
-            {tc("newSession")}
-          </Link>
+          <Button href={`/cases/${id}/sessions/new`}>{tc("newSession")}</Button>
         </div>
         {sessions.length === 0 ? (
           <div className="space-y-2 rounded border border-dashed border-slate-300 p-4 text-sm text-slate-600">

@@ -10,6 +10,7 @@ import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } fr
 import { useFormatter, useT } from "@/lib/i18n/client";
 import { RX_FORMS, allergyMatches, blankItem, MAX_ITEMS, type AllergyMatch, type RxItem, type RxStatus } from "@/lib/rx/schema";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 export type PanelSummary = {
   id: string;
@@ -93,9 +94,7 @@ function ErrorLine({ error }: { error: string | null }) {
 
 function StatusBadge({ status }: { status: RxStatus }) {
   const t = useT("rx.status");
-  const tone =
-    status === "signed" ? "bg-emerald-100 text-emerald-900" : status === "void" ? "bg-red-100 text-red-900" : "bg-amber-100 text-amber-900";
-  return <span className={`rounded px-2 py-0.5 text-xs font-semibold ${tone}`}>{t(status)}</span>;
+  return <Badge tone={status === "signed" ? "success" : status === "void" ? "danger" : "warning"}>{t(status)}</Badge>;
 }
 
 function Modal({ open, onClose, labelledBy, children }: { open: boolean; onClose: () => void; labelledBy: string; children: ReactNode }) {

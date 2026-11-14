@@ -6,6 +6,7 @@ import { useState } from "react";
 import { inputClass, labelClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 type ErrorKey = "screen" | "notEligible" | "already" | "locked" | "chooseStars" | "generic";
 
@@ -117,9 +118,9 @@ export function RatingForm({
         </p>
       </div>
       {error ? (
-        <p id="rating-error" role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        <Alert as="p" tone="danger" id="rating-error" role="alert">
           {t(`errors.${error}`)}
-        </p>
+        </Alert>
       ) : null}
       <Button type="submit" disabled={busy}>
         {busy ? t("saving") : mode === "create" ? t("submit") : t("update")}

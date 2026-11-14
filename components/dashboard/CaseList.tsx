@@ -5,13 +5,10 @@ import Link from "next/link";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { CASE_FILTERS, filterCases, type CaseFilter } from "@/lib/dashboard/cases-filter";
 import type { CaseRow } from "@/lib/types";
+import { caseStatusTone } from "@/components/case/StatusBadge";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 
-const STATUS_COLORS: Record<string, string> = {
-  booked: "bg-slate-100 text-slate-800",
-  intake_done: "bg-sky-100 text-sky-800",
-  in_assessment: "bg-amber-100 text-amber-900",
-  referred: "bg-emerald-100 text-emerald-800",
-};
 const STATUSES = ["booked", "intake_done", "in_assessment", "referred"] as const;
 const LANGUAGES = ["en", "hi", "te"] as const;
 
@@ -85,9 +82,7 @@ export async function CaseList({
       {cases.length === 0 ? (
         <div className="space-y-2 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-600">
           <p>{t("empty")}</p>
-          <Link href="/cases/new" className="inline-flex min-h-11 items-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white hover:bg-teal-800">
-            {t("emptyAction")}
-          </Link>
+          <Button href="/cases/new">{t("emptyAction")}</Button>
         </div>
       ) : rows.length === 0 ? (
         <div className="space-y-2 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-600">
@@ -119,9 +114,7 @@ export async function CaseList({
                   <td className="whitespace-nowrap px-3 py-2">{c.child_age_months == null ? "-" : t("ageMonths", { count: c.child_age_months })}</td>
                   <td className="px-3 py-2">{languageLabel(c.language)}</td>
                   <td className="px-3 py-2">
-                    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status] ?? STATUS_COLORS.booked}`}>
-                      {statusLabel(c.status)}
-                    </span>
+                    <Badge tone={caseStatusTone(c.status)}>{statusLabel(c.status)}</Badge>
                   </td>
                   <td className="whitespace-nowrap px-3 py-2">{format.date(c.created_at)}</td>
                 </tr>

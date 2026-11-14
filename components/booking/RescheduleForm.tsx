@@ -6,6 +6,7 @@ import { useT } from "@/lib/i18n/client";
 import { send } from "@/components/providers/request";
 import { SlotPicker, type PickedSlot } from "./SlotPicker";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 type ErrorKey = "slot_taken" | "slot_unavailable" | "too_soon" | "too_far" | "too_late" | "invalid_transition" | "generic";
 
@@ -38,7 +39,7 @@ export function RescheduleForm(props: { appointmentId: string; profileId: string
 
   return (
     <div className="space-y-5">
-      {error ? <p role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800">{t(`errors.${error}`)}</p> : null}
+      {error ? <Alert as="p" tone="danger" role="alert">{t(`errors.${error}`)}</Alert> : null}
       <SlotPicker
         profileId={props.profileId}
         serviceId={props.serviceId}

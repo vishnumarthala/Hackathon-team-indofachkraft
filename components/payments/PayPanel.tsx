@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { secondaryButtonClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 // Same URL as lib/payments/razorpay.ts CHECKOUT_SCRIPT_URL (that module is server-only). Allowed on this route only:
 // lib/csp.ts FAMILY_CSP_EXCEPTIONS["/book/*/pay/*"] + lib/privacy/third-party-allowlist.ts.
@@ -169,14 +170,14 @@ export function PayPanel({ appointmentId, profileId, initialState, expiresAt, de
         {t("countdown", { time: `${minutes}:${String(seconds).padStart(2, "0")}` })}
       </p>
       {error ? (
-        <p role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        <Alert as="p" tone="danger" role="alert">
           {t(`errors.${error}`)}
-        </p>
+        </Alert>
       ) : null}
       {notice ? (
-        <p role="alert" className="rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+        <Alert as="p" tone="warning" role="alert">
           {t(notice)}
-        </p>
+        </Alert>
       ) : null}
       {demoOpen ? (
         <section aria-labelledby="demo-checkout" className="space-y-3 rounded-2xl border-2 border-dashed border-violet-300 bg-violet-50 p-4">

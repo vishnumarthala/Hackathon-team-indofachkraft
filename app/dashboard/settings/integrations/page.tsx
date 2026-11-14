@@ -7,6 +7,7 @@ import { googleBackend, googleConnectAvailable } from "@/lib/google/client";
 import { getConnectionView } from "@/lib/google/connections";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 export const dynamic = "force-dynamic";
 
@@ -74,7 +75,7 @@ export default async function IntegrationsPage({ searchParams }: Props) {
             </p>
             <p className="break-words text-slate-800">{t("google.connectedAs", { email: connection.google_email })}</p>
             <p className="text-sm text-slate-600">{t("google.connectedOn", { date: format.date(connection.connected_at, "long") })}</p>
-            {connection.status !== "active" ? <p role="note" className="rounded bg-amber-50 p-3 text-sm text-amber-900">{t("google.expiredHelp")}</p> : null}
+            {connection.status !== "active" ? <Alert as="p" tone="warning" role="note">{t("google.expiredHelp")}</Alert> : null}
             <div className="flex flex-wrap gap-2">
               {connection.status !== "active" && available ? (
                 <Button asChild>

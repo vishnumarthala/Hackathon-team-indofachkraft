@@ -8,6 +8,7 @@ import { useFormatter, useLocale, useT, useTimeZone } from "@/lib/i18n/client";
 import { labelClass, secondaryButtonClass, send } from "@/components/providers/request";
 import { SlotPicker, type PickedSlot } from "./SlotPicker";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 export type FlowService = {
   id: string;
@@ -168,9 +169,9 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
   const fee = demo ? null : feeLabel(service.fee_inr, service.payment_mode, format.inr);
   const providerLabel = service.mode === "in_clinic" && service.location_name ? `${profile.name} (${service.location_name})` : profile.name;
   const errorBox = error ? (
-    <p role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+    <Alert as="p" tone="danger" role="alert">
       {t(`errors.${error}`)}
-    </p>
+    </Alert>
   ) : null;
 
   if (done) {

@@ -13,6 +13,7 @@ import { getUserRole, requirePageUser } from "@/lib/auth";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { canManage } from "@/lib/orgs";
 import { getProfileByUserId, listProfileLocations, listUserOrgsWithLocations, photoUrl } from "@/lib/providers";
+import { Badge, type BadgeTone } from "@/components/ui/Badge";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +22,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
-const STATUS_STYLE = {
-  unverified: "bg-slate-100 text-slate-800",
-  pending: "bg-amber-100 text-amber-900",
-  verified: "bg-teal-100 text-teal-900",
-  rejected: "bg-red-100 text-red-900",
-  suspended: "bg-red-100 text-red-900",
-} as const;
+const STATUS_TONE = {
+  unverified: "neutral",
+  pending: "warning",
+  verified: "brand",
+  rejected: "danger",
+  suspended: "danger",
+} as const satisfies Record<string, BadgeTone>;
 
 function Section({ title, children, intro }: { title: string; intro?: string; children: React.ReactNode }) {
   return (
@@ -89,7 +90,7 @@ export default async function ProfileEditorPage() {
         <h1 className="text-2xl font-semibold text-slate-900">{t("editor.title")}</h1>
         <p className="flex flex-wrap items-center gap-2 text-sm">
           <span className="text-slate-700">{t("editor.statusLabel")}:</span>
-          <span className={`rounded px-2 py-0.5 font-medium ${STATUS_STYLE[status]}`}>{t(`status.${status}`)}</span>
+          <Badge tone={STATUS_TONE[status]}>{t(`status.${status}`)}</Badge>
           {profile.is_synthetic ? <span className="rounded bg-violet-100 px-2 py-0.5 font-medium text-violet-900">{t("demoBadge")}</span> : null}
           {profile.listed ? (
             <Link href={`/p/${profile.slug}`} className="font-medium text-slate-900 underline">

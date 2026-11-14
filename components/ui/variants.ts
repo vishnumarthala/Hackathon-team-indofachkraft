@@ -13,7 +13,7 @@ const base =
   `inline-flex min-h-11 items-center justify-center gap-2 rounded-lg text-center font-semibold transition-colors ${focusRing} ` +
   "disabled:cursor-not-allowed aria-disabled:cursor-not-allowed aria-disabled:pointer-events-none";
 
-// Disabled states keep AA contrast (slate-600 on slate-200 ≈ 6.2:1) instead of fading the brand colour.
+// Disabled states keep AA contrast (slate-600 on slate-200 ≈ 6.1:1) instead of fading the brand colour.
 const variants: Record<ButtonVariant, string> = {
   primary:
     "bg-teal-700 text-white hover:bg-teal-800 disabled:bg-slate-200 disabled:text-slate-600 aria-disabled:bg-slate-200 aria-disabled:text-slate-600",

@@ -9,6 +9,7 @@ import type { FeePolicy } from "@/lib/payouts/fees";
 import { invoiceMonthLabel } from "@/lib/payouts/invoice";
 import { adminPayoutOverview } from "@/lib/payouts/store";
 import { voiceUsageOverview } from "@/lib/voice/usage";
+import { Alert } from "@/components/ui/Alert";
 
 export const dynamic = "force-dynamic";
 
@@ -71,9 +72,9 @@ export default async function AdminPayoutsPage() {
       </div>
 
       {o.open_reconciliation_flags > 0 ? (
-        <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900" data-testid="admin-recon">
+        <Alert as="p" tone="warning" role="status" data-testid="admin-recon">
           {t("reconFlags", { count: o.open_reconciliation_flags })}
-        </p>
+        </Alert>
       ) : null}
 
       <section aria-labelledby="centres-title" className="space-y-2">

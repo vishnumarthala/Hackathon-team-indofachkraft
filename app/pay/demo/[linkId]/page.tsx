@@ -4,6 +4,7 @@ import { DemoLinkCheckout } from "@/components/fees/DemoLinkCheckout";
 import { env } from "@/lib/env";
 import { findLinkPayment } from "@/lib/fees/store";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { Alert } from "@/components/ui/Alert";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export default async function DemoLinkPage({ params }: { params: Promise<{ linkI
   return (
     <div className="mx-auto max-w-md space-y-5 px-4 py-8">
       <h1 className="text-2xl font-bold text-slate-900">{t("demoTitle")}</h1>
-      <p className="rounded bg-amber-50 p-3 text-sm text-amber-950">{t("demoNote")}</p>
+      <Alert as="p" tone="warning">{t("demoNote")}</Alert>
       <div className="space-y-1 rounded-xl border border-slate-200 bg-white p-4">
         <p className="text-sm text-slate-700">{t("amount")}</p>
         <p className="text-3xl font-semibold text-slate-900" data-testid="demo-amount">

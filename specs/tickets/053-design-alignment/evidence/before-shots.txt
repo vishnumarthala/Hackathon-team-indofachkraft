@@ -1,0 +1,12 @@
+before /family @390: HTTP 200, slate-900+white buttons/links 0, teal-700 buttons/links 0, scrollWidth 390 -> before-family-390.png
+before /family @1440: HTTP 200, slate-900+white buttons/links 0, teal-700 buttons/links 0, scrollWidth 1440 -> before-family-1440.png
+before /dashboard @390: HTTP 200, slate-900+white buttons/links 0, teal-700 buttons/links 2, scrollWidth 390 -> before-dashboard-390.png
+before /dashboard @1440: HTTP 200, slate-900+white buttons/links 0, teal-700 buttons/links 2, scrollWidth 1440 -> before-dashboard-1440.png
+before /cases/e06cb923-e6b6-479c-b3f3-7ab5e4ade3ad @390: HTTP 200, slate-900+white buttons/links 1, teal-700 buttons/links 0, scrollWidth 390 -> before-case-390.png
+before /cases/e06cb923-e6b6-479c-b3f3-7ab5e4ade3ad @1440: HTTP 200, slate-900+white buttons/links 1, teal-700 buttons/links 0, scrollWidth 1440 -> before-case-1440.png
+before /find @390: HTTP 200, slate-900+white buttons/links 1, teal-700 buttons/links 0, scrollWidth 390 -> before-find-390.png
+before /find @1440: HTTP 200, slate-900+white buttons/links 1, teal-700 buttons/links 0, scrollWidth 1440 -> before-find-1440.png
+before /book/4c53c9bb-5e38-445c-b46d-78380e148278 @390: HTTP 200, slate-900+white buttons/links 1, teal-700 buttons/links 0, scrollWidth 390 -> before-book-390.png
+before /book/4c53c9bb-5e38-445c-b46d-78380e148278 @1440: HTTP 200, slate-900+white buttons/links 1, teal-700 buttons/links 0, scrollWidth 1440 -> before-book-1440.png
+before /admin/verifications @390: HTTP 200, slate-900+white buttons/links 1, teal-700 buttons/links 0, scrollWidth 390 -> before-admin-verifications-390.png
+before /admin/verifications @1440: HTTP 200, slate-900+white buttons/links 1, teal-700 buttons/links 0, scrollWidth 1440 -> before-admin-verifications-1440.png

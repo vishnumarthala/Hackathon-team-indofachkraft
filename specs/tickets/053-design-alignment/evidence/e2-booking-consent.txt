@@ -1,0 +1,6 @@
+PASS booking: Continue is a teal Button, disabled until a time (and the demo ack) are chosen :: disabled before true, enabled after true; demo true
+PASS booking: Confirm books the slot and shows the teal 'My appointments' link :: appointment {"status":"confirmed","is_demo":true}; link /family/appointments/9e8b947f-b670-4304-92d8-95f6c24438c8?booked=1
+PASS booking: 'My appointments' (Button href -> Next Link) navigates :: http://localhost:3060/family/appointments/9e8b947f-b670-4304-92d8-95f6c24438c8?booked=1
+PASS booking: no page errors :: []
+PASS paper consent: 'Save paper consent' (Button type=submit) submits the form and records consent :: type submit; paper consent records 0 -> 1
+5 PASS, 0 FAIL

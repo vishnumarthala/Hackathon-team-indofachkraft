@@ -1,9 +1,11 @@
 // Ticket 053 FR-1: components/ui primitives render the Figma variants, the 44 px target, the focus ring and the
 // disabled/loading states (aria-disabled / aria-busy); the link variant renders <a>.
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { createElement as h } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Alert, Badge, Button, buttonClasses, Card, EmptyState, Select, TextField } from "@/components/ui";
+import { Alert, Badge, Button, buttonClasses, Card, EmptyState, Select, TextField, alertClasses, badgeClasses } from "@/components/ui";
 
 const html = (el: Parameters<typeof renderToStaticMarkup>[0]) => renderToStaticMarkup(el);
 const classOf = (markup: string) => (markup.match(/class="([^"]*)"/)?.[1] ?? "").split(" ");
@@ -156,5 +158,56 @@ describe("Badge, Alert, Card, EmptyState, TextField, Select", () => {
     expect(id).toBeTruthy();
     expect(out).toContain(`<select id="${id}"`);
     expect(out).not.toContain(" aria-invalid=");
+  });
+});
+
+// NFR-2: WCAG AA (4.5:1) for every variant's text on its background, default and disabled, computed from the
+// Tailwind v4 palette (oklch) the app ships.
+describe("colour contrast (NFR-2)", () => {
+  const theme = readFileSync(path.resolve(import.meta.dirname, "../node_modules/tailwindcss/theme.css"), "utf8");
+  const luminance = (token: string): number => {
+    if (token === "white") return 1;
+    const m = theme.match(new RegExp(`--color-${token}: oklch\\(([\\d.]+)% ([\\d.]+) ([\\d.]+)\\)`));
+    if (!m) throw new Error(`no colour ${token}`);
+    const [L, C, H] = [Number(m[1]) / 100, Number(m[2]), (Number(m[3]) * Math.PI) / 180];
+    const [a, b] = [C * Math.cos(H), C * Math.sin(H)];
+    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+    const mm = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+    const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+    const clamp = (x: number) => Math.min(1, Math.max(0, x));
+    const r = clamp(4.0767416621 * l - 3.3077115913 * mm + 0.2309699292 * s);
+    const g = clamp(-1.2684380046 * l + 2.6097574011 * mm - 0.3413193965 * s);
+    const bl = clamp(-0.0041960863 * l - 0.7034186147 * mm + 1.707614701 * s);
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const ratio = (fg: string, bg: string) => {
+    const [x, y] = [luminance(fg), luminance(bg)].sort((p, q) => q - p);
+    return (x + 0.05) / (y + 0.05);
+  };
+  const pick = (classes: string, prefix: string, kind: "bg" | "text") =>
+    classes
+      .split(" ")
+      .find((c) => c.startsWith(`${prefix}${kind}-`) && !c.slice(prefix.length).match(/^text-(xs|sm|base|lg|center)$/))
+      ?.slice(prefix.length + kind.length + 1) ?? "white";
+
+  it.each(["primary", "secondary", "ghost", "danger"] as const)("Button %s default and disabled", (variant) => {
+    const cls = buttonClasses({ variant });
+    expect(ratio(pick(cls, "", "text"), pick(cls, "", "bg"))).toBeGreaterThanOrEqual(4.5);
+    const disabledBg = cls.includes("disabled:bg-") ? pick(cls, "disabled:", "bg") : pick(cls, "", "bg");
+    expect(ratio(pick(cls, "disabled:", "text"), disabledBg)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it.each(["neutral", "brand", "success", "warning", "danger", "info"] as const)("Badge %s", (tone) => {
+    const cls = badgeClasses(tone);
+    expect(ratio(pick(cls, "", "text"), pick(cls, "", "bg"))).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it.each(["info", "success", "warning", "danger"] as const)("Alert %s", (tone) => {
+    const cls = alertClasses(tone);
+    expect(ratio(pick(cls, "", "text"), pick(cls, "", "bg"))).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it("primary teal-700 on white text is about 5.4:1", () => {
+    expect(ratio("white", "teal-700")).toBeGreaterThan(5);
   });
 });

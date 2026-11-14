@@ -1,5 +1,6 @@
 // Ticket 026: shared view helpers for the home program UI (provider tab and the family page). Safe in the browser.
 import { MSG } from "@/lib/home-program/schema";
+import type { BadgeTone } from "@/components/ui/Badge";
 
 const ERROR_KEYS = {
   [MSG.stale]: "stale",
@@ -52,11 +53,11 @@ export async function sendJson<T>(fetchImpl: typeof fetch, url: string, method: 
   return { ok: false, status: res.status, error, fields: Object.keys(json.details ?? {}) };
 }
 
-export const STATUS_STYLES = {
-  draft: "bg-slate-100 text-slate-800",
-  published: "bg-emerald-100 text-emerald-900",
-  archived: "bg-slate-100 text-slate-600",
-} as const;
+export const STATUS_TONES = {
+  draft: "neutral",
+  published: "success",
+  archived: "neutral",
+} as const satisfies Record<string, BadgeTone>;
 
 export const DIFFICULTY_STYLES = {
   hard: "border-rose-300 bg-rose-50 text-rose-900",

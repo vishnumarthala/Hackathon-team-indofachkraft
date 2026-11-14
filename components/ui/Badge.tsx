@@ -13,11 +13,15 @@ const tones: Record<BadgeTone, string> = {
   info: "bg-sky-50 text-sky-900",
 };
 
-export function badgeClasses(tone: BadgeTone = "neutral", className?: string): string {
-  return cn("inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium", tones[tone], className);
+// `md` is the roomier pill of the family-portal cards (Figma Appointment card 9:344).
+export type BadgeSize = "sm" | "md";
+const sizes: Record<BadgeSize, string> = { sm: "px-2 py-0.5 font-medium", md: "px-3 py-1 font-semibold" };
+
+export function badgeClasses(tone: BadgeTone = "neutral", className?: string, size: BadgeSize = "sm"): string {
+  return cn("inline-flex items-center rounded-full text-xs", sizes[size], tones[tone], className);
 }
 
 /** Figma Badge: a short status label. Text is the meaning; colour only reinforces it. */
-export function Badge({ tone = "neutral", className, ...rest }: ComponentProps<"span"> & { tone?: BadgeTone }) {
-  return <span className={badgeClasses(tone, className)} {...rest} />;
+export function Badge({ tone = "neutral", size = "sm", className, ...rest }: ComponentProps<"span"> & { tone?: BadgeTone; size?: BadgeSize }) {
+  return <span className={badgeClasses(tone, className, size)} {...rest} />;
 }

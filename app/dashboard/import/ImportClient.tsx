@@ -11,6 +11,7 @@ import { formatWeekdays } from "@/lib/import/timetable";
 import type { Issue } from "@/lib/import/validate";
 import { useFormatter, useT } from "@/lib/i18n/client";
 import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
 const secondaryClass =
@@ -284,12 +285,12 @@ export function ImportWizard({ orgs }: { orgs: { id: string; name: string }[] })
           ) : null}
           <IssueList tone="warning" issues={preview.file_warnings} />
           {preview.already_imported ? (
-            <p className="rounded bg-amber-50 p-3 text-sm text-amber-900">
+            <Alert as="p" tone="warning">
               {t("alreadyImported", { date: format.dateTime(preview.already_imported.created_at) })}{" "}
               <Link href={`/dashboard/import/${preview.already_imported.id}`} className="font-medium underline">
                 {t("openThatImport")}
               </Link>
-            </p>
+            </Alert>
           ) : null}
           {preview.has_timetable ? (
             <p className="rounded bg-slate-50 p-3 text-sm text-slate-800" data-testid="timetable-notice">
