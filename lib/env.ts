@@ -189,6 +189,24 @@ export const env = {
   get RAZORPAY_WEBHOOK_SECRET() {
     return read("RAZORPAY_WEBHOOK_SECRET");
   },
+  // 046: platform fee and payouts (lib/payouts/config.ts parses and defaults these; docs/payouts.md). The default fee in
+  // basis points (1000 = 10%) for organisations without their own policy, GST on the fee (1800 = 18%), and the
+  // platform's legal name / GSTIN / address printed on the monthly platform-fee tax invoices.
+  get PLATFORM_FEE_DEFAULT_BPS() {
+    return read("PLATFORM_FEE_DEFAULT_BPS");
+  },
+  get PLATFORM_GST_BPS() {
+    return read("PLATFORM_GST_BPS");
+  },
+  get PLATFORM_GSTIN() {
+    return read("PLATFORM_GSTIN");
+  },
+  get PLATFORM_LEGAL_NAME() {
+    return read("PLATFORM_LEGAL_NAME");
+  },
+  get PLATFORM_ADDRESS() {
+    return read("PLATFORM_ADDRESS");
+  },
   /** Dev/test hook (lib/audit.ts `auditWouldFail`); ignored in production builds. */
   get AUDIT_FAIL_ACTIONS() {
     return read("AUDIT_FAIL_ACTIONS");

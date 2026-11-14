@@ -1,4 +1,5 @@
-// Ticket 031 FR-5 / NFR-1: parse a Razorpay webhook and keep only an allowlisted copy for `payment_events.payload`.
+// Ticket 031 FR-5 / NFR-1 (+ 045 payment links, 046 Route transfers): parse a Razorpay webhook and keep only an
+// allowlisted copy for `payment_events.payload`.
 // Card, VPA (UPI id), bank, wallet, email, phone, notes, acquirer data, descriptions and anything not listed below are
 // dropped before anything is stored or logged. Pure (no I/O).
 
@@ -11,6 +12,9 @@ export const HANDLED_EVENTS = [
   "payment_link.paid",
   "payment_link.cancelled",
   "payment_link.expired",
+  // 046: Razorpay Route transfers to centres' linked accounts.
+  "transfer.processed",
+  "transfer.failed",
 ] as const;
 export type HandledEvent = (typeof HANDLED_EVENTS)[number];
 
@@ -19,6 +23,8 @@ const REFUND_KEYS = ["id", "entity", "payment_id", "amount", "currency", "status
 const ORDER_KEYS = ["id", "entity", "amount", "amount_paid", "currency", "status", "attempts", "created_at"] as const;
 // 045: never the customer block, description or short URL.
 const LINK_KEYS = ["id", "entity", "amount", "amount_paid", "currency", "status", "reference_id", "created_at"] as const;
+// 046: never the notes (only our own transfer id is read from them) or linked-account notes.
+const TRANSFER_KEYS = ["id", "entity", "status", "source", "recipient", "amount", "currency", "amount_reversed", "on_hold", "processed_at", "created_at"] as const;
 
 type Json = Record<string, unknown>;
 
@@ -60,6 +66,8 @@ export type ParsedWebhook = {
   };
   paymentLink?: { id: string; status: string | null; amount: number | null };
   refund?: { id: string; payment_id: string; status: string | null };
+  /** 046: `source` is the payment (pay_...) the transfer came from; `payout_transfer` our id from the notes. */
+  transfer?: { id: string; source: string | null; status: string | null; payout_transfer: string | null; error: string | null };
   /** Allowlisted copy for payment_events.payload. */
   stored: Json;
 };
@@ -72,6 +80,8 @@ export function parseWebhook(rawBody: string): ParsedWebhook {
   const refund = pick(entityOf(body.payload, "refund"), REFUND_KEYS);
   const order = pick(entityOf(body.payload, "order"), ORDER_KEYS);
   const link = pick(entityOf(body.payload, "payment_link"), LINK_KEYS);
+  const transferEntity = entityOf(body.payload, "transfer");
+  const transfer = pick(transferEntity, TRANSFER_KEYS);
   const stored: Json = {
     event: body.event.slice(0, 80),
     ...(typeof body.created_at === "number" ? { created_at: body.created_at } : {}),
@@ -79,6 +89,7 @@ export function parseWebhook(rawBody: string): ParsedWebhook {
     ...(refund ? { refund } : {}),
     ...(order ? { order } : {}),
     ...(link ? { payment_link: link } : {}),
+    ...(transfer ? { transfer } : {}),
   };
   const str = (v: unknown) => (typeof v === "string" && v ? v : null);
   const error = [str(payment?.error_code), str(payment?.error_reason)].filter(Boolean).join(": ") || null;
@@ -99,10 +110,28 @@ export function parseWebhook(rawBody: string): ParsedWebhook {
     ...(link && str(link.id)
       ? { paymentLink: { id: link.id as string, status: str(link.status), amount: typeof link.amount === "number" ? link.amount : null } }
       : {}),
+    ...(transfer && str(transfer.id) ? { transfer: transferDetails(transfer, transferEntity) } : {}),
     ...(refund && str(refund.id) && str(refund.payment_id)
       ? { refund: { id: refund.id as string, payment_id: refund.payment_id as string, status: str(refund.status) } }
       : {}),
     stored,
+  };
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function transferDetails(transfer: Json, entity: unknown): NonNullable<ParsedWebhook["transfer"]> {
+  const raw = isObject(entity) ? entity : {};
+  const notes = isObject(raw.notes) ? raw.notes : {};
+  const err = isObject(raw.error) ? raw.error : {};
+  const str = (v: unknown) => (typeof v === "string" && v ? v.slice(0, 120) : null);
+  const ours = str(notes.payout_transfer);
+  return {
+    id: transfer.id as string,
+    source: str(transfer.source),
+    status: str(transfer.status),
+    payout_transfer: ours && UUID.test(ours) ? ours : null,
+    error: [str(err.code), str(err.reason ?? err.description)].filter(Boolean).join(": ") || null,
   };
 }
 

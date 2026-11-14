@@ -27,9 +27,14 @@ export default async function FeesDashboardPage() {
       <header className="space-y-1">
         <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
         <p className="text-slate-700">{t("intro")}</p>
-        <Link href="/dashboard/settings/packages" className="inline-flex min-h-11 items-center text-sm font-semibold text-teal-800 underline">
-          {t("packagesLink")}
-        </Link>
+        <div className="flex flex-wrap gap-x-4">
+          <Link href="/dashboard/settings/packages" className="inline-flex min-h-11 items-center text-sm font-semibold text-teal-800 underline">
+            {t("packagesLink")}
+          </Link>
+          <Link href="/dashboard/payouts" className="inline-flex min-h-11 items-center text-sm font-semibold text-teal-800 underline">
+            {t("payoutsLink")}
+          </Link>
+        </div>
       </header>
       {orgs.length === 0 ? (
         <p className="text-slate-700">{t("noOrg")}</p>

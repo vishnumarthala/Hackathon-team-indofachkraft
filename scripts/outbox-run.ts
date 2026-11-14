@@ -27,6 +27,8 @@ async function main() {
   const { runPaymentJobs } = await import("../lib/payments/jobs");
   // 045: fee jobs (balance links, fee refunds, offer / package expiry, reminders).
   const { runFeeJobs } = await import("../lib/fees/jobs");
+  // 046: payout jobs (payout items, Route transfers, reversals, package expiry payouts).
+  const { runPayoutJobs } = await import("../lib/payouts/jobs");
   type Senders = NonNullable<Parameters<typeof runOutbox>[0]>["senders"];
 
   const senders: Senders = mockLog
@@ -54,7 +56,8 @@ async function main() {
       const result = await runOutbox({ sql, senders, timeBudgetMs: 5_000 });
       const payments = await runPaymentJobs({ sql });
       const fees = await runFeeJobs({ sql });
-      console.log(JSON.stringify({ at: new Date().toISOString(), pid: process.pid, ...result, payments, fees }));
+      const payouts = await runPayoutJobs({ sql });
+      console.log(JSON.stringify({ at: new Date().toISOString(), pid: process.pid, ...result, payments, fees, payouts }));
       if (once || stop || Date.now() - started + intervalMs > durationMs) break;
       await sleep(intervalMs);
       if (stop) break;

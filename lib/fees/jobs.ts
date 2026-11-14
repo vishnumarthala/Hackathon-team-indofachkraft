@@ -14,6 +14,8 @@ import { getPaymentGateway, RazorpayApiError, type GatewayRefund, type PaymentGa
 import { refundBackoffSeconds, REFUND_LEASE_SECONDS, REFUND_POLL_SECONDS } from "@/lib/payments/jobs";
 import { BALANCE_REMINDER_DAYS, PACKAGE_EXPIRY_WARNING_DAYS, PACKAGE_LOW_SESSIONS } from "./money";
 import { closeLink, refreshBalanceLink, refundPreconditions, todayIst } from "./store";
+// 046: registers the refund precondition that reverses Route transfers first (FR-5).
+import "@/lib/payouts/register";
 
 const log = logger("fees.jobs");
 
@@ -220,6 +222,13 @@ export function runFeeJobsSoon(): void {
         await runFeeJobs();
       } catch (err) {
         log.error("immediate fee run failed", { error: errorMessage(err) });
+      }
+      // 046: payout items for what just became billable or funded, and their transfers.
+      try {
+        const { runPayoutJobs } = await import("@/lib/payouts/jobs");
+        await runPayoutJobs();
+      } catch (err) {
+        log.error("immediate payout run failed", { error: errorMessage(err) });
       }
     });
   } catch {

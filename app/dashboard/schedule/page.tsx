@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CancelAppointmentButton, CompleteButtons } from "@/components/booking/AppointmentActions";
 import { HoursEditor, OverridesEditor, ServicesEditor } from "@/components/booking/ScheduleEditors";
 import { AtClinicNotice } from "@/components/fees/AtClinicNotice";
+import { PayoutSetupNotice } from "@/components/payouts/PayoutSetupNotice";
 import { MeetPanel } from "@/components/google/MeetPanel";
 import { ConflictList } from "@/components/series/TimetableCard";
 import { requireProviderPage } from "@/lib/authz";
@@ -183,6 +184,7 @@ export default async function SchedulePage({ searchParams }: Props) {
       <section aria-labelledby="services" className="space-y-3">
         <h2 id="services" className={h2}>{t("schedule.services.title")}</h2>
         {(await atClinicNoticeDue(ctx.profile.id)) ? <AtClinicNotice /> : null}
+        <PayoutSetupNotice userId={actor.user.id} orgIds={ctx.orgs.map((o) => o.id)} />
         {locations.length === 0 ? <p className="text-sm text-slate-600">{t("schedule.noLocations")}</p> : null}
         <ServicesEditor services={services} locations={locations} orgs={ctx.orgs} defaultIntakeKind={defaultIntakeKind(ctx.profile.provider_type)} />
       </section>

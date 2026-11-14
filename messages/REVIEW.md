@@ -11,6 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
+Rows: 3292. Not yet approved: 3292.
 Rows: 3363. Not yet approved: 3363.
 
 | key | en | hi | te | reviewer | status |
@@ -1770,6 +1771,7 @@ Rows: 3363. Not yet approved: 3363.
 | `privacy.admin.nav.ops` | Operations | संचालन | కార్యకలాపాలు |  | pending |
 | `privacy.admin.nav.notifications` | Notifications | सूचनाएँ | నోటిఫికేషన్లు |  | pending |
 | `privacy.admin.nav.ratings` | Ratings | रेटिंग | రేటింగ్‌లు |  | pending |
+| `privacy.admin.nav.payouts` | Payouts | पेआउट्स | పేఅవుట్స్ |  | pending |
 | `privacy.admin.audit.title` | Audit log | ऑडिट लॉग | ఆడిట్ లాగ్ |  | pending |
 | `privacy.admin.audit.intro` | Who did what, newest first. Details of health and consent content are not shown. Viewing this page is itself audited. | किसने क्या किया, नवीनतम पहले। स्वास्थ्य और सहमति सामग्री का विवरण नहीं दिखाया जाता। इस पेज को देखना भी ऑडिट होता है। | ఎవరు ఏమి చేశారు, తాజావి ముందు. ఆరోగ్య మరియు సమ్మతి విషయాల వివరాలు చూపబడవు. ఈ పేజీని చూడటం కూడా ఆడిట్ అవుతుంది. |  | pending |
 | `privacy.admin.audit.action` | Action | कार्य | చర్య |  | pending |
@@ -1981,6 +1983,7 @@ Rows: 3363. Not yet approved: 3363.
 | `booking.schedule.services.inactive` | Off | बंद | ఆఫ్ |  | pending |
 | `booking.schedule.services.turnOff` | Turn off | बंद करें | ఆఫ్ చేయండి |  | pending |
 | `booking.schedule.services.turnOn` | Turn on | चालू करें | ఆన్ చేయండి |  | pending |
+| `booking.schedule.services.hiddenPayout` | Hidden from families until payout setup is finished. | पेआउट सेटअप पूरा होने तक परिवारों से छिपा है। | పేఅవుట్ సెటప్ పూర్తయ్యే వరకు కుటుంబాల నుండి దాచబడింది. |  | pending |
 | `booking.schedule.hours.title` | Weekly hours | साप्ताहिक समय | వారపు సమయాలు |  | pending |
 | `booking.schedule.hours.none` | No hours yet. | अभी कोई समय नहीं। | ఇంకా సమయాలు లేవు. |  | pending |
 | `booking.schedule.hours.add` | Add hours | समय जोड़ें | సమయాలు జోడించండి |  | pending |
@@ -2016,6 +2019,8 @@ Rows: 3363. Not yet approved: 3363.
 | `booking.schedule.agenda.intake.completed` | Intake: completed | इनटेक: पूरा हुआ | ఇన్‌టేక్: పూర్తయింది |  | pending |
 | `booking.schedule.agenda.intake.openBrief` | Open brief | ब्रीफ़ खोलें | బ్రీఫ్ తెరవండి |  | pending |
 | `booking.schedule.organisation` | Organisation | संगठन | సంస్థ |  | pending |
+| `booking.schedule.payoutInactive` | Finish payout setup to accept payments. | भुगतान लेने के लिए पेआउट सेटअप पूरा करें। | చెల్లింపులు స్వీకరించడానికి పేఅవుట్ సెటప్ పూర్తి చేయండి. |  | pending |
+| `booking.schedule.feeNotAccepted` | Accept the platform fee on the Payouts page first. | पहले पेआउट्स पेज पर प्लैटफ़ॉर्म शुल्क स्वीकार करें। | ముందుగా పేఅవుట్స్ పేజీలో ప్లాట్‌ఫామ్ ఫీజును అంగీకరించండి. |  | pending |
 | `booking.meet.join` | Join video call | वीडियो कॉल से जुड़ें | వీడియో కాల్‌లో చేరండి |  | pending |
 | `booking.meet.joinHint` | Join with your Google account. The provider will admit you from the waiting room. | अपने Google खाते से जुड़ें। प्रदाता आपको प्रतीक्षा कक्ष से अंदर लेंगे। | మీ Google ఖాతాతో చేరండి. ప్రొవైడర్ మిమ్మల్ని వెయిటింగ్ రూమ్ నుండి లోపలికి అనుమతిస్తారు. |  | pending |
 | `booking.meet.opensSoon` | Join video call appears 10 minutes before the start. | वीडियो कॉल से जुड़ें बटन शुरू होने से 10 मिनट पहले दिखेगा। | వీడియో కాల్‌లో చేరండి బటన్ ప్రారంభానికి 10 నిమిషాల ముందు కనిపిస్తుంది. |  | pending |
@@ -3118,6 +3123,8 @@ Rows: 3363. Not yet approved: 3363.
 | `fees.caseTab.errors.forbidden` | Only organisation owners and admins can do this. | यह केवल संगठन के मालिक और एडमिन कर सकते हैं। | దీన్ని సంస్థ యజమానులు మరియు అడ్మిన్‌లు మాత్రమే చేయగలరు. |  | pending |
 | `fees.caseTab.errors.invalid` | Check the highlighted fields. | चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను చూడండి. |  | pending |
 | `fees.caseTab.errors.generic` | Could not save. Please try again. | सहेजा नहीं जा सका। कृपया फिर कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి. |  | pending |
+| `fees.caseTab.errors.payout_account_inactive` | Finish payout setup to accept payments. | भुगतान लेने के लिए पेआउट सेटअप पूरा करें। | చెల్లింపులు స్వీకరించడానికి పేఅవుట్ సెటప్ పూర్తి చేయండి. |  | pending |
+| `fees.caseTab.errors.fee_policy_not_accepted` | Accept the platform fee on the Payouts page first. | पहले पेआउट्स पेज पर प्लैटफ़ॉर्म शुल्क स्वीकार करें। | ముందుగా పేఅవుట్స్ పేజీలో ప్లాట్‌ఫామ్ ఫీజును అంగీకరించండి. |  | pending |
 | `fees.kinds.charge` | Charge | शुल्क | ఛార్జ్ |  | pending |
 | `fees.kinds.payment` | Payment | भुगतान | చెల్లింపు |  | pending |
 | `fees.kinds.refund` | Refund | रिफंड | రీఫండ్ |  | pending |
@@ -3167,6 +3174,7 @@ Rows: 3363. Not yet approved: 3363.
 | `fees.dashboard.packageLeft_one` | {count} session left | {count} सेशन बाकी | {count} సెషన్ మిగిలి ఉంది |  | pending |
 | `fees.dashboard.packageLeft_other` | {count} sessions left | {count} सेशन बाकी | {count} సెషన్లు మిగిలి ఉన్నాయి |  | pending |
 | `fees.dashboard.packagesLink` | Packages | पैकेज | ప్యాకేజీలు |  | pending |
+| `fees.dashboard.payoutsLink` | Payouts | पेआउट्स | పేఅవుట్స్ |  | pending |
 | `fees.settings.link` | Packages | पैकेज | ప్యాకేజీలు |  | pending |
 | `fees.settings.linkIntro` | Monthly session packages that families can buy on DoctorNearMe. | मासिक सेशन पैकेज जिन्हें परिवार DoctorNearMe पर खरीद सकते हैं। | కుటుంబాలు DoctorNearMe లో కొనగలిగే నెలవారీ సెషన్ ప్యాకేజీలు. |  | pending |
 | `fees.settings.title` | Packages | पैकेज | ప్యాకేజీలు |  | pending |
@@ -3283,6 +3291,135 @@ Rows: 3363. Not yet approved: 3363.
 | `voiceAgents.lexicon.followup.nextReview` | next review | अगला रिव्यू, अगली समीक्षा | తదుపరి రివ్యూ, తదుపరి సమీక్ష |  | pending |
 | `voiceAgents.lexicon.followup.medicineHow` | give the medicine | दवा कैसे दें | మందు ఎలా ఇవ్వాలి |  | pending |
 | `voiceAgents.lexicon.followup.medicineChange` | double the syrup dose, double the dose | सिरप की खुराक दोगुनी, खुराक दोगुनी | సిరప్ మోతాదు రెట్టింపు, మోతాదు రెట్టింపు |  | pending |
+| `payouts.nav` | Payouts | पेआउट्स | పేఅవుట్స్ |  | pending |
+| `payouts.dashboard.title` | Payouts | पेआउट्स | పేఅవుట్స్ |  | pending |
+| `payouts.dashboard.subtitle` | {centre} · paid to your Razorpay account after each session | {centre} · हर सत्र के बाद आपके Razorpay खाते में भुगतान | {centre} · ప్రతి సెషన్ తర్వాత మీ Razorpay ఖాతాకు చెల్లింపు |  | pending |
+| `payouts.dashboard.downloadCsv` | Download CSV | CSV डाउनलोड करें | CSV డౌన్‌లోడ్ చేయండి |  | pending |
+| `payouts.dashboard.org` | Organisation | संगठन | సంస్థ |  | pending |
+| `payouts.dashboard.show` | Show | दिखाएँ | చూపించు |  | pending |
+| `payouts.dashboard.forbidden` | Only organisation owners and admins can see payouts. | पेआउट्स केवल संगठन के मालिक और एडमिन देख सकते हैं। | పేఅవుట్స్‌ను సంస్థ యజమానులు, అడ్మిన్‌లు మాత్రమే చూడగలరు. |  | pending |
+| `payouts.dashboard.feesLink` | Fees | फ़ीस | ఫీజులు |  | pending |
+| `payouts.account.activeTitle` | Payout account active | पेआउट खाता सक्रिय है | పేఅవుట్ ఖాతా యాక్టివ్‌గా ఉంది |  | pending |
+| `payouts.account.activeBody` | Razorpay linked account ending {last4}. Platform fee: {policy}. | Razorpay लिंक्ड खाता जिसके अंत में {last4} है। प्लैटफ़ॉर्म शुल्क: {policy}। | {last4}తో ముగిసే Razorpay లింక్డ్ ఖాతా. ప్లాట్‌ఫామ్ ఫీజు: {policy}. |  | pending |
+| `payouts.account.demoBody` | Demo payout account (DEMO_MODE): transfers are simulated, no money moves. Platform fee: {policy}. | डेमो पेआउट खाता (DEMO_MODE): ट्रांसफ़र सिम्युलेट होते हैं, कोई पैसा नहीं जाता। प्लैटफ़ॉर्म शुल्क: {policy}। | డెమో పేఅవుట్ ఖాతా (DEMO_MODE): ట్రాన్స్‌ఫర్లు అనుకరణ మాత్రమే, డబ్బు కదలదు. ప్లాట్‌ఫామ్ ఫీజు: {policy}. |  | pending |
+| `payouts.account.setupTitle` | Finish payout setup to accept payments | भुगतान लेने के लिए पेआउट सेटअप पूरा करें | చెల్లింపులు స్వీకరించడానికి పేఅవుట్ సెటప్ పూర్తి చేయండి |  | pending |
+| `payouts.account.pendingBody` | Razorpay is checking your documents (KYC). Paid services and packages are hidden from families until your payout account is active. | Razorpay आपके दस्तावेज़ (KYC) जाँच रहा है। आपका पेआउट खाता सक्रिय होने तक भुगतान वाली सेवाएँ और पैकेज परिवारों को नहीं दिखते। | Razorpay మీ పత్రాలను (KYC) తనిఖీ చేస్తోంది. మీ పేఅవుట్ ఖాతా యాక్టివ్ అయ్యే వరకు చెల్లింపు సేవలు, ప్యాకేజీలు కుటుంబాలకు కనిపించవు. |  | pending |
+| `payouts.account.notStartedBody` | Paid services and packages need a payout account. Until then they are hidden from families. | भुगतान वाली सेवाओं और पैकेज के लिए पेआउट खाता चाहिए। तब तक वे परिवारों को नहीं दिखते। | చెల్లింపు సేవలు, ప్యాకేజీలకు పేఅవుట్ ఖాతా అవసరం. అప్పటి వరకు అవి కుటుంబాలకు కనిపించవు. |  | pending |
+| `payouts.account.suspendedTitle` | Payouts are paused | पेआउट रुके हुए हैं | పేఅవుట్లు ఆపివేయబడ్డాయి |  | pending |
+| `payouts.account.suspendedBody` | Your payout account is suspended. New payouts are held until it is active again. Contact DoctorNearMe. | आपका पेआउट खाता निलंबित है। इसके फिर से सक्रिय होने तक नए पेआउट रोके जाते हैं। DoctorNearMe से संपर्क करें। | మీ పేఅవుట్ ఖాతా నిలిపివేయబడింది. అది మళ్ళీ యాక్టివ్ అయ్యే వరకు కొత్త పేఅవుట్లు నిలిపి ఉంచబడతాయి. DoctorNearMeని సంప్రదించండి. |  | pending |
+| `payouts.account.steps` | Steps | चरण | దశలు |  | pending |
+| `payouts.account.step1` | Send DoctorNearMe your centre's legal name, PAN and bank account details. | DoctorNearMe को अपने सेंटर का कानूनी नाम, PAN और बैंक खाते का विवरण भेजें। | మీ సెంటర్ చట్టపరమైన పేరు, PAN, బ్యాంక్ ఖాతా వివరాలను DoctorNearMeకి పంపండి. |  | pending |
+| `payouts.account.step2` | Complete Razorpay's verification (KYC) for your linked account. | अपने लिंक्ड खाते के लिए Razorpay का सत्यापन (KYC) पूरा करें। | మీ లింక్డ్ ఖాతా కోసం Razorpay ధృవీకరణ (KYC) పూర్తి చేయండి. |  | pending |
+| `payouts.account.step3` | We activate your payout account here. Then accept the platform fee below. | हम यहाँ आपका पेआउट खाता सक्रिय करेंगे। फिर नीचे प्लैटफ़ॉर्म शुल्क स्वीकार करें। | మేము ఇక్కడ మీ పేఅవుట్ ఖాతాను యాక్టివేట్ చేస్తాము. తర్వాత క్రింద ప్లాట్‌ఫామ్ ఫీజును అంగీకరించండి. |  | pending |
+| `payouts.fee.title` | Platform fee | प्लैटफ़ॉर्म शुल्क | ప్లాట్‌ఫామ్ ఫీజు |  | pending |
+| `payouts.fee.percent` | DoctorNearMe keeps {percent}% of each consultation fee, plus GST, and pays the rest to your account after each session. | DoctorNearMe हर परामर्श शुल्क का {percent}% और उस पर GST रखता है, और बाकी हर सत्र के बाद आपके खाते में भेजता है। | DoctorNearMe ప్రతి కన్సల్టేషన్ ఫీజులో {percent}% మరియు దానిపై GST ఉంచుకుని, మిగతాది ప్రతి సెషన్ తర్వాత మీ ఖాతాకు పంపుతుంది. |  | pending |
+| `payouts.fee.flat` | DoctorNearMe keeps {amount} of each consultation fee, plus GST, and pays the rest to your account after each session. | DoctorNearMe हर परामर्श शुल्क में से {amount} और उस पर GST रखता है, और बाकी हर सत्र के बाद आपके खाते में भेजता है। | DoctorNearMe ప్రతి కన్సల్టేషన్ ఫీజులో {amount} మరియు దానిపై GST ఉంచుకుని, మిగతాది ప్రతి సెషన్ తర్వాత మీ ఖాతాకు పంపుతుంది. |  | pending |
+| `payouts.fee.min` | At least {amount} per consultation. | हर परामर्श पर कम से कम {amount}। | ప్రతి కన్సల్టేషన్‌కు కనీసం {amount}. |  | pending |
+| `payouts.fee.cap` | At most {amount} per consultation. | हर परामर्श पर अधिकतम {amount}। | ప్రతి కన్సల్టేషన్‌కు గరిష్ఠంగా {amount}. |  | pending |
+| `payouts.fee.waived` | No fee for sessions until {date}. | {date} तक के सत्रों पर कोई शुल्क नहीं। | {date} వరకు సెషన్లపై ఫీజు లేదు. |  | pending |
+| `payouts.fee.familiesNote` | Families never see the fee. They see your price, paid to DoctorNearMe on behalf of your centre. | परिवारों को यह शुल्क कभी नहीं दिखता। उन्हें आपकी कीमत दिखती है, जो आपके सेंटर की ओर से DoctorNearMe को दी जाती है। | కుటుంబాలకు ఈ ఫీజు ఎప్పుడూ కనిపించదు. వారికి మీ ధర కనిపిస్తుంది, అది మీ సెంటర్ తరఫున DoctorNearMeకి చెల్లించబడుతుంది. |  | pending |
+| `payouts.fee.needed` | Accept the fee before your first paid service or package goes live. | आपकी पहली भुगतान वाली सेवा या पैकेज शुरू होने से पहले शुल्क स्वीकार करें। | మీ మొదటి చెల్లింపు సేవ లేదా ప్యాకేజీ ప్రారంభమయ్యే ముందు ఫీజును అంగీకరించండి. |  | pending |
+| `payouts.fee.accept` | I accept | मैं स्वीकार करता/करती हूँ | నేను అంగీకరిస్తున్నాను |  | pending |
+| `payouts.fee.accepted` | You accepted this fee (version {version}). | आपने यह शुल्क स्वीकार किया है (संस्करण {version})। | మీరు ఈ ఫీజును అంగీకరించారు (వెర్షన్ {version}). |  | pending |
+| `payouts.fee.ownerOnly` | Only the centre owner can accept the fee. | केवल सेंटर के मालिक शुल्क स्वीकार कर सकते हैं। | సెంటర్ యజమాని మాత్రమే ఫీజును అంగీకరించగలరు. |  | pending |
+| `payouts.fee.changed` | The fee changed. Reload the page and read the new notice. | शुल्क बदल गया है। पेज फिर से लोड करें और नई सूचना पढ़ें। | ఫీజు మారింది. పేజీని మళ్ళీ లోడ్ చేసి కొత్త నోటీసు చదవండి. |  | pending |
+| `payouts.fee.failed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `payouts.stats.consultations` | Consultations this month | इस महीने के परामर्श | ఈ నెల కన్సల్టేషన్లు |  | pending |
+| `payouts.stats.paid` | Paid by families | परिवारों ने चुकाया | కుటుంబాలు చెల్లించింది |  | pending |
+| `payouts.stats.fee` | Platform fee + GST | प्लैटफ़ॉर्म शुल्क + GST | ప్లాట్‌ఫామ్ ఫీజు + GST |  | pending |
+| `payouts.stats.out` | Paid out to you | आपको भेजा गया | మీకు పంపింది |  | pending |
+| `payouts.stats.week` | This week: {value} | इस हफ़्ते: {value} | ఈ వారం: {value} |  | pending |
+| `payouts.table.title` | Payouts | पेआउट्स | పేఅవుట్స్ |  | pending |
+| `payouts.table.session` | Session | सत्र | సెషన్ |  | pending |
+| `payouts.table.child` | Child | बच्चा | పిల్లవాడు |  | pending |
+| `payouts.table.consultation` | Consultation | परामर्श | కన్సల్టేషన్ |  | pending |
+| `payouts.table.feeGst` | Fee + GST | शुल्क + GST | ఫీజు + GST |  | pending |
+| `payouts.table.net` | Net · status | शुद्ध · स्थिति | నికరం · స్థితి |  | pending |
+| `payouts.table.empty` | No payouts yet. Each delivered session appears here. | अभी कोई पेआउट नहीं। हर पूरा हुआ सत्र यहाँ दिखेगा। | ఇంకా పేఅవుట్లు లేవు. పూర్తయిన ప్రతి సెషన్ ఇక్కడ కనిపిస్తుంది. |  | pending |
+| `payouts.table.unused` | Unused package session | पैकेज का बिना उपयोग का सत्र | ప్యాకేజీలో ఉపయోగించని సెషన్ |  | pending |
+| `payouts.table.waived` | Fee waived | शुल्क माफ़ | ఫీజు మినహాయింపు |  | pending |
+| `payouts.status.pending` | Waiting | प्रतीक्षा में | వేచి ఉంది |  | pending |
+| `payouts.status.processing` | Processing | प्रोसेस हो रहा है | ప్రాసెస్ అవుతోంది |  | pending |
+| `payouts.status.transferred` | Transferred | भेजा गया | పంపబడింది |  | pending |
+| `payouts.status.on_hold` | On hold | रोका गया | నిలిపి ఉంచబడింది |  | pending |
+| `payouts.status.released` | Transferred | भेजा गया | పంపబడింది |  | pending |
+| `payouts.status.reversed` | Reversed | वापस लिया गया | వెనక్కి తీసుకోబడింది |  | pending |
+| `payouts.status.failed` | Failed | विफल | విఫలమైంది |  | pending |
+| `payouts.invoices.title` | Monthly platform fee invoices | मासिक प्लैटफ़ॉर्म शुल्क इनवॉइस | నెలవారీ ప్లాట్‌ఫామ్ ఫీజు ఇన్‌వాయిస్‌లు |  | pending |
+| `payouts.invoices.row` | {month} platform fee invoice · {number} | {month} प्लैटफ़ॉर्म शुल्क इनवॉइस · {number} | {month} ప్లాట్‌ఫామ్ ఫీజు ఇన్‌వాయిస్ · {number} |  | pending |
+| `payouts.invoices.detail` | Fee {fee} + GST {gst} · already deducted from payouts | शुल्क {fee} + GST {gst} · पेआउट से पहले ही काटा गया | ఫీజు {fee} + GST {gst} · ఇప్పటికే పేఅవుట్ల నుండి తీసివేయబడింది |  | pending |
+| `payouts.invoices.none` | No invoices yet. They are issued on the 1st of each month. | अभी कोई इनवॉइस नहीं। ये हर महीने की 1 तारीख को बनते हैं। | ఇంకా ఇన్‌వాయిస్‌లు లేవు. అవి ప్రతి నెల 1వ తేదీన జారీ అవుతాయి. |  | pending |
+| `payouts.invoices.download` | Download PDF | PDF डाउनलोड करें | PDF డౌన్‌లోడ్ చేయండి |  | pending |
+| `payouts.settings.title` | Settings | सेटिंग्स | సెట్టింగ్స్ |  | pending |
+| `payouts.settings.expiry` | When a package expires with unused sessions | जब कोई पैकेज बिना उपयोग किए सत्रों के साथ समाप्त हो | ఉపయోగించని సెషన్లతో ప్యాకేజీ గడువు ముగిసినప్పుడు |  | pending |
+| `payouts.settings.payCentre` | Pay my centre for the unused sessions (the fee applies) | बिना उपयोग के सत्रों का भुगतान मेरे सेंटर को करें (शुल्क लागू) | ఉపయోగించని సెషన్లకు నా సెంటర్‌కు చెల్లించండి (ఫీజు వర్తిస్తుంది) |  | pending |
+| `payouts.settings.refundFamily` | Refund the family for the unused sessions | बिना उपयोग के सत्रों का पैसा परिवार को लौटाएँ | ఉపయోగించని సెషన్ల డబ్బును కుటుంబానికి తిరిగి ఇవ్వండి |  | pending |
+| `payouts.settings.gstin` | Your GSTIN (optional, printed on the invoice) | आपका GSTIN (वैकल्पिक, इनवॉइस पर छपेगा) | మీ GSTIN (ఐచ్ఛికం, ఇన్‌వాయిస్‌పై ముద్రించబడుతుంది) |  | pending |
+| `payouts.settings.save` | Save | सेव करें | సేవ్ చేయండి |  | pending |
+| `payouts.settings.saved` | Saved. | सेव हो गया। | సేవ్ అయింది. |  | pending |
+| `payouts.settings.failed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `payouts.settings.invalid` | Check the GSTIN: 15 characters, starting with the state code. | GSTIN जाँचें: 15 अक्षर, राज्य कोड से शुरू। | GSTIN తనిఖీ చేయండి: 15 అక్షరాలు, రాష్ట్ర కోడ్‌తో ప్రారంభం. |  | pending |
+| `payouts.notice.title` | Finish payout setup to accept payments | भुगतान लेने के लिए पेआउट सेटअप पूरा करें | చెల్లింపులు స్వీకరించడానికి పేఅవుట్ సెటప్ పూర్తి చేయండి |  | pending |
+| `payouts.notice.manager` | Paid services and packages go live once your payout account is active and the platform fee is accepted. | पेआउट खाता सक्रिय होने और प्लैटफ़ॉर्म शुल्क स्वीकार होने के बाद भुगतान वाली सेवाएँ और पैकेज शुरू होते हैं। | మీ పేఅవుట్ ఖాతా యాక్టివ్ అయి, ప్లాట్‌ఫామ్ ఫీజు అంగీకరించిన తర్వాత చెల్లింపు సేవలు, ప్యాకేజీలు ప్రారంభమవుతాయి. |  | pending |
+| `payouts.notice.link` | Open Payouts | पेआउट्स खोलें | పేఅవుట్స్ తెరవండి |  | pending |
+| `payouts.notice.member` | Ask your centre owner to finish payout setup. | अपने सेंटर के मालिक से पेआउट सेटअप पूरा करने को कहें। | పేఅవుట్ సెటప్ పూర్తి చేయమని మీ సెంటర్ యజమానిని అడగండి. |  | pending |
+| `payouts.admin.title` | Payouts | पेआउट्स | పేఅవుట్స్ |  | pending |
+| `payouts.admin.subtitle` | Platform admin · {month} | प्लैटफ़ॉर्म एडमिन · {month} | ప్లాట్‌ఫామ్ అడ్మిన్ · {month} |  | pending |
+| `payouts.admin.gmv` | Gross value (GMV) | कुल मूल्य (GMV) | మొత్తం విలువ (GMV) |  | pending |
+| `payouts.admin.centres_one` | {count} centre | {count} सेंटर | {count} సెంటర్ |  | pending |
+| `payouts.admin.centres_other` | {count} centres | {count} सेंटर | {count} సెంటర్లు |  | pending |
+| `payouts.admin.fee` | Platform fee | प्लैटफ़ॉर्म शुल्क | ప్లాట్‌ఫామ్ ఫీజు |  | pending |
+| `payouts.admin.gstNote` | + GST {amount} | + GST {amount} | + GST {amount} |  | pending |
+| `payouts.admin.failed` | Failed transfers | विफल ट्रांसफ़र | విఫలమైన ట్రాన్స్‌ఫర్లు |  | pending |
+| `payouts.admin.failedNote` | Retry or check the account | फिर से कोशिश करें या खाता जाँचें | మళ్ళీ ప్రయత్నించండి లేదా ఖాతాను తనిఖీ చేయండి |  | pending |
+| `payouts.admin.voice` | Voice minutes today | आज के वॉइस मिनट | ఈ రోజు వాయిస్ నిమిషాలు |  | pending |
+| `payouts.admin.voiceLink` | Voice usage in Operations | ऑपरेशंस में वॉइस उपयोग | ఆపరేషన్స్‌లో వాయిస్ వినియోగం |  | pending |
+| `payouts.admin.centre` | Centre | सेंटर | సెంటర్ |  | pending |
+| `payouts.admin.account` | Payout account | पेआउट खाता | పేఅవుట్ ఖాతా |  | pending |
+| `payouts.admin.policy` | Fee policy | शुल्क नीति | ఫీజు విధానం |  | pending |
+| `payouts.admin.thisMonth` | This month | इस महीने | ఈ నెల |  | pending |
+| `payouts.admin.action` | Action | कार्रवाई | చర్య |  | pending |
+| `payouts.admin.edit` | Edit | बदलें | మార్చు |  | pending |
+| `payouts.admin.paidOut` | {amount} paid out | {amount} भेजा गया | {amount} పంపబడింది |  | pending |
+| `payouts.admin.failedCount_one` | {count} transfer failed | {count} ट्रांसफ़र विफल | {count} ట్రాన్స్‌ఫర్ విఫలమైంది |  | pending |
+| `payouts.admin.failedCount_other` | {count} transfers failed | {count} ट्रांसफ़र विफल | {count} ట్రాన్స్‌ఫర్లు విఫలమయ్యాయి |  | pending |
+| `payouts.admin.hidden` | Paid services hidden | भुगतान वाली सेवाएँ छिपी हैं | చెల్లింపు సేవలు దాచబడ్డాయి |  | pending |
+| `payouts.admin.notAccepted` | Fee not accepted yet | शुल्क अभी स्वीकार नहीं हुआ | ఫీజు ఇంకా అంగీకరించలేదు |  | pending |
+| `payouts.admin.accountStatus.not_started` | Not started | शुरू नहीं हुआ | ప్రారంభం కాలేదు |  | pending |
+| `payouts.admin.accountStatus.pending_kyc` | Pending KYC | KYC बाकी | KYC పెండింగ్ |  | pending |
+| `payouts.admin.accountStatus.active` | Active | सक्रिय | యాక్టివ్ |  | pending |
+| `payouts.admin.accountStatus.suspended` | Suspended | निलंबित | నిలిపివేయబడింది |  | pending |
+| `payouts.admin.demo` | demo | डेमो | డెమో |  | pending |
+| `payouts.admin.defaultPolicy` | default | डिफ़ॉल्ट | డిఫాల్ట్ |  | pending |
+| `payouts.admin.noCentres` | No centres with paid services yet. | अभी भुगतान वाली सेवाओं वाला कोई सेंटर नहीं। | ఇంకా చెల్లింపు సేవలు ఉన్న సెంటర్లు లేవు. |  | pending |
+| `payouts.admin.attention` | Failed and on-hold transfers | विफल और रोके गए ट्रांसफ़र | విఫలమైన, నిలిపి ఉంచిన ట్రాన్స్‌ఫర్లు |  | pending |
+| `payouts.admin.attentionEmpty` | Nothing needs attention. | किसी चीज़ पर ध्यान देने की ज़रूरत नहीं। | దేనిపైనా దృష్టి పెట్టాల్సిన అవసరం లేదు. |  | pending |
+| `payouts.admin.retry` | Retry | फिर से कोशिश करें | మళ్ళీ ప్రయత్నించండి |  | pending |
+| `payouts.admin.retried` | Retry started. | फिर से कोशिश शुरू हुई। | మళ్ళీ ప్రయత్నం ప్రారంభమైంది. |  | pending |
+| `payouts.admin.exhausted` | Retries used up | सभी कोशिशें हो चुकीं | అన్ని ప్రయత్నాలు అయిపోయాయి |  | pending |
+| `payouts.admin.waitingAccount` | Waiting for the payout account | पेआउट खाते की प्रतीक्षा | పేఅవుట్ ఖాతా కోసం వేచి ఉంది |  | pending |
+| `payouts.admin.nextAttempt` | Next try {time} | अगली कोशिश {time} | తదుపరి ప్రయత్నం {time} |  | pending |
+| `payouts.admin.reconFlags_one` | Reconciliation: {count} payment needs a look | मिलान: {count} भुगतान को देखना है | సరిపోలిక: {count} చెల్లింపును చూడాలి |  | pending |
+| `payouts.admin.reconFlags_other` | Reconciliation: {count} payments need a look | मिलान: {count} भुगतानों को देखना है | సరిపోలిక: {count} చెల్లింపులను చూడాలి |  | pending |
+| `payouts.admin.accountTitle` | Payout account | पेआउट खाता | పేఅవుట్ ఖాతా |  | pending |
+| `payouts.admin.status` | Status | स्थिति | స్థితి |  | pending |
+| `payouts.admin.accountId` | Razorpay linked account id (acc_...) | Razorpay लिंक्ड खाता id (acc_...) | Razorpay లింక్డ్ ఖాతా id (acc_...) |  | pending |
+| `payouts.admin.accountIdHint` | Leave empty in DEMO_MODE to use a demo account. | DEMO_MODE में डेमो खाते के लिए खाली छोड़ें। | DEMO_MODEలో డెమో ఖాతా కోసం ఖాళీగా వదలండి. |  | pending |
+| `payouts.admin.legalName` | Legal name | कानूनी नाम | చట్టపరమైన పేరు |  | pending |
+| `payouts.admin.saveAccount` | Save account | खाता सेव करें | ఖాతాను సేవ్ చేయండి |  | pending |
+| `payouts.admin.policyTitle` | Fee policy | शुल्क नीति | ఫీజు విధానం |  | pending |
+| `payouts.admin.kind` | Kind | प्रकार | రకం |  | pending |
+| `payouts.admin.kindPercent` | Percent of the consultation | परामर्श का प्रतिशत | కన్సల్టేషన్ శాతం |  | pending |
+| `payouts.admin.kindFlat` | Flat per consultation | हर परामर्श पर तय राशि | ప్రతి కన్సల్టేషన్‌కు స్థిర మొత్తం |  | pending |
+| `payouts.admin.percent` | Percent (%) | प्रतिशत (%) | శాతం (%) |  | pending |
+| `payouts.admin.flat` | Flat (₹) | तय राशि (₹) | స్థిర మొత్తం (₹) |  | pending |
+| `payouts.admin.min` | Minimum (₹) | न्यूनतम (₹) | కనిష్ఠం (₹) |  | pending |
+| `payouts.admin.cap` | Cap (₹, optional) | अधिकतम (₹, वैकल्पिक) | గరిష్ఠం (₹, ఐచ్ఛికం) |  | pending |
+| `payouts.admin.waivedUntil` | No fee until (optional) | इस तारीख तक कोई शुल्क नहीं (वैकल्पिक) | ఈ తేదీ వరకు ఫీజు లేదు (ఐచ్ఛికం) |  | pending |
+| `payouts.admin.savePolicy` | Save as new version | नए संस्करण के रूप में सेव करें | కొత్త వెర్షన్‌గా సేవ్ చేయండి |  | pending |
+| `payouts.admin.saved` | Saved. | सेव हो गया। | సేవ్ అయింది. |  | pending |
+| `payouts.admin.failedSave` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
+| `payouts.admin.invalid` | Check the highlighted fields. | चिह्नित फ़ील्ड जाँचें। | గుర్తించిన ఫీల్డ్‌లను తనిఖీ చేయండి. |  | pending |
 | `dashboard.greeting.morning` | Good morning, {name} | सुप्रभात, {name} | శుభోదయం, {name} |  | pending |
 | `dashboard.greeting.afternoon` | Good afternoon, {name} | नमस्ते, {name} | నమస్కారం, {name} |  | pending |
 | `dashboard.greeting.evening` | Good evening, {name} | शुभ संध्या, {name} | శుభ సాయంత్రం, {name} |  | pending |

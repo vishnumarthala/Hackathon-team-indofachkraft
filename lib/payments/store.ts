@@ -6,6 +6,8 @@ import { pg, type Queryable, type Tx } from "@/lib/pg";
 import { getPaymentGateway, razorpaySettings, type PaymentGateway, type RazorpaySettings } from "./razorpay";
 import type { ParsedWebhook } from "./webhook";
 import { applyLinkPaid, closeLink } from "@/lib/fees/store";
+import { enqueue } from "@/lib/notify/outbox";
+import { TRANSFER_BACKOFF_SECONDS } from "@/lib/payouts/fees";
 
 export const PAYMENT_STATUSES = ["created", "authorized", "captured", "failed", "refund_pending", "refunded"] as const;
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
@@ -357,6 +359,29 @@ export async function handleWebhookEvent(eventId: string, parsed: ParsedWebhook)
           }
         } else {
           outcome = await closeLink(link.id, parsed.event === "payment_link.expired" ? "link_expired" : "link_cancelled", tx);
+        }
+      }
+    } else if (parsed.event === "transfer.processed" || parsed.event === "transfer.failed") {
+      // 046: Route transfers to centres (by Razorpay's id, or our id from the notes if the API response is not in yet).
+      const t = parsed.transfer;
+      if (!t) {
+        outcome = "unknown_transfer";
+      } else {
+        const [row] = await tx<{ r: { outcome: string; payment_id?: string; payout_item_id?: string; exhausted?: boolean; attempts?: number } }[]>`
+          select public.payouts_apply_transfer_event(${parsed.event}, ${t.id}, ${t.payout_transfer}::uuid, ${t.error ?? "transfer_failed"},
+                                                     ${TRANSFER_BACKOFF_SECONDS}::int[]) as r`;
+        outcome = row.r.outcome;
+        paymentRowId = row.r.payment_id ?? null;
+        if (row.r.exhausted && row.r.payout_item_id) {
+          eventIds.push(
+            await enqueue(tx, {
+              topic: "payouts.transfer_failed",
+              aggregateType: "payout_item",
+              aggregateId: row.r.payout_item_id,
+              payload: { payout_item_id: row.r.payout_item_id },
+              dedupKey: `payouts:transfer_failed:${row.r.payout_item_id}:${row.r.attempts ?? 0}`,
+            }),
+          );
         }
       }
     } else if (parsed.event === "refund.processed") {

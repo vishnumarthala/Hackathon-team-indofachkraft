@@ -22,7 +22,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ profileI
   const profile = await getBookableProfile(profileId);
   if (!profile) return fail(404, "Provider not found");
   const service = await getService(parsed.data.service_id);
-  if (!service || !service.active || service.provider_profile_id !== profile.id) return fail(404, "Service not found");
+  if (!service || !service.active || !service.payouts_ready || service.provider_profile_id !== profile.id) return fail(404, "Service not found");
 
   const { from, slots } = await getSlots(service, { from: parsed.data.from, days: parsed.data.days });
   return NextResponse.json(

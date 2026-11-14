@@ -32,7 +32,8 @@ export async function POST(req: Request) {
   if (user && (await getUserRole(user.id)) !== "guardian") return fail(403, "Only family accounts can book appointments.");
 
   const service = await getService(parsed.data.service_id);
-  const profile = service?.active ? await getBookableProfile(service.provider_profile_id) : null;
+  // 046 FR-2: paid services of organisations without an active payout account are hidden from booking.
+  const profile = service?.active && service.payouts_ready ? await getBookableProfile(service.provider_profile_id) : null;
   if (!service || !profile) return fail(404, "Service not found");
 
   const blocked = await checkHoldPreconditions({ profile, service, userId: user?.id ?? null, body: body as Record<string, unknown> });

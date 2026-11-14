@@ -754,6 +754,33 @@ export const REGISTRY: PrivacyCategory[] = [
     },
   },
   {
+    // 046: what each delivered consultation paid the centre (Razorpay Route): amounts, platform fee and GST, statuses,
+    // Razorpay transfer / reversal ids, the centre's payout account (linked account id, legal name, GSTIN), fee
+    // policies and their acceptance, monthly platform-fee invoices and reconciliation flags. Centre-facing financial
+    // record keyed by appointment (never shown to families, D-4): kept on erasure like 031's payments. No export (the
+    // family's own payments and account are exported by `payments` / `family_payments`).
+    key: "centre_payouts",
+    label: "Payouts to centres, the platform fee and platform-fee invoices",
+    owner: "child",
+    tables: [
+      "payout_items",
+      "payout_transfers",
+      "payout_reconciliation_flags",
+      "platform_invoices",
+      "platform_invoice_counters",
+      "org_payout_accounts",
+      "platform_fee_policies",
+      "platform_fee_policy_versions",
+      "fee_policy_acceptances",
+      "organizations.package_expiry_policy",
+      "child_packages.expiry_settled_at",
+    ],
+    retention:
+      "Kept as a financial record for 8 years (CA's advice; pending legal review), also after erasure. Amounts, statuses and Razorpay ids; no card, UPI or bank details.",
+    processors: ["supabase", "razorpay", "resend"],
+    retainedOnErasure: true,
+  },
+  {
     key: "audit_events",
     label: "Audit log",
     owner: "case",

@@ -1,6 +1,6 @@
 # 046: Payouts to centres and the platform fee (Razorpay Route)
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 044, 045: needs billable attendance, consultation amounts and DoctorNearMe-collected payments
 

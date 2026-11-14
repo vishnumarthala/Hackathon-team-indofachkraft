@@ -815,8 +815,8 @@
       "records": "Your records"
     },
     "home": {
-      "greeting": "Namaste, {name}",
       "there": "there",
+      "greeting": "Namaste, {name}",
       "thisWeek": "Here is what's happening with {children} this week",
       "thisWeekNone": "Let's set up your child's care. It takes two minutes.",
       "nextStep": "Next step",
@@ -2132,7 +2132,8 @@
         "requests": "Deletion requests",
         "ops": "Operations",
         "notifications": "Notifications",
-        "ratings": "Ratings"
+        "ratings": "Ratings",
+        "payouts": "Payouts"
       },
       "audit": {
         "title": "Audit log",
@@ -2379,7 +2380,8 @@
         },
         "inactive": "Off",
         "turnOff": "Turn off",
-        "turnOn": "Turn on"
+        "turnOn": "Turn on",
+        "hiddenPayout": "Hidden from families until payout setup is finished."
       },
       "hours": {
         "title": "Weekly hours",
@@ -2423,7 +2425,9 @@
           "openBrief": "Open brief"
         }
       },
-      "organisation": "Organisation"
+      "organisation": "Organisation",
+      "payoutInactive": "Finish payout setup to accept payments.",
+      "feeNotAccepted": "Accept the platform fee on the Payouts page first."
     },
     "meet": {
       "join": "Join video call",
@@ -3730,7 +3734,9 @@
         "gateway_error": "The payment link could not be created. Please try again.",
         "forbidden": "Only organisation owners and admins can do this.",
         "invalid": "Check the highlighted fields.",
-        "generic": "Could not save. Please try again."
+        "generic": "Could not save. Please try again.",
+        "payout_account_inactive": "Finish payout setup to accept payments.",
+        "fee_policy_not_accepted": "Accept the platform fee on the Payouts page first."
       }
     },
     "kinds": {
@@ -3790,7 +3796,8 @@
       "open": "Open fees",
       "packageLeft_one": "{count} session left",
       "packageLeft_other": "{count} sessions left",
-      "packagesLink": "Packages"
+      "packagesLink": "Packages",
+      "payoutsLink": "Payouts"
     },
     "settings": {
       "link": "Packages",
@@ -3951,6 +3958,159 @@
         "medicineHow": "give the medicine",
         "medicineChange": "double the syrup dose, double the dose"
       }
+    }
+  },
+  "payouts": {
+    "nav": "Payouts",
+    "dashboard": {
+      "title": "Payouts",
+      "subtitle": "{centre} · paid to your Razorpay account after each session",
+      "downloadCsv": "Download CSV",
+      "org": "Organisation",
+      "show": "Show",
+      "forbidden": "Only organisation owners and admins can see payouts.",
+      "feesLink": "Fees"
+    },
+    "account": {
+      "activeTitle": "Payout account active",
+      "activeBody": "Razorpay linked account ending {last4}. Platform fee: {policy}.",
+      "demoBody": "Demo payout account (DEMO_MODE): transfers are simulated, no money moves. Platform fee: {policy}.",
+      "setupTitle": "Finish payout setup to accept payments",
+      "pendingBody": "Razorpay is checking your documents (KYC). Paid services and packages are hidden from families until your payout account is active.",
+      "notStartedBody": "Paid services and packages need a payout account. Until then they are hidden from families.",
+      "suspendedTitle": "Payouts are paused",
+      "suspendedBody": "Your payout account is suspended. New payouts are held until it is active again. Contact DoctorNearMe.",
+      "steps": "Steps",
+      "step1": "Send DoctorNearMe your centre's legal name, PAN and bank account details.",
+      "step2": "Complete Razorpay's verification (KYC) for your linked account.",
+      "step3": "We activate your payout account here. Then accept the platform fee below."
+    },
+    "fee": {
+      "title": "Platform fee",
+      "percent": "DoctorNearMe keeps {percent}% of each consultation fee, plus GST, and pays the rest to your account after each session.",
+      "flat": "DoctorNearMe keeps {amount} of each consultation fee, plus GST, and pays the rest to your account after each session.",
+      "min": "At least {amount} per consultation.",
+      "cap": "At most {amount} per consultation.",
+      "waived": "No fee for sessions until {date}.",
+      "familiesNote": "Families never see the fee. They see your price, paid to DoctorNearMe on behalf of your centre.",
+      "needed": "Accept the fee before your first paid service or package goes live.",
+      "accept": "I accept",
+      "accepted": "You accepted this fee (version {version}).",
+      "ownerOnly": "Only the centre owner can accept the fee.",
+      "changed": "The fee changed. Reload the page and read the new notice.",
+      "failed": "Could not save. Please try again."
+    },
+    "stats": {
+      "consultations": "Consultations this month",
+      "paid": "Paid by families",
+      "fee": "Platform fee + GST",
+      "out": "Paid out to you",
+      "week": "This week: {value}"
+    },
+    "table": {
+      "title": "Payouts",
+      "session": "Session",
+      "child": "Child",
+      "consultation": "Consultation",
+      "feeGst": "Fee + GST",
+      "net": "Net · status",
+      "empty": "No payouts yet. Each delivered session appears here.",
+      "unused": "Unused package session",
+      "waived": "Fee waived"
+    },
+    "status": {
+      "pending": "Waiting",
+      "processing": "Processing",
+      "transferred": "Transferred",
+      "on_hold": "On hold",
+      "released": "Transferred",
+      "reversed": "Reversed",
+      "failed": "Failed"
+    },
+    "invoices": {
+      "title": "Monthly platform fee invoices",
+      "row": "{month} platform fee invoice · {number}",
+      "detail": "Fee {fee} + GST {gst} · already deducted from payouts",
+      "none": "No invoices yet. They are issued on the 1st of each month.",
+      "download": "Download PDF"
+    },
+    "settings": {
+      "title": "Settings",
+      "expiry": "When a package expires with unused sessions",
+      "payCentre": "Pay my centre for the unused sessions (the fee applies)",
+      "refundFamily": "Refund the family for the unused sessions",
+      "gstin": "Your GSTIN (optional, printed on the invoice)",
+      "save": "Save",
+      "saved": "Saved.",
+      "failed": "Could not save. Please try again.",
+      "invalid": "Check the GSTIN: 15 characters, starting with the state code."
+    },
+    "notice": {
+      "title": "Finish payout setup to accept payments",
+      "manager": "Paid services and packages go live once your payout account is active and the platform fee is accepted.",
+      "link": "Open Payouts",
+      "member": "Ask your centre owner to finish payout setup."
+    },
+    "admin": {
+      "title": "Payouts",
+      "subtitle": "Platform admin · {month}",
+      "gmv": "Gross value (GMV)",
+      "centres_one": "{count} centre",
+      "centres_other": "{count} centres",
+      "fee": "Platform fee",
+      "gstNote": "+ GST {amount}",
+      "failed": "Failed transfers",
+      "failedNote": "Retry or check the account",
+      "voice": "Voice minutes today",
+      "voiceLink": "Voice usage in Operations",
+      "centre": "Centre",
+      "account": "Payout account",
+      "policy": "Fee policy",
+      "thisMonth": "This month",
+      "action": "Action",
+      "edit": "Edit",
+      "paidOut": "{amount} paid out",
+      "failedCount_one": "{count} transfer failed",
+      "failedCount_other": "{count} transfers failed",
+      "hidden": "Paid services hidden",
+      "notAccepted": "Fee not accepted yet",
+      "accountStatus": {
+        "not_started": "Not started",
+        "pending_kyc": "Pending KYC",
+        "active": "Active",
+        "suspended": "Suspended"
+      },
+      "demo": "demo",
+      "defaultPolicy": "default",
+      "noCentres": "No centres with paid services yet.",
+      "attention": "Failed and on-hold transfers",
+      "attentionEmpty": "Nothing needs attention.",
+      "retry": "Retry",
+      "retried": "Retry started.",
+      "exhausted": "Retries used up",
+      "waitingAccount": "Waiting for the payout account",
+      "nextAttempt": "Next try {time}",
+      "reconFlags_one": "Reconciliation: {count} payment needs a look",
+      "reconFlags_other": "Reconciliation: {count} payments need a look",
+      "accountTitle": "Payout account",
+      "status": "Status",
+      "accountId": "Razorpay linked account id (acc_...)",
+      "accountIdHint": "Leave empty in DEMO_MODE to use a demo account.",
+      "legalName": "Legal name",
+      "saveAccount": "Save account",
+      "policyTitle": "Fee policy",
+      "kind": "Kind",
+      "kindPercent": "Percent of the consultation",
+      "kindFlat": "Flat per consultation",
+      "percent": "Percent (%)",
+      "flat": "Flat (₹)",
+      "min": "Minimum (₹)",
+      "cap": "Cap (₹, optional)",
+      "waivedUntil": "No fee until (optional)",
+      "savePolicy": "Save as new version",
+      "saved": "Saved.",
+      "failedSave": "Could not save. Please try again.",
+      "invalid": "Check the highlighted fields."
     }
   },
   "dashboard": {

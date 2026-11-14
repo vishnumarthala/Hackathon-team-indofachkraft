@@ -164,7 +164,7 @@ export const HOLD_CREATED_ACTION = "booking_agent.hold_created";
 
 export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Promise<ToolResult> {
   const service = await getService(input.service_id);
-  const profile = service?.active && service.provider_profile_id === input.profile_id ? await getBookableProfile(service.provider_profile_id) : null;
+  const profile = service?.active && service.payouts_ready && service.provider_profile_id === input.profile_id ? await getBookableProfile(service.provider_profile_id) : null;
   if (!service || !profile) return notFound("Service not found", "This time cannot be booked. Read the free times again with get_slots.");
 
   // 037/042 rules apply to agent holds too (anonymous: no user). A refusal is relayed, never an error for the agent.
