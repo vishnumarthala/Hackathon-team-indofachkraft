@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { useT } from "@/lib/i18n/client";
 import { COUNCILS, PROFILE_LANGUAGES, PROVIDER_TYPES } from "@/lib/providers/constants";
-import { buttonClass, fieldKeys, inputClass, labelClass, send } from "./request";
+import { fieldKeys, inputClass, labelClass, send } from "./request";
+import { Button } from "@/components/ui/Button";
 
 // FR-5 admin seeding form: organisation + location + unclaimed profile from public information.
 export function SeedForm() {
@@ -224,9 +225,9 @@ export function SeedForm() {
           </Link>
         </p>
       ) : null}
-      <button type="submit" disabled={busy} className={buttonClass}>
+      <Button type="submit" disabled={busy}>
         {busy ? t("adminSeed.submitting") : t("adminSeed.submit")}
-      </button>
+      </Button>
     </form>
   );
 }

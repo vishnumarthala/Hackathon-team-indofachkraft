@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { feeLabel, slotTimeLabel } from "@/lib/booking/display";
 import { useFormatter, useLocale, useT, useTimeZone } from "@/lib/i18n/client";
-import { buttonClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { labelClass, secondaryButtonClass, send } from "@/components/providers/request";
 import { SlotPicker, type PickedSlot } from "./SlotPicker";
+import { Button } from "@/components/ui/Button";
 
 export type FlowService = {
   id: string;
@@ -178,9 +179,9 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
         <h2 className="text-xl font-semibold text-teal-900">{done === "confirmed" ? t("flow.booked") : t("status.pending_payment")}</h2>
         {hold ? <p className="text-slate-800">{timeText(hold.start)}</p> : null}
         <p className="text-sm text-slate-700">{done === "confirmed" ? (demo ? t("flow.demoBookedDetail") : t("flow.bookedDetail")) : t("flow.pendingPayment")}</p>
-        <Link href={hold ? `/family/appointments/${hold.id}?booked=1` : "/family/appointments"} className={buttonClass}>
+        <Button href={hold ? `/family/appointments/${hold.id}?booked=1` : "/family/appointments"}>
           {t("flow.viewAppointments")}
-        </Link>
+        </Button>
       </div>
     );
   }
@@ -212,13 +213,13 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
       <p className="font-semibold text-sky-950">{t("flow.googleRequired")}</p>
       <p className="text-sm text-sky-900">{t("flow.googleRequiredHint")}</p>
       {!viewer.signedIn ? (
-        <Link href={`/family/login?next=${encodeURIComponent(`/book/${profile.id}`)}`} className={buttonClass}>
+        <Button href={`/family/login?next=${encodeURIComponent(`/book/${profile.id}`)}`}>
           {t("flow.signIn")}
-        </Link>
+        </Button>
       ) : viewer.isGuardian ? (
-        <Link href="/family/settings" className={buttonClass}>
+        <Button href="/family/settings">
           {t("flow.connectGoogle")}
-        </Link>
+        </Button>
       ) : null}
     </div>
   ) : null;
@@ -242,16 +243,16 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
         </div>
         {errorBox}
         {expired ? (
-          <button type="button" className={buttonClass} onClick={() => pickAgain()}>
+          <Button type="button" onClick={() => pickAgain()}>
             {t("flow.changeTime")}
-          </button>
+          </Button>
         ) : !viewer.signedIn ? (
           <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
             <h2 className="text-lg font-semibold text-slate-900">{t("flow.signInTitle")}</h2>
             <p className="text-sm text-slate-700">{t("flow.signInHint")}</p>
-            <Link href={loginHref} className={buttonClass}>
+            <Button href={loginHref}>
               {t("flow.signIn")}
-            </Link>
+            </Button>
           </div>
         ) : !viewer.isGuardian ? (
           <p role="alert" className="rounded border border-slate-200 bg-white p-4 text-sm text-slate-800">{t("flow.familyOnly")}</p>
@@ -280,9 +281,9 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
               </p>
             ) : null}
             <div className="flex flex-wrap gap-3">
-              <button type="button" className={buttonClass} disabled={!child || busy} aria-describedby={child ? "booking-disclosure" : undefined} onClick={confirm}>
+              <Button type="button" disabled={!child || busy} aria-describedby={child ? "booking-disclosure" : undefined} onClick={confirm}>
                 {paymentMode === "online" ? t("flow.continueToPayment") : t("flow.confirm")}
-              </button>
+              </Button>
               <button type="button" className={secondaryButtonClass} disabled={busy} onClick={() => pickAgain()}>
                 {t("flow.changeTime")}
               </button>
@@ -335,9 +336,9 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
               </label>
             </div>
           ) : null}
-          <button type="button" className={buttonClass} disabled={!picked || busy || (demo && !demoAck)} onClick={continueWithSlot}>
+          <Button type="button" disabled={!picked || busy || (demo && !demoAck)} onClick={continueWithSlot}>
             {t("flow.continue")}
-          </button>
+          </Button>
         </>
       )}
     </div>

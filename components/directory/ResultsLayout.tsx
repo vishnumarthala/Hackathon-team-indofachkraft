@@ -43,7 +43,7 @@ export function ResultsLayout({
       type="button"
       aria-pressed={view === value}
       onClick={() => setView(value)}
-      className={`min-h-11 flex-1 rounded px-4 py-2 text-sm font-medium ${view === value ? "bg-slate-900 text-white" : "bg-white text-slate-800"}`}
+      className={`min-h-11 flex-1 rounded px-4 py-2 text-sm font-medium ${view === value ? "bg-teal-700 text-white" : "bg-white text-slate-800"}`}
     >
       {label}
     </button>

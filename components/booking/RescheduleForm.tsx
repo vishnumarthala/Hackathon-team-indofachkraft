@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useT } from "@/lib/i18n/client";
-import { buttonClass, send } from "@/components/providers/request";
+import { send } from "@/components/providers/request";
 import { SlotPicker, type PickedSlot } from "./SlotPicker";
+import { Button } from "@/components/ui/Button";
 
 type ErrorKey = "slot_taken" | "slot_unavailable" | "too_soon" | "too_far" | "too_late" | "invalid_transition" | "generic";
 
@@ -47,9 +48,9 @@ export function RescheduleForm(props: { appointmentId: string; profileId: string
         refreshKey={refreshKey}
         exclude={props.currentStart}
       />
-      <button type="button" className={buttonClass} disabled={!picked || busy} onClick={move}>
+      <Button type="button" disabled={!picked || busy} onClick={move}>
         {t("list.moveHere")}
-      </button>
+      </Button>
     </div>
   );
 }

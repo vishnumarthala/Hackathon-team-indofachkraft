@@ -5,7 +5,8 @@ import { useState, type FormEvent } from "react";
 import { useT } from "@/lib/i18n/client";
 import { PROVIDER_TYPES, type ProviderType } from "@/lib/providers/constants";
 import { supabaseBrowser } from "@/lib/supabase-browser";
-import { buttonClass, fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "./request";
+import { fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "./request";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   signedInEmail: string | null;
@@ -27,7 +28,6 @@ export function JoinForm({ signedInEmail, googleEnabled, claimPath, defaultName 
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [invalid, setInvalid] = useState<string[]>([]);
-
 
   async function register(): Promise<boolean> {
     const res = await send("/api/providers/register", "POST", { provider_type: providerType, full_name: fullName });
@@ -165,9 +165,9 @@ export function JoinForm({ signedInEmail, googleEnabled, claimPath, defaultName 
         {typeField}
         {nameField}
         {messages}
-        <button type="submit" disabled={busy} className={`${buttonClass} w-full`}>
+        <Button type="submit" disabled={busy} className="w-full">
           {busy ? t("join.creating") : t("join.createProfile")}
-        </button>
+        </Button>
       </form>
     );
   }
@@ -222,9 +222,9 @@ export function JoinForm({ signedInEmail, googleEnabled, claimPath, defaultName 
           </p>
         </div>
         {messages}
-        <button type="submit" disabled={busy} className={`${buttonClass} w-full`}>
+        <Button type="submit" disabled={busy} className="w-full">
           {busy ? t("join.submitting") : t("join.submit")}
-        </button>
+        </Button>
       </form>
       <p className="text-center text-sm text-slate-600">
         {t("join.haveAccount")}{" "}

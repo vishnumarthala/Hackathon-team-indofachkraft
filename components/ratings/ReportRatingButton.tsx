@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
-import { buttonClass, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 /** 036 FR-6 `Report a rating`: a short reason, then the rating leaves the profile until an admin decides. */
 export function ReportRatingButton({ ratingId }: { ratingId: string }) {
@@ -54,9 +55,9 @@ export function ReportRatingButton({ ratingId }: { ratingId: string }) {
         </p>
       ) : null}
       <div className="flex flex-wrap gap-2">
-        <button type="submit" disabled={busy} className={buttonClass}>
+        <Button type="submit" disabled={busy}>
           {t("sendReport")}
-        </button>
+        </Button>
         <button type="button" disabled={busy} onClick={() => setOpen(false)} className={secondaryButtonClass}>
           {t("cancel")}
         </button>

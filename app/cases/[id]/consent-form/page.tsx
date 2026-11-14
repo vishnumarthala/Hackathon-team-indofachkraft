@@ -43,7 +43,7 @@ export default async function ConsentFormPage({
             key={l}
             href={`/cases/${id}/consent-form?locale=${l}`}
             aria-current={l === locale ? "page" : undefined}
-            className={`min-h-11 rounded px-3 py-2 text-sm ${l === locale ? "bg-slate-900 text-white" : "border border-slate-300"}`}
+            className={`min-h-11 rounded px-3 py-2 text-sm ${l === locale ? "bg-teal-700 text-white" : "border border-slate-300"}`}
           >
             {LOCALE_LABELS[l]}
           </Link>

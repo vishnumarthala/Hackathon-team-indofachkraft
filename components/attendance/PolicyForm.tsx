@@ -4,8 +4,9 @@
 // cancellations are not charged; a cancellation is late within 24 hours of the start.
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { buttonClass, send } from "@/components/providers/request";
+import { send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 export type PolicyValue = { bill_absent: boolean; bill_late_cancel: boolean; late_cancel_hours: number };
 
@@ -63,9 +64,9 @@ export function PolicyForm({ orgId, policy }: { orgId: string; policy: PolicyVal
           className="mt-1 block min-h-11 w-32 rounded border border-slate-300 bg-white px-3 py-2 text-base sm:text-sm"
         />
       </div>
-      <button type="submit" disabled={busy} className={buttonClass}>
+      <Button type="submit" disabled={busy}>
         {t("save")}
-      </button>
+      </Button>
       {message ? (
         <p role="status" className={message.ok ? "text-sm text-emerald-800" : "text-sm text-red-700"}>
           {message.text}

@@ -6,7 +6,8 @@ import { useLocale, useT } from "@/lib/i18n/client";
 import { findHref, HYDERABAD_CENTRE, RADIUS_OPTIONS, roundCoord, type DirectoryType, type SearchMode } from "@/lib/geo/constants";
 import { importPlaces, type PlacePrediction } from "@/lib/geo/maps-client";
 import { PROFILE_LANGUAGES, PROVIDER_TYPES } from "@/lib/providers/constants";
-import { buttonClass, inputClass, labelClass, secondaryButtonClass } from "@/components/providers/request";
+import { inputClass, labelClass, secondaryButtonClass } from "@/components/providers/request";
+import { Button } from "@/components/ui/Button";
 
 export type FindState = {
   q: string;
@@ -287,9 +288,9 @@ export function FindFilters({ initial, browserKey, localities }: { initial: Find
           </select>
         </div>
       </div>
-      <button type="submit" className={buttonClass}>
+      <Button type="submit">
         {t("filters.search")}
-      </button>
+      </Button>
     </form>
   );
 }

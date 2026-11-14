@@ -5,6 +5,7 @@ import { audit, auditActorOf } from "@/lib/audit";
 import { cleanFilters, listAuditEvents, type AuditFilters } from "@/lib/audit/query";
 import { requirePlatformAdminPage } from "@/lib/authz";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { Button } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -59,9 +60,9 @@ export default async function AdminAuditPage({ searchParams }: { searchParams: P
         {field("from", t("from"), "date")}
         {field("to", t("to"), "date")}
         <div className="flex items-end gap-3">
-          <button type="submit" className="min-h-11 rounded bg-slate-900 px-4 font-semibold text-white">
+          <Button type="submit">
             {t("filter")}
-          </button>
+          </Button>
           <Link href="/admin/audit" className="inline-flex min-h-11 items-center text-sm underline">
             {t("clear")}
           </Link>

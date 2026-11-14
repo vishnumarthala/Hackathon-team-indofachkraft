@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
-import { buttonClass, fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 // 046 FR-6 / FR-7 / FR-8: the centre's payout forms on /dashboard/payouts (owner/admin). The fee notice is accepted by
 // the owner only; the server re-checks everything (lib/payouts/authz.ts).
@@ -41,9 +42,8 @@ export function AcceptFeeButton({ orgId, version, canAccept }: { orgId: string; 
   if (!canAccept) return <p className="text-sm text-slate-700">{t("ownerOnly")}</p>;
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <button
+      <Button
         type="button"
-        className={buttonClass}
         disabled={busy}
         onClick={() =>
           run(`/api/orgs/${orgId}/payouts/accept`, "POST", { policy_version: version }, {
@@ -53,7 +53,7 @@ export function AcceptFeeButton({ orgId, version, canAccept }: { orgId: string; 
         }
       >
         {t("accept")}
-      </button>
+      </Button>
       {feedback}
     </div>
   );
@@ -176,7 +176,7 @@ export function AdminCentreForms({
           <input id={`${id}-legal`} name="legal_name" defaultValue={account.legal_name ?? ""} maxLength={200} className={inputClass} />
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <button type="submit" className={buttonClass} disabled={acc.busy}>{t("saveAccount")}</button>
+          <Button type="submit" disabled={acc.busy}>{t("saveAccount")}</Button>
           {acc.feedback}
         </div>
       </form>
@@ -215,7 +215,7 @@ export function AdminCentreForms({
           <input id={`${id}-waived`} name="waived_until" type="date" defaultValue={policy.waived_until ?? ""} className={inputClass} />
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <button type="submit" className={buttonClass} disabled={pol.busy}>{t("savePolicy")}</button>
+          <Button type="submit" disabled={pol.busy}>{t("savePolicy")}</Button>
           {pol.feedback}
         </div>
       </form>

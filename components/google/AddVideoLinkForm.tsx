@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
-import { buttonClass, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 /** 037 FR-4: provider pastes a Google Meet link when the automatic one failed (or changes an earlier manual one). */
 export function AddVideoLinkForm({ appointmentId, change = false }: { appointmentId: string; change?: boolean }) {
@@ -56,9 +57,9 @@ export function AddVideoLinkForm({ appointmentId, change = false }: { appointmen
         className={inputClass}
       />
       <div className="flex flex-wrap gap-2">
-        <button type="submit" className={buttonClass} disabled={busy || !url.trim()}>
+        <Button type="submit" disabled={busy || !url.trim()}>
           {busy ? t("saving") : change ? t("save") : t("addLink")}
-        </button>
+        </Button>
         {change ? (
           <button type="button" className={secondaryButtonClass} disabled={busy} onClick={() => setOpen(false)}>
             {t("cancel")}

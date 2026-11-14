@@ -5,6 +5,7 @@ import { useState } from "react";
 import { withConsentHint } from "@/lib/consent/features";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Button } from "@/components/ui/Button";
 
 export type EditorReport = { id: string; content_md: string; status: "draft" | "final" };
 
@@ -97,14 +98,13 @@ export function ReportEditor({ recordingId, initialReport }: { recordingId: stri
   return (
     <div className="space-y-4">
       {!isFinal && (
-        <button
+        <Button
           type="button"
           disabled={busy}
           onClick={() => run(() => generateReport(fetchFn, recordingId))}
-          className={`${buttonClass} bg-slate-900 text-white`}
         >
           {generateLabel(report)}
-        </button>
+        </Button>
       )}
 
       {error && (

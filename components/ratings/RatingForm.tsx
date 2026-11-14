@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { buttonClass, inputClass, labelClass, send } from "@/components/providers/request";
+import { inputClass, labelClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 type ErrorKey = "screen" | "notEligible" | "already" | "locked" | "chooseStars" | "generic";
 
@@ -120,9 +121,9 @@ export function RatingForm({
           {t(`errors.${error}`)}
         </p>
       ) : null}
-      <button type="submit" disabled={busy} className={buttonClass}>
+      <Button type="submit" disabled={busy}>
         {busy ? t("saving") : mode === "create" ? t("submit") : t("update")}
-      </button>
+      </Button>
     </form>
   );
 }

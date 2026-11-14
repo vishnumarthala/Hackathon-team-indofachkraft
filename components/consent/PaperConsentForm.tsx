@@ -7,11 +7,11 @@ import { RelationshipSelect } from "@/components/family/children/AddChildForm";
 import type { ConsentFeature } from "@/lib/consent/features";
 import { LOCALE_LABELS, LOCALES, type Locale } from "@/lib/i18n/config";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 export type PaperFormDocs = Record<Locale, { feature: ConsentFeature; id: string; version: number }[]>;
 
 const field = "mt-1 block min-h-11 w-full rounded border border-slate-300 px-3 py-2 text-sm";
-const button = "inline-flex min-h-11 items-center rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60";
 
 type Status = "idle" | "saving" | "saved" | "invalid" | "outdated" | "failed";
 
@@ -145,9 +145,9 @@ export function PaperConsentForm({
           {tp("link")}
         </Link>
       </p>
-      <button type="submit" className={button} disabled={status === "saving"}>
+      <Button type="submit" disabled={status === "saving"}>
         {status === "saving" ? t("saving") : t("submit")}
-      </button>
+      </Button>
       {status === "saved" ? (
         <p role="status" className="text-sm font-medium text-emerald-800">
           {t("saved")}
@@ -218,9 +218,9 @@ export function PaperWithdrawForm({ caseId, featureNames }: { caseId: string; fe
         </label>
         <textarea id={`${id}-note`} name="note" maxLength={500} rows={2} className={field} />
       </div>
-      <button type="submit" className={button} disabled={status === "saving"}>
+      <Button type="submit" disabled={status === "saving"}>
         {status === "saving" ? t("saving") : t("withdrawSubmit")}
-      </button>
+      </Button>
       {status === "saved" ? (
         <p role="status" className="text-sm font-medium text-emerald-800">
           {t("saved")}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { withConsentHint } from "@/lib/consent/features";
+import { Button } from "@/components/ui/Button";
 
 type Share = { url: string; whatsapp_url: string };
 
@@ -109,9 +110,9 @@ export function IntakeLinkCard({ caseId, initialShare, hasParentEmail, callCompl
             />
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" onClick={onCopy} className={`${buttonClass} bg-slate-900 text-white`}>
+            <Button type="button" onClick={onCopy}>
               {copied ? "Copied" : "Copy link"}
-            </button>
+            </Button>
             <a
               href={share.whatsapp_url}
               target="_blank"
@@ -145,14 +146,14 @@ export function IntakeLinkCard({ caseId, initialShare, hasParentEmail, callCompl
           </div>
         </div>
       ) : (
-        <button
+        <Button
           type="button"
           onClick={onCreate}
           disabled={busy}
-          className={`${buttonClass} mt-3 bg-slate-900 text-white`}
+          className="mt-3"
         >
           Create intake link
-        </button>
+        </Button>
       )}
 
       {error && (

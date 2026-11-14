@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent, type ReactNode } from "react";
+import { Button } from "@/components/ui/Button";
 
 type FieldErrors = Record<string, string>;
 
@@ -117,9 +118,9 @@ export function CaseForm({ orgs = [] }: { orgs?: OrgOption[] }) {
         <input id="therapist_name" name="therapist_name" defaultValue="Demo Therapist" maxLength={60} className={inputClass} aria-describedby={describedBy("therapist_name")} />
       </Field>
       {formError && <p className="text-sm text-red-700">{formError}</p>}
-      <button type="submit" disabled={submitting} className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
+      <Button type="submit" disabled={submitting}>
         Create case
-      </button>
+      </Button>
     </form>
   );
 }

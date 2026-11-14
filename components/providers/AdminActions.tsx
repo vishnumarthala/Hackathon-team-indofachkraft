@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormatter, useT } from "@/lib/i18n/client";
-import { buttonClass, inputClass, labelClass, secondaryButtonClass, send } from "./request";
+import { inputClass, labelClass, secondaryButtonClass, send } from "./request";
+import { Button } from "@/components/ui/Button";
 
 // FR-4: approve / reject one submission. The note is required to reject, and to approve council OTHER.
 export function ReviewActions({ submissionId, council }: { submissionId: string; council: string }) {
@@ -40,9 +41,9 @@ export function ReviewActions({ submissionId, council }: { submissionId: string;
         </p>
       ) : null}
       <div className="flex flex-wrap gap-2">
-        <button type="button" disabled={busy} onClick={() => decide("approve")} className={buttonClass}>
+        <Button type="button" disabled={busy} onClick={() => decide("approve")}>
           {t("approve")}
-        </button>
+        </Button>
         <button type="button" disabled={busy} onClick={() => decide("reject")} className={secondaryButtonClass}>
           {t("reject")}
         </button>

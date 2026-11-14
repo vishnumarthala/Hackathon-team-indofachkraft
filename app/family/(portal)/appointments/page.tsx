@@ -16,6 +16,7 @@ import { guardianIntakeNotices, type GuardianIntakeNotice } from "@/lib/intake/a
 import { PAYMENT_LABEL_STYLE, paymentHoldOpen, paymentLabel } from "@/lib/payments/display";
 import { listPaymentsForAppointments } from "@/lib/payments/store";
 import { listGuardianRatings, listRateableAppointmentIds } from "@/lib/ratings/store";
+import { Button } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -149,9 +150,9 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
         {actions && (a.status === "confirmed" || a.status === "pending_payment") ? (
           <div className="flex flex-wrap items-center gap-2">
             {actions && payable ? (
-              <Link href={`/book/${a.provider_profile_id}/pay/${a.id}`} className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700">
+              <Button href={`/book/${a.provider_profile_id}/pay/${a.id}`}>
                 {tp("list.payNow")}
-              </Link>
+              </Button>
             ) : null}
             {a.status === "confirmed" ? (
               <a href={`/api/appointments/${a.id}/ics`} className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-4 text-sm font-medium text-slate-800 hover:bg-slate-50">
@@ -168,9 +169,9 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
           </div>
         ) : null}
         {rateable.has(a.id) ? (
-          <Link href={`/family/appointments/${a.id}/rate`} className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700">
+          <Button href={`/family/appointments/${a.id}/rate`}>
             {tr("family.rate")}
-          </Link>
+          </Button>
         ) : null}
         {ratings.has(a.id) ? (
           <div className="flex flex-wrap items-center gap-2 text-sm text-slate-700" data-testid="my-rating">

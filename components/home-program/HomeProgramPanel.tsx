@@ -12,10 +12,10 @@ import { useFormatter, useT } from "@/lib/i18n/client";
 import { Instructions } from "./Instructions";
 import { Sparkline } from "./Sparkline";
 import { STATUS_STYLES, sendJson, type HomeProgramErrorKey } from "./view";
+import { Button } from "@/components/ui/Button";
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
 const labelClass = "block text-sm font-medium text-slate-800";
-const buttonClass = "min-h-11 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 const smallButton = "min-h-9 rounded border border-slate-300 px-3 py-1 text-sm font-medium text-slate-800 disabled:opacity-50";
 
 type Problem = { error: HomeProgramErrorKey; fields: string[] } | null;
@@ -198,9 +198,9 @@ function ActivityForm({
         </Field>
       </div>
       <div className="flex flex-wrap items-end gap-2">
-        <button type="submit" className={buttonClass} disabled={busy}>
+        <Button type="submit" disabled={busy}>
           {busy ? tp("saving") : submitLabel}
-        </button>
+        </Button>
         {onCancel ? (
           <button type="button" className={smallButton} onClick={onCancel}>
             {tp("cancel")}
@@ -349,9 +349,9 @@ function CreateProgram({ caseId, open }: { caseId: string; open: boolean }) {
       <Field name="new-title" label={tp("programTitle")} invalid={api.problem?.fields.includes("title")}>
         {(p) => <input {...p} name="title" required maxLength={120} className={`${inputClass} min-w-64`} />}
       </Field>
-      <button type="submit" className={buttonClass} disabled={api.busy !== null}>
+      <Button type="submit" disabled={api.busy !== null}>
         {api.busy ? tp("saving") : tp("create")}
-      </button>
+      </Button>
       <ErrorText problem={api.problem} onReload={api.refresh} />
     </form>
   );
@@ -469,9 +469,9 @@ export function HomeProgramPanel({
             ) : (
               <div className="flex flex-wrap gap-2">
                 {program.status === "draft" || program.has_unpublished_changes ? (
-                  <button type="button" className={buttonClass} disabled={api.busy !== null} onClick={publish}>
+                  <Button type="button" disabled={api.busy !== null} onClick={publish}>
                     {api.busy === "publish" ? tp("publishing") : program.status === "draft" ? tp("publish") : tp("publishChanges")}
-                  </button>
+                  </Button>
                 ) : null}
                 <button type="button" className={smallButton} onClick={() => setRenaming((v) => !v)} aria-expanded={renaming}>
                   {tp("rename")}
@@ -491,9 +491,9 @@ export function HomeProgramPanel({
                 <Field name="rename" label={tp("programTitle")}>
                   {(p) => <input {...p} name="title" required maxLength={120} defaultValue={program.title} className={`${inputClass} min-w-64`} />}
                 </Field>
-                <button type="submit" className={buttonClass} disabled={api.busy !== null}>
+                <Button type="submit" disabled={api.busy !== null}>
                   {api.busy === "rename" ? tp("saving") : tp("save")}
-                </button>
+                </Button>
               </form>
             ) : null}
             {message ? (

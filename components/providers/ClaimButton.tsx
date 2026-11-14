@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useT } from "@/lib/i18n/client";
-import { buttonClass, send } from "./request";
+import { send } from "./request";
+import { Button } from "@/components/ui/Button";
 
 export function ClaimButton({ token }: { token: string }) {
   const t = useT("providers.claim");
@@ -23,9 +24,9 @@ export function ClaimButton({ token }: { token: string }) {
 
   return (
     <div className="space-y-2">
-      <button type="button" disabled={busy} onClick={claim} className={buttonClass}>
+      <Button type="button" disabled={busy} onClick={claim}>
         {busy ? t("claiming") : t("button")}
-      </button>
+      </Button>
       {error ? (
         <p role="alert" className="text-sm text-red-700">
           {error}

@@ -22,10 +22,10 @@ import {
   type FieldName,
   type IepErrorKey,
 } from "./view";
+import { Button } from "@/components/ui/Button";
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
 const labelClass = "block text-sm font-medium text-slate-800";
-const buttonClass = "min-h-11 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 const smallButton = "min-h-9 rounded border border-slate-300 px-3 py-1 text-sm font-medium text-slate-800 disabled:opacity-50";
 
 type Fields = Partial<Record<FieldName, FieldErrorKey>>;
@@ -156,9 +156,9 @@ function PlanForm({
         {(p) => <input {...p} type="date" name="review_date" required defaultValue={initial?.review_date} className={inputClass} />}
       </Field>
       <div className="flex flex-wrap items-end gap-2">
-        <button type="submit" className={buttonClass} disabled={busy}>
+        <Button type="submit" disabled={busy}>
           {busy ? busyLabel : submitLabel}
-        </button>
+        </Button>
         {onCancel ? (
           <button type="button" className={smallButton} onClick={onCancel}>
             {t("cancel")}
@@ -314,9 +314,9 @@ function GoalForm({
         )}
       </Field>
       <div className="flex flex-wrap items-end gap-2">
-        <button type="submit" className={buttonClass} disabled={busy}>
+        <Button type="submit" disabled={busy}>
           {busy ? tp("saving") : submitLabel}
-        </button>
+        </Button>
         {onCancel ? (
           <button type="button" className={smallButton} onClick={onCancel}>
             {tp("cancel")}
@@ -488,9 +488,9 @@ function GoalCard({ goal, plan, today, index }: { goal: GoalWithProgress; plan: 
             {(p) => <input {...p} name="note" maxLength={500} className={inputClass} />}
           </Field>
           <div className="flex items-end">
-            <button type="submit" className={buttonClass} disabled={api.busy !== null}>
+            <Button type="submit" disabled={api.busy !== null}>
               {api.busy === "progress" ? tpr("saving") : tpr("save")}
-            </button>
+            </Button>
           </div>
           {saved ? (
             <p role="status" className="text-sm font-medium text-emerald-800 sm:col-span-4">
@@ -673,9 +673,9 @@ export function GoalsPanel({
             {!editingPlan ? (
               <div className="flex flex-wrap gap-2 pt-1">
                 {canPublish ? (
-                  <button type="button" className={buttonClass} onClick={publish} disabled={planApi.busy !== null || goals.length === 0}>
+                  <Button type="button" onClick={publish} disabled={planApi.busy !== null || goals.length === 0}>
                     {planApi.busy === "publish" ? t("publishing") : plan.published ? t("publishChanges") : t("publishToParent")}
-                  </button>
+                  </Button>
                 ) : plan.published && !closed ? (
                   <p className="self-center text-sm text-slate-700">{t("upToDate")}</p>
                 ) : null}

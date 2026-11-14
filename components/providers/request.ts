@@ -1,3 +1,4 @@
+import { buttonClasses } from "@/components/ui/variants";
 // Small fetch helper for the provider/admin client components (ticket 028). API errors stay English
 // (contract); components show translated messages chosen by status and mark fields from `details`.
 export type ApiResult = { ok: boolean; status: number; json: Record<string, unknown> };
@@ -23,7 +24,5 @@ export function fieldKeys(json: Record<string, unknown>): string[] {
 export const inputClass =
   "mt-1 block w-full rounded border border-slate-300 bg-white px-3 py-2 text-base text-slate-900 aria-[invalid=true]:border-red-600 sm:text-sm";
 export const labelClass = "block text-sm font-medium text-slate-800";
-export const buttonClass =
-  "inline-flex min-h-11 items-center justify-center rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50";
-export const secondaryButtonClass =
-  "inline-flex min-h-11 items-center justify-center rounded border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 disabled:opacity-50";
+export const buttonClass = buttonClasses();
+export const secondaryButtonClass = buttonClasses({ variant: "secondary" });

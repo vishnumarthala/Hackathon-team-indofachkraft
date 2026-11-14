@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { useT } from "@/lib/i18n/client";
-import { buttonClass, fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
 import { timeToMinutes, wallToUtc } from "@/lib/booking/time";
+import { Button } from "@/components/ui/Button";
 
 // 043 staff forms: new weekly timetable (case page), "This and future sessions" / Pause / End, "This session only"
 // Move (030's reschedule route), and the Conflicts actions (`Pick another time` / `Skip this date`). Each form posts
@@ -218,7 +219,7 @@ export function NewSeriesForm(props: { caseId: string; therapists: TherapistOpti
         <p role="note" className="rounded bg-sky-50 p-2 text-sm text-sky-900 sm:col-span-2">{t("noGuardian")}</p>
       )}
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
-        <button type="submit" className={buttonClass} disabled={busy || !serviceId}>{t("create")}</button>
+        <Button type="submit" disabled={busy || !serviceId}>{t("create")}</Button>
         {feedback}
       </div>
     </form>
@@ -307,7 +308,7 @@ export function SeriesActions(props: {
           ) : null}
           <WeekdayPicker defaultValue={props.current.weekdays} invalid={change.bad("weekdays")} />
           <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
-            <button type="submit" className={buttonClass} disabled={change.busy}>{t("changeSave")}</button>
+            <Button type="submit" disabled={change.busy}>{t("changeSave")}</Button>
             {change.feedback}
           </div>
         </form>
@@ -323,7 +324,7 @@ export function SeriesActions(props: {
             <input id={`${id}-pto`} name="to" type="date" required min={props.today} className={inputClass} aria-invalid={pause.bad("to")} />
           </div>
           <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
-            <button type="submit" className={buttonClass} disabled={pause.busy}>{t("pauseSave")}</button>
+            <Button type="submit" disabled={pause.busy}>{t("pauseSave")}</Button>
             {pause.feedback}
           </div>
         </form>
@@ -334,7 +335,7 @@ export function SeriesActions(props: {
             <label htmlFor={`${id}-end`} className={labelClass}>{t("endOn")}</label>
             <input id={`${id}-end`} name="ends_on" type="date" required defaultValue={props.today} className={inputClass} aria-invalid={end.bad("ends_on")} />
           </div>
-          <button type="submit" className={buttonClass} disabled={end.busy}>{t("endSave")}</button>
+          <Button type="submit" disabled={end.busy}>{t("endSave")}</Button>
           {end.feedback}
         </form>
       </Toggle>
@@ -366,7 +367,7 @@ export function MoveSessionForm(props: { appointmentId: string; date: string; ti
           <label htmlFor={`${id}-t`} className={labelClass}>{t("moveTime")}</label>
           <input id={`${id}-t`} name="time" type="time" required defaultValue={props.time} className={inputClass} />
         </div>
-        <button type="submit" className={buttonClass} disabled={busy}>{t("moveSave")}</button>
+        <Button type="submit" disabled={busy}>{t("moveSave")}</Button>
         <p className="w-full text-xs text-slate-600">
           {t("moveHint")} {t("timeZoneNote", { zone: props.timeZone })}
         </p>
@@ -403,7 +404,7 @@ export function ConflictActions(props: { conflictId: string; date: string; time:
             <label htmlFor={`${id}-t`} className={labelClass}>{tt("moveTime")}</label>
             <input id={`${id}-t`} name="time" type="time" required defaultValue={props.time} className={inputClass} />
           </div>
-          <button type="submit" className={buttonClass} disabled={pick.busy}>{t("pickSave")}</button>
+          <Button type="submit" disabled={pick.busy}>{t("pickSave")}</Button>
           <p className="w-full text-xs text-slate-600">{tt("timeZoneNote", { zone: props.timeZone })}</p>
           {pick.feedback}
         </form>

@@ -7,6 +7,7 @@ import { addMonths, effectiveAttendance, isValidMonth, monthCounts, monthGrid, m
 import { HTML_LANG } from "@/lib/i18n/config";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { getCase } from "@/lib/queries/cases";
+import { Button } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -61,13 +62,14 @@ export default async function CaseAttendancePage({
           <Link href={`${base}?month=${addMonths(month, 1)}`} className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-3">
             {t("caseTab.next")}
           </Link>
-          <a
-            href={`/api/cases/${caseRow.id}/attendance?month=${month}&format=csv`}
-            className="inline-flex min-h-11 items-center rounded bg-slate-900 px-3 font-medium text-white"
-            data-testid="attendance-csv"
-          >
-            {t("caseTab.export")}
-          </a>
+          <Button asChild>
+            <a
+              href={`/api/cases/${caseRow.id}/attendance?month=${month}&format=csv`}
+              data-testid="attendance-csv"
+            >
+              {t("caseTab.export")}
+            </a>
+          </Button>
         </nav>
       </div>
 

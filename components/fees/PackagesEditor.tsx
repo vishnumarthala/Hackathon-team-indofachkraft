@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
-import { buttonClass, fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 type Pkg = { id: string; name: string; active: boolean; summary: string };
 
@@ -111,9 +112,9 @@ export function PackagesEditor({ orgId, services, packages }: { orgId: string; s
             </div>
           </fieldset>
           <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
-            <button type="submit" className={buttonClass} disabled={busy}>
+            <Button type="submit" disabled={busy}>
               {t("add")}
-            </button>
+            </Button>
             {message ? (
               <p role={message.ok ? "status" : "alert"} className={message.ok ? "text-sm text-teal-900" : "text-sm text-red-800"}>
                 {message.text}

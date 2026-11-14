@@ -13,7 +13,8 @@ import {
   type Council,
 } from "@/lib/providers/constants";
 import { supabaseBrowser } from "@/lib/supabase-browser";
-import { buttonClass, fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "./request";
+import { fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "./request";
+import { Button } from "@/components/ui/Button";
 
 type Status = "unverified" | "pending" | "verified" | "rejected" | "suspended";
 
@@ -208,9 +209,9 @@ export function ProfileForm({ profile, verified }: { profile: EditableProfile; v
         </div>
       </div>
       <Feedback error={error} saved={saved} />
-      <button type="submit" disabled={busy} className={buttonClass}>
+      <Button type="submit" disabled={busy}>
         {busy ? t("form.saving") : t("editor.save")}
-      </button>
+      </Button>
     </form>
   );
 }
@@ -256,9 +257,9 @@ export function PhotoForm({ profileId, photoUrl, name }: { profileId: string; ph
         </p>
         <Feedback error={error} saved={false} />
         <div className="flex flex-wrap gap-2">
-          <button type="submit" disabled={busy} className={buttonClass}>
+          <Button type="submit" disabled={busy}>
             {busy ? t("photo.uploading") : t("photo.upload")}
-          </button>
+          </Button>
           {photoUrl ? (
             <button type="button" disabled={busy} onClick={() => run(`/api/providers/${profileId}/photo`, "DELETE", undefined)} className={secondaryButtonClass}>
               {t("photo.remove")}
@@ -401,9 +402,9 @@ export function LocationsPanel({ profileId, linked, orgs }: { profileId: string;
               <input id="loc-pincode" name="pincode" required inputMode="numeric" pattern="[1-9][0-9]{5}" maxLength={6} aria-invalid={bad("pincode")} className={inputClass} />
             </div>
           </div>
-          <button type="submit" disabled={busy} className={buttonClass}>
+          <Button type="submit" disabled={busy}>
             {t("locations.create")}
-          </button>
+          </Button>
         </form>
       )}
       {unmapped ? (
@@ -530,9 +531,9 @@ export function VerificationForm({ profileId, status, hasRegistration }: { profi
           {t("verification.submitted")}
         </p>
       ) : null}
-      <button type="submit" disabled={busy} className={buttonClass}>
+      <Button type="submit" disabled={busy}>
         {busy ? t("verification.submitting") : t("verification.submit")}
-      </button>
+      </Button>
     </form>
   );
 }
@@ -607,9 +608,9 @@ export function OrgPublicForm({ org }: { org: OrgPublicView }) {
         {t("org.listedHint")}
       </p>
       <Feedback error={error} saved={saved} />
-      <button type="submit" disabled={busy} className={buttonClass}>
+      <Button type="submit" disabled={busy}>
         {t("org.save")}
-      </button>
+      </Button>
     </form>
   );
 }

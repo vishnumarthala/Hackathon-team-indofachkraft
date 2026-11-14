@@ -17,6 +17,7 @@ import {
   type StepId,
   type StepState,
 } from "./uploadFlow";
+import { Button } from "@/components/ui/Button";
 
 const STEP_LABELS: Record<StepId, string> = {
   upload: "Upload",
@@ -204,14 +205,13 @@ export function UploadPanel({ caseId, scribe }: { caseId: string; scribe?: Scrib
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button
+        <Button
           type="button"
           disabled={!file || !consent || running || started}
           onClick={onStart}
-          className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
           Upload and process
-        </button>
+        </Button>
         {failedStep && !running && (
           <button
             type="button"

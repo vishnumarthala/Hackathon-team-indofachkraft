@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import type { AssessmentStatus } from "@/lib/assessments/schemas";
 import { useFormatter, useT } from "@/lib/i18n/client";
 import { STATUS_KEYS, STATUS_STYLES, assessmentErrorKey, type ApiErrorKey } from "./view";
+import { Button } from "@/components/ui/Button";
 
 export type TemplateView = { id: string; title: string };
 export type GuardianView = { userId: string; label: string };
@@ -21,7 +22,6 @@ export type AssessmentRowView = {
 };
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
-const buttonClass = "min-h-11 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 const smallButton = "min-h-9 rounded border border-slate-300 px-3 py-1 text-sm font-medium text-slate-800 disabled:opacity-50";
 
 // 024 FR-8: case workspace `Assessments` tab: `Send questionnaire` and the list with status.
@@ -133,9 +133,9 @@ export function AssessmentsPanel({
               <input type="date" name="due_on" min={minDue} className={inputClass} />
             </label>
             <div className="sm:col-span-3">
-              <button type="submit" className={buttonClass} disabled={busy !== null}>
+              <Button type="submit" disabled={busy !== null}>
                 {busy === "send" ? t("sending") : t("send")}
-              </button>
+              </Button>
             </div>
           </form>
         )}

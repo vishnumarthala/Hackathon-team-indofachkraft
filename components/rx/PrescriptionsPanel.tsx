@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useFormatter, useT } from "@/lib/i18n/client";
 import { RX_FORMS, allergyMatches, blankItem, MAX_ITEMS, type AllergyMatch, type RxItem, type RxStatus } from "@/lib/rx/schema";
+import { Button } from "@/components/ui/Button";
 
 export type PanelSummary = {
   id: string;
@@ -53,7 +54,6 @@ type Props = {
 };
 
 const button = "inline-flex min-h-11 items-center rounded px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60";
-const primary = `${button} bg-slate-900 text-white`;
 const secondary = `${button} border border-slate-400 text-slate-900`;
 const danger = `${button} border border-red-700 text-red-800`;
 const card = "space-y-3 rounded border border-slate-200 bg-white p-4";
@@ -189,9 +189,9 @@ function DraftCard({ caseId, report, startedId }: { caseId: string; report: Pane
           {t("open")}
         </Link>
       ) : (
-        <button type="button" className={primary} disabled={busy} onClick={start}>
+        <Button type="button" disabled={busy} onClick={start}>
           {busy ? tr("creating") : t("start")}
-        </button>
+        </Button>
       )}
       <ErrorLine error={error} />
     </section>
@@ -423,9 +423,9 @@ function Editor({ detail, health }: { detail: PanelDetail; health: PanelHealth }
         <button type="button" className={secondary} disabled={busy !== null} onClick={save}>
           {busy === "save" ? t("saving") : t("save")}
         </button>
-        <button type="button" className={primary} disabled={busy !== null || items.length === 0} onClick={startSign}>
+        <Button type="button" disabled={busy !== null || items.length === 0} onClick={startSign}>
           {t("sign")}
-        </button>
+        </Button>
         <span role="status" className="text-sm text-slate-700">
           {status ?? (dirty ? t("unsaved") : "")}
         </span>
@@ -462,9 +462,9 @@ function Editor({ detail, health }: { detail: PanelDetail; health: PanelHealth }
           </label>
           <ErrorLine error={error} />
           <div className="flex flex-wrap gap-2">
-            <button type="submit" className={primary} disabled={busy !== null || !confirmed}>
+            <Button type="submit" disabled={busy !== null || !confirmed}>
               {busy === "sign" ? tc("signing") : tc("sign")}
-            </button>
+            </Button>
             <button type="button" className={secondary} onClick={() => setOpen(false)}>
               {tc("cancel")}
             </button>
@@ -540,9 +540,11 @@ function SignedView({ detail }: { detail: PanelDetail }) {
       <p className="text-sm text-slate-700">{tr("readOnly")}</p>
       {detail.content_hash ? <p className="text-xs break-all text-slate-600">{t("hash", { hash: detail.content_hash })}</p> : null}
       <div className="flex flex-wrap gap-2">
-        <a href={`/api/prescriptions/${detail.id}/pdf`} className={primary} download>
-          {t("download")}
-        </a>
+        <Button asChild>
+          <a href={`/api/prescriptions/${detail.id}/pdf`} download>
+            {t("download")}
+          </a>
+        </Button>
         {detail.status === "signed" ? (
           <button type="button" className={danger} onClick={() => setOpen(true)}>
             {t("void")}
@@ -609,9 +611,9 @@ export function PrescriptionsPanel({ caseId, list, selected, draftReport, draftS
           <h2 className="text-xl font-semibold">{t("title")}</h2>
           <p className="text-sm text-slate-700">{t("intro")}</p>
         </div>
-        <button type="button" className={primary} disabled={busy} onClick={create}>
+        <Button type="button" disabled={busy} onClick={create}>
           {busy ? t("creating") : t("new")}
-        </button>
+        </Button>
       </header>
       <ErrorLine error={error} />
       {draftReport ? <DraftCard caseId={caseId} report={draftReport} startedId={draftStartedId} /> : null}

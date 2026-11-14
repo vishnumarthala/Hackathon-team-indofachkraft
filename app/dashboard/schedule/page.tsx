@@ -99,8 +99,8 @@ export default async function SchedulePage({ searchParams }: Props) {
             <Link className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-3" href={nav(addDays(first, -span))}>{t("schedule.agenda.previous")}</Link>
             <Link className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-3" href={nav(today)}>{t("schedule.agenda.today")}</Link>
             <Link className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-3" href={nav(addDays(first, span))}>{t("schedule.agenda.next")}</Link>
-            <Link aria-current={view === "day" ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded px-3 ${view === "day" ? "bg-slate-900 text-white" : "border border-slate-300 bg-white"}`} href={nav(anchor, "day")}>{t("schedule.agenda.day")}</Link>
-            <Link aria-current={view === "week" ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded px-3 ${view === "week" ? "bg-slate-900 text-white" : "border border-slate-300 bg-white"}`} href={nav(anchor, "week")}>{t("schedule.agenda.week")}</Link>
+            <Link aria-current={view === "day" ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded px-3 ${view === "day" ? "bg-teal-700 text-white" : "border border-slate-300 bg-white"}`} href={nav(anchor, "day")}>{t("schedule.agenda.day")}</Link>
+            <Link aria-current={view === "week" ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded px-3 ${view === "week" ? "bg-teal-700 text-white" : "border border-slate-300 bg-white"}`} href={nav(anchor, "week")}>{t("schedule.agenda.week")}</Link>
           </nav>
         </div>
         <div className="space-y-4">
