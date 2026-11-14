@@ -116,7 +116,7 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 050 | Parent-first home page and Indian statistics | done | solo | waits for 051 |
 | 051 | Voice cost guard (no anonymous voice, quotas, platform budget) | done | solo | alongside |
 | 052 | Clear next steps (family home, provider Today, what happens next) | done | solo | waits for 043, 044, 045, 051 |
-| 053 | Design-system alignment (teal primary actions, shared UI primitives) | ready | solo | waits for 043-052 |
+| 053 | Design-system alignment (teal primary actions, shared UI primitives) | done | solo | waits for 043-052 |
 
 ## Critical path (DoctorNearMe)
 
