@@ -218,6 +218,7 @@ export async function runReconciliation(sql: Sql, opts: { orgId?: string; now?: 
   }[]>`select * from public.payouts_reconciliation(${opts.orgId ?? null}::uuid, null)`;
   const flags: ReconFlag[] = [];
   let newFlags = 0;
+  let firstNewFlag: string | null = null;
   const balanced: string[] = [];
   for (const r of rows) {
     if (!r.settled) continue;
@@ -239,8 +240,11 @@ export async function runReconciliation(sql: Sql, opts: { orgId?: string; now?: 
       on conflict (payment_id) where resolved_at is null do update set last_seen_at = now(), diff_paise = excluded.diff_paise,
         transferred_paise = excluded.transferred_paise, platform_share_paise = excluded.platform_share_paise,
         refunded_paise = excluded.refunded_paise
-      returning (xmax = 0) as fresh`;
-    if (inserted[0]?.fresh) newFlags += 1;
+      returning id, (xmax = 0) as fresh`;
+    if (inserted[0]?.fresh) {
+      newFlags += 1;
+      firstNewFlag ??= inserted[0].id as string;
+    }
   }
   let resolved = 0;
   if (balanced.length) {
@@ -248,12 +252,13 @@ export async function runReconciliation(sql: Sql, opts: { orgId?: string; now?: 
                         where resolved_at is null and payment_id in ${sql(balanced)} returning id`;
     resolved = r.length;
   }
-  if (newFlags > 0) {
+  if (newFlags > 0 && firstNewFlag) {
     const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(opts.now ?? new Date());
+    // Outbox aggregate ids are uuids: the day's first new flag stands for the alert (deduped per India day).
     const id = await enqueue(sql, {
       topic: "payouts.reconciliation_alert",
       aggregateType: "payout_reconciliation",
-      aggregateId: today,
+      aggregateId: firstNewFlag,
       payload: { date: today, count: newFlags },
       dedupKey: `payouts:reconciliation:${today}`,
     });

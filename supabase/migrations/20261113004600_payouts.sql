@@ -955,7 +955,7 @@ as $$
     p.status = 'captured'
       and not exists (select 1 from public.fee_refunds r where r.payment_id = p.id and r.status = 'pending')
       and not exists (select 1 from public.payout_items i where i.payment_id = p.id
-                      and (i.status in ('pending', 'failed') or i.reverse_requested_at is not null))
+                      and (i.status in ('pending', 'failed') or (i.reverse_requested_at is not null and i.status <> 'reversed')))
       and not exists (select 1 from public.payout_transfers t where t.payment_id = p.id and t.status = 'creating')
       and case p.purpose
             when 'appointment' then a.status in ('completed', 'no_show', 'cancelled', 'expired')
