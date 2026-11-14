@@ -1,6 +1,7 @@
 // Ticket 024: shared view helpers for the assessment UI. Safe in the browser.
 import { MSG, type AssessmentStatus } from "@/lib/assessments/schemas";
 import type { CheckinBand, RedFlagCode } from "@/lib/clinical/checkin";
+import type { BadgeTone } from "@/components/ui/Badge";
 
 export const STATUS_KEYS = {
   assigned: "assigned",
@@ -25,12 +26,12 @@ export const RED_FLAG_KEYS = {
   safety_concern: "safetyConcern",
 } as const satisfies Record<RedFlagCode, string>;
 
-export const STATUS_STYLES: Record<AssessmentStatus, string> = {
-  assigned: "bg-slate-100 text-slate-800",
-  in_progress: "bg-amber-100 text-amber-900",
-  submitted: "bg-sky-100 text-sky-900",
-  reviewed: "bg-emerald-100 text-emerald-900",
-  cancelled: "bg-slate-100 text-slate-600",
+export const STATUS_TONES: Record<AssessmentStatus, BadgeTone> = {
+  assigned: "neutral",
+  in_progress: "warning",
+  submitted: "info",
+  reviewed: "success",
+  cancelled: "neutral",
 };
 
 export const ANSWER_KEYS = ["never", "sometimes", "often", "always", "yes", "no"] as const;

@@ -2,9 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
-import { buttonClass, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
 import type { RatingStatus } from "@/lib/ratings/rules";
+import { Button } from "@/components/ui/Button";
 
 /** 036 FR-6 admin `Publish` / `Hide` with a note (required to hide). */
 export function ModerationActions({ ratingId, status }: { ratingId: string; status: RatingStatus }) {
@@ -47,9 +48,9 @@ export function ModerationActions({ ratingId, status }: { ratingId: string; stat
       ) : null}
       <div className="flex flex-wrap gap-2">
         {status !== "published" ? (
-          <button type="button" disabled={busy} onClick={() => act("publish")} className={buttonClass}>
+          <Button type="button" disabled={busy} onClick={() => act("publish")}>
             {t("publish")}
-          </button>
+          </Button>
         ) : null}
         {status !== "hidden" ? (
           <button type="button" disabled={busy} onClick={() => act("hide")} className={secondaryButtonClass}>

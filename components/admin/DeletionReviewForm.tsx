@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 // 041 FR-8: Approve / Reject (a rejection must cite the record-keeping obligation, at least 10 characters).
 export function DeletionReviewForm({ requestId }: { requestId: string }) {
@@ -47,9 +48,9 @@ export function DeletionReviewForm({ requestId }: { requestId: string }) {
         className="min-h-16 w-full rounded border border-slate-300 px-2 py-1 text-sm"
       />
       <div className="flex flex-wrap gap-3">
-        <button type="button" disabled={busy} onClick={() => decide("approve")} className="min-h-11 rounded bg-slate-900 px-4 font-semibold text-white disabled:opacity-60">
+        <Button type="button" disabled={busy} onClick={() => decide("approve")}>
           {busy ? t("saving") : t("approve")}
-        </button>
+        </Button>
         <button type="button" disabled={busy} onClick={() => decide("reject")} className="min-h-11 rounded border border-slate-300 bg-white px-4 font-semibold text-slate-800 disabled:opacity-60">
           {t("reject")}
         </button>

@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import type { AssessmentStatus } from "@/lib/assessments/schemas";
 import { useFormatter, useT } from "@/lib/i18n/client";
-import { STATUS_KEYS, STATUS_STYLES, assessmentErrorKey, type ApiErrorKey } from "./view";
+import { STATUS_KEYS, STATUS_TONES, assessmentErrorKey, type ApiErrorKey } from "./view";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 export type TemplateView = { id: string; title: string };
 export type GuardianView = { userId: string; label: string };
@@ -21,7 +23,6 @@ export type AssessmentRowView = {
 };
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
-const buttonClass = "min-h-11 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 const smallButton = "min-h-9 rounded border border-slate-300 px-3 py-1 text-sm font-medium text-slate-800 disabled:opacity-50";
 
 // 024 FR-8: case workspace `Assessments` tab: `Send questionnaire` and the list with status.
@@ -133,9 +134,9 @@ export function AssessmentsPanel({
               <input type="date" name="due_on" min={minDue} className={inputClass} />
             </label>
             <div className="sm:col-span-3">
-              <button type="submit" className={buttonClass} disabled={busy !== null}>
+              <Button type="submit" disabled={busy !== null}>
                 {busy === "send" ? t("sending") : t("send")}
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -165,14 +166,14 @@ export function AssessmentsPanel({
                   {row.dueOn ? t("due", { date: format.date(`${row.dueOn}T12:00:00+05:30`, "short") }) : t("noDue")}
                 </p>
                 <p className="flex flex-wrap gap-2 text-xs font-medium">
-                  <span className={`rounded-full px-2 py-0.5 ${STATUS_STYLES[row.status]}`}>{ts(STATUS_KEYS[row.status])}</span>
+                  <Badge tone={STATUS_TONES[row.status]}>{ts(STATUS_KEYS[row.status])}</Badge>
                   {row.redFlagCount > 0 ? (
-                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-red-900" data-red-flag="true">
+                    <Badge tone="danger" data-red-flag="true">
                       {t("redFlags", { count: row.redFlagCount })}
-                    </span>
+                    </Badge>
                   ) : null}
                   {row.sharedWithParent ? (
-                    <span className="rounded-full bg-teal-50 px-2 py-0.5 text-teal-900">{t("sharedBadge")}</span>
+                    <Badge tone="brand">{t("sharedBadge")}</Badge>
                   ) : null}
                 </p>
               </div>

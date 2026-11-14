@@ -3,8 +3,10 @@
 import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useState } from "react";
-import { buttonClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { secondaryButtonClass, send } from "@/components/providers/request";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 // Same URL as lib/payments/razorpay.ts CHECKOUT_SCRIPT_URL (that module is server-only). Allowed on this route only:
 // lib/csp.ts FAMILY_CSP_EXCEPTIONS["/book/*/pay/*"] + lib/privacy/third-party-allowlist.ts.
@@ -134,9 +136,9 @@ export function PayPanel({ appointmentId, profileId, initialState, expiresAt, de
         <h2 className="text-xl font-semibold text-teal-900">{state === "paid" ? t("paid") : t("refundStarted")}</h2>
         {state === "paid" ? <p className="text-sm text-slate-700">{t("paidDetail")}</p> : null}
         {/* 052 FR-6: after paying, "What happens next" on the appointment page. */}
-        <Link href={state === "paid" ? `/family/appointments/${appointmentId}?booked=1` : "/family/appointments"} className={buttonClass}>
+        <Button href={state === "paid" ? `/family/appointments/${appointmentId}?booked=1` : "/family/appointments"}>
           {t("viewAppointments")}
-        </Link>
+        </Button>
       </div>
     );
   }
@@ -147,9 +149,9 @@ export function PayPanel({ appointmentId, profileId, initialState, expiresAt, de
         <p className="text-slate-800">{text}</p>
         <div className="flex flex-wrap gap-2">
           {state !== "cancelled" && state !== "nothing" ? (
-            <Link href={`/book/${profileId}`} className={buttonClass}>
+            <Button href={`/book/${profileId}`}>
               {t("pickAgain")}
-            </Link>
+            </Button>
           ) : null}
           <Link href="/family/appointments" className={secondaryButtonClass}>
             {t("viewAppointments")}
@@ -168,14 +170,14 @@ export function PayPanel({ appointmentId, profileId, initialState, expiresAt, de
         {t("countdown", { time: `${minutes}:${String(seconds).padStart(2, "0")}` })}
       </p>
       {error ? (
-        <p role="alert" className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        <Alert as="p" tone="danger" role="alert">
           {t(`errors.${error}`)}
-        </p>
+        </Alert>
       ) : null}
       {notice ? (
-        <p role="alert" className="rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+        <Alert as="p" tone="warning" role="alert">
           {t(notice)}
-        </p>
+        </Alert>
       ) : null}
       {demoOpen ? (
         <section aria-labelledby="demo-checkout" className="space-y-3 rounded-2xl border-2 border-dashed border-violet-300 bg-violet-50 p-4">
@@ -184,18 +186,18 @@ export function PayPanel({ appointmentId, profileId, initialState, expiresAt, de
           </h2>
           <p className="text-sm text-violet-900">{t("demoNote")}</p>
           <div className="flex flex-wrap gap-2">
-            <button type="button" className={buttonClass} disabled={busy !== null} onClick={() => void simulate("success")}>
+            <Button type="button" disabled={busy !== null} onClick={() => void simulate("success")}>
               {t("demoSuccess")}
-            </button>
+            </Button>
             <button type="button" className={secondaryButtonClass} disabled={busy !== null} onClick={() => void simulate("failure")}>
               {t("demoFailure")}
             </button>
           </div>
         </section>
       ) : (
-        <button type="button" className={`${buttonClass} w-full sm:w-auto`} disabled={busy !== null} onClick={() => void payNow()}>
+        <Button type="button" className="w-full sm:w-auto" disabled={busy !== null} onClick={() => void payNow()}>
           {busy === "opening" ? t("opening") : busy === "confirming" ? t("confirming") : t("payNow")}
-        </button>
+        </Button>
       )}
       {busy === "confirming" ? (
         <p role="status" className="text-sm text-slate-700">

@@ -10,10 +10,10 @@ import type { CodeItem, ImportRecord, PreviewJson } from "@/lib/import/store";
 import { formatWeekdays } from "@/lib/import/timetable";
 import type { Issue } from "@/lib/import/validate";
 import { useFormatter, useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
-const buttonClass =
-  "inline-flex min-h-11 items-center justify-center rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 const secondaryClass =
   "inline-flex min-h-11 items-center justify-center rounded border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-900 disabled:opacity-50";
 const LANGUAGE_NAMES: Record<string, string> = { en: "English", hi: "हिन्दी", te: "తెలుగు" };
@@ -262,9 +262,9 @@ export function ImportWizard({ orgs }: { orgs: { id: string; name: string }[] })
             }}
           />
         </div>
-        <button type="submit" disabled={!file || busy !== null} className={buttonClass}>
+        <Button type="submit" disabled={!file || busy !== null}>
           {busy === "check" ? t("checking") : t("check")}
-        </button>
+        </Button>
       </form>
 
       {error ? (
@@ -285,12 +285,12 @@ export function ImportWizard({ orgs }: { orgs: { id: string; name: string }[] })
           ) : null}
           <IssueList tone="warning" issues={preview.file_warnings} />
           {preview.already_imported ? (
-            <p className="rounded bg-amber-50 p-3 text-sm text-amber-900">
+            <Alert as="p" tone="warning">
               {t("alreadyImported", { date: format.dateTime(preview.already_imported.created_at) })}{" "}
               <Link href={`/dashboard/import/${preview.already_imported.id}`} className="font-medium underline">
                 {t("openThatImport")}
               </Link>
-            </p>
+            </Alert>
           ) : null}
           {preview.has_timetable ? (
             <p className="rounded bg-slate-50 p-3 text-sm text-slate-800" data-testid="timetable-notice">
@@ -364,15 +364,14 @@ export function ImportWizard({ orgs }: { orgs: { id: string; name: string }[] })
                 ))}
               </ol>
               {importCount === 0 && !preview.already_imported ? <p className="text-sm text-slate-700">{t("nothingToImport")}</p> : null}
-              <button
+              <Button
                 type="button"
-                className={buttonClass}
                 disabled={importCount === 0 || busy !== null || Boolean(preview.already_imported) || preview.file_errors.length > 0}
                 onClick={onImport}
                 data-testid="import-button"
               >
                 {busy === "import" ? t("importing") : t("importButton", { count: importCount })}
-              </button>
+              </Button>
             </>
           ) : null}
         </section>
@@ -454,9 +453,9 @@ export function SchedulePendingButton({ importId }: { importId: string }) {
   return (
     <div className="space-y-2">
       <p className="text-sm text-slate-700">{t("schedulePendingHelp")}</p>
-      <button type="button" onClick={onClick} disabled={busy} className={buttonClass}>
+      <Button type="button" onClick={onClick} disabled={busy}>
         {t("schedulePending")}
-      </button>
+      </Button>
       {message ? (
         <p role="status" className={message.ok ? "text-sm text-emerald-800" : "text-sm text-red-700"}>
           {message.text}
@@ -490,9 +489,9 @@ export function RegenerateCodes({ importId, consentGiven }: { importId: string; 
   return (
     <div className="space-y-3">
       <p className="text-sm text-slate-700">{t("regenerateHelp")}</p>
-      <button type="button" onClick={onClick} disabled={busy} className={buttonClass}>
+      <Button type="button" onClick={onClick} disabled={busy}>
         {t("regenerate")}
-      </button>
+      </Button>
       {error ? (
         <p role="alert" className="text-sm text-red-700">
           {error}

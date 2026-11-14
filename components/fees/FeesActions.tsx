@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
-import { buttonClass, inputClass, labelClass, secondaryButtonClass, send, type ApiResult } from "@/components/providers/request";
+import { inputClass, labelClass, secondaryButtonClass, send, type ApiResult } from "@/components/providers/request";
 import { useFormatter, useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 type Option = { id: string; label: string };
 type Link = { payment_id: string; purpose: "package" | "balance"; amount: string };
@@ -107,16 +108,15 @@ export function FeesActions({
 
       <div className="flex flex-wrap gap-3">
         {canManage ? (
-          <button
+          <Button
             type="button"
-            className={buttonClass}
             disabled={busy}
             onClick={async () => {
               if (await act(`${base}/request-payment`, {}, (json) => t("requestSent", { amount: format.inr(Number(json.amount_paise ?? 0)) }))) setShowQr(true);
             }}
           >
             {t("requestPayment")}
-          </button>
+          </Button>
         ) : null}
         <button type="button" className={secondaryButtonClass} onClick={() => setShowQr((v) => !v)} aria-expanded={showQr} aria-controls={`${id}-qr`}>
           {showQr ? t("hideQr") : t("showQr")}
@@ -165,9 +165,9 @@ export function FeesActions({
                     </option>
                   ))}
                 </select>
-                <button type="submit" className={buttonClass} disabled={busy}>
+                <Button type="submit" disabled={busy}>
                   {t("sendOffer")}
-                </button>
+                </Button>
               </>
             )}
           </form>
@@ -182,9 +182,9 @@ export function FeesActions({
               {t("adjustmentReason")}
             </label>
             <input id={`${id}-why`} name="reason" required minLength={3} maxLength={300} className={inputClass} />
-            <button type="submit" className={buttonClass} disabled={busy}>
+            <Button type="submit" disabled={busy}>
               {t("addAdjustment")}
-            </button>
+            </Button>
           </form>
 
           <form onSubmit={refund} className="space-y-2 rounded border border-slate-200 bg-white p-3" aria-label={t("refund")}>

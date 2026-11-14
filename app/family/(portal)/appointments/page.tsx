@@ -16,15 +16,14 @@ import { guardianIntakeNotices, type GuardianIntakeNotice } from "@/lib/intake/a
 import { PAYMENT_LABEL_STYLE, paymentHoldOpen, paymentLabel } from "@/lib/payments/display";
 import { listPaymentsForAppointments } from "@/lib/payments/store";
 import { listGuardianRatings, listRateableAppointmentIds } from "@/lib/ratings/store";
+import { Button } from "@/components/ui/Button";
+import { Badge, type BadgeTone } from "@/components/ui/Badge";
 
 export const dynamic = "force-dynamic";
 
-const STATUS_STYLE: Record<string, string> = {
-  confirmed: "bg-teal-50 text-teal-900",
-  pending_payment: "bg-amber-50 text-amber-900",
-  cancelled: "bg-slate-100 text-slate-700",
-  completed: "bg-slate-100 text-slate-700",
-  no_show: "bg-slate-100 text-slate-700",
+const STATUS_TONE: Record<string, BadgeTone> = {
+  confirmed: "brand",
+  pending_payment: "warning",
 };
 
 // FR-7 `/family/appointments`: the guardian's own bookings, upcoming and past, with Cancel / Reschedule (up to 2 h
@@ -114,8 +113,9 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
             {a.child_name ? <p className="text-sm text-slate-700">{t("list.forChild", { child: a.child_name })}</p> : null}
           </div>
           <div className="flex flex-wrap gap-1">
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLE[a.status] ?? "bg-slate-100 text-slate-700"}`}
+            <Badge
+              tone={STATUS_TONE[a.status] ?? "neutral"}
+              size="md"
               data-testid={attendance ? "attendance-label" : undefined}
             >
               {attendance
@@ -125,7 +125,7 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
                 : a.status === "cancelled" && a.cancelled_by
                   ? t(`list.cancelledBy.${a.cancelled_by}`)
                   : t(`status.${a.status}`)}
-            </span>
+            </Badge>
             {a.is_demo ? (
               <span data-testid="demo-label" className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-900">
                 {t("list.demo")}
@@ -149,9 +149,9 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
         {actions && (a.status === "confirmed" || a.status === "pending_payment") ? (
           <div className="flex flex-wrap items-center gap-2">
             {actions && payable ? (
-              <Link href={`/book/${a.provider_profile_id}/pay/${a.id}`} className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700">
+              <Button href={`/book/${a.provider_profile_id}/pay/${a.id}`}>
                 {tp("list.payNow")}
-              </Link>
+              </Button>
             ) : null}
             {a.status === "confirmed" ? (
               <a href={`/api/appointments/${a.id}/ics`} className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-4 text-sm font-medium text-slate-800 hover:bg-slate-50">
@@ -168,9 +168,9 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
           </div>
         ) : null}
         {rateable.has(a.id) ? (
-          <Link href={`/family/appointments/${a.id}/rate`} className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700">
+          <Button href={`/family/appointments/${a.id}/rate`}>
             {tr("family.rate")}
-          </Link>
+          </Button>
         ) : null}
         {ratings.has(a.id) ? (
           <div className="flex flex-wrap items-center gap-2 text-sm text-slate-700" data-testid="my-rating">

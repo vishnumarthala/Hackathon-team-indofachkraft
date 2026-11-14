@@ -3,6 +3,7 @@ import { DemoBadge } from "@/components/providers/PublicProfile";
 import type { TFunction } from "@/lib/i18n/keys";
 import type { DirectoryResult } from "@/lib/geo/search";
 import { ratingBadge } from "@/lib/ratings/display";
+import { Button } from "@/components/ui/Button";
 
 // Server-rendered result cards for /find and /find/hyderabad/<type> (ticket 029 FR-5). Public fields only.
 
@@ -59,14 +60,14 @@ export function ResultCard({ r, t, tp }: { r: DirectoryResult; t: TFunction<"dir
         </Link>
         {/* 030: consultation modes are derived from active services; the booking page explains when none is bookable. */}
         {r.offers_in_clinic || r.offers_video ? (
-          <Link href={`/book/${r.profile_id}`} className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700">
+          <Button href={`/book/${r.profile_id}`}>
             {t("results.book")}
-          </Link>
+          </Button>
         ) : (
           <>
-            <button type="button" disabled aria-describedby={`book-soon-${r.profile_id}`} className="min-h-11 rounded bg-slate-900 px-4 text-sm font-medium text-white opacity-50">
+            <Button type="button" disabled aria-describedby={`book-soon-${r.profile_id}`}>
               {t("results.book")}
-            </button>
+            </Button>
             <span id={`book-soon-${r.profile_id}`} className="text-xs text-slate-600">
               {t("results.bookSoon")}
             </span>

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { withConsentHint } from "@/lib/consent/features";
 import { EMAIL_STATUS_TEXT, isEmailStatus, type EmailStatus } from "@/lib/parentNoteStatus";
+import { Button } from "@/components/ui/Button";
 
 export type NoteView = { text: string; hasAudio: boolean; audioUrl: string | null; emailStatus: EmailStatus | null };
 
@@ -80,14 +81,13 @@ export function ParentVoiceNote({ reportId, initialNote }: { reportId: string; i
           )}
         </div>
       )}
-      <button
+      <Button
         type="button"
         disabled={busy}
         onClick={onCreate}
-        className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
       >
         {buttonLabel(note)}
-      </button>
+      </Button>
       {error && (
         <p role="alert" className="text-sm text-red-700">
           {error}

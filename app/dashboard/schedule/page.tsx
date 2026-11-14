@@ -19,6 +19,7 @@ import { createFormatter } from "@/lib/i18n/format";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { PAYMENT_LABEL_STYLE, paymentLabel } from "@/lib/payments/display";
 import { listPaymentsForAppointments } from "@/lib/payments/store";
+import { Alert } from "@/components/ui/Alert";
 
 export const dynamic = "force-dynamic";
 
@@ -87,7 +88,7 @@ export default async function SchedulePage({ searchParams }: Props) {
         <h1 className="text-2xl font-semibold text-slate-900">{t("schedule.title")}</h1>
         <p className="text-slate-700">{t("schedule.intro")}</p>
         {ctx.profile.verification_status !== "verified" || !ctx.profile.listed ? (
-          <p role="note" className="rounded bg-amber-50 p-3 text-sm text-amber-900">{t("schedule.notListed")}</p>
+          <Alert as="p" tone="warning" role="note">{t("schedule.notListed")}</Alert>
         ) : null}
         <p className="text-sm text-slate-600">{t("schedule.timeZone", { zone: tz })}</p>
       </header>
@@ -99,8 +100,8 @@ export default async function SchedulePage({ searchParams }: Props) {
             <Link className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-3" href={nav(addDays(first, -span))}>{t("schedule.agenda.previous")}</Link>
             <Link className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-3" href={nav(today)}>{t("schedule.agenda.today")}</Link>
             <Link className="inline-flex min-h-11 items-center rounded border border-slate-300 bg-white px-3" href={nav(addDays(first, span))}>{t("schedule.agenda.next")}</Link>
-            <Link aria-current={view === "day" ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded px-3 ${view === "day" ? "bg-slate-900 text-white" : "border border-slate-300 bg-white"}`} href={nav(anchor, "day")}>{t("schedule.agenda.day")}</Link>
-            <Link aria-current={view === "week" ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded px-3 ${view === "week" ? "bg-slate-900 text-white" : "border border-slate-300 bg-white"}`} href={nav(anchor, "week")}>{t("schedule.agenda.week")}</Link>
+            <Link aria-current={view === "day" ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded px-3 ${view === "day" ? "bg-teal-700 text-white" : "border border-slate-300 bg-white"}`} href={nav(anchor, "day")}>{t("schedule.agenda.day")}</Link>
+            <Link aria-current={view === "week" ? "page" : undefined} className={`inline-flex min-h-11 items-center rounded px-3 ${view === "week" ? "bg-teal-700 text-white" : "border border-slate-300 bg-white"}`} href={nav(anchor, "week")}>{t("schedule.agenda.week")}</Link>
           </nav>
         </div>
         <div className="space-y-4">
@@ -156,7 +157,7 @@ export default async function SchedulePage({ searchParams }: Props) {
                           </p>
                         ) : null}
                         {a.outside_availability ? (
-                          <p role="note" className="rounded bg-amber-50 p-2 text-amber-900">{t("schedule.agenda.warning")}</p>
+                          <Alert as="p" tone="warning" role="note">{t("schedule.agenda.warning")}</Alert>
                         ) : null}
                         {a.service_snapshot.mode === "video" ? <MeetPanel appointment={a} meet={meet.get(a.id)} side="provider" /> : null}
                         {a.status === "confirmed" ? (

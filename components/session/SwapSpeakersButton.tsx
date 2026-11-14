@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { browserCall, reExtract, swapAndExtract, type SwapOutcome, type SwapPhase } from "./swapFlow";
+import { Button } from "@/components/ui/Button";
 
 export type { SwapPhase } from "./swapFlow";
 
@@ -59,13 +60,13 @@ export function SwapSpeakersButton({
             Swap speakers
           </button>
         ) : (
-          <button
+          <Button
             type="button"
             onClick={() => void retry()}
-            className="rounded bg-slate-900 px-3 py-1 text-sm font-medium text-white"
+            size="sm"
           >
             Retry
-          </button>
+          </Button>
         )}
       </div>
       {error && (

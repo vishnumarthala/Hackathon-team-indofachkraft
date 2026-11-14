@@ -12,9 +12,9 @@ import { GOAL_DOMAINS, MEASURE_TYPES, VALUE_RANGES, type MeasureType } from "@/l
 import { ProgressChart } from "./ProgressChart";
 import {
   DOMAIN_KEYS,
-  GOAL_STATUS_STYLES,
+  GOAL_STATUS_TONES,
   MEASURE_KEYS,
-  PLAN_STATUS_STYLES,
+  PLAN_STATUS_TONES,
   formatValue,
   sendJson,
   trendLines,
@@ -22,10 +22,11 @@ import {
   type FieldName,
   type IepErrorKey,
 } from "./view";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
 const labelClass = "block text-sm font-medium text-slate-800";
-const buttonClass = "min-h-11 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 const smallButton = "min-h-9 rounded border border-slate-300 px-3 py-1 text-sm font-medium text-slate-800 disabled:opacity-50";
 
 type Fields = Partial<Record<FieldName, FieldErrorKey>>;
@@ -156,9 +157,9 @@ function PlanForm({
         {(p) => <input {...p} type="date" name="review_date" required defaultValue={initial?.review_date} className={inputClass} />}
       </Field>
       <div className="flex flex-wrap items-end gap-2">
-        <button type="submit" className={buttonClass} disabled={busy}>
+        <Button type="submit" disabled={busy}>
           {busy ? busyLabel : submitLabel}
-        </button>
+        </Button>
         {onCancel ? (
           <button type="button" className={smallButton} onClick={onCancel}>
             {t("cancel")}
@@ -314,9 +315,9 @@ function GoalForm({
         )}
       </Field>
       <div className="flex flex-wrap items-end gap-2">
-        <button type="submit" className={buttonClass} disabled={busy}>
+        <Button type="submit" disabled={busy}>
           {busy ? tp("saving") : submitLabel}
-        </button>
+        </Button>
         {onCancel ? (
           <button type="button" className={smallButton} onClick={onCancel}>
             {tp("cancel")}
@@ -380,8 +381,8 @@ function GoalCard({ goal, plan, today, index }: { goal: GoalWithProgress; plan: 
   return (
     <li className="space-y-3 rounded border border-slate-200 bg-white p-4" data-goal={goal.id} aria-labelledby={headingId}>
       <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
-        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-slate-800">{td(DOMAIN_KEYS[goal.domain])}</span>
-        <span className={`rounded-full px-2 py-0.5 ${GOAL_STATUS_STYLES[goal.status]}`}>{tg(goal.status)}</span>
+        <Badge>{td(DOMAIN_KEYS[goal.domain])}</Badge>
+        <Badge tone={GOAL_STATUS_TONES[goal.status]}>{tg(goal.status)}</Badge>
       </div>
       {editing ? (
         <GoalForm
@@ -488,9 +489,9 @@ function GoalCard({ goal, plan, today, index }: { goal: GoalWithProgress; plan: 
             {(p) => <input {...p} name="note" maxLength={500} className={inputClass} />}
           </Field>
           <div className="flex items-end">
-            <button type="submit" className={buttonClass} disabled={api.busy !== null}>
+            <Button type="submit" disabled={api.busy !== null}>
               {api.busy === "progress" ? tpr("saving") : tpr("save")}
-            </button>
+            </Button>
           </div>
           {saved ? (
             <p role="status" className="text-sm font-medium text-emerald-800 sm:col-span-4">
@@ -607,7 +608,7 @@ export function GoalsPanel({
               }`}
             >
               <span className="break-words">{p.title}</span>
-              <span className={`rounded-full px-2 py-0.5 text-xs ${PLAN_STATUS_STYLES[p.status]}`}>{ts(p.status)}</span>
+              <Badge tone={PLAN_STATUS_TONES[p.status]}>{ts(p.status)}</Badge>
             </Link>
           ))}
         </nav>
@@ -652,13 +653,13 @@ export function GoalsPanel({
                   <h3 id="plan-title" className="text-lg font-semibold break-words">
                     {plan.title}
                   </h3>
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${PLAN_STATUS_STYLES[plan.status]}`} data-plan-status={plan.status}>
+                  <Badge tone={PLAN_STATUS_TONES[plan.status]} data-plan-status={plan.status}>
                     {ts(plan.status)}
-                  </span>
+                  </Badge>
                   {plan.has_unpublished_changes ? (
-                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900" data-unpublished="true">
+                    <Badge tone="warning" data-unpublished="true">
                       {t("unpublishedChanges")}
-                    </span>
+                    </Badge>
                   ) : null}
                 </div>
                 <p className="text-sm text-slate-700">{t("dates", { start: day(plan.start_date), review: day(plan.review_date) })}</p>
@@ -673,9 +674,9 @@ export function GoalsPanel({
             {!editingPlan ? (
               <div className="flex flex-wrap gap-2 pt-1">
                 {canPublish ? (
-                  <button type="button" className={buttonClass} onClick={publish} disabled={planApi.busy !== null || goals.length === 0}>
+                  <Button type="button" onClick={publish} disabled={planApi.busy !== null || goals.length === 0}>
                     {planApi.busy === "publish" ? t("publishing") : plan.published ? t("publishChanges") : t("publishToParent")}
-                  </button>
+                  </Button>
                 ) : plan.published && !closed ? (
                   <p className="self-center text-sm text-slate-700">{t("upToDate")}</p>
                 ) : null}

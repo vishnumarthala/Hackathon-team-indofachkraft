@@ -1,0 +1,22 @@
+PASS setup: Mon-Fri timetable created through 043's API (two series, 043 allows 1-4 days each) :: status 201/201, created 24+16
+PASS setup: 4 started sessions today + 1 later today + 1 yesterday (26 h ago) :: today 2026-11-14 (IST); all four on today: true; yesterday 2026-11-13
+PASS E-1 register lists today's sessions grouped by therapist :: 5 rows; page loaded in 511 ms (dev server)
+PASS E-1 counts update after marking 3 present and 1 absent :: before "Present: 0 · Absent: 0 · Cancelled: 0 · Not marked: 5" -> after "Present: 3 · Absent: 1 · Cancelled: 0 · Not marked: 1"
+PASS E-1 `Write note` appears on present rows (FR-5) :: 3 links: /cases/ccdda8a2-ca95-4393-9575-364198fd4e4c/sessions/new?appointment=9056b08c-760e-4846-8f4d-de8b010cbac1
+PASS FR-5 `Write note` preselects the appointment in the scribe upload form :: selected 9056b08c-760e-4846-8f4d-de8b010cbac1
+PASS E-1 billable shown (present with fee billable, absent not by default) :: Marked: Present · Billable | Marked: Present · Billable | Marked: Absent · Not billable | Marked: Present · Billable
+PASS FR-4 later session: Present disabled before the start, cancel types allowed :: present disabled true, centre cancelled enabled true; note "Starts at 8:07 am IST. Present and absent can be marked from then."
+PASS NFR-1 register fits a 390 px phone :: scrollWidth 390
+PASS FR-3/FR-8 correction via the UI is audited with the reason :: {"to":"present","from":"absent","reason":"Child arrived late, marked absent by mistake","billable":true,"to_status":"completed","from_status":"no_show"}
+PASS NFR-2 one state event per marking :: appointment_events completed rows for row 1: 1
+PASS E-2 past sessions show Attended / Missed :: Attended, Missed, Attended, Attended
+PASS E-2 monthly line '3 of 4 sessions attended' :: 3 of 4 sessions attended in November
+PASS E-2 family page fits 390 px :: scrollWidth 390
+PASS E-3 yesterday's unmarked session shows under `Needs attention` :: Needs attention These sessions started more than 24 hours ago and were never marked. 13 Nov 2026, 4:37 am IST Anu E044 (synthetic) · Speech therapy (synthetic) with Dr Speech E044 (synthetic) Mark on 
+PASS E-3 link opens the register on that day :: http://localhost:3060/dashboard/register?org=213fb753-930d-4c3f-9fef-b904156ae89f&date=2026-11-13
+PASS E-3 marked -> gone from `Needs attention` :: section not rendered
+PASS FR-6 case Attendance tab counts :: Attended: 4 · Absent: 1 · Cancelled: 0 · Not marked: 0
+PASS FR-6 case tab fits 390 px :: scrollWidth 390
+PASS FR-6 CSV export :: 200 12 lines
+PASS FR-6 CSV is staff only :: guardian -> 403
+21 PASS, 0 FAIL

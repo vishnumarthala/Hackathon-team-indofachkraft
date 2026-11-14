@@ -1,0 +1,40 @@
+## npm run lint
+> carethread@0.1.0 lint
+> eslint .
+
+exit 0
+
+## npm run typecheck
+
+Generating route types...
+✓ Types generated successfully
+exit 0
+
+## npx vitest run (a)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/fees-flow.test.ts > packages and family payments (database, route handlers) > prepaid one-offs (031) in the ledger > capture -> charge + payment with a receipt; absent and not billable -> refunded in full (billable decides)
+ FAIL  tests/iep-access.test.ts > IEP plans (database) > E-4.1: provider_b (org B) gets 404 on org A's plan; with an `iep` grant it reads the published plan under `Shared with us`, read only
+ FAIL  tests/payments-flow.test.ts > payments flow (database, route handlers) > late payment after the hold expired (FR-6, E-3) > E-3.2: guardian_b booked the slot first -> refund_pending -> refunded (job), guardian_a notified, guardian_b untouched
+ Test Files  3 failed | 110 passed (113)
+      Tests  3 failed | 1947 passed | 11 skipped (1961)
+
+## npx vitest run (b)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/outbox.test.ts > notifications outbox (database) > FR-4: cron route needs the bearer secret; with it, it fans out and delivers
+ Test Files  1 failed | 112 passed (113)
+      Tests  1 failed | 1949 passed | 11 skipped (1961)
+
+## npx vitest run (c)
+ Test Files  113 passed (113)
+      Tests  1950 passed | 11 skipped (1961)
+
+## flaky files re-run in isolation
+ Test Files  5 passed (5)
+      Tests  76 passed (76)
+
+## npm run build
+✓ Running next.config.ts took 60ms
+  ✓ authInterrupts
+✓ Compiled successfully in 5.2s
+✓ Generating static pages using 11 workers (7/7) in 71ms
+exit 0

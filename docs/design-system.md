@@ -92,6 +92,37 @@ Telugu text.
 | Domain | Provider card (with "Demo profile" badge) · Appointment card · Voice call panel (Idle/Connected) · Message bubble · Notification item · Goal card · ISAA item review · Permission row · Stat card · Table row |
 | Icons | 35 Lucide icons (search, map-pin, calendar, mic, video, shield-check, stethoscope, …) |
 
+### Code: `components/ui` (ticket 053)
+
+Small shared primitives named after the Figma components (no UI library, no new dependency). Import them from
+`@/components/ui` (or the single file, e.g. `@/components/ui/Button`). They work in Server and Client Components.
+
+| Primitive | Figma component (id) | Variants / props |
+|---|---|---|
+| `Button` | Button (`4:2`) | `variant` primary · secondary · ghost · danger; `size` md · sm (Figma) · lg (code-only: the one big mobile action, `min-h-12`); `icon`; `loading` (spinner, `aria-busy`, `aria-disabled`); `disabled` (`aria-disabled`); `href` renders a Next.js `<Link>`; `asChild` puts the classes on its single child (`<a download>`, external links, file-input labels). Default `type="button"`: pass `type="submit"` in forms. |
+| `buttonClasses()` (`components/ui/variants.ts`) | Button (`4:2`) | The same classes as a string, for class constants in `.ts` modules and elements that can't be wrapped (`<summary>`). |
+| `Badge` | Badge (`4:83`) | `tone` neutral · brand · success · warning · danger · info; `size` sm (default) · md (code-only: family-portal cards). |
+| `Alert` | Alert (`5:45`) | `tone` info · success · warning · danger; optional `title`; `as` div · p · section. No live-region role by default: pass the `role` (`alert`, `status`, `note`) the screen used before. |
+| `TextField` · `Select` | Text field (`5:4`) · Select (`5:25`) | `label`, `hint`, `error` (sets `aria-invalid` and `aria-describedby`); native `<input>` / `<select>`. `controlClasses` for bare controls. |
+| `Card` | surface of Stat card (`9:305`), Appointment card (`9:344`), Goal card (`9:332`) | `as` div · section · article · li. |
+| `EmptyState` | none (drawn inline on the screens) | `title`, `description`, `action`, `icon`. |
+
+Rules every primitive follows: tokens from §3 only; 44 px minimum target (`min-h-11`); focus ring
+`focus-visible:ring-2 ring-teal-600 ring-offset-2` (Figma Focus/ring, exported as `focusRing`); disabled states keep
+AA contrast (`slate-600` on `slate-200`, 6.1:1) instead of fading the brand colour; white on teal-700 is 5.4:1
+(`tests/ui-primitives.test.ts` checks every variant against the shipped Tailwind palette). Class names are joined without conflict resolution, so pick a `variant`/`size` rather than overriding padding or
+colour with `className` (use `className` for layout: `w-full`, `mt-3`, `print:hidden`).
+
+**Guard.** `tests/design-guard.test.ts` parses `app/**` and `components/**` (not `components/landing/**`) and fails
+when a `<button>`, `<Link>` or `<a>` gets `bg-slate-900` together with `text-white` (string literals, template
+literals, same-file and imported constants, helper functions), or when a `.ts` module holds such a class string. Dark
+surfaces that are not buttons (`bg/inverse`, e.g. the voice panel) are fine. A deliberate exception goes in its
+`ALLOWED` map with a reason. Selected states of segmented controls and tabs use `border-teal-700 bg-teal-700 text-white`.
+
+Not migrated on purpose: the landing pages (own `--lp-*` palette), the violet "Demo profile" / "AI" labels (no Figma
+Badge tone; they mark synthetic or AI content), the red-flag emergency boxes (bigger, `border-2` safety styling), the
+journey timeline and payment labels (status colours defined in `lib/`), and the attendance status colours.
+
 ## 5. Screens → routes
 
 There are 74 screens. Every route in the first four tables exists in `app/`; the pilot-readiness routes arrive with tickets 043–053.
@@ -244,15 +275,12 @@ Everything published shows up in the **family portal**.
 
 ## 7. Known gaps between Figma and code
 
-- **Primary button colour.** Figma uses teal (`bg/brand`). About 36 files in `app/` and `components/`
-  still use `bg-slate-900` for primary actions, from the CareThread era. Move them to `bg-teal-700` when
-  you next touch those screens.
 - **Dark mode.** Not designed. The Color collection has only a Light mode, so add a Dark mode there first.
 - **Hindi and Telugu.** Not mocked separately. The layouts use auto layout and the Noto fonts are loaded,
   but check the strings on the real screens.
 - **Demo content.** Screens use fictional children and providers (for example "Ravi"). Never put real
   patient data in Figma.
-- **Code Connect.** Not set up yet, so Figma components match code by name only.
+- **Code Connect.** Not set up yet. Figma components match code by name and by the ids in §4 (`components/ui`).
 
 ## 8. Feature documentation map
 

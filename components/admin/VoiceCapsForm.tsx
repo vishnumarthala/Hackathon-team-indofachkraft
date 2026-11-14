@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   dailyOverride: number | null;
@@ -88,9 +89,9 @@ export function VoiceCapsForm({ dailyOverride, monthlyOverride, envDaily, envMon
       <p id={`${id}-help`} className="text-xs text-slate-600">
         {t("voiceCapHelp")}
       </p>
-      <button type="submit" disabled={busy} className="min-h-11 rounded bg-slate-900 px-4 font-semibold text-white disabled:opacity-60">
+      <Button type="submit" disabled={busy}>
         {busy ? t("voiceCapSaving") : t("voiceCapSave")}
-      </button>
+      </Button>
       {message ? (
         <p role={message === "saved" ? "status" : "alert"} className={message === "saved" ? "text-sm text-teal-800" : "text-sm text-red-700"}>
           {message === "saved" ? t("voiceCapSaved") : t("voiceCapFailed")}

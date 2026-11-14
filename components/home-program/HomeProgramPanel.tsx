@@ -11,11 +11,12 @@ import type { ActivityAdherence, GoalOption, GuideOption, ProgramSummary, Provid
 import { useFormatter, useT } from "@/lib/i18n/client";
 import { Instructions } from "./Instructions";
 import { Sparkline } from "./Sparkline";
-import { STATUS_STYLES, sendJson, type HomeProgramErrorKey } from "./view";
+import { STATUS_TONES, sendJson, type HomeProgramErrorKey } from "./view";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
 const labelClass = "block text-sm font-medium text-slate-800";
-const buttonClass = "min-h-11 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 const smallButton = "min-h-9 rounded border border-slate-300 px-3 py-1 text-sm font-medium text-slate-800 disabled:opacity-50";
 
 type Problem = { error: HomeProgramErrorKey; fields: string[] } | null;
@@ -198,9 +199,9 @@ function ActivityForm({
         </Field>
       </div>
       <div className="flex flex-wrap items-end gap-2">
-        <button type="submit" className={buttonClass} disabled={busy}>
+        <Button type="submit" disabled={busy}>
           {busy ? tp("saving") : submitLabel}
-        </button>
+        </Button>
         {onCancel ? (
           <button type="button" className={smallButton} onClick={onCancel}>
             {tp("cancel")}
@@ -282,7 +283,7 @@ function ActivityCard({
         <div className="space-y-1">
           <h3 className="font-semibold break-words text-slate-900">
             {activity.title}
-            {!activity.active ? <span className="ml-2 rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">{tp("stopped")}</span> : null}
+            {!activity.active ? <Badge className="ml-2">{tp("stopped")}</Badge> : null}
           </h3>
           <p className="text-sm text-slate-700">{tp("summary", { count: activity.frequency_per_week, minutes: activity.duration_min })}</p>
           {activity.goal_statement ? <p className="text-sm text-slate-700">{tp("goalLabel", { goal: activity.goal_statement })}</p> : null}
@@ -349,9 +350,9 @@ function CreateProgram({ caseId, open }: { caseId: string; open: boolean }) {
       <Field name="new-title" label={tp("programTitle")} invalid={api.problem?.fields.includes("title")}>
         {(p) => <input {...p} name="title" required maxLength={120} className={`${inputClass} min-w-64`} />}
       </Field>
-      <button type="submit" className={buttonClass} disabled={api.busy !== null}>
+      <Button type="submit" disabled={api.busy !== null}>
         {api.busy ? tp("saving") : tp("create")}
-      </button>
+      </Button>
       <ErrorText problem={api.problem} onReload={api.refresh} />
     </form>
   );
@@ -452,11 +453,11 @@ export function HomeProgramPanel({
           <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-4" data-program={program.id}>
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-lg font-semibold break-words text-slate-900">{program.title}</h3>
-              <span className={`rounded px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[program.status]}`}>{ts(program.status)}</span>
+              <Badge tone={STATUS_TONES[program.status]}>{ts(program.status)}</Badge>
               {program.has_unpublished_changes ? (
-                <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900" data-badge="unpublished">
+                <Badge tone="warning" data-badge="unpublished">
                   {tp("unpublished")}
-                </span>
+                </Badge>
               ) : null}
             </div>
             <p className="text-sm text-slate-600">
@@ -469,9 +470,9 @@ export function HomeProgramPanel({
             ) : (
               <div className="flex flex-wrap gap-2">
                 {program.status === "draft" || program.has_unpublished_changes ? (
-                  <button type="button" className={buttonClass} disabled={api.busy !== null} onClick={publish}>
+                  <Button type="button" disabled={api.busy !== null} onClick={publish}>
                     {api.busy === "publish" ? tp("publishing") : program.status === "draft" ? tp("publish") : tp("publishChanges")}
-                  </button>
+                  </Button>
                 ) : null}
                 <button type="button" className={smallButton} onClick={() => setRenaming((v) => !v)} aria-expanded={renaming}>
                   {tp("rename")}
@@ -491,9 +492,9 @@ export function HomeProgramPanel({
                 <Field name="rename" label={tp("programTitle")}>
                   {(p) => <input {...p} name="title" required maxLength={120} defaultValue={program.title} className={`${inputClass} min-w-64`} />}
                 </Field>
-                <button type="submit" className={buttonClass} disabled={api.busy !== null}>
+                <Button type="submit" disabled={api.busy !== null}>
                   {api.busy === "rename" ? tp("saving") : tp("save")}
-                </button>
+                </Button>
               </form>
             ) : null}
             {message ? (

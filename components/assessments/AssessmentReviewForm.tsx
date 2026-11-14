@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { useT } from "@/lib/i18n/client";
 import { assessmentErrorKey, type ApiErrorKey } from "./view";
+import { Button } from "@/components/ui/Button";
 
 // 024 FR-8: `Mark reviewed` with a note and `Share result with parent` (publishes the summary).
 export function AssessmentReviewForm({ assessmentId }: { assessmentId: string }) {
@@ -59,9 +60,9 @@ export function AssessmentReviewForm({ assessmentId }: { assessmentId: string })
           {t(`errors.${error}`)}
         </p>
       ) : null}
-      <button type="submit" disabled={busy} className="min-h-11 rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
+      <Button type="submit" disabled={busy}>
         {busy ? t("reviewing") : t("markReviewed")}
-      </button>
+      </Button>
     </form>
   );
 }

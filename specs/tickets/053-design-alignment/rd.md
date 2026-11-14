@@ -1,6 +1,6 @@
 # 053: Design-system alignment (teal primary actions, shared UI primitives)
 
-**Status:** ready
+**Status:** done
 **Mode:** solo
 **Runs:** waits for 043–052: it touches many screens, so it goes last to avoid conflicts
 

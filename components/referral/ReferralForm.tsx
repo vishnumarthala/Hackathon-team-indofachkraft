@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { withConsentHint } from "@/lib/consent/features";
+import { Button } from "@/components/ui/Button";
 
 type EmailStatus = "sent" | "demo" | "failed";
 type Success = { url: string; email: string; emailStatus: EmailStatus };
@@ -122,13 +123,12 @@ export function ReferralForm({ caseId, defaultReason }: { caseId: string; defaul
         <p className="text-sm text-slate-700">
           Sharing needs the parent&apos;s &quot;Sharing with a specialist&quot; permission, which DoctorNearMe checks when you send.
         </p>
-        <button
+        <Button
           type="submit"
           disabled={sending}
-          className="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
         >
           {sending ? "Sending…" : "Send referral"}
-        </button>
+        </Button>
         {error && (
           <p role="alert" className="text-sm text-red-700">
             {error}

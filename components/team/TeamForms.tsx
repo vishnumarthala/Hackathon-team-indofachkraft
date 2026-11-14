@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { Button } from "@/components/ui/Button";
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
-const buttonClass = "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 
 async function send(url: string, method: string, body?: unknown): Promise<{ ok: boolean; json: Record<string, unknown> }> {
   const res = await fetch(url, {
@@ -60,9 +60,9 @@ export function CreateOrgForm() {
         <input id="org-city" name="city" maxLength={80} defaultValue="Hyderabad" className={inputClass} />
       </div>
       {error && <p className="text-sm text-red-700">{error}</p>}
-      <button type="submit" disabled={busy} className={buttonClass}>
+      <Button type="submit" disabled={busy}>
         Create organisation
-      </button>
+      </Button>
     </form>
   );
 }
@@ -108,9 +108,9 @@ export function InviteForm({ orgId }: { orgId: string }) {
           <option value="admin">Admin</option>
         </select>
       </div>
-      <button type="submit" disabled={busy} className={buttonClass}>
+      <Button type="submit" disabled={busy}>
         Invite
-      </button>
+      </Button>
       {message && <p className="w-full text-sm text-slate-700">{message}</p>}
       {url && (
         <input readOnly aria-label="Invitation link" value={url} className={`${inputClass} w-full`} onFocus={(e) => e.currentTarget.select()} />
@@ -160,9 +160,9 @@ export function AcceptInvitation({ token }: { token: string }) {
 
   return (
     <div className="space-y-2">
-      <button type="button" onClick={onClick} disabled={busy} className={buttonClass}>
+      <Button type="button" onClick={onClick} disabled={busy}>
         Accept invitation
-      </button>
+      </Button>
       {error && <p className="text-sm text-red-700">{error}</p>}
     </div>
   );

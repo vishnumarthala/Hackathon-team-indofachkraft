@@ -10,6 +10,7 @@ import { messagesSubscription } from "./realtime";
 import { startThreadSync, type SyncStatus } from "./threadSync";
 import { EmergencyBanner } from "./EmergencyBanner";
 import { messagingErrorKey, mergeMessages, newClientId, type MessagingErrorKey } from "./client";
+import { Badge } from "@/components/ui/Badge";
 
 export type ThreadViewProps = {
   thread: { id: string; subject: string; archivedAt: string | null; orgName: string; childName: string };
@@ -223,7 +224,7 @@ export function ThreadView({ thread, initial, documents, canArchive, tone, backH
         <h1 className="text-2xl font-bold break-words text-slate-900">{thread.subject}</h1>
         <p className="text-sm text-slate-600">
           {tone === "family" ? t("with", { org: thread.orgName }) : t("about", { name: thread.childName })}
-          {archivedAt ? <span className="ml-2 rounded bg-slate-200 px-2 py-0.5 text-xs font-semibold text-slate-800">{t("archived")}</span> : null}
+          {archivedAt ? <Badge className="ml-2">{t("archived")}</Badge> : null}
         </p>
         <p className="text-xs text-slate-600" role="status" data-sync-status={status}>
           {statusText}

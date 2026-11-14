@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 export type TeamMemberView = {
   assignmentId: string;
@@ -26,7 +27,6 @@ export function teamErrorKey(method: "POST" | "PATCH" | "DELETE", status: number
 }
 
 const inputClass = "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-sm";
-const buttonClass = "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50";
 const linkButtonClass = "min-h-9 rounded border border-slate-300 px-3 py-1 text-sm font-medium text-slate-800 disabled:opacity-50";
 
 // 022 FR-3: `<name> - <discipline> - Lead/Member`, `Add provider` and `Remove` (owners/admins/lead only).
@@ -194,9 +194,9 @@ export function CareTeamPanel({
                 <option value="lead">{t("lead")}</option>
               </select>
             </div>
-            <button type="submit" disabled={busy !== null} className={buttonClass}>
+            <Button type="submit" disabled={busy !== null}>
               {busy === "add" ? t("adding") : t("add")}
-            </button>
+            </Button>
           </form>
         )
       ) : (

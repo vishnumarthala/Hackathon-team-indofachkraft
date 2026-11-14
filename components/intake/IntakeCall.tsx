@@ -9,6 +9,7 @@ import { useLocale, useT } from "@/lib/i18n/client";
 import type { Locale } from "@/lib/i18n/config";
 import type { TFunction } from "@/lib/i18n/keys";
 import type { Language } from "@/lib/types";
+import { Button } from "@/components/ui/Button";
 
 export type IntakeMessages = Record<
   | "demo"
@@ -439,14 +440,15 @@ function IntakeCallInner({
       )}
 
       {!live && !ended && !demo && !choosing && !skipped && (
-        <button
+        <Button
           type="button"
           onClick={onStart}
           disabled={!consent || starting}
-          className="min-h-12 w-full rounded bg-slate-900 px-4 py-3 text-base font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+          size="lg"
+          className="w-full"
         >
           {t("start")}
-        </button>
+        </Button>
       )}
 
       {status === "connected" && (
@@ -470,13 +472,14 @@ function IntakeCallInner({
           <p role="alert" className="text-base text-red-700">
             {completion.message}
           </p>
-          <button
+          <Button
             type="button"
             onClick={startCompletion}
-            className="min-h-12 w-full rounded bg-slate-900 px-4 py-3 text-base font-semibold text-white"
+            size="lg"
+            className="w-full"
           >
             {messages.retry}
-          </button>
+          </Button>
         </div>
       )}
 

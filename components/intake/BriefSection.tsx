@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { BriefState } from "@/lib/intake/briefMarkdown";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 export const BRIEF_FAILED = "The call was received but the brief could not be generated.";
 export const REVIEW_FAILED = "Could not mark the brief reviewed. Please try again.";
@@ -55,7 +57,7 @@ export function BriefSection({ caseId, therapistName, state }: BriefSectionProps
     <section className="space-y-4 rounded border border-slate-200 bg-white p-4">
       <div className="flex flex-wrap items-center gap-3">
         <h2 className="text-lg font-semibold">Pre-session brief</h2>
-        <span className="rounded-full bg-sky-100 px-2.5 py-0.5 text-xs font-medium text-sky-900">Parent-reported</span>
+        <Badge tone="info">Parent-reported</Badge>
       </div>
       <p className="text-sm text-slate-800">{brief.summary}</p>
 
@@ -103,14 +105,13 @@ export function BriefSection({ caseId, therapistName, state }: BriefSectionProps
           Reviewed by {therapistName}
         </p>
       ) : (
-        <button
+        <Button
           type="button"
           onClick={onReview}
           disabled={busy}
-          className="inline-flex min-h-11 items-center rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           Mark brief reviewed
-        </button>
+        </Button>
       )}
       {error && (
         <p role="alert" className="text-sm text-red-700">

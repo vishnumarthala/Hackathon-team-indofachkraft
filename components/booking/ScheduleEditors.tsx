@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
 import { useT } from "@/lib/i18n/client";
 import { buttonClass, fieldKeys, inputClass, labelClass, secondaryButtonClass, send } from "@/components/providers/request";
+import { Button } from "@/components/ui/Button";
 
 // FR-8 provider schedule editors (`/dashboard/schedule`). Each form posts to /api/provider/** and refreshes the page.
 
@@ -178,7 +179,7 @@ export function ServicesEditor({
           </select>
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
-          <button type="submit" className={buttonClass} disabled={busy}>{t("schedule.services.add")}</button>
+          <Button type="submit" disabled={busy}>{t("schedule.services.add")}</Button>
           {feedback}
         </div>
       </form>
@@ -260,7 +261,7 @@ export function HoursEditor({ rules, locations }: { rules: RuleItem[]; locations
           </div>
         ) : null}
         <div className="flex flex-wrap items-center gap-3 sm:col-span-3">
-          <button type="submit" className={buttonClass} disabled={busy}>{t("schedule.hours.add")}</button>
+          <Button type="submit" disabled={busy}>{t("schedule.hours.add")}</Button>
           {feedback}
         </div>
       </form>
@@ -379,9 +380,9 @@ export function OverridesEditor({ overrides, locations, today }: { overrides: Ov
           <input id={`${id}-note`} name="note" maxLength={200} className={inputClass} />
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:col-span-3">
-          <button type="submit" className={buttonClass} disabled={busy}>
+          <Button type="submit" disabled={busy}>
             {kind === "unavailable" ? t("schedule.overrides.block") : t("schedule.overrides.extra")}
-          </button>
+          </Button>
           {feedback}
         </div>
       </form>

@@ -7,11 +7,11 @@ import { parseCaseFilter } from "@/lib/dashboard/cases-filter";
 import { greetingPart, listCasesWithoutParent, loadDashboardToday, providerDisplayName } from "@/lib/dashboard/today";
 import { getFormatter, getT, getTimeZone } from "@/lib/i18n/server";
 import { listCases } from "@/lib/queries/cases";
+import { Button, buttonClasses } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
-const primary = "inline-flex min-h-11 items-center justify-center rounded-lg bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800";
-const secondary = "inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50";
+const secondary = buttonClasses({ variant: "secondary" });
 
 // 052 FR-4 (Figma /dashboard — Cases 18:11): greeting with organisation and date, Invite parent / New case, the four
 // stat cards, the Today panel (today's sessions + To do), then the case list. Translated (en/hi/te). Today first,
@@ -76,12 +76,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 </Link>
               </div>
             </details>
-            <Link href="/dashboard/import" className={secondary}>
+            <Button href="/dashboard/import" variant="secondary">
               {t("import")}
-            </Link>
-            <Link href="/cases/new" className={primary}>
-              {t("newCase")}
-            </Link>
+            </Button>
+            <Button href="/cases/new">{t("newCase")}</Button>
           </div>
         ) : null}
       </header>
@@ -89,9 +87,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       {orgIds.length === 0 ? (
         <div className="space-y-3 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-slate-700">
           <p>{t("noOrg")}</p>
-          <Link href="/dashboard/team" className={primary}>
-            {t("noOrgAction")}
-          </Link>
+          <Button href="/dashboard/team">{t("noOrgAction")}</Button>
         </div>
       ) : (
         <>

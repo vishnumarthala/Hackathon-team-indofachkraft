@@ -68,7 +68,7 @@ export function ItemRow({
               onClick={() => fact && onRate(fact, r)}
               className={`h-8 w-8 rounded border text-sm font-medium disabled:opacity-50 ${
                 value === r
-                  ? "border-slate-900 bg-slate-900 text-white"
+                  ? "border-teal-700 bg-teal-700 text-white"
                   : "border-slate-300 bg-white text-slate-800 hover:bg-slate-100"
               }`}
             >

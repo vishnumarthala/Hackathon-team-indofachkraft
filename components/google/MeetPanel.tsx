@@ -1,9 +1,10 @@
 // 037 FR-4 / FR-5: the video-call part of an appointment card, rendered on the server at request time so the Meet
 // link only reaches the page inside the join window (10 minutes before the start until 30 minutes after the end).
-import { buttonClass } from "@/components/providers/request";
 import { joinState, type MeetInfo } from "@/lib/google/meet";
 import { getT } from "@/lib/i18n/server";
 import { AddVideoLinkForm } from "./AddVideoLinkForm";
+import { Button } from "@/components/ui/Button";
+import { Alert } from "@/components/ui/Alert";
 
 type Props = {
   appointment: { id: string; status: string; starts_at: string; ends_at: string };
@@ -25,9 +26,11 @@ export async function MeetPanel({ appointment, meet, side, now = new Date() }: P
     return (
       <div className="w-full space-y-2" data-testid="meet-panel">
         {state === "open" ? (
-          <a href={meet.meet_url as string} target="_blank" rel="noopener noreferrer" className={buttonClass}>
-            {t("join")}
-          </a>
+          <Button asChild>
+            <a href={meet.meet_url as string} target="_blank" rel="noopener noreferrer">
+              {t("join")}
+            </a>
+          </Button>
         ) : (
           note(t("opensSoon"))
         )}
@@ -41,9 +44,11 @@ export async function MeetPanel({ appointment, meet, side, now = new Date() }: P
       {hasLink ? (
         <>
           {state === "open" ? (
-            <a href={meet.meet_url as string} target="_blank" rel="noopener noreferrer" className={buttonClass}>
-              {t("join")}
-            </a>
+            <Button asChild>
+              <a href={meet.meet_url as string} target="_blank" rel="noopener noreferrer">
+                {t("join")}
+              </a>
+            </Button>
           ) : (
             note(`${meet.meet_status === "manual" ? t("manual") : t("ready")} ${t("opensSoon")}`)
           )}
@@ -53,7 +58,7 @@ export async function MeetPanel({ appointment, meet, side, now = new Date() }: P
         </>
       ) : meet.meet_status === "failed" ? (
         <>
-          <p role="note" className="rounded bg-amber-50 p-2 text-sm text-amber-900">{t("failed")}</p>
+          <Alert as="p" tone="warning" role="note">{t("failed")}</Alert>
           <AddVideoLinkForm appointmentId={appointment.id} />
         </>
       ) : (

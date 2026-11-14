@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useFormatter, useT } from "@/lib/i18n/client";
+import { Button } from "@/components/ui/Button";
 
 type Created = { code: string; expires_at: string; whatsapp_url: string };
 
@@ -32,9 +33,9 @@ export function ClaimCodeButton({ caseId }: { caseId: string }) {
 
   return (
     <div className="space-y-2">
-      <button type="button" onClick={create} disabled={busy} className={`${buttonClass} bg-slate-900 text-white`}>
+      <Button type="button" onClick={create} disabled={busy}>
         {busy ? t("creating") : t("createCode")}
-      </button>
+      </Button>
       {failed ? (
         <p role="alert" className="text-sm text-red-700">
           {t("codeFailed")}

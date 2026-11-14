@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import type { ThreadListItem } from "@/lib/messaging/types";
+import { Badge } from "@/components/ui/Badge";
 
 // 027 FR-4: a list of conversations (server component). `show` picks the context line: the organisation for
 // guardians, the child for providers.
@@ -35,7 +36,7 @@ export async function ThreadList({
             </span>
             <span className="flex shrink-0 items-center gap-2">
               {thread.archived_at ? (
-                <span className="rounded bg-slate-200 px-2 py-0.5 text-xs font-semibold text-slate-800">{t("archived")}</span>
+                <Badge>{t("archived")}</Badge>
               ) : null}
               {thread.unread > 0 ? (
                 <span className="rounded-full bg-teal-700 px-2 py-0.5 text-xs font-semibold text-white" data-unread={thread.unread}>

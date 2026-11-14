@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/Button";
 
 type Pending = "confirm_suggested" | "rate_unrated";
 
@@ -34,14 +35,13 @@ export function BulkActions({
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2">
-        <button
+        <Button
           type="button"
           disabled={busy || suggestedCount === 0}
           onClick={() => setPending("confirm_suggested")}
-          className="rounded bg-slate-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
           Confirm all remaining suggestions
-        </button>
+        </Button>
         <button
           type="button"
           disabled={busy || unratedCount === 0}
@@ -63,14 +63,14 @@ export function BulkActions({
             {question}
           </p>
           <div className="mt-2 flex gap-2">
-            <button
+            <Button
               type="button"
               autoFocus
               onClick={onYes}
-              className="rounded bg-slate-900 px-3 py-1 text-sm font-medium text-white"
+              size="sm"
             >
               Yes
-            </button>
+            </Button>
             <button
               type="button"
               onClick={() => setPending(null)}

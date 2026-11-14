@@ -36,7 +36,7 @@ export default async function AdminRatingsPage({ searchParams }: { searchParams:
             key={s}
             href={`/admin/ratings?status=${s}`}
             aria-current={s === status ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center rounded border px-4 text-sm font-medium ${s === status ? "border-slate-900 bg-slate-900 text-white" : "border-slate-300 bg-white text-slate-800"}`}
+            className={`inline-flex min-h-11 items-center rounded border px-4 text-sm font-medium ${s === status ? "border-teal-700 bg-teal-700 text-white" : "border-slate-300 bg-white text-slate-800"}`}
           >
             {t(`tabs.${s}`)}
             {s === "pending_review" ? ` (${format.number(pending)})` : ""}

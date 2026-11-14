@@ -6,6 +6,7 @@ import { useT } from "@/lib/i18n/client";
 import type { ProviderType } from "@/lib/providers/constants";
 import { MILESTONES } from "@/lib/screen/milestones";
 import { OVER_8_TYPES, UNDER_18M_TYPES } from "@/lib/screen/recommend";
+import { Alert } from "@/components/ui/Alert";
 
 const linkClass = "inline-flex min-h-11 items-center font-semibold text-teal-800 underline underline-offset-4";
 const findType = (type: ProviderType) => findHref({ ...HYDERABAD_CENTRE, type, radius_km: SEO_RADIUS_KM });
@@ -29,7 +30,7 @@ export function Under18Guidance() {
           </li>
         ))}
       </ul>
-      <p className="rounded-xl bg-amber-50 p-3 text-sm font-medium text-amber-900">{t("lostSkills")}</p>
+      <Alert as="p" tone="warning" className="font-medium">{t("lostSkills")}</Alert>
       <p className="font-medium text-slate-900">{t("advice")}</p>
       <ul className="flex flex-col gap-1 sm:flex-row sm:gap-6">
         {UNDER_18M_TYPES.map((type) => (

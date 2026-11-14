@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AssessmentReviewForm } from "@/components/assessments/AssessmentReviewForm";
-import { BAND_KEYS, RED_FLAG_KEYS, STATUS_KEYS, STATUS_STYLES, isAnswerKey } from "@/components/assessments/view";
+import { BAND_KEYS, RED_FLAG_KEYS, STATUS_KEYS, STATUS_TONES, isAnswerKey } from "@/components/assessments/view";
 import { ReportPreview } from "@/components/report/ReportEditor";
 import { getAssessmentForProvider } from "@/lib/assessments";
 import { requireCasePage } from "@/lib/authz";
 import type { RedFlagCode } from "@/lib/clinical/checkin";
 import { getInstrument } from "@/lib/clinical/instruments";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { Badge } from "@/components/ui/Badge";
 
 export const dynamic = "force-dynamic";
 
@@ -61,9 +62,7 @@ export default async function CaseAssessmentPage({ params }: { params: Promise<{
       <header className="space-y-1">
         <h2 className="text-lg font-semibold break-words">{assessment.title}</h2>
         <p className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
-          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[assessment.status]}`}>
-            {ts(STATUS_KEYS[assessment.status])}
-          </span>
+          <Badge tone={STATUS_TONES[assessment.status]}>{ts(STATUS_KEYS[assessment.status])}</Badge>
           {assessment.submitted_at ? <span>{t("submittedOn", { date: format.dateTime(assessment.submitted_at) })}</span> : null}
           {assessment.reviewed_at ? <span>{t("reviewedOn", { date: format.dateTime(assessment.reviewed_at) })}</span> : null}
         </p>

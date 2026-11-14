@@ -15,6 +15,7 @@ import { useFormatter, useT } from "@/lib/i18n/client";
 import { clock } from "@/lib/ask/citations";
 import type { RxDraftContent } from "@/lib/scribe/schema";
 import { rxReviewPath, type NoteTemplate } from "@/lib/scribe/templates";
+import { Button } from "@/components/ui/Button";
 
 export type ReviewSuggestion = {
   id: string;
@@ -50,7 +51,6 @@ export type ScribeReviewProps = {
 };
 
 const button = "inline-flex min-h-11 items-center rounded px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60";
-const primary = `${button} bg-slate-900 text-white`;
 const secondary = `${button} border border-slate-400 text-slate-900`;
 const card = "space-y-3 rounded border border-slate-200 bg-white p-4";
 
@@ -207,14 +207,13 @@ function NoteSection({ props }: { props: ScribeReviewProps }) {
               {t("shareCheckbox")}
             </label>
           </div>
-          <button
+          <Button
             type="button"
-            className={primary}
             disabled={busy !== null || text.trim() === ""}
             onClick={() => run("finalize", url, "PATCH", { content_md: text, status: "final", visible_to_guardian: share })}
           >
             {t("finalize")}
-          </button>
+          </Button>
         </>
       ) : (
         <>
@@ -269,23 +268,22 @@ function SuggestionItem({ s, recordingId }: { s: ReviewSuggestion; recordingId: 
                   className="mt-1 block min-h-11 w-28 rounded border border-slate-300 px-2"
                 />
               </div>
-              <button
+              <Button
                 type="button"
-                className={primary}
                 disabled={busy !== null || value.trim() === "" || Number.isNaN(Number(value))}
                 onClick={() => run("accept", url, "PATCH", { status: "accepted", value: Number(value) })}
               >
                 {t("acceptEdited")}
-              </button>
+              </Button>
               <button type="button" className={secondary} onClick={() => setEditing(false)}>
                 {t("cancel")}
               </button>
             </>
           ) : (
             <>
-              <button type="button" className={primary} disabled={busy !== null} onClick={() => run("accept", url, "PATCH", { status: "accepted" })}>
+              <Button type="button" disabled={busy !== null} onClick={() => run("accept", url, "PATCH", { status: "accepted" })}>
                 {t("accept")}
-              </button>
+              </Button>
               <button type="button" className={secondary} disabled={busy !== null} onClick={() => setEditing(true)}>
                 {t("editValue")}
               </button>
@@ -333,9 +331,9 @@ function RxCard({ caseId, rx }: { caseId: string; rx: { id: string; content: RxD
           ))}
         </ol>
       )}
-      <Link href={rxReviewPath(caseId, rx.id)} className={`${primary} w-fit`}>
+      <Button href={rxReviewPath(caseId, rx.id)} className="w-fit">
         {t("rxReview")}
-      </Link>
+      </Button>
     </section>
   );
 }
