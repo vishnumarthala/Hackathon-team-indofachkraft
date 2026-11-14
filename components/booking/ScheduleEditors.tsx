@@ -29,7 +29,11 @@ function useAction() {
       return true;
     }
     setInvalid(fieldKeys(res.json));
-    setMessage({ kind: "error", text: res.status === 400 ? t("invalid") : t("failed") });
+    // 046 FR-2 / FR-8: paid services need payout setup (409).
+    const code = res.json.code;
+    const text =
+      code === "payout_account_inactive" ? t("payoutInactive") : code === "fee_policy_not_accepted" ? t("feeNotAccepted") : res.status === 400 ? t("invalid") : t("failed");
+    setMessage({ kind: "error", text });
     return false;
   }
 
@@ -55,6 +59,8 @@ export type ServiceItem = {
   intake_kind: "child_dev" | "generic" | "none";
   active: boolean;
   location_name: string | null;
+  /** 046 FR-2: false = a paid service hidden from booking until the organisation's payout setup is finished. */
+  payouts_ready?: boolean;
 };
 
 /** `defaultIntakeKind`: 035 D-4, the provider type's default for new services (changeable per service). */
@@ -104,6 +110,7 @@ export function ServicesEditor({
                 <span className="font-medium">{s.name}</span> · {t("duration", { minutes: s.duration_min })} · {t(`modes.${s.mode}`)}
                 {s.location_name ? ` (${s.location_name})` : ""} · {s.payment_mode === "free" ? t("payment.free") : `₹${s.fee_inr} · ${t(`payment.${s.payment_mode}`)}`}
                 {s.active ? "" : ` · ${t("schedule.services.inactive")}`}
+                {s.active && s.payouts_ready === false ? <span className="block text-amber-900">{t("schedule.services.hiddenPayout")}</span> : null}
               </span>
               <button type="button" className={secondaryButtonClass} disabled={busy} onClick={() => run(`/api/provider/services/${s.id}`, "PATCH", { active: !s.active })}>
                 {s.active ? t("schedule.services.turnOff") : t("schedule.services.turnOn")}

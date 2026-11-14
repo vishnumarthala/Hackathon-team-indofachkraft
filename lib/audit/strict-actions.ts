@@ -460,6 +460,42 @@ export const STRICT_ACTIONS: StrictAction[] = [
     call: "requestRefund",
     impl: { kind: "auditStrict", module: "lib/fees/store.ts" },
   },
+  // ---------- 046 payouts and the platform fee (money) ----------
+  {
+    action: "payouts.account_changed",
+    description: "Platform admin sets a centre's Razorpay Route linked account and its status",
+    routes: ["app/api/admin/payouts/orgs/[orgId]/account/route.ts"],
+    call: "setPayoutAccount",
+    impl: { kind: "auditStrict", module: "lib/payouts/store.ts" },
+  },
+  {
+    action: "payouts.fee_policy_changed",
+    description: "Platform admin changes a centre's platform fee policy (new version)",
+    routes: ["app/api/admin/payouts/orgs/[orgId]/policy/route.ts"],
+    call: "setFeePolicy",
+    impl: { kind: "auditStrict", module: "lib/payouts/store.ts" },
+  },
+  {
+    action: "payouts.fee_policy_accepted",
+    description: "Centre owner accepts the platform fee notice (once per policy version)",
+    routes: ["app/api/orgs/[id]/payouts/accept/route.ts"],
+    call: "acceptFeePolicy",
+    impl: { kind: "auditStrict", module: "lib/payouts/store.ts" },
+  },
+  {
+    action: "payouts.settings_changed",
+    description: "Owner/admin changes the package expiry policy or the centre's GSTIN",
+    routes: ["app/api/orgs/[id]/payouts/settings/route.ts"],
+    call: "setPayoutSettings",
+    impl: { kind: "auditStrict", module: "lib/payouts/store.ts" },
+  },
+  {
+    action: "payouts.transfer_retried",
+    description: "Platform admin retries a failed payout transfer",
+    routes: ["app/api/admin/payouts/items/[id]/retry/route.ts"],
+    call: "retryPayoutItem",
+    impl: { kind: "auditStrict", module: "lib/payouts/store.ts" },
+  },
 ];
 
 export function strictAction(action: string): StrictAction | undefined {

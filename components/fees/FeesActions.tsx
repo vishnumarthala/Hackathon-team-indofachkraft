@@ -18,6 +18,8 @@ const ERROR_CODES = [
   "package_not_found",
   "not_configured",
   "gateway_error",
+  "payout_account_inactive",
+  "fee_policy_not_accepted",
 ] as const;
 
 const selectClass = `${inputClass} min-h-11`;

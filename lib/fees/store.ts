@@ -10,6 +10,7 @@ import { enqueue } from "@/lib/notify/outbox";
 import { pg, type Queryable, type Tx } from "@/lib/pg";
 import { getPaymentGateway, type GatewayPaymentLink, type PaymentGateway } from "@/lib/payments/razorpay";
 import { balanceOverdue, packageEnding, PACKAGE_OFFER_DAYS, packageRefundPaise, type LedgerKind } from "./money";
+import { payoutReadiness } from "@/lib/payouts/store";
 
 if (typeof window !== "undefined") {
   throw new Error("lib/fees/store.ts is server-only");
@@ -31,6 +32,9 @@ export const FEES_ERRORS = {
   link_too_large: { status: 409, error: "The amount is too large for one payment link." },
   not_configured: { status: 503, error: "Online payment is not available right now. Please try again later." },
   gateway_error: { status: 502, error: "The payment link could not be created. Please try again." },
+  // 046 FR-2 / FR-8: packages need an active payout account and the accepted platform fee.
+  payout_account_inactive: { status: 409, error: "Finish payout setup to accept payments." },
+  fee_policy_not_accepted: { status: 409, error: "Accept the platform fee on the Payouts page before taking payments." },
 } as const;
 export type FeesErrorCode = keyof typeof FEES_ERRORS;
 
@@ -193,6 +197,12 @@ export async function listPackages(orgId: string, opts: { activeOnly?: boolean }
   return rows.map(toPackage);
 }
 
+/** 046 FR-2 / FR-8: offering packages needs an active payout account and the accepted platform fee. */
+async function assertPayoutReady(orgId: string, tx: Queryable): Promise<void> {
+  const r = await payoutReadiness(orgId, tx);
+  if (r.block) throw new FeesError(r.block);
+}
+
 async function assertOrgServices(tx: Queryable, orgId: string, serviceIds: string[]): Promise<void> {
   const [row] = await tx<{ n: number }[]>`
     select count(distinct id)::int as n from public.services where org_id = ${orgId} and id = any(${serviceIds}::uuid[])`;
@@ -203,6 +213,7 @@ async function assertOrgServices(tx: Queryable, orgId: string, serviceIds: strin
 export async function createPackage(orgId: string, input: z.output<typeof PackageInputSchema>, actor: Actor): Promise<PackageRow> {
   const sql = await pg();
   return sql.begin(async (tx) => {
+    if (input.active) await assertPayoutReady(orgId, tx);
     await assertOrgServices(tx, orgId, input.service_ids);
     const [row] = await tx`
       insert into public.packages (org_id, name, session_count, price_inr, validity_days, service_ids, active, created_by)
@@ -225,6 +236,7 @@ export async function updatePackage(orgId: string, packageId: string, input: z.o
     const [current] = await tx`select * from public.packages where id = ${packageId} and org_id = ${orgId} for update`;
     if (!current) throw new FeesError("package_not_found");
     const next = { ...toPackage(current), ...input };
+    if (next.active && !current.active) await assertPayoutReady(orgId, tx);
     if (input.service_ids) await assertOrgServices(tx, orgId, input.service_ids);
     const [row] = await tx`
       update public.packages set name = ${next.name}, session_count = ${next.session_count}, price_inr = ${next.price_inr},
@@ -377,6 +389,7 @@ export async function offerPackage(
     if (!pkgRow) throw new FeesError("package_not_found");
     const pkg = toPackage(pkgRow);
     if (!pkg.active) throw new FeesError("package_inactive");
+    await assertPayoutReady(scope.orgId, tx);
     const [pending] = await tx`
       select id from public.child_packages
       where org_id = ${scope.orgId} and child_id = ${scope.childId} and package_id = ${pkg.id} and status = 'pending_payment'

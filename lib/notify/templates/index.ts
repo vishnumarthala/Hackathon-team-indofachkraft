@@ -24,6 +24,9 @@ import package_reminder from "./package_reminder";
 import payment_receipt from "./payment_receipt";
 import payment_refunded from "./payment_refunded";
 import payment_request from "./payment_request";
+import payout_invoice_issued from "./payout_invoice_issued";
+import payout_reconciliation_alert from "./payout_reconciliation_alert";
+import payout_transfer_failed from "./payout_transfer_failed";
 import provider_claimed from "./provider_claimed";
 import provider_rejected from "./provider_rejected";
 import provider_suspended from "./provider_suspended";
@@ -79,6 +82,10 @@ export const TEMPLATES = {
   balance_reminder,
   package_reminder,
   fees_refunded,
+  // 046 payouts and the platform fee
+  payout_transfer_failed,
+  payout_reconciliation_alert,
+  payout_invoice_issued,
 } as const satisfies Record<string, Template<never>>;
 
 export type TemplateName = keyof typeof TEMPLATES;

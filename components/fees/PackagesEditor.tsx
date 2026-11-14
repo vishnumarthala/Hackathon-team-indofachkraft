@@ -24,7 +24,10 @@ export function PackagesEditor({ orgId, services, packages }: { orgId: string; s
     setBusy(false);
     setInvalid(fieldKeys(res.json));
     if (!res.ok) {
-      setMessage({ ok: false, text: res.status === 403 ? te("forbidden") : res.status === 400 ? te("invalid") : te("generic") });
+      const code = res.json.code;
+      // 046 FR-2 / FR-8: packages need an active payout account and the accepted platform fee.
+      const payout = code === "payout_account_inactive" || code === "fee_policy_not_accepted" ? te(code) : null;
+      setMessage({ ok: false, text: payout ?? (res.status === 403 ? te("forbidden") : res.status === 400 ? te("invalid") : te("generic")) });
       return false;
     }
     setMessage({ ok: true, text: t("saved") });

@@ -2,7 +2,8 @@
 // claims due rows under a lease (for update skip locked), asks the gateway for a full refund and records the result:
 // `processed` -> refunded + guardian notification (payment.refunded) + strict audit, one transaction; `pending` -> keep
 // polling (the `refund.processed` webhook usually finishes it first); errors -> retry with back-off.
-// Idempotent against Razorpay: an existing refund of the payment is reused before a new one is created.
+// Idempotent against Razorpay: an existing refund of the payment is reused before a new one is created. 046: transfers
+// of the payment to the centre (Razorpay Route) are reversed first.
 // Driven by POST /api/cron/payments (every minute), `npm run outbox:run` and runPaymentJobsSoon() (Next.js after()).
 import { after } from "next/server";
 import { errorMessage, logger } from "@/lib/log";
@@ -10,6 +11,7 @@ import { drainSoon } from "@/lib/notify/outbox";
 import { pg, type Sql } from "@/lib/pg";
 import { getPaymentGateway, RazorpayApiError, type GatewayRefund, type PaymentGateway } from "./razorpay";
 import { markPaymentRefunded } from "./store";
+import { reverseBeforeRefund } from "@/lib/payouts/reversals";
 
 const log = logger("payments.jobs");
 
@@ -66,6 +68,9 @@ export async function runPaymentJobs(opts: { sql?: Sql; gateway?: PaymentGateway
   const eventIds: string[] = [];
   for (const row of claimed) {
     try {
+      // 046 FR-5: a Route transfer of this payment to the centre is reversed before the family is refunded (throws while
+      // a reversal is still pending: retried with the back-off below).
+      await reverseBeforeRefund({ paymentId: row.id, amountPaise: row.amount_paise, appointmentId: null, full: true }, { gateway, sql });
       const refund = await refundFor(gateway, row);
       if (refund.status === "processed") {
         const done = await markPaymentRefunded(row.razorpay_payment_id, refund.id);

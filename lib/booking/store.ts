@@ -4,6 +4,7 @@
 import { env } from "@/lib/env";
 import { pg, type Queryable } from "@/lib/pg";
 import { BookingError } from "./errors";
+import { assertCanPublishPaid } from "@/lib/payouts/store";
 import { defaultIntakeKind } from "./intake-defaults";
 import type { HoldInput, OverrideCreate, RuleCreate, ServiceCreate, ServiceUpdate } from "./schemas";
 import { generateSlots, HORIZON_DAYS, type BusyRange, type RuleMode, type ServiceMode, type Slot, type SlotOverride, type SlotRule } from "./slots";
@@ -26,6 +27,9 @@ export type ServiceRow = {
   location_address: string | null;
   /** The location's time zone, or the provider profile's for video services. */
   time_zone: string;
+  /** 046 FR-2: free, or the organisation's payout account is active. Paid services of other organisations are hidden
+   * from booking. */
+  payouts_ready: boolean;
 };
 
 export type ServiceSnapshot = {
@@ -126,7 +130,8 @@ const SERVICE_SELECT = (sql: Queryable) => sql`
          s.buffer_min, s.intake_kind, s.active, l.name as location_name,
          case when l.id is null then null else concat_ws(', ', l.address_line1, l.address_line2, l.locality, l.city || ' ' || l.pincode) end
            as location_address,
-         coalesce(l.time_zone, p.time_zone) as time_zone
+         coalesce(l.time_zone, p.time_zone) as time_zone,
+         (s.payment_mode <> 'online' or s.fee_inr = 0 or public.payouts_org_can_charge(s.org_id, ${env.DEMO_MODE})) as payouts_ready
   from public.services s
   join public.provider_profiles p on p.id = s.provider_profile_id
   left join public.practice_locations l on l.id = s.location_id`;
@@ -135,7 +140,8 @@ export async function listServices(profileId: string, opts: { activeOnly?: boole
   const sql = await pg();
   return sql<ServiceRow[]>`
     ${SERVICE_SELECT(sql)}
-    where s.provider_profile_id = ${profileId} ${opts.activeOnly ? sql`and s.active` : sql``}
+    where s.provider_profile_id = ${profileId}
+      ${opts.activeOnly ? sql`and s.active and (s.payment_mode <> 'online' or s.fee_inr = 0 or public.payouts_org_can_charge(s.org_id, ${env.DEMO_MODE}))` : sql``}
     order by s.active desc, s.name, s.duration_min`;
 }
 
@@ -366,9 +372,15 @@ function orgOrInputError(ctx: ProviderContext, locationId: string | undefined, o
   }
 }
 
+/** 046 FR-2 / FR-8: a paid service goes live only with an active payout account and the accepted platform fee. */
+async function assertPaidAllowed(orgId: string, service: { payment_mode: string; fee_inr: number; active: boolean }): Promise<void> {
+  if (service.active && service.payment_mode === "online" && service.fee_inr > 0) await assertCanPublishPaid(orgId);
+}
+
 export async function createService(ctx: ProviderContext, input: ServiceCreate): Promise<ServiceRow> {
   const sql = await pg();
   const orgId = orgOrInputError(ctx, input.mode === "in_clinic" ? input.location_id : undefined, input.org_id);
+  await assertPaidAllowed(orgId, { payment_mode: input.payment_mode, fee_inr: input.fee_inr, active: true });
   const [row] = await sql<{ id: string }[]>`
     insert into public.services (provider_profile_id, org_id, location_id, name, mode, duration_min, fee_inr, payment_mode, buffer_min, intake_kind)
     values (${ctx.profile.id}, ${orgId}, ${input.mode === "in_clinic" ? (input.location_id ?? null) : null}, ${input.name}, ${input.mode},
@@ -387,6 +399,9 @@ export async function updateService(ctx: ProviderContext, serviceId: string, pat
   // 045 FR-2: an old `at_clinic` service cannot be saved as such any more (the migration moved them all).
   if (next.payment_mode === "at_clinic") throw new ProviderInputError("payment_mode", "Choose online or free (pay at clinic is retired)");
   if (next.payment_mode === "online" && !(next.fee_inr > 0)) throw new ProviderInputError("fee_inr", "Enter the fee");
+  // Going live as a paid service (new, switched to online, or turned on again) needs payout setup (046 FR-2).
+  const wasLivePaid = existing.active && existing.payment_mode === "online" && existing.fee_inr > 0;
+  if (!wasLivePaid) await assertPaidAllowed(existing.org_id, next);
   await sql`
     update public.services set name = ${next.name}, duration_min = ${next.duration_min}, fee_inr = ${next.fee_inr},
       payment_mode = ${next.payment_mode}, buffer_min = ${next.buffer_min}, intake_kind = ${next.intake_kind}, active = ${next.active},

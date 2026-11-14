@@ -12,6 +12,7 @@ import {
   assignedAssessmentGuardian,
   caseProviders,
   existingUser,
+  orgMembers,
   profileOwner,
   platformAdmins,
   prescriptionGuardians,
@@ -404,6 +405,28 @@ export const TOPICS = {
     template: "fees_refunded",
     recipients: (p, { sql }) => feeRefundGuardians(sql, p.fee_refund_id, p.child_id),
   }),
+  // 046 FR-3 / FR-9: a transfer to a centre still fails after its retries (lib/payouts/jobs.ts, webhook
+  // `transfer.failed`; dedup `payouts:transfer_failed:<item>:<attempts>`). Platform admins.
+  "payouts.transfer_failed": topic({
+    payload: z.object({ payout_item_id: uuid }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "payout_transfer_failed",
+    recipients: (_p, { sql }) => platformAdmins(sql),
+  }),
+  // 046 FR-10: the daily reconciliation flagged payments (once per India day, `payouts:reconciliation:<date>`).
+  "payouts.reconciliation_alert": topic({
+    payload: z.object({ date: isoDate, count: z.number().int().min(1).max(100000) }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "payout_reconciliation_alert",
+    recipients: (_p, { sql }) => platformAdmins(sql),
+  }),
+  // 046 FR-7: payouts_issue_invoice (dedup `payouts:invoice:<id>`). The centre's owners and admins.
+  "payouts.invoice_issued": topic({
+    payload: z.object({ invoice_id: uuid, org_id: uuid }).strict(),
+    channels: PROVIDER_CHANNELS,
+    template: "payout_invoice_issued",
+    recipients: (p, { sql }) => orgMembers(sql, p.org_id, ["owner", "admin"]),
+  }),
 } as const;
 
 export type Topic = keyof typeof TOPICS;
@@ -484,6 +507,13 @@ export const FEES_TOPICS = {
   balanceReminder: "fees.balance_reminder",
   packageReminder: "fees.package_reminder",
   refunded: "fees.refunded",
+} as const satisfies Record<string, Topic>;
+
+// 046: payouts to centres and the platform fee (lib/payouts, migration 20261113004600).
+export const PAYOUT_TOPICS = {
+  transferFailed: "payouts.transfer_failed",
+  reconciliationAlert: "payouts.reconciliation_alert",
+  invoiceIssued: "payouts.invoice_issued",
 } as const satisfies Record<string, Topic>;
 
 // 051: voice cost guard.

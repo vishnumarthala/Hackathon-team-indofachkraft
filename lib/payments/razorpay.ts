@@ -1,5 +1,5 @@
 // Ticket 031: Razorpay client (test mode only, D-1), the demo gateway (DEMO_MODE) and signature checks.
-// No SDK: Orders + Refunds (+ 045 Payment Links) over HTTPS with basic auth. Server-only (node:crypto, secrets).
+// No SDK: Orders + Refunds (+ 045 Payment Links, 046 Route transfers / reversals) over HTTPS with basic auth. Server-only (node:crypto, secrets).
 //   * Checkout signature (FR-4): HMAC_SHA256(order_id + "|" + payment_id, key_secret), hex.
 //   * Payment link redirect signature (045): HMAC_SHA256(link_id|reference_id|status|payment_id, key_secret), hex.
 //   * Webhook signature (FR-5): HMAC_SHA256(raw request body, webhook_secret), hex, header X-Razorpay-Signature.
@@ -137,6 +137,28 @@ export type PaymentLinkInput = {
   notes: Record<string, string>;
 };
 
+/** 046: a Razorpay Route transfer from a captured payment to a linked account. */
+export type GatewayTransfer = {
+  id: string;
+  /** Razorpay: created / pending / processed / failed / reversed / partially_reversed. */
+  status: string;
+  amount: number;
+  recipient: string;
+  on_hold: boolean;
+  /** Our idempotency key (notes.payout_transfer) when Razorpay returns the notes. */
+  payout_transfer: string | null;
+};
+export type GatewayReversal = { id: string; transfer_id: string; amount: number };
+export type TransferInput = {
+  paymentId: string;
+  account: string;
+  amountPaise: number;
+  onHold: boolean;
+  /** notes.payout_transfer = our payout_transfers.id: the idempotency key (looked up before creating). */
+  idempotencyKey: string;
+  notes: Record<string, string>;
+};
+
 export interface PaymentGateway {
   readonly kind: "razorpay" | "demo";
   readonly keyId: string;
@@ -150,6 +172,16 @@ export interface PaymentGateway {
   createPaymentLink?(input: PaymentLinkInput): Promise<GatewayPaymentLink>;
   /** Resolves "cancelled"; "paid" when the link was paid meanwhile (Razorpay refuses to cancel it). */
   cancelPaymentLink?(linkId: string): Promise<"cancelled" | "paid">;
+  /** 046 Route: POST /payments/:id/transfers (one transfer). */
+  createTransfer?(input: TransferInput): Promise<GatewayTransfer>;
+  /** 046 Route: GET /payments/:id/transfers (idempotency look-up). */
+  listTransfers?(paymentId: string): Promise<GatewayTransfer[]>;
+  /** 046 Route: PATCH /transfers/:id { on_hold: false }. */
+  releaseTransfer?(transferId: string): Promise<GatewayTransfer>;
+  /** 046 Route: POST /transfers/:id/reversals. */
+  createReversal?(transferId: string, input: { amountPaise: number; notes: Record<string, string> }): Promise<GatewayReversal>;
+  /** 046 Route: GET /transfers/:id/reversals. */
+  listReversals?(transferId: string): Promise<GatewayReversal[]>;
 }
 
 type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
@@ -175,6 +207,22 @@ function linkOf(json: Record<string, unknown>): GatewayPaymentLink {
   };
 }
 
+function transferOf(json: Record<string, unknown>): GatewayTransfer {
+  const notes = (json.notes && typeof json.notes === "object" ? json.notes : {}) as Record<string, unknown>;
+  return {
+    id: String(json.id),
+    status: String(json.status ?? "pending"),
+    amount: Number(json.amount),
+    recipient: String(json.recipient ?? ""),
+    on_hold: json.on_hold === true || json.on_hold === 1,
+    payout_transfer: typeof notes.payout_transfer === "string" ? notes.payout_transfer : null,
+  };
+}
+
+function reversalOf(json: Record<string, unknown>): GatewayReversal {
+  return { id: String(json.id), transfer_id: String(json.transfer_id ?? ""), amount: Number(json.amount) };
+}
+
 /** Real Razorpay (test mode). Refuses to be created with a non-test key id (D-1). */
 export function createRazorpayClient(opts: { keyId: string; keySecret: string; fetchImpl?: FetchLike; baseUrl?: string }): PaymentGateway {
   if (!opts.keyId) throw new RazorpayConfigError("RAZORPAY_KEY_ID is missing.");
@@ -183,7 +231,7 @@ export function createRazorpayClient(opts: { keyId: string; keySecret: string; f
   const base = opts.baseUrl ?? RAZORPAY_API;
   const auth = `Basic ${Buffer.from(`${opts.keyId}:${opts.keySecret}`).toString("base64")}`;
 
-  async function call(method: "GET" | "POST", path: string, body?: unknown): Promise<Record<string, unknown>> {
+  async function call(method: "GET" | "POST" | "PATCH", path: string, body?: unknown): Promise<Record<string, unknown>> {
     let res: Response;
     try {
       res = await doFetch(`${base}${path}`, {
@@ -253,11 +301,42 @@ export function createRazorpayClient(opts: { keyId: string; keySecret: string; f
         throw err;
       }
     },
+    async createTransfer(input) {
+      const json = await call("POST", `/payments/${encodeURIComponent(input.paymentId)}/transfers`, {
+        transfers: [
+          {
+            account: input.account,
+            amount: input.amountPaise,
+            currency: "INR",
+            notes: { ...input.notes, payout_transfer: input.idempotencyKey },
+            linked_account_notes: ["payout_item"],
+            on_hold: input.onHold,
+          },
+        ],
+      });
+      const items = Array.isArray(json.items) ? (json.items as Record<string, unknown>[]) : [];
+      if (!items[0]) throw new RazorpayApiError(502, "no_transfer_returned", true);
+      return transferOf(items[0]);
+    },
+    async listTransfers(paymentId) {
+      const json = await call("GET", `/payments/${encodeURIComponent(paymentId)}/transfers`);
+      return Array.isArray(json.items) ? (json.items as Record<string, unknown>[]).map(transferOf) : [];
+    },
+    async releaseTransfer(transferId) {
+      return transferOf(await call("PATCH", `/transfers/${encodeURIComponent(transferId)}`, { on_hold: false }));
+    },
+    async createReversal(transferId, { amountPaise, notes }) {
+      return reversalOf(await call("POST", `/transfers/${encodeURIComponent(transferId)}/reversals`, { amount: amountPaise, notes }));
+    },
+    async listReversals(transferId) {
+      const json = await call("GET", `/transfers/${encodeURIComponent(transferId)}/reversals`);
+      return Array.isArray(json.items) ? (json.items as Record<string, unknown>[]).map(reversalOf) : [];
+    },
   };
 }
 
 /** Deterministic Razorpay-shaped id (`order_DEMO…`, `pay_DEMO…`, `rfnd_DEMO…`, `plink_DEMO…`) from a seed. */
-export function demoId(prefix: "order" | "pay" | "rfnd" | "plink", seed: string): string {
+export function demoId(prefix: "order" | "pay" | "rfnd" | "plink" | "trf" | "rvrsl" | "acc", seed: string): string {
   return `${prefix}_DEMO${createHash("sha256").update(`${prefix}:${seed}`).digest("hex").slice(0, 14)}`;
 }
 
@@ -292,6 +371,31 @@ export function createDemoGateway(): PaymentGateway {
     },
     async cancelPaymentLink() {
       return "cancelled";
+    },
+    // 046 Route: deterministic ids from our idempotency key (a repeat returns the same transfer). The outcome arrives as
+    // a fake signed webhook (lib/payouts/demo.ts): `transfer.failed` for linked accounts whose id contains FAIL,
+    // `transfer.processed` otherwise.
+    async createTransfer(input) {
+      return {
+        id: demoId("trf", input.idempotencyKey),
+        status: "pending",
+        amount: input.amountPaise,
+        recipient: input.account,
+        on_hold: input.onHold,
+        payout_transfer: input.idempotencyKey,
+      };
+    },
+    async listTransfers() {
+      return [];
+    },
+    async releaseTransfer(transferId) {
+      return { id: transferId, status: "processed", amount: 0, recipient: "", on_hold: false, payout_transfer: null };
+    },
+    async createReversal(transferId, { amountPaise }) {
+      return { id: demoId("rvrsl", transferId), transfer_id: transferId, amount: amountPaise };
+    },
+    async listReversals() {
+      return [];
     },
   };
 }
