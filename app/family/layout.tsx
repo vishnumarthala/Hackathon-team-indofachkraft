@@ -16,7 +16,8 @@ export default async function FamilyLayout({ children }: { children: ReactNode }
   const t = await getT("family.shell");
   const tp = await getT("privacy");
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    // 052 FR-3: pages with the mobile bottom nav keep the emergency line above it.
+    <div className="flex min-h-screen flex-col bg-slate-50 has-[[data-bottom-nav]]:pb-[calc(4rem+env(safe-area-inset-bottom))] sm:has-[[data-bottom-nav]]:pb-0">
       <div className="flex-1">{children}</div>
       <footer className="border-t border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-semibold text-red-900">
         <p role="note">{t("emergency")}</p>

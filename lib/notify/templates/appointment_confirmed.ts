@@ -17,5 +17,5 @@ export default appointmentTemplate(
         : { title: "కొత్త అపాయింట్‌మెంట్", body: `${v.when} న కొత్త అపాయింట్‌మెంట్. ${v.where}.` },
   },
   "REQUEST",
-  { intake: true, whatsappIntakeVariants: true },
+  { intake: true, whatsappIntakeVariants: true, nextSteps: true },
 );

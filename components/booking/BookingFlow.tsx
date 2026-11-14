@@ -139,6 +139,8 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
         return;
       }
       setDone(status === "pending_payment" ? "pending_payment" : "confirmed");
+      // 052 FR-6: the confirmation is the appointment page with "What happens next".
+      router.push(`/family/appointments/${hold.id}?booked=1`);
       return;
     }
     const code = errorCodeOf(res.status, res.json);
@@ -176,7 +178,7 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
         <h2 className="text-xl font-semibold text-teal-900">{done === "confirmed" ? t("flow.booked") : t("status.pending_payment")}</h2>
         {hold ? <p className="text-slate-800">{timeText(hold.start)}</p> : null}
         <p className="text-sm text-slate-700">{done === "confirmed" ? (demo ? t("flow.demoBookedDetail") : t("flow.bookedDetail")) : t("flow.pendingPayment")}</p>
-        <Link href="/family/appointments" className={buttonClass}>
+        <Link href={hold ? `/family/appointments/${hold.id}?booked=1` : "/family/appointments"} className={buttonClass}>
           {t("flow.viewAppointments")}
         </Link>
       </div>

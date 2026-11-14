@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ProfileNameForm } from "@/components/family/ProfileNameForm";
 import { SignInMethods } from "@/components/family/SignInMethods";
 import { NotificationPreferencesForm } from "@/components/notifications/NotificationPreferencesForm";
@@ -22,6 +23,7 @@ export default async function FamilySettingsPage({
   const { user, profile } = await requireGuardianPage();
   const { error, linked } = await searchParams;
   const t = await getT("family.settings");
+  const ts = await getT("family.shell");
   const tn = await getT("notifications.prefs");
   const notificationPrefs = await getPreferences(user.id);
   const methods = signInMethods(user);
@@ -31,6 +33,24 @@ export default async function FamilySettingsPage({
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">{t("title")}</h1>
+      {/* 052 FR-3: Documents and Questionnaires live under Account on mobile (routes unchanged). */}
+      <section aria-labelledby="records-heading" className="space-y-3">
+        <h2 id="records-heading" className="text-lg font-semibold text-slate-900">
+          {ts("records")}
+        </h2>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          <li>
+            <Link href="/family/documents" className="flex min-h-11 items-center rounded-xl border border-slate-200 bg-white p-4 font-semibold text-teal-900 hover:border-teal-600">
+              {ts("documents")}
+            </Link>
+          </li>
+          <li>
+            <Link href="/family/assessments" className="flex min-h-11 items-center rounded-xl border border-slate-200 bg-white p-4 font-semibold text-teal-900 hover:border-teal-600">
+              {ts("assessments")}
+            </Link>
+          </li>
+        </ul>
+      </section>
       <section aria-labelledby="profile-heading" className="space-y-4">
         <h2 id="profile-heading" className="text-lg font-semibold text-slate-900">
           {t("profile")}
