@@ -58,7 +58,7 @@ export default async function CentrePage({ params }: Props) {
     <article className="mx-auto max-w-3xl space-y-6 px-4 py-8">
       {jsonLdScript(jsonLd)}
       <header className="space-y-1">
-        <h1 className="text-2xl font-semibold text-slate-900">{org.name}</h1>
+        <h1 className="lp-display text-4xl leading-[1.08] text-[#0b1f1d] sm:text-5xl">{org.name}</h1>
         <p className="text-slate-700">{org.kind === "centre" ? t("public.centre") : t("public.solo")}</p>
       </header>
       {org.about ? <p className="whitespace-pre-line text-slate-700">{org.about}</p> : null}

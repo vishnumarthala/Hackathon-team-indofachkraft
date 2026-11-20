@@ -88,6 +88,9 @@ const storage = {
 const VOICE_OFF_ERRORS = new Set(["quotaDay", "quotaMonth", "paused"]);
 /** 051: cost-guard refusals are a friendly note (the tap path is right above), not an error. */
 const GUARD_ERRORS = new Set(["quotaDay", "quotaMonth", "paused", "concurrent", "signIn", "botCheck"]);
+/** Full-width buttons inside the "How would you like to answer?" cards. */
+const cardPrimary = `${primaryButton.replace(" sm:w-auto", "")} mt-auto`;
+const cardSecondary = `${secondaryButton.replace(" sm:w-auto", "")} mt-auto`;
 
 // Ticket 033 FR-2: the public check-in. Only the age band and the answers are sent before sign-in (rule 6); the
 // browser keeps just the session id (sessionStorage) so the result survives a reload or signing in to save it.
@@ -231,8 +234,14 @@ export function ScreenFlow({
             {referral.typeLabel ? <span className="text-sky-800"> · {referral.typeLabel}</span> : null}
           </Alert>
         ) : null}
-        <h1 className="text-3xl font-bold text-slate-900">{t("title")}</h1>
-        {step.kind === "intro" ? <p className="text-lg text-slate-800">{t("intro")}</p> : null}
+        {step.kind === "intro" ? (
+          <p className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-teal-800 ring-1 ring-teal-200">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-teal-600" />
+            {t("eyebrow")}
+          </p>
+        ) : null}
+        <h1 className="lp-display text-4xl leading-[1.08] text-[#0b1f1d] sm:text-5xl">{t("title")}</h1>
+        {step.kind === "intro" ? <p className="max-w-2xl text-lg leading-relaxed text-slate-700">{t("intro")}</p> : null}
       </header>
 
       {step.kind === "intro" ? (
@@ -243,8 +252,7 @@ export function ScreenFlow({
             void start("form");
           }}
         >
-          <p className="rounded-2xl bg-teal-50 p-4 text-slate-800">{t("aiDisclosure")}</p>
-          <p className="text-sm text-slate-700">{t("noPersonal")}</p>
+          <p className="text-sm text-slate-600">{t("noPersonal")}</p>
           <fieldset className="space-y-2">
             <legend className="mb-1 text-base font-semibold text-slate-900">{t("ageLabel")}</legend>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -252,7 +260,7 @@ export function ScreenFlow({
                 <label
                   key={band}
                   className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 ${
-                    ageBand === band ? "border-teal-700 bg-teal-50 font-semibold text-teal-900" : "border-slate-300 text-slate-800"
+                    ageBand === band ? "border-teal-700 bg-teal-50 font-semibold text-teal-900" : "border-slate-300 bg-white text-slate-800"
                   }`}
                 >
                   <input
@@ -261,7 +269,7 @@ export function ScreenFlow({
                     value={band}
                     checked={ageBand === band}
                     onChange={() => setAgeBand(band)}
-                    className="h-5 w-5"
+                    className="h-5 w-5 accent-teal-700"
                   />
                   {t(`ageBands.${AGE_BAND_KEYS[band]}`)}
                 </label>
@@ -283,7 +291,7 @@ export function ScreenFlow({
                         <label
                           key={concern}
                           className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border px-3 py-2 ${
-                            checked ? "border-teal-700 bg-teal-50 font-semibold text-teal-900" : "border-slate-300 text-slate-800"
+                            checked ? "border-teal-700 bg-teal-50 font-semibold text-teal-900" : "border-slate-300 bg-white text-slate-800"
                           }`}
                         >
                           <input
@@ -315,49 +323,65 @@ export function ScreenFlow({
                   {t("agree")}
                 </label>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <button type="submit" className={primaryButton} disabled={!questionBand || !agreed || starting !== null}>
-                  {starting === "form" ? t("starting") : t("startForm")}
-                </button>
-              </div>
-              {!questionBand || !agreed ? <p className="text-sm text-slate-600">{t("startHint")}</p> : null}
-              {voiceAvailable ? (
-                <div className="space-y-3 rounded-2xl border border-slate-200 p-4" data-testid="screen-voice-option">
-                  {signedIn ? (
-                    <>
-                      <p className="font-medium text-slate-900">{voiceIntent ? t("voiceSignedIn") : t("voicePrompt")}</p>
-                      {plan.kind === "native" ? (
+              <section aria-labelledby={`${id}-how`} className="space-y-3">
+                <h2 id={`${id}-how`} className="text-xl font-semibold text-slate-900">
+                  {t("answerTitle")}
+                </h2>
+                <div className={`grid gap-4 ${voiceAvailable ? "md:grid-cols-2" : ""}`}>
+                  <div className="flex flex-col gap-3 rounded-2xl border-2 border-teal-700 bg-white p-5" data-testid="screen-tap-option">
+                    <h3 className="text-lg font-semibold text-slate-900">{t("tapTitle")}</h3>
+                    <p className="text-slate-700">{t("tapText")}</p>
+                    <button type="submit" className={cardPrimary} disabled={!questionBand || !agreed || starting !== null}>
+                      {starting === "form" ? t("starting") : t("startForm")}
+                    </button>
+                  </div>
+                  {voiceAvailable ? (
+                    <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5" data-testid="screen-voice-option">
+                      <h3 className="text-lg font-semibold text-slate-900">{t("voiceTitle")}</h3>
+                      {signedIn ? (
                         <>
-                          <CallLanguageNote />
-                          <button
-                            ref={voiceButton}
-                            type="button"
-                            className={secondaryButton}
-                            disabled={!questionBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
-                            onClick={() => void start("voice", plan.language)}
-                          >
-                            {starting === "voice" ? t("starting") : t("startVoice")}
-                          </button>
+                          <p className="text-slate-700">{voiceIntent ? t("voiceSignedIn") : t("voicePrompt")}</p>
+                          <p className="text-sm text-slate-600">{t("aiDisclosure")}</p>
+                          {plan.kind === "native" ? (
+                            <>
+                              <CallLanguageNote />
+                              <button
+                                ref={voiceButton}
+                                type="button"
+                                className={cardSecondary}
+                                disabled={!questionBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
+                                onClick={() => void start("voice", plan.language)}
+                              >
+                                {starting === "voice" ? t("starting") : t("startVoice")}
+                              </button>
+                            </>
+                          ) : (
+                            <VoiceLanguageChoice
+                              message={tf("tapMessage", { language: tl(locale) })}
+                              onVoiceInEnglish={() => void start("voice", "en")}
+                              alternative={{ label: tf("tapIn", { language: tl(locale) }), onClick: () => void start("form") }}
+                              disabled={!questionBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
+                            />
+                          )}
+                          {turnstile.widget}
                         </>
                       ) : (
-                        <VoiceLanguageChoice
-                          message={tf("tapMessage", { language: tl(locale) })}
-                          onVoiceInEnglish={() => void start("voice", "en")}
-                          alternative={{ label: tf("tapIn", { language: tl(locale) }), onClick: () => void start("form") }}
-                          disabled={!questionBand || !agreed || starting !== null || !turnstile.ready || (error !== null && VOICE_OFF_ERRORS.has(error))}
-                        />
+                        <>
+                          <p className="text-slate-700">{t("voiceText")}</p>
+                          <p className="text-sm text-slate-600">{t("aiDisclosure")}</p>
+                          <Link
+                            href={voiceSignInHref(referral ? `${referralPath(referral.slug)}&voice=1` : "/screen?voice=1")}
+                            className={cardSecondary}
+                          >
+                            {t("voiceSignIn")}
+                          </Link>
+                        </>
                       )}
-                      {turnstile.widget}
-                    </>
-                  ) : (
-                    <Link href={voiceSignInHref(referral ? `${referralPath(referral.slug)}&voice=1` : "/screen?voice=1")} className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline underline-offset-4">
-                      {t("voiceSignIn")}
-                    </Link>
-                  )}
+                    </div>
+                  ) : null}
                 </div>
-              ) : (
-                <p className="text-sm text-slate-600">{t("errors.voiceUnavailable")}</p>
-              )}
+                {!questionBand || !agreed ? <p className="text-sm text-slate-600">{t("startHint")}</p> : null}
+              </section>
             </>
           )}
           {error ? (

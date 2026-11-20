@@ -161,7 +161,7 @@ export default async function FindPage({ searchParams }: Props) {
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
       <header className="space-y-2">
-        <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
+        <h1 className="lp-display text-4xl leading-[1.08] text-[#0b1f1d] sm:text-5xl">{t("title")}</h1>
         <p className="text-slate-700">{t("intro")}</p>
       </header>
       {voiceBooking ? (

@@ -3,6 +3,10 @@ import { Noto_Sans, Noto_Sans_Devanagari, Noto_Sans_Telugu } from "next/font/goo
 import type { ReactNode } from "react";
 import { SiteChrome } from "@/components/SiteChrome";
 import { TimeZoneSync } from "@/components/TimeZoneSync";
+import { fontVars } from "@/components/landing/fonts";
+import "@/components/landing/landing.css";
+import { SiteFooter } from "@/components/landing/SiteFooter";
+import { env } from "@/lib/env";
 import { I18nProvider } from "@/lib/i18n/client";
 import { HTML_LANG } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n/messages";
@@ -34,8 +38,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <body className="flex min-h-full flex-col">
         <I18nProvider locale={locale} timeZone={timeZone} messages={getMessages(locale)}>
           <TimeZoneSync />
-          <SiteChrome />
-          <main className="flex-1">{children}</main>
+          {/* Public pages share the parents' navigation and footer (SiteChrome picks the header per route). */}
+          <SiteChrome demo={env.DEMO_MODE} footer={<SiteFooter />} fontVars={fontVars}>
+            {children}
+          </SiteChrome>
         </I18nProvider>
       </body>
     </html>

@@ -2836,7 +2836,7 @@
       "y6to8": "6-8 years",
       "y9plus": "9 years or older"
     },
-    "agree": "I understand this is not a diagnosis and agree to talk to an AI assistant.",
+    "agree": "I understand this is a check-in, not a diagnosis.",
     "startVoice": "Start voice check-in",
     "startForm": "Start free check-in",
     "startHint": "Choose your child's age and tick the box to start.",
@@ -3059,7 +3059,13 @@
       "website": "Website",
       "checkTimings": "Check timings before you go.",
       "lastChecked": "Details last checked on {date}."
-    }
+    },
+    "eyebrow": "Free · about 5 minutes · English, Hindi, Telugu",
+    "answerTitle": "How would you like to answer?",
+    "tapTitle": "Tap through the questions",
+    "tapText": "About 5 minutes. Free, no account needed. Works in Telugu, Hindi and English.",
+    "voiceTitle": "Talk to the voice assistant",
+    "voiceText": "Sign in first, it is free. We ask this so the assistant stays available for parents who need it."
   },
   "payments": {
     "labels": {

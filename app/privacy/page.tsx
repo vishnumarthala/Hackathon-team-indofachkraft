@@ -55,7 +55,7 @@ export default async function PrivacyNoticePage() {
             {t("draftBadge")}
           </p>
         ) : null}
-        <h1 className="text-3xl font-bold text-slate-900">{t("title")}</h1>
+        <h1 className="lp-display text-4xl leading-[1.08] text-[#0b1f1d] sm:text-5xl">{t("title")}</h1>
         <p>{t("intro")}</p>
       </header>
 

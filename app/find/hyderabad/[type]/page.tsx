@@ -44,7 +44,7 @@ export default async function HyderabadTypePage({ params }: Props) {
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-8">
       <header className="space-y-2">
-        <h1 className="text-2xl font-semibold text-slate-900">{t("seo.title", { type: plural })}</h1>
+        <h1 className="lp-display text-4xl leading-[1.08] text-[#0b1f1d] sm:text-5xl">{t("seo.title", { type: plural })}</h1>
         <p className="text-slate-700">{t("seo.intro", { km: SEO_RADIUS_KM })}</p>
         <Link href={findHref({ type })} className="inline-flex min-h-11 items-center font-medium text-slate-900 underline">
           {t("seo.searchNearYou")}

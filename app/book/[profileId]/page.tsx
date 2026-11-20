@@ -76,7 +76,7 @@ export default async function BookPage({ params, searchParams }: Props) {
         {t("flow.backToProfile")}
       </Link>
       <header className="space-y-1">
-        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">{t("flow.title")}</h1>
+        <h1 className="lp-display text-4xl leading-[1.08] text-[#0b1f1d] sm:text-5xl">{t("flow.title")}</h1>
         <p className="text-lg text-slate-700">{t("flow.with", { name: profile.display_name })}</p>
       </header>
       {profile.is_synthetic ? (

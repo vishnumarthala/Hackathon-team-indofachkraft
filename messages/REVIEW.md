@@ -11,7 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 3591. Not yet approved: 3591.
+Rows: 3597. Not yet approved: 3597.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -2375,7 +2375,7 @@ Rows: 3591. Not yet approved: 3591.
 | `screen.ageBands.m31to71` | 2½-5 years | 2½-5 साल | 2½-5 సంవత్సరాలు |  | pending |
 | `screen.ageBands.y6to8` | 6-8 years | 6-8 साल | 6-8 సంవత్సరాలు |  | pending |
 | `screen.ageBands.y9plus` | 9 years or older | 9 साल या उससे ज़्यादा | 9 సంవత్సరాలు లేదా ఎక్కువ |  | pending |
-| `screen.agree` | I understand this is not a diagnosis and agree to talk to an AI assistant. | मैं समझता/समझती हूँ कि यह निदान नहीं है और AI सहायक से बात करने के लिए सहमत हूँ। | ఇది నిర్ధారణ కాదు అని నేను అర్థం చేసుకున్నాను, AI సహాయకుడితో మాట్లాడటానికి అంగీకరిస్తున్నాను. |  | pending |
+| `screen.agree` | I understand this is a check-in, not a diagnosis. | मैं समझता/समझती हूँ कि यह एक जाँच है, निदान नहीं। | ఇది ఒక పరిశీలన మాత్రమే, నిర్ధారణ కాదు అని నేను అర్థం చేసుకున్నాను. |  | pending |
 | `screen.startVoice` | Start voice check-in | आवाज़ से जाँच शुरू करें | మాట ద్వారా పరిశీలన ప్రారంభించండి |  | pending |
 | `screen.startForm` | Start free check-in | मुफ़्त जाँच शुरू करें | ఉచిత పరిశీలన ప్రారంభించండి |  | pending |
 | `screen.startHint` | Choose your child's age and tick the box to start. | अपने बच्चे की उम्र चुनें और शुरू करने के लिए बॉक्स पर टिक करें। | మీ బిడ్డ వయస్సు ఎంచుకుని, ప్రారంభించడానికి బాక్స్‌ను టిక్ చేయండి. |  | pending |
@@ -2551,6 +2551,12 @@ Rows: 3591. Not yet approved: 3591.
 | `screen.free.website` | Website | वेबसाइट | వెబ్‌సైట్ |  | pending |
 | `screen.free.checkTimings` | Check timings before you go. | जाने से पहले समय की पुष्टि कर लें। | వెళ్ళే ముందు సమయాలు తెలుసుకోండి. |  | pending |
 | `screen.free.lastChecked` | Details last checked on {date}. | जानकारी आख़िरी बार {date} को जाँची गई। | వివరాలు చివరిగా {date}న తనిఖీ చేశాము. |  | pending |
+| `screen.eyebrow` | Free · about 5 minutes · English, Hindi, Telugu | मुफ़्त · लगभग 5 मिनट · अंग्रेज़ी, हिंदी, तेलुगु | ఉచితం · సుమారు 5 నిమిషాలు · ఇంగ్లీష్, హిందీ, తెలుగు |  | pending |
+| `screen.answerTitle` | How would you like to answer? | आप कैसे जवाब देना चाहेंगे? | మీరు ఎలా సమాధానం ఇవ్వాలనుకుంటున్నారు? |  | pending |
+| `screen.tapTitle` | Tap through the questions | सवालों पर टैप करके जवाब दें | ప్రశ్నలకు ట్యాప్ చేసి సమాధానం ఇవ్వండి |  | pending |
+| `screen.tapText` | About 5 minutes. Free, no account needed. Works in Telugu, Hindi and English. | लगभग 5 मिनट। मुफ़्त, कोई अकाउंट ज़रूरी नहीं। तेलुगु, हिंदी और अंग्रेज़ी में। | సుమారు 5 నిమిషాలు. ఉచితం, అకౌంట్ అవసరం లేదు. తెలుగు, హిందీ, ఇంగ్లీష్‌లో పనిచేస్తుంది. |  | pending |
+| `screen.voiceTitle` | Talk to the voice assistant | वॉइस असिस्टेंट से बात करें | వాయిస్ అసిస్టెంట్‌తో మాట్లాడండి |  | pending |
+| `screen.voiceText` | Sign in first, it is free. We ask this so the assistant stays available for parents who need it. | पहले साइन इन करें, यह मुफ़्त है। ऐसा इसलिए ताकि असिस्टेंट उन माता-पिता के लिए उपलब्ध रहे जिन्हें इसकी ज़रूरत है। | ముందుగా సైన్ ఇన్ చేయండి, ఇది ఉచితం. అవసరమైన తల్లిదండ్రులకు అసిస్టెంట్ అందుబాటులో ఉండేందుకు ఇలా అడుగుతాము. |  | pending |
 | `payments.labels.paid` | Paid | भुगतान हो गया | చెల్లించారు |  | pending |
 | `payments.labels.paidOnline` | Paid online | ऑनलाइन भुगतान हुआ | ఆన్‌లైన్‌లో చెల్లించారు |  | pending |
 | `payments.labels.pending` | Payment pending | भुगतान बाकी | చెల్లింపు పెండింగ్ |  | pending |

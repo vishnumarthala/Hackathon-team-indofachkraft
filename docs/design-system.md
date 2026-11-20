@@ -15,6 +15,11 @@ Related: [system design](system-design.md) · [team workflow](team-workflow.md) 
 | Design system + all screens | [DoctorNearMe — Care Design System & App UI](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo) |
 | User journeys (FigJam) | [DoctorNearMe — Family journey & Clinician workflow](https://www.figma.com/board/RfeKYhTAT8MDj5kMbG7hfy) |
 
+Public pages (`/screen`, `/find`, `/p`, `/c`, `/book`, `/privacy`, `/pay`) use the parents' navigation and footer from
+`/` (`components/SiteChrome.tsx`), the cream background and Instrument Serif page titles; `/join` uses the centres
+variant; link-only pages (`/intake`, `/specialist`, `/invite`, `/claim`) a logo-and-language header; the clinician app
+keeps its own bar. The yellow banner appears only with `DEMO_MODE=true`.
+
 Figma pages: **Cover** · **Foundations** (swatches, type ramp, spacing, elevation, principles) ·
 **Components** · **Screens · Public & parents** · **Screens · Family portal** ·
 **Screens · Provider workspace** · **Screens · Admin** · **Screens · Pilot readiness (043–053)**. Frames are named `route — title`, so you can
@@ -137,7 +142,7 @@ There are 80 screens. Every route in the first four tables exists in `app/`, and
 | `/p/[slug]` | Provider profile | [12:319](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-319) |
 | `/book/[profileId]` | Choose a time | [12:411](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-411) |
 | `/book/[profileId]/pay/[appointmentId]` | Payment | [13:315](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=13-315) |
-| `/screen` | Developmental check-in (start) | [13:391](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=13-391) |
+| `/screen` | Developmental check-in (start): tap first, voice second; the current design is [30:375](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=30-375) | [13:391](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=13-391) (superseded, voice-first) |
 | `/screen` | In the call | [13:452](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=13-452) |
 | `/screen` | Safety stop (red flag) | [13:501](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=13-501) |
 | `/screen` | Your result | [13:570](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=13-570) |

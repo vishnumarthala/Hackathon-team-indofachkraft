@@ -109,7 +109,10 @@ describe("/screen page chrome (FR-2, NFR-1)", () => {
       // 049: the call language is shown next to the voice button (en/hi/te), not in the disclosure.
       "You will talk to an AI assistant. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe.",
     );
-    expect(html).toContain("I understand this is not a diagnosis and agree to talk to an AI assistant.");
+    expect(html).toContain("I understand this is a check-in, not a diagnosis.");
+    // Tap first, voice as the second option (Figma 30:375).
+    expect(html).toContain("How would you like to answer?");
+    expect(html.indexOf('data-testid="screen-tap-option"')).toBeLessThan(html.indexOf('data-testid="screen-voice-option"'));
     for (const label of ["Under 18 months", "18-30 months", "2½-5 years", "6-8 years", "9 years or older", "Child&#x27;s age"]) expect(html).toContain(label);
     for (const old of ["18-36 months", "10+ years"]) expect(html).not.toContain(old);
     const buttons = [...html.matchAll(/<button[^>]*>([^<]*)<\/button>/g)];

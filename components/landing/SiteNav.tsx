@@ -38,7 +38,7 @@ function navLinks(variant: NavVariant, t: ReturnType<typeof useT<"nav">>, find: 
   ];
 }
 
-export function SiteNav({ overDark = false, variant = "parents" }: { overDark?: boolean; variant?: NavVariant }) {
+export function SiteNav({ overDark = false, variant = "parents", solid = false }: { overDark?: boolean; variant?: NavVariant; solid?: boolean }) {
   const ref = useRef<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const t = useT("nav");
@@ -50,15 +50,15 @@ export function SiteNav({ overDark = false, variant = "parents" }: { overDark?: 
   const logInHref = centres ? "/login" : "/family/login";
   const cta = centres ? { href: "/book-demo", label: t("bookDemo") } : { href: "/screen", label: t("startCheckIn") };
 
-  // Solid background once the page scrolls (class toggle, no re-render on scroll).
+  // Solid background once the page scrolls (class toggle, no re-render on scroll). `solid`: always (no hero below).
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const onScroll = () => el.classList.toggle("lp-nav-solid", window.scrollY > 8);
+    const onScroll = () => el.classList.toggle("lp-nav-solid", solid || window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [solid]);
 
   useEffect(() => {
     if (!open) return;
@@ -68,7 +68,7 @@ export function SiteNav({ overDark = false, variant = "parents" }: { overDark?: 
   }, [open]);
 
   return (
-    <header ref={ref} data-over-dark={overDark || undefined} className={`lp-nav fixed inset-x-0 top-0 z-50 ${open ? "lp-nav-solid !bg-[#f8f6f1]" : ""}`}>
+    <header ref={ref} data-over-dark={overDark || undefined} className={`lp-nav fixed inset-x-0 top-0 z-50 ${open || solid ? "lp-nav-solid" : ""} ${open ? "!bg-[#f8f6f1]" : ""}`}>
       <nav aria-label={t("mainLabel")} className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:gap-6 sm:px-6">
         <Link href="/" aria-label={t("homeLabel")} className="shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal-600/30">
           <Logo />

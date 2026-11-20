@@ -85,7 +85,7 @@ export default async function PublicProfilePage({ params }: Props) {
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start">
         <ProviderAvatar provider={provider} t={t} size={112} />
         <div className="space-y-2">
-          <h1 className="flex flex-wrap items-center gap-2 text-2xl font-semibold text-slate-900">
+          <h1 className="lp-display flex flex-wrap items-center gap-x-3 gap-y-2 text-4xl leading-[1.08] text-[#0b1f1d] sm:text-5xl">
             {provider.display_name}
             {provider.is_synthetic ? <DemoBadge t={t} /> : null}
           </h1>
