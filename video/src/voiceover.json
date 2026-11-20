@@ -1,0 +1,61 @@
+{
+  "engine": "say",
+  "voice": "Tara",
+  "scenes": [
+    {
+      "id": "hook",
+      "file": "voice/hook.mp3",
+      "duration": 14.019
+    },
+    {
+      "id": "problem",
+      "file": "voice/problem.mp3",
+      "duration": 18.552
+    },
+    {
+      "id": "why-late",
+      "file": "voice/why-late.mp3",
+      "duration": 20.639
+    },
+    {
+      "id": "solution",
+      "file": "voice/solution.mp3",
+      "duration": 11.702
+    },
+    {
+      "id": "intake",
+      "file": "voice/intake.mp3",
+      "duration": 12.067
+    },
+    {
+      "id": "forms",
+      "file": "voice/forms.mp3",
+      "duration": 20.264
+    },
+    {
+      "id": "handoff",
+      "file": "voice/handoff.mp3",
+      "duration": 14.448
+    },
+    {
+      "id": "different",
+      "file": "voice/different.mp3",
+      "duration": 15.473
+    },
+    {
+      "id": "business",
+      "file": "voice/business.mp3",
+      "duration": 20.635
+    },
+    {
+      "id": "close",
+      "file": "voice/close.mp3",
+      "duration": 13.453
+    }
+  ],
+  "intake": {
+    "file": "intake-snippet.mp3",
+    "duration": 9.1
+  },
+  "music": null
+}

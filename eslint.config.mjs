@@ -18,6 +18,7 @@ const eslintConfig = defineConfig([
     "coverage/**",
     "specs/**",
     "supabase/**",
+    "video/**",
   ]),
 ]);
 

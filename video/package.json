@@ -1,0 +1,26 @@
+{
+  "name": "carethread-jury-video",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "voice": "tsx scripts/make-voiceover.ts",
+    "studio": "remotion studio",
+    "render": "remotion render CareThreadJury out/carethread-jury.mp4",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.541",
+    "@remotion/google-fonts": "4.0.541",
+    "@remotion/media-utils": "4.0.541",
+    "@remotion/transitions": "4.0.541",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.541"
+  },
+  "devDependencies": {
+    "@next/env": "^16.4.5",
+    "@types/react": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}

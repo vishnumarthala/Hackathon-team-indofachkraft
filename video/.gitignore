@@ -1,0 +1,5 @@
+node_modules/
+out/
+public/voice/
+public/music/
+public/intake-snippet.mp3
