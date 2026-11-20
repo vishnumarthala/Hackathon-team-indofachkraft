@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { RECEIPT_PATTERN } from "@/lib/fees/money";
 import { getT } from "@/lib/i18n/server";
+import { notFound } from "next/navigation";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
 // 045: where the payment link redirect lands for someone who is not the child's signed-in guardian (e.g. a phone at the
 // desk). No names; the receipt number only.
 export default async function PayDonePage({ searchParams }: { searchParams: Promise<{ state?: string; receipt?: string }> }) {
+  // 055: free pilot (PAYMENTS_ENABLED is not "true").
+  if (!paymentsEnabled()) notFound();
   const t = await getT("fees.pay");
   const { state, receipt } = await searchParams;
   const text = state === "paid" ? t("paid") : state === "failed" ? t("doneFailed") : state === "invalid" ? t("doneInvalid") : t("doneError");

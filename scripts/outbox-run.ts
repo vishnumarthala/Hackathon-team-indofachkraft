@@ -29,6 +29,8 @@ async function main() {
   const { runFeeJobs } = await import("../lib/fees/jobs");
   // 046: payout jobs (payout items, Route transfers, reversals, package expiry payouts).
   const { runPayoutJobs } = await import("../lib/payouts/jobs");
+  // 055: the payment, fee and payout jobs only with PAYMENTS_ENABLED=true (free pilot otherwise).
+  const { paymentsEnabled } = await import("../lib/payments/mode");
   type Senders = NonNullable<Parameters<typeof runOutbox>[0]>["senders"];
 
   const senders: Senders = mockLog
@@ -54,10 +56,10 @@ async function main() {
   try {
     for (;;) {
       const result = await runOutbox({ sql, senders, timeBudgetMs: 5_000 });
-      const payments = await runPaymentJobs({ sql });
-      const fees = await runFeeJobs({ sql });
-      const payouts = await runPayoutJobs({ sql });
-      console.log(JSON.stringify({ at: new Date().toISOString(), pid: process.pid, ...result, payments, fees, payouts }));
+      const money = paymentsEnabled()
+        ? { payments: await runPaymentJobs({ sql }), fees: await runFeeJobs({ sql }), payouts: await runPayoutJobs({ sql }) }
+        : { skipped: "payments_disabled" };
+      console.log(JSON.stringify({ at: new Date().toISOString(), pid: process.pid, ...result, ...money }));
       if (once || stop || Date.now() - started + intervalMs > durationMs) break;
       await sleep(intervalMs);
       if (stop) break;

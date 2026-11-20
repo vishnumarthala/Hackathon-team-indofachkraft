@@ -12,6 +12,7 @@ import { pg, type Sql } from "@/lib/pg";
 import { getPaymentGateway, RazorpayApiError, type GatewayRefund, type PaymentGateway } from "./razorpay";
 import { markPaymentRefunded } from "./store";
 import { reverseBeforeRefund } from "@/lib/payouts/reversals";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 const log = logger("payments.jobs");
 
@@ -104,6 +105,8 @@ export async function runPaymentJobs(opts: { sql?: Sql; gateway?: PaymentGateway
 /** Runs the refund job for these payments right after the current response (no-op outside a request; cron picks them up). */
 export function runPaymentJobsSoon(paymentIds: string[]): void {
   if (!paymentIds.length) return;
+  // 055: nothing to run in the free pilot.
+  if (!paymentsEnabled()) return;
   try {
     after(async () => {
       try {

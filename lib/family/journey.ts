@@ -10,6 +10,7 @@ import { getActiveGuardianLink } from "@/lib/children";
 import { intakeAttemptPath } from "@/lib/intake/attempt-token";
 import { pg } from "@/lib/pg";
 import { appointmentHref, homeProgramHref, permissionHref, visitDay } from "./next-step";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export type JourneyStepKey = "permissions" | "intake" | "visit" | "home";
 /** done = finished; due = the family can act now; waiting = nothing to do yet (we say why); upcoming = later; skipped. */
@@ -66,7 +67,8 @@ export function journeySteps(input: JourneyInput, now: Date = new Date()): Journ
 
   // 3. The visit.
   if (cancelled) steps.push({ key: "visit", status: "skipped", detail: "cancelled", action: null });
-  else if (a.status === "pending_payment") {
+  // 055: no Pay step in the free pilot (bookings are confirmed directly).
+  else if (a.status === "pending_payment" && paymentsEnabled()) {
     steps.push({ key: "visit", status: "due", detail: "payToConfirm", action: { label: "pay", href: `/book/${a.provider_profile_id}/pay/${a.id}` } });
   } else if (attended) steps.push({ key: "visit", status: "done", detail: "attended", action: null });
   else if (outcome === "absent" || outcome === "late_cancel_family") steps.push({ key: "visit", status: "skipped", detail: "missed", action: null });

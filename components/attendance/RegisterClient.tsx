@@ -54,10 +54,13 @@ export function RegisterClient({
   rows: initialRows,
   manage,
   now: nowIso,
+  showBilling = true,
 }: {
   rows: RegisterClientRow[];
   /** Owner/admin of the organisation: no 7-day limit. */
   manage: boolean;
+  /** 055: false in the free pilot (nothing is billed, so no Billable / Not billable label). */
+  showBilling?: boolean;
   /** Server render time, so the first paint matches the server's start-time checks. */
   now: string;
 }) {
@@ -212,7 +215,7 @@ export function RegisterClient({
                       {current ? (
                         <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800" data-testid="marked-label">
                           {t("register.marked", { value: t(`values.${current}`) })}
-                          {row.billable !== null ? ` · ${row.billable ? t("register.billable") : t("register.notBillable")}` : ""}
+                          {showBilling && row.billable !== null ? ` · ${row.billable ? t("register.billable") : t("register.notBillable")}` : ""}
                         </span>
                       ) : null}
                     </div>

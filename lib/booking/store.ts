@@ -4,6 +4,7 @@
 import { env } from "@/lib/env";
 import { pg, type Queryable } from "@/lib/pg";
 import { BookingError } from "./errors";
+import { paymentsEnabled, setPaymentsMode } from "@/lib/payments/mode";
 import { assertCanPublishPaid } from "@/lib/payouts/store";
 import { defaultIntakeKind } from "./intake-defaults";
 import type { HoldInput, OverrideCreate, RuleCreate, ServiceCreate, ServiceUpdate } from "./schemas";
@@ -28,7 +29,7 @@ export type ServiceRow = {
   /** The location's time zone, or the provider profile's for video services. */
   time_zone: string;
   /** 046 FR-2: free, or the organisation's payout account is active. Paid services of other organisations are hidden
-   * from booking. */
+   * from booking. Always true in the free pilot (055: nothing is charged, so payout setup is not needed). */
   payouts_ready: boolean;
 };
 
@@ -125,13 +126,20 @@ export async function getBookableProfile(profileId: string): Promise<BookablePro
   return rows[0] ?? null;
 }
 
+// 046 FR-2: a paid service is bookable only once its organisation can be paid out. 055: in the free pilot every booking
+// is free, so payout readiness never hides a service.
+const payoutsReadySql = (sql: Queryable) =>
+  paymentsEnabled()
+    ? sql`(s.payment_mode <> 'online' or s.fee_inr = 0 or public.payouts_org_can_charge(s.org_id, ${env.DEMO_MODE}))`
+    : sql`true`;
+
 const SERVICE_SELECT = (sql: Queryable) => sql`
   select s.id, s.provider_profile_id, s.org_id, s.location_id, s.name, s.mode, s.duration_min, s.fee_inr, s.payment_mode,
          s.buffer_min, s.intake_kind, s.active, l.name as location_name,
          case when l.id is null then null else concat_ws(', ', l.address_line1, l.address_line2, l.locality, l.city || ' ' || l.pincode) end
            as location_address,
          coalesce(l.time_zone, p.time_zone) as time_zone,
-         (s.payment_mode <> 'online' or s.fee_inr = 0 or public.payouts_org_can_charge(s.org_id, ${env.DEMO_MODE})) as payouts_ready
+         ${payoutsReadySql(sql)} as payouts_ready
   from public.services s
   join public.provider_profiles p on p.id = s.provider_profile_id
   left join public.practice_locations l on l.id = s.location_id`;
@@ -141,7 +149,7 @@ export async function listServices(profileId: string, opts: { activeOnly?: boole
   return sql<ServiceRow[]>`
     ${SERVICE_SELECT(sql)}
     where s.provider_profile_id = ${profileId}
-      ${opts.activeOnly ? sql`and s.active and (s.payment_mode <> 'online' or s.fee_inr = 0 or public.payouts_org_can_charge(s.org_id, ${env.DEMO_MODE}))` : sql``}
+      ${opts.activeOnly ? sql`and s.active and ${payoutsReadySql(sql)}` : sql``}
     order by s.active desc, s.name, s.duration_min`;
 }
 
@@ -219,7 +227,9 @@ export async function confirmHold(input: { appointmentId: string; guardianId: st
   return sql.begin(async (tx) => {
     await tx`select public.booking_attach(${input.appointmentId}::uuid, ${input.guardianId}::uuid, ${input.sessionHash},
       ${input.guardianId}::uuid, ${input.childId}::uuid)`;
-    const [row] = await tx<{ r: ConfirmResult }[]>`select public.booking_confirm(${input.appointmentId}::uuid, ${input.guardianId}::uuid) as r`;
+    // 055: in the free pilot every booking confirms directly (never pending_payment) and stays free.
+    const [row] = await tx<{ r: ConfirmResult }[]>`
+      select public.booking_confirm(${input.appointmentId}::uuid, ${input.guardianId}::uuid, ${paymentsEnabled()}) as r`;
     return row.r;
   }) as Promise<ConfirmResult>;
 }
@@ -228,9 +238,14 @@ export type ActorKind = "guardian" | "provider" | "system";
 
 export async function cancelAppointment(id: string, actor: string | null, kind: ActorKind, reason?: string | null) {
   const sql = await pg();
-  const [row] = await sql<{ r: { appointment_id: string; status: AppointmentStatus; event_id: string | null } }[]>`
-    select public.booking_cancel(${id}::uuid, ${actor}::uuid, ${kind}, ${reason ?? null}) as r`;
-  return row.r;
+  type Cancelled = { appointment_id: string; status: AppointmentStatus; event_id: string | null };
+  return sql.begin(async (tx) => {
+    // 055: a cancellation with an attendance reason is billed by 044's sync trigger; the pilot never bills.
+    await setPaymentsMode(tx);
+    const [row] = await tx<{ r: Cancelled }[]>`
+      select public.booking_cancel(${id}::uuid, ${actor}::uuid, ${kind}, ${reason ?? null}) as r`;
+    return row.r;
+  }) as Promise<Cancelled>;
 }
 
 export async function rescheduleAppointment(id: string, start: string, actor: string, kind: "guardian" | "provider") {
@@ -243,6 +258,8 @@ export async function rescheduleAppointment(id: string, start: string, actor: st
 export async function completeAppointment(id: string, provider: string, status: "completed" | "no_show") {
   const sql = await pg();
   return sql.begin(async (tx) => {
+    // 055: no charge or package session from a marking in the free pilot.
+    await setPaymentsMode(tx);
     const [row] = await tx<{ r: { appointment_id: string; status: AppointmentStatus } }[]>`
       select public.booking_complete(${id}::uuid, ${provider}::uuid, ${status}) as r`;
     // 044: the trigger `appointments_attendance_sync` filled attendance + billable in the same update; record who.
@@ -372,8 +389,10 @@ function orgOrInputError(ctx: ProviderContext, locationId: string | undefined, o
   }
 }
 
-/** 046 FR-2 / FR-8: a paid service goes live only with an active payout account and the accepted platform fee. */
+/** 046 FR-2 / FR-8: a paid service goes live only with an active payout account and the accepted platform fee. 055: not
+ * in the free pilot (nothing is charged, so a centre publishes its services without payout setup). */
 async function assertPaidAllowed(orgId: string, service: { payment_mode: string; fee_inr: number; active: boolean }): Promise<void> {
+  if (!paymentsEnabled()) return;
   if (service.active && service.payment_mode === "online" && service.fee_inr > 0) await assertCanPublishPaid(orgId);
 }
 

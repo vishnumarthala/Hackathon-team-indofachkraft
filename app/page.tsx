@@ -85,6 +85,17 @@ export default async function ParentHome() {
                 {ts("voiceSignIn")}
               </Link>
             </p>
+            {/* PMF check journey #1: families invited by their centre get the clinic-code entry above the fold. */}
+            <p className="mt-1 text-sm text-slate-700">
+              {t("claimTitle")}{" "}
+              <Link
+                href={PARENT_LINKS.claim}
+                className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-teal-800 underline underline-offset-4 hover:text-teal-900"
+              >
+                {t("claimCta")}
+                <Arrow className="h-3.5 w-3.5" />
+              </Link>
+            </p>
           </div>
 
           <div className="relative hidden lg:block">

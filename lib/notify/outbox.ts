@@ -9,7 +9,7 @@
 import { after } from "next/server";
 import { supabaseAdmin } from "@/lib/db";
 import type { Queryable } from "@/lib/pg";
-import { getTopic, type Topic, type TopicPayload } from "./topics";
+import { getTopic, paymentNotificationSuppressed, type Topic, type TopicPayload } from "./topics";
 
 export type EnqueueInput<T extends Topic = Topic> = {
   topic: T;
@@ -32,9 +32,13 @@ export function validateEvent<T extends Topic>(input: EnqueueInput<T>): Record<s
   return parsed.data;
 }
 
+/** Returned instead of an event id when a payment notification is not enqueued in the free pilot (055). */
+export const SUPPRESSED_EVENT_ID = "";
+
 /** Enqueue inside the caller's transaction. Returns the event id (the existing one when the dedup key is taken). */
 export async function enqueue<T extends Topic>(sql: Queryable, input: EnqueueInput<T>): Promise<string> {
   const payload = validateEvent(input);
+  if (paymentNotificationSuppressed(input.topic)) return SUPPRESSED_EVENT_ID;
   const [row] = await sql<{ id: string }[]>`
     select public.outbox_enqueue(${input.topic}, ${input.aggregateType}, ${input.aggregateId}::uuid,
       ${sql.json(payload as Parameters<typeof sql.json>[0])}, ${input.dedupKey},
@@ -45,6 +49,7 @@ export async function enqueue<T extends Topic>(sql: Queryable, input: EnqueueInp
 /** Non-transactional enqueue for service-role JS code; by default also schedules an immediate drain. */
 export async function enqueueEvent<T extends Topic>(input: EnqueueInput<T>, opts: { drain?: boolean } = {}): Promise<string> {
   const payload = validateEvent(input);
+  if (paymentNotificationSuppressed(input.topic)) return SUPPRESSED_EVENT_ID;
   const { data, error } = await supabaseAdmin().rpc("outbox_enqueue", {
     p_topic: input.topic,
     p_aggregate_type: input.aggregateType,
@@ -77,6 +82,11 @@ export async function cancelEvents(prefix: string, sql?: Queryable): Promise<num
  * `npm run outbox:run` delivers instead. Never throws, never delays the response.
  */
 export function drainSoon(eventIds?: string[]): void {
+  // Suppressed (never enqueued) events have no id to drain.
+  if (eventIds?.length) {
+    eventIds = eventIds.filter((id) => id !== SUPPRESSED_EVENT_ID);
+    if (!eventIds.length) return;
+  }
   try {
     after(async () => {
       try {

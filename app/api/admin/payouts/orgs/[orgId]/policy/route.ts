@@ -3,6 +3,7 @@ import { requirePlatformAdminApi } from "@/lib/authz";
 import { isUuid } from "@/lib/cases/validation";
 import { fail, ok, parseJson } from "@/lib/http";
 import { payoutsRouteError, PolicyInputSchema, setFeePolicy } from "@/lib/payouts/store";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,6 +11,8 @@ export const dynamic = "force-dynamic";
 // 046 FR-9: a platform admin sets a centre's fee policy (percent in basis points 0-3000 or flat paise; min / cap paise;
 // waived_until). Each change is a new version the owner accepts again (FR-8). Strict audit `payouts.fee_policy_changed`.
 export async function PUT(req: Request, { params }: { params: Promise<{ orgId: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { orgId } = await params;
   const gate = await requirePlatformAdminApi();
   if ("response" in gate) return gate.response;

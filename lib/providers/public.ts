@@ -4,10 +4,9 @@
 import { revalidateTag, unstable_cache } from "next/cache";
 import { supabaseAdmin } from "@/lib/db";
 import { env } from "@/lib/env";
-import { maskRegistrationNumber, type ProviderType } from "./constants";
+import { isPublicSlug, maskRegistrationNumber, type ProviderType } from "./constants";
 import { listProfileLocations, LOCATION_COLUMNS, ORG_PUBLIC_COLUMNS, photoUrl, type Location, type OrgPublic } from "./index";
 
-const SLUG = /^[a-z0-9][a-z0-9-]{1,78}[a-z0-9]$/;
 const PUBLIC_COLUMNS =
   "id, slug, display_name, provider_type, qualifications, bio, languages, years_experience, photo_path, " +
   "registration_council, registration_state, registration_number, verified_at, time_zone, is_synthetic, offers_video, offers_in_clinic";
@@ -72,7 +71,7 @@ export async function loadPublicProfile(
   slug: string,
   showSynthetic: boolean,
 ): Promise<{ provider: PublicProvider; locations: PublicLocation[] } | null> {
-  if (!SLUG.test(slug)) return null;
+  if (!isPublicSlug(slug)) return null;
   let query = supabaseAdmin()
     .from("provider_profiles")
     .select(PUBLIC_COLUMNS)
@@ -92,7 +91,7 @@ export async function loadPublicCentre(
   slug: string,
   showSynthetic: boolean,
 ): Promise<{ org: PublicOrg; providers: PublicProvider[]; locations: Location[] } | null> {
-  if (!SLUG.test(slug)) return null;
+  if (!isPublicSlug(slug)) return null;
   const db = supabaseAdmin();
   const { data: orgRow, error } = await db.from("organizations").select(ORG_PUBLIC_COLUMNS).eq("slug", slug).eq("listed", true).maybeSingle();
   if (error) throw new Error(`Could not load organisation: ${error.message}`);

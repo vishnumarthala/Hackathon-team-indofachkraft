@@ -369,6 +369,8 @@ describe.skipIf(!enabled)("check-in sessions (database)", { timeout: 120_000 }, 
       // 048: the instrument used and the parent's worries (codes only).
       "instrument",
       "concerns",
+      // 054: the referring provider's profile (the provider's id, not the family's).
+      "referred_by_profile_id",
     ]);
     // Free text cannot get in: answers only hold item ids -> scale values; the other text columns are enums/ids.
     const insert = (answers: unknown) => sql`insert into screen_sessions (age_band, mode, answers) values ('31-71m', 'form', ${sql.json(answers as never)}) returning id`;

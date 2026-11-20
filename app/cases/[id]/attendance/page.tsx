@@ -8,6 +8,7 @@ import { HTML_LANG } from "@/lib/i18n/config";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { getCase } from "@/lib/queries/cases";
 import { Button } from "@/components/ui/Button";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -132,7 +133,7 @@ export default async function CaseAttendancePage({
                   </span>
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${DOT[k]}`}>
                     {label(k)}
-                    {r.billable !== null ? ` · ${r.billable ? t("register.billable") : t("register.notBillable")}` : ""}
+                    {paymentsEnabled() && r.billable !== null ? ` · ${r.billable ? t("register.billable") : t("register.notBillable")}` : ""}
                   </span>
                 </li>
               );

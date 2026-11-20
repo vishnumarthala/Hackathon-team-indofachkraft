@@ -1,5 +1,6 @@
 import { cronAuthorized } from "@/lib/cron";
 import { fail, ok } from "@/lib/http";
+import { paymentsEnabled } from "@/lib/payments/mode";
 import { runDailyPayoutJobs } from "@/lib/payouts/jobs";
 
 // 046 FR-7 / FR-10: daily at 01:00 IST (vercel.json, `Authorization: Bearer <CRON_SECRET>`): reconciliation of captured
@@ -11,6 +12,8 @@ export const maxDuration = 60;
 
 async function handle(req: Request) {
   if (!cronAuthorized(req)) return fail(401, "Unauthorized");
+  // 055: free pilot: no reconciliation and no platform-fee invoices.
+  if (!paymentsEnabled()) return ok({ skipped: "payments_disabled" });
   return ok(await runDailyPayoutJobs());
 }
 

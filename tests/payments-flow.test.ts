@@ -141,6 +141,8 @@ describe.skipIf(!enabled)("payments flow (database, route handlers)", { timeout:
 
   beforeAll(async () => {
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     vi.stubEnv("CRON_SECRET", CRON_SECRET);
     vi.stubEnv("RAZORPAY_KEY_ID", "");
     vi.stubEnv("RAZORPAY_KEY_SECRET", KEY_SECRET);

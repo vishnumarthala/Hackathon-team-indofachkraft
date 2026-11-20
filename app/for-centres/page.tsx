@@ -16,6 +16,7 @@ import { Arrow, ButtonLink, CheckIcon, Eyebrow } from "@/components/landing/ui";
 import { VoiceDemo } from "@/components/landing/VoiceDemo";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { env } from "@/lib/env";
+import { paymentsEnabled } from "@/lib/payments/mode";
 import { getT } from "@/lib/i18n/server";
 import { BriefSchema } from "@/lib/types";
 import { canUseLiveDemo } from "@/lib/voice/demo-access";
@@ -48,6 +49,8 @@ export default async function ForCentres() {
     ? await canUseLiveDemo(await getAuthenticatedUser().catch(() => null)).catch(() => false)
     : false;
   const ts = await getT("screen.landing");
+  // 055: free pilot copy (no packages, payouts or platform fee) unless PAYMENTS_ENABLED=true.
+  const pilot = !paymentsEnabled();
 
   const callSteps = ([1, 2, 3, 4] as const).map((n) => ({
     title: t(`voice.step${n}Title`),
@@ -56,7 +59,7 @@ export default async function ForCentres() {
   const audiences = (["therapist", "centre", "family", "specialist"] as const).map((key) => ({
     key,
     who: t(`who.${key}Who`),
-    tag: t(`who.${key}Tag`),
+    tag: pilot && key === "centre" ? t("who.centreTagPilot") : t(`who.${key}Tag`),
     pain: t(`who.${key}Pain`),
     gain: t(`who.${key}Gain`),
     icon: AUDIENCE_ICONS[key],
@@ -66,7 +69,17 @@ export default async function ForCentres() {
     title: t(`trust.${key}Title`),
     text: t(`trust.${key}Text`),
   }));
-  const faq = ([1, 2, 3, 4, 5, 6] as const).map((n) => ({ q: t(`faq.q${n}`), a: t(`faq.a${n}`) }));
+  const faq = ([1, 2, 3, 4, 5, 6] as const).map((n) => ({ q: t(`faq.q${n}`), a: pilot && n === 1 ? t("faq.a1Pilot") : t(`faq.a${n}`) }));
+  // PMF check 3c: lead with the centre's daily jobs (043-047) and the money model (decision 8), not only ISAA.
+  type DailyKey = "import" | "timetable" | "packages" | "payouts" | "family" | "intake" | "notes" | "home";
+  const dailyKeys: readonly DailyKey[] = pilot
+    ? ["import", "timetable", "family", "intake", "notes", "home"]
+    : ["import", "timetable", "packages", "payouts", "notes", "home"];
+  const daily = dailyKeys.map((key) => ({
+    key,
+    title: t(`daily.${key}Title`),
+    text: t(`daily.${key}Text`),
+  }));
 
   return (
     <div className={`lp-root ${fontVars} overflow-x-clip`}>
@@ -90,6 +103,34 @@ export default async function ForCentres() {
           <Reveal className="mt-10">
             <p className="max-w-3xl text-xl leading-relaxed text-slate-700">
               <strong className="font-semibold text-[#0b1f1d]">{t("problem.whyLate")}</strong> {t("problem.whyLateText")}
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ---------- THE CENTRE'S DAILY SYSTEM ---------- */}
+      <section id="daily-system" aria-labelledby="daily-title" className="scroll-mt-20 bg-[#f8f6f1]">
+        <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+          <Reveal className="mb-14 max-w-3xl">
+            <Eyebrow>{t("daily.eyebrow")}</Eyebrow>
+            <h2 id="daily-title" className="lp-display text-5xl leading-[1.05] text-[#0b1f1d] sm:text-6xl">
+              {t("daily.title")} <em className="text-teal-700">{t("daily.titleEm")}</em>
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-slate-700">{pilot ? t("daily.introPilot") : t("daily.intro")}</p>
+          </Reveal>
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {daily.map((item, i) => (
+              <Reveal key={item.key} as="li" delay={i * 60} className="rounded-3xl bg-white p-6 ring-1 ring-[#0b1f1d]/[0.06]">
+                <CheckIcon className="mb-4 h-6 w-6 text-teal-700" />
+                <h3 className="text-lg font-semibold text-[#0b1f1d]">{item.title}</h3>
+                <p className="mt-1.5 text-[0.95rem] leading-relaxed text-slate-600">{item.text}</p>
+              </Reveal>
+            ))}
+          </ul>
+          <Reveal className="mt-10 rounded-3xl bg-[#0b1f1d] p-7 text-white sm:p-10">
+            <p className="lp-display text-3xl leading-[1.1] sm:text-4xl">{pilot ? t("daily.pilotTitle") : t("daily.moneyTitle")}</p>
+            <p className="mt-3 max-w-3xl text-base leading-relaxed text-white/80 sm:text-lg">
+              {pilot ? t("daily.pilotText") : t("daily.moneyText")}
             </p>
           </Reveal>
         </div>
@@ -191,7 +232,7 @@ export default async function ForCentres() {
               </h2>
             </div>
             <p className="max-w-md text-lg leading-relaxed text-slate-600 lg:justify-self-end">
-              {t("who.intro")}
+              {pilot ? t("who.introPilot") : t("who.intro")}
             </p>
           </Reveal>
 

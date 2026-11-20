@@ -72,3 +72,10 @@ export function profileSlug(name: string, suffix: string): string {
     .replace(/-+$/g, "");
   return `${base || "provider"}-${suffix}`;
 }
+
+const PUBLIC_SLUG = /^[a-z0-9][a-z0-9-]{1,78}[a-z0-9]$/;
+
+/** Shape of a public profile / centre slug (`/p/<slug>`, `/c/<slug>`); no database lookup. */
+export function isPublicSlug(slug: string): boolean {
+  return PUBLIC_SLUG.test(slug);
+}

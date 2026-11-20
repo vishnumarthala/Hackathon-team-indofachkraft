@@ -5,6 +5,7 @@ import { isDemoMode } from "@/lib/demo";
 import { env } from "@/lib/env";
 import { startAgentSession, type AgentStart } from "@/lib/elevenlabs/agent";
 import { fail, ok, parseJson } from "@/lib/http";
+import { loadReferrerFresh, resolveReferrer } from "@/lib/referrals";
 import { agentQuestionList, CreateSessionSchema, instrumentFor, screenQuestions, SPOKEN_AGE_BAND } from "@/lib/screen/questions";
 import { allowScreenSession } from "@/lib/screen/rate-limit";
 import { createScreenSession } from "@/lib/screen/store";
@@ -26,6 +27,8 @@ export const RATE_LIMITED = "Too many check-ins started from this connection. Pl
 // 049: voice runs in the call language (`language`, default the viewer's UI locale) when the agent has it
 // (ELEVENLABS_SCREEN_LANGUAGES), else 409 `language_unavailable` before the gate: never a silent English call. The
 // agent hears the age band in that language; DEMO_MODE returns the scripted voice check-in in that language.
+// 054: an optional `ref` (a provider's public slug from a waiting-room poster) attributes the session to that verified +
+// listed profile. The server resolves the slug itself; unknown or unlisted slugs are ignored silently. No audit row.
 export async function POST(req: Request) {
   if (!allowScreenSession(req)) {
     return Response.json({ error: RATE_LIMITED }, { status: 429, headers: { "Retry-After": "3600" } });
@@ -33,6 +36,8 @@ export async function POST(req: Request) {
   const parsed = await parseJson(req, CreateSessionSchema);
   if ("response" in parsed) return parsed.response;
   const { age_band, mode, concerns } = parsed.data;
+  // 054: the poster's `ref` slug, resolved here (verified + listed only); anything else is ignored. Never rejects.
+  const referral = resolveReferrer(parsed.data.ref, loadReferrerFresh);
   let language: Locale = "en";
   if (mode === "voice") {
     const call = await resolveCallLanguage("screen", parsed.data.language);
@@ -63,7 +68,8 @@ export async function POST(req: Request) {
     }
   }
 
-  const session = await createScreenSession(age_band, mode, { instrument, concerns });
+  const referredByProfileId = (await referral)?.profileId ?? null;
+  const session = await createScreenSession(age_band, mode, { instrument, concerns, referredByProfileId });
   const base = { session_id: session.id, expires_at: session.expires_at.toISOString(), questions };
   if (demo) {
     // No live call in DEMO_MODE: the start counts against the quota with 0 seconds; the page runs the scripted voice

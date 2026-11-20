@@ -7,6 +7,7 @@ import { applyLinkPaid, findLinkPayment } from "@/lib/fees/store";
 import { errorMessage, logger } from "@/lib/log";
 import { drainSoon } from "@/lib/notify/outbox";
 import { razorpaySettings, verifyPaymentLinkSignature } from "@/lib/payments/razorpay";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,6 +24,8 @@ function redirectTo(path: string): Response {
 // the same capture path as the `payment_link.paid` webhook (idempotent). A signed-in guardian of the child lands on the
 // child's Payments page; anyone else (a phone at the desk) on a plain confirmation page without names.
 export async function GET(req: Request) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const q = new URL(req.url).searchParams;
   const input = {
     paymentId: q.get("razorpay_payment_id") ?? "",

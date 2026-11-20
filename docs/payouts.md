@@ -8,6 +8,10 @@ CA and legal review.
 
 Migration `supabase/migrations/20261113004600_payouts.sql`; code in `lib/payouts/**`.
 
+**Free pilot mode (055):** unless `PAYMENTS_ENABLED=true`, payouts are off: `/dashboard/payouts` and `/admin/payouts`
+are 404, their APIs answer 404, `/api/cron/payouts` and the payout part of `/api/cron/payments` skip, and paid services
+are published without payout setup. See [payments.md](payments.md#free-pilot-mode-ticket-055).
+
 ## Data model
 
 | Table | What |

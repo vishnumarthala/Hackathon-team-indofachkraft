@@ -16,6 +16,7 @@ import { BALANCE_REMINDER_DAYS, PACKAGE_EXPIRY_WARNING_DAYS, PACKAGE_LOW_SESSION
 import { closeLink, refreshBalanceLink, refundPreconditions, todayIst } from "./store";
 // 046: registers the refund precondition that reverses Route transfers first (FR-5).
 import "@/lib/payouts/register";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 const log = logger("fees.jobs");
 
@@ -216,6 +217,8 @@ export async function runFeeJobs(opts: { sql?: Sql; gateway?: PaymentGateway; re
 
 /** Runs the fee jobs right after the current response (no-op outside a request; the cron picks the work up). */
 export function runFeeJobsSoon(): void {
+  // 055: nothing to run in the free pilot.
+  if (!paymentsEnabled()) return;
   try {
     after(async () => {
       try {

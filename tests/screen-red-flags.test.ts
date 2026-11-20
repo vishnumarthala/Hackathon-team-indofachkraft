@@ -159,6 +159,8 @@ describe.skipIf(!enabled)("red flags stop the check-in (database)", { timeout: 1
   beforeEach(async () => {
     (await import("@/lib/screen/rate-limit")).screenSessionLimiter.reset();
     stubGenerousVoiceLimits();
+    // Voice starts use the scripted demo session, independent of the developer's .env.local (no live ElevenLabs call).
+    vi.stubEnv("DEMO_MODE", "true");
   });
   afterAll(async () => {
     vi.unstubAllEnvs();

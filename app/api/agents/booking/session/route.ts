@@ -12,6 +12,7 @@ import { startAgentSession, type AgentStart } from "@/lib/elevenlabs/agent";
 import { env } from "@/lib/env";
 import { fail, ok } from "@/lib/http";
 import { voiceGate } from "@/lib/voice/gate";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -100,8 +101,9 @@ export async function GET() {
         provider_name: held.provider_name,
         service_name: held.service_snapshot.name,
         mode: held.service_snapshot.mode,
-        payment_mode: held.service_snapshot.payment_mode,
-        fee_inr: held.service_snapshot.fee_inr,
+        // 055: free during the pilot (the snapshot becomes free only at confirm).
+        payment_mode: paymentsEnabled() ? held.service_snapshot.payment_mode : "free",
+        fee_inr: paymentsEnabled() ? held.service_snapshot.fee_inr : 0,
         start: held.starts_at,
         end: held.ends_at,
         time_zone: held.service_snapshot.time_zone ?? held.provider_time_zone,

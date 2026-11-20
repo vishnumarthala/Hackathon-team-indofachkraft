@@ -4,6 +4,8 @@ import { VoiceCapsForm } from "@/components/admin/VoiceCapsForm";
 import { requirePlatformAdminPage } from "@/lib/authz";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { opsOverview } from "@/lib/privacy/ops";
+import { isGoogleAuthEnabled, isPhoneAuthEnabled } from "@/lib/family/auth-settings";
+import { pilotReadiness, pilotVerdict } from "@/lib/readiness/pilot";
 import { VOICE_AGENTS } from "@/lib/voice/constants";
 import { voiceUsageOverview } from "@/lib/voice/usage";
 
@@ -17,10 +19,13 @@ export async function generateMetadata(): Promise<Metadata> {
 // 041 FR-12: operations status for platform admins (counts and ids only). Other roles: 404.
 // 051 FR-10: plus the voice usage card (minutes per agent, estimated cost, top users by id and role, blocked starts)
 // and the runtime voice budget caps.
+// 056: plus the pilot go/no-go card (configuration only; never shows a secret's value).
 export default async function AdminOpsPage() {
   await requirePlatformAdminPage();
   const [t, format] = [await getT("privacy.admin.ops"), await getFormatter()];
-  const [o, v] = await Promise.all([opsOverview(), voiceUsageOverview()]);
+  const [o, v, googleSignIn, phoneSignIn] = await Promise.all([opsOverview(), voiceUsageOverview(), isGoogleAuthEnabled(), isPhoneAuthEnabled()]);
+  const checks = pilotReadiness({ env: process.env, googleSignIn, phoneSignIn });
+  const verdict = pilotVerdict(checks);
   const card = "space-y-2 rounded border border-slate-200 bg-white p-4";
   const row = (label: string, value: string | number, testId: string) => (
     <div key={testId} className="flex justify-between gap-4 text-sm">
@@ -35,6 +40,33 @@ export default async function AdminOpsPage() {
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6">
       <AdminNav current="ops" />
       <h1 className="text-2xl font-semibold text-slate-900">{t("title")}</h1>
+      <section aria-labelledby="ops-readiness" className={card} data-testid="ops-readiness">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 id="ops-readiness" className="font-semibold text-slate-900">{t("readiness.title")}</h2>
+          <p
+            className={`rounded px-2 py-0.5 text-sm font-semibold ${verdict === "ready" ? "bg-teal-50 text-teal-800" : "bg-red-50 text-red-800"}`}
+            data-testid="ops-readiness-verdict"
+          >
+            {t(`readiness.${verdict}`)}
+          </p>
+        </div>
+        <p className="text-sm text-slate-700">{t("readiness.intro")}</p>
+        <ul className="space-y-1 text-sm">
+          {checks.map((c) => (
+            <li key={c.id} className="flex items-start justify-between gap-4" data-testid={`ops-readiness-${c.id}`} data-ok={c.ok} data-level={c.level}>
+              <span className="text-slate-800">
+                <span aria-hidden="true" className={c.ok ? "text-teal-700" : c.level === "block" ? "text-red-700" : "text-amber-700"}>
+                  {c.ok ? "✓ " : c.level === "block" ? "✗ " : "! "}
+                </span>
+                {t(`readiness.checks.${c.id}`)}
+              </span>
+              <span className="shrink-0 text-xs text-slate-600">
+                {c.ok ? t("readiness.ok") : t(`readiness.level.${c.level}`)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
       <div className="grid gap-4 md:grid-cols-2">
         <section aria-labelledby="ops-outbox" className={card}>
           <h2 id="ops-outbox" className="font-semibold text-slate-900">{t("outbox")}</h2>

@@ -4,12 +4,15 @@ import { isUuid } from "@/lib/cases/validation";
 import { feesRouteError, PackageUpdateSchema, updatePackage } from "@/lib/fees/store";
 import { fail, ok, parseJson } from "@/lib/http";
 import { canManage, getMembershipRole } from "@/lib/orgs";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // 045 FR-7: edit or retire (`active: false`) a package. Owner/admin only; offers already made keep their snapshot.
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string; packageId: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id, packageId } = await params;
   const g = await requireProviderApi();
   if ("response" in g) return g.response;

@@ -14,6 +14,7 @@ import { HTML_LANG } from "@/lib/i18n/config";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { guardianIntakeNotices, type GuardianIntakeNotice } from "@/lib/intake/attempts";
 import { PAYMENT_LABEL_STYLE, paymentHoldOpen, paymentLabel } from "@/lib/payments/display";
+import { paymentsEnabled } from "@/lib/payments/mode";
 import { listPaymentsForAppointments } from "@/lib/payments/store";
 import { listGuardianRatings, listRateableAppointmentIds } from "@/lib/ratings/store";
 import { Button } from "@/components/ui/Button";
@@ -37,7 +38,9 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
   const all = await listGuardianAppointments(user.id);
   // 031 FR-8: payment status next to the appointment status.
   const tp = await getT("payments");
-  const payments = await listPaymentsForAppointments(all.map((a) => a.id));
+  // 055: no payment labels or Pay now in the free pilot.
+  const showPayments = paymentsEnabled();
+  const payments = showPayments ? await listPaymentsForAppointments(all.map((a) => a.id)) : new Map();
   const split = splitAppointments(all);
   // 043 FR-7: weekly series get their own section (sessions grouped by week); cancellations made by a series change
   // (one message to the family already explained them) are not listed one by one.
@@ -90,8 +93,8 @@ export default async function FamilyAppointmentsPage({ searchParams }: { searchP
     const snap = a.service_snapshot;
     const clinic = snap.mode === "in_clinic" ? clinicTimeIfDifferent(a.starts_at, format.locale, format.timeZone, snap.location?.time_zone ?? snap.time_zone) : null;
     const changeable = actions && guardianCanChange(a, GUARDIAN_CANCEL_WINDOW_MINUTES);
-    const pay = paymentLabel(a, payments.get(a.id), "guardian");
-    const payable = paymentHoldOpen(a);
+    const pay = showPayments ? paymentLabel(a, payments.get(a.id), "guardian") : null;
+    const payable = showPayments && paymentHoldOpen(a);
     const attendance = actions ? null : familyAttendanceLabel(a);
     return (
       <li key={a.id} className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">

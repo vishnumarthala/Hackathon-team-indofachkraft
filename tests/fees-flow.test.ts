@@ -144,6 +144,8 @@ describe.skipIf(!enabled)("packages and family payments (database, route handler
 
   beforeAll(async () => {
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     vi.stubEnv("RAZORPAY_KEY_ID", "");
     vi.stubEnv("RAZORPAY_KEY_SECRET", KEY_SECRET);
     vi.stubEnv("RAZORPAY_WEBHOOK_SECRET", WEBHOOK_SECRET);
@@ -647,6 +649,58 @@ describe.skipIf(!enabled)("packages and family payments (database, route handler
       // The balance identity holds on every account of the suite.
       for (const child of [family.childId, family2.childId, family3.childId]) {
         expect(await balance(child)).toBe(await openItemsTotal(child));
+      }
+    });
+  });
+
+  describe("055 free pilot (PAYMENTS_ENABLED not \"true\")", () => {
+    it("marking attendance works but charges nothing and uses no package session; fee APIs 404", async () => {
+      as(owner.user);
+      // An active package bought while payments were on.
+      const res = await offer(caseId, pkg9000);
+      expect(res.status).toBe(201);
+      const link = await linkOf(res.json.payment_id as string);
+      expect((await webhook(linkPaidBody(link.razorpay_payment_link_id, newPaymentId(), 900000))).json.outcome).toBe("package_active");
+      const cpId = res.json.child_package_id as string;
+      const before = (await ledger(family.childId)).length;
+      const balanceBefore = await balance(family.childId);
+
+      vi.stubEnv("PAYMENTS_ENABLED", "");
+      try {
+        const covered = await appt(speech, family.childId, caseId, family.user.id);
+        const r = await mark(covered, "present");
+        expect(r.status).toBe(200);
+        expect(r.json).toMatchObject({ attendance: "present", status: "completed", billable: false });
+        const notCovered = await appt(otherService, family.childId, caseId, family.user.id);
+        expect((await mark(notCovered, "present")).json.billable).toBe(false);
+        // 030's `Mark completed` on the schedule goes through the same rule.
+        const viaSchedule = await appt(speech, family.childId, caseId, family.user.id);
+        const { completeAppointment } = await import("@/lib/booking/store");
+        await completeAppointment(viaSchedule, owner.user.id, "completed");
+        const rows = await sql<{ billable: boolean; consultation_amount_paise: number | null; child_package_id: string | null }[]>`
+          select billable, consultation_amount_paise, child_package_id from appointments where id in ${sql([covered, notCovered, viaSchedule])}`;
+        expect(rows).toHaveLength(3);
+        expect(rows.every((x) => x.billable === false && x.consultation_amount_paise === null && x.child_package_id === null)).toBe(true);
+        expect((await sql`select sessions_used, status from child_packages where id = ${cpId}`)[0]).toEqual({ sessions_used: 0, status: "active" });
+        expect((await ledger(family.childId)).length).toBe(before);
+        expect(await balance(family.childId)).toBe(balanceBefore);
+        // A correction is free too (no package session returned, no credit).
+        expect((await mark(covered, "absent", "Wrong child")).status).toBe(200);
+        expect((await ledger(family.childId)).length).toBe(before);
+
+        // Fee, package and payment-link APIs are 404 before any other check.
+        for (const response of [
+          await routes.account.GET(new Request(feeUrl(caseId, "")), ctx({ id: caseId }) as never),
+          await routes.offer.POST(post(feeUrl(caseId, "/offer"), { package_id: pkg9000 }), ctx({ id: caseId }) as never),
+          await routes.packages.GET(new Request("http://localhost/x"), ctx({ id: owner.orgId }) as never),
+          await routes.receipt.GET(new Request("http://localhost/x"), ctx({ id: res.json.payment_id as string }) as never),
+          await routes.demo.POST(post("http://localhost/api/payments/links/demo", { link_id: link.razorpay_payment_link_id, outcome: "success" })),
+        ]) {
+          expect(response.status).toBe(404);
+          expect(await response.json()).toMatchObject({ code: "payments_disabled" });
+        }
+      } finally {
+        vi.stubEnv("PAYMENTS_ENABLED", "true");
       }
     });
   });

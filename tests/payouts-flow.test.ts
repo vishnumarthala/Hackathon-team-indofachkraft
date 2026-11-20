@@ -210,6 +210,8 @@ describe.skipIf(!enabled)("payouts and the platform fee (database, route handler
 
   beforeAll(async () => {
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     vi.stubEnv("RAZORPAY_KEY_ID", "");
     vi.stubEnv("RAZORPAY_KEY_SECRET", "t046_key_secret_synthetic");
     vi.stubEnv("RAZORPAY_WEBHOOK_SECRET", WEBHOOK_SECRET);

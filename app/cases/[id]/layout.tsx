@@ -7,6 +7,7 @@ import { languageName } from "@/lib/cases/format";
 import { getCase } from "@/lib/queries/cases";
 import { requireCasePage } from "@/lib/authz";
 import { userCanPrescribe } from "@/lib/rx";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +35,7 @@ export default async function CaseLayout({
         </p>
       </header>
       <div className="print:hidden">
-        <CaseTabs caseId={caseRow.id} showPrescriptions={await userCanPrescribe(actor.user.id)} />
+        <CaseTabs caseId={caseRow.id} showPrescriptions={await userCanPrescribe(actor.user.id)} showFees={paymentsEnabled()} />
       </div>
       <section className="pt-5">{children}</section>
     </div>

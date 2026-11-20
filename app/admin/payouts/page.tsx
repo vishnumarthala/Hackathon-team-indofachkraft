@@ -10,6 +10,8 @@ import { invoiceMonthLabel } from "@/lib/payouts/invoice";
 import { adminPayoutOverview } from "@/lib/payouts/store";
 import { voiceUsageOverview } from "@/lib/voice/usage";
 import { Alert } from "@/components/ui/Alert";
+import { notFound } from "next/navigation";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +33,8 @@ function policyShort(format: Formatter, p: FeePolicy, defaultLabel: string): str
 // (051, full card in /admin/ops); per centre the payout account, fee policy (a new version on each change) and this
 // month; failed and on-hold transfers with `Retry`. Every change is strictly audited. Other roles: 404.
 export default async function AdminPayoutsPage() {
+  // 055: free pilot (PAYMENTS_ENABLED is not "true").
+  if (!paymentsEnabled()) notFound();
   await requirePlatformAdminPage();
   const t = await getT("payouts.admin");
   const format = await getFormatter();

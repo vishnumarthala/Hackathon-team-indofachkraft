@@ -178,6 +178,53 @@ Recorded in the [decision record](doctornearme-mvp.md) (decisions 8–13) and on
 [board](../tickets/BOARD.md) (M4). Still open: the platform fee rate and the tax treatment, which needs a CA
 (see 046).
 
+## 8. Status of the recommendations (2026-11-20)
+
+Rechecked against `main` after M4 (043–053) and the PMF-gap pass (054, landing and journey updates).
+
+| # | Recommendation | Status | Where |
+|---|---|---|---|
+| 1 | One buyer, one journey | ✓ Centres are the buyer; the centre-invited family is **journey #1** | FigJam "Journey #1: Centre-invited family v2" (new); the `/` hero now links "Already with a centre? Enter your clinic code"; [design system §6](../../docs/design-system.md) |
+| 2 | Split the landing page, Indian statistics | ✓ | 050; Figma frames `/` mobile (43:847) and `/for-centres` (44:947) added; `/for-centres` now leads with the centre's daily system and says "no subscription, platform fee per paid session" |
+| 3 | Telugu and Hindi voice agents | ✓ code · ⏳ review | 049. Hindi and Telugu copy still needs a native-speaker review (`messages/REVIEW.md`, all rows `pending`) |
+| 4 | Fix the check-in tool | ✓ code · ⏳ licence | 048 (age-aware, up to 8). M-CHAT-R/F stays off (`MCHAT_LICENSED=false`) until the licence for commercial digital use is confirmed |
+| 5 | Centre's daily system | ✓ | 043 series, 044 attendance, 045 packages and payments, 047 CSV import |
+| 6 | Set a price, ask for money | ⏸ deferred | Decision 8 model (families pay on DoctorNearMe, payout minus a platform fee, 046) is built but switched off: the first pilot is free (055). Fee rate and GST need a CA before `PAYMENTS_ENABLED=true` |
+| 7 | Paediatrician QR referral kit | ✓ | 054: printable en/hi/te poster with a QR code to `/screen?ref=<slug>`, "Referred by …" on the check-in, check-ins per poster counted |
+| 8 | Recommend the kind of professional; DEIC / NIEPID | ✓ | 048 |
+| 9 | Locality pages for search | ~ | `/find/hyderabad/[type]` covers type + city; neighbourhood pages ("speech therapy in Kukatpally") are still next |
+| 10 | RCI numbers on profiles; demo profiles outside the pilot | ✓ | Masked council registration on public profiles; set `SHOW_SYNTHETIC_LISTINGS=false` in the pilot environment |
+
+**Journey re-check (section 3).**
+
+- **3a, cold parent.** The landing, the check-in (tap, en/hi/te, up to 8, recommended professional) and ongoing care
+  (weekly series) now fit. The directory still depends on supply density, which is pilot operations, not code.
+- **3b, centre-invited parent.** ✓✓. The one remaining friction is sign-in: phone OTP needs DLT registration, so it's
+  Google only until then.
+- **3c, centre.** Day 1 (import) and day 2 (timetable, attendance) fit, and the centre sees a "Set up your centre"
+  checklist (056). It is free during the first pilot; packages and payments come back after it.
+- **3d, paediatrician.** ✓, through the QR poster (054).
+
+**Still open before the first (free) pilot:** decided 2026-11-20 by the product owner: the first pilot centre uses
+DoctorNearMe **for free**, and everything about payments and licences moves to the end (055, 056,
+[pilot runbook](../../docs/pilot-runbook.md)).
+
+1. Apply all migrations to the pilot database and set the runbook §2 configuration. The **Pilot readiness** card on
+   `/admin/ops` must say Ready.
+2. Legal review of the privacy notice (`PRIVACY_NOTICE_REVIEWED`), and a grievance officer.
+3. The dry run from runbook §5 with a synthetic child.
+4. A native-speaker review of the Hindi and Telugu copy (before inviting families who read them).
+5. Recruiting the first centre, then 5–8, and running the first 10 interviews (section 6), so the fit signals can be
+   measured.
+
+**Deferred to after the first pilot:**
+
+- the platform fee rate and the GST treatment (CA, 046);
+- Razorpay live mode and the merchant agreement ([processors](../../docs/privacy/processors.md)), then
+  `PAYMENTS_ENABLED=true`;
+- DLT registration (phone sign-in codes, WhatsApp templates; families use Google until then);
+- the M-CHAT-R/F licence.
+
 ## Sources
 - INCLEN neurodevelopmental prevalence (includes a Hyderabad site): https://pmc.ncbi.nlm.nih.gov/articles/PMC6057634/
 - ISAA's role (certification, RPwD), weak under 5: https://pmc.ncbi.nlm.nih.gov/articles/PMC11572347/

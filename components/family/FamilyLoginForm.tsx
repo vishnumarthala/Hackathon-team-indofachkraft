@@ -9,13 +9,15 @@ type Props = {
   appUrl: string;
   nextPath: string;
   googleEnabled: boolean;
+  /** Phone codes need an SMS provider (DLT in India); until then the pilot signs in with Google only. */
+  phoneEnabled?: boolean;
   initialError?: "oauth" | null;
   /** 051 FR-8: Cloudflare Turnstile site key for phone codes (null = no bot check). */
   turnstileSiteKey?: string | null;
 };
 
 /** FR-1: Google or phone OTP. Server routes decide where the user lands (FR-3). */
-export function FamilyLoginForm({ appUrl, nextPath, googleEnabled, initialError = null, turnstileSiteKey = null }: Props) {
+export function FamilyLoginForm({ appUrl, nextPath, googleEnabled, phoneEnabled = true, initialError = null, turnstileSiteKey = null }: Props) {
   const t = useT("family.login");
   const [googleError, setGoogleError] = useState(initialError === "oauth");
   const [redirecting, setRedirecting] = useState(false);
@@ -51,7 +53,7 @@ export function FamilyLoginForm({ appUrl, nextPath, googleEnabled, initialError 
         </button>
         {googleEnabled ? null : (
           <p id="google-unavailable" className="text-sm text-slate-600">
-            {t("googleUnavailable")}
+            {phoneEnabled ? t("googleUnavailable") : t("noMethods")}
           </p>
         )}
         {googleError ? (
@@ -61,22 +63,28 @@ export function FamilyLoginForm({ appUrl, nextPath, googleEnabled, initialError 
         ) : null}
       </div>
 
-      <div className="flex items-center gap-3 text-sm text-slate-500" aria-hidden="true">
-        <span className="h-px flex-1 bg-slate-200" />
-        {t("or")}
-        <span className="h-px flex-1 bg-slate-200" />
-      </div>
+      {phoneEnabled ? (
+        <>
+          <div className="flex items-center gap-3 text-sm text-slate-500" aria-hidden="true">
+            <span className="h-px flex-1 bg-slate-200" />
+            {t("or")}
+            <span className="h-px flex-1 bg-slate-200" />
+          </div>
 
-      <PhoneOtpForm
-        sendUrl="/api/auth/phone/send"
-        verifyUrl="/api/auth/phone/verify"
-        verifyExtra={{ next: nextPath }}
-        turnstileSiteKey={turnstileSiteKey}
-        onVerified={(body) => {
-          const target = typeof body.redirect === "string" && body.redirect.startsWith("/") ? body.redirect : "/family";
-          window.location.assign(target);
-        }}
-      />
+          <PhoneOtpForm
+            sendUrl="/api/auth/phone/send"
+            verifyUrl="/api/auth/phone/verify"
+            verifyExtra={{ next: nextPath }}
+            turnstileSiteKey={turnstileSiteKey}
+            onVerified={(body) => {
+              const target = typeof body.redirect === "string" && body.redirect.startsWith("/") ? body.redirect : "/family";
+              window.location.assign(target);
+            }}
+          />
+        </>
+      ) : googleEnabled ? (
+        <p className="text-sm text-slate-600">{t("phoneUnavailable")}</p>
+      ) : null}
     </div>
   );
 }

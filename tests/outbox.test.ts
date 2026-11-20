@@ -335,6 +335,56 @@ describe.skipIf(!enabled)("notifications outbox (database)", { timeout: 120_000 
     await PUT(post("http://x/api/notification-preferences", { email: true, whatsapp: false }, "PUT"));
   });
 
+  it("055 free pilot: payment messages are not enqueued, fanned out or delivered while payments are off", async () => {
+    vi.stubEnv("PAYMENTS_ENABLED", "");
+    const child = randomUUID();
+    // Enqueue (TS producers): nothing is written.
+    const skipped = await outbox.enqueue(sql, {
+      topic: "fees.balance_reminder",
+      aggregateType: "child",
+      aggregateId: child,
+      payload: { org_id: randomUUID(), child_id: child },
+      dedupKey: key("balance"),
+    });
+    expect(skipped).toBe(outbox.SUPPRESSED_EVENT_ID);
+    expect(await sql`select id from outbox_events where dedup_key = ${key("balance")}`).toHaveLength(0);
+
+    // Fan-out: an event a SQL trigger enqueued (e.g. a receipt) is not claimed while payments are off: it waits.
+    const [{ id: receipt }] = await sql<{ id: string }[]>`
+      select public.outbox_enqueue('fees.receipt', 'payment', ${randomUUID()}::uuid,
+        ${sql.json({ payment_id: randomUUID(), child_id: child })}, ${key("receipt")}, null)::text as id`;
+    await worker.fanOutDue(sql, { eventIds: [receipt], appUrl: APP });
+    expect(await rowsFor(receipt)).toHaveLength(0);
+    expect((await sql`select status from outbox_events where id = ${receipt}`)[0].status).toBe("pending");
+
+    // Delivery: a payment message fanned out before the switch was turned off is not claimed or sent; it waits too.
+    const id = await ping(guardianA, "pilot-delivery");
+    await worker.fanOutDue(sql, { eventIds: [id], appUrl: APP });
+    await sql`update notifications set template = 'payment_receipt' where event_id = ${id}`;
+    const counts = new Map<string, number>();
+    await worker.sendDue(sql, { eventIds: [id], senders: countingSenders(counts) });
+    expect(counts.size).toBe(0);
+    const rows = (await rowsFor(id)).filter((r) => r.channel !== "in_app");
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.every((r) => r.status === "pending" && r.attempts === 0)).toBe(true);
+
+    // With payments on, a worker picks both up as before.
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
+    await worker.fanOutDue(sql, { eventIds: [receipt], appUrl: APP });
+    expect((await sql`select status from outbox_events where id = ${receipt}`)[0].status).toBe("fanned_out");
+    await worker.sendDue(sql, { eventIds: [id], senders: countingSenders(counts) });
+    expect([...counts.values()].reduce((a, b) => a + b, 0)).toBeGreaterThan(0);
+    const real = await outbox.enqueue(sql, {
+      topic: "fees.balance_reminder",
+      aggregateType: "child",
+      aggregateId: child,
+      payload: { org_id: randomUUID(), child_id: child },
+      dedupKey: key("balance-on"),
+    });
+    expect(real).not.toBe(outbox.SUPPRESSED_EVENT_ID);
+    vi.stubEnv("PAYMENTS_ENABLED", "");
+  });
+
   it("E-1 / E-4: inbox API returns own in-app rows only; read with someone else's ids changes nothing; pagination", async () => {
     const { GET } = await import("@/app/api/notifications/route");
     const { POST: READ } = await import("@/app/api/notifications/read/route");

@@ -4,7 +4,7 @@ import { SignInMethods } from "@/components/family/SignInMethods";
 import { NotificationPreferencesForm } from "@/components/notifications/NotificationPreferencesForm";
 import { requireGuardianPage } from "@/lib/authz";
 import { env } from "@/lib/env";
-import { isGoogleAuthEnabled } from "@/lib/family/auth-settings";
+import { isGoogleAuthEnabled, isPhoneAuthEnabled } from "@/lib/family/auth-settings";
 import { canUnlink, signInMethods } from "@/lib/family/identities";
 import { maskPhone } from "@/lib/family/phone";
 import { getT } from "@/lib/i18n/server";
@@ -66,6 +66,7 @@ export default async function FamilySettingsPage({
         <SignInMethods
           appUrl={env.NEXT_PUBLIC_APP_URL}
           googleEnabled={await isGoogleAuthEnabled()}
+          phoneEnabled={await isPhoneAuthEnabled()}
           initialNotice={notice}
           view={{
             googleConnected: methods.google !== null,

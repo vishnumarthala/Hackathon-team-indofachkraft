@@ -9,6 +9,7 @@ import { paymentError } from "@/lib/payments/errors";
 import { runPaymentJobsSoon } from "@/lib/payments/jobs";
 import { razorpaySettings, RazorpayConfigError, verifyCheckoutSignature } from "@/lib/payments/razorpay";
 import { applyPaymentCaptured, findGuardianPaymentByOrder } from "@/lib/payments/store";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +28,7 @@ const VerifySchema = z
 // signature HMAC_SHA256(order_id + "|" + payment_id, key_secret) is compared in constant time (400 on mismatch); then
 // the same capture path as the webhook (applyPaymentCaptured, idempotent).
 export async function POST(req: Request) {
+  if (!paymentsEnabled()) return paymentError("payments_disabled");
   const session = await requireGuardian();
   if (session instanceof Response) return session;
   const parsed = await parseJson(req, VerifySchema);

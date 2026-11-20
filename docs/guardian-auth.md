@@ -50,6 +50,13 @@ or admins away from `/family/**` to their home. **Routing is a convenience, not 
 
 ## Phone OTP
 
+**Availability (056).** `isPhoneAuthEnabled()` (`lib/family/auth-settings.ts`) reads the public Supabase
+`/auth/v1/settings` like the Google check: phone sign-in is shown only when the project reports the phone provider
+(an SMS provider is configured; in India that needs a DLT-registered sender and template), or in `DEMO_MODE` for the
+synthetic test numbers. Until then `/family/login` shows Google only with a short note, and family settings hide
+"Add phone" (an already linked phone can still be removed). The first pilot runs this way
+([pilot runbook](pilot-runbook.md)).
+
 The browser never talks to Supabase for phone codes: the server routes validate the number, apply the
 rate limit and keep numbers out of logs. `lib/family/phone-auth.ts` has two backends behind
 `PhoneAuthBackend`:

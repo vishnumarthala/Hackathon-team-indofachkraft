@@ -7,6 +7,7 @@ import { errorMessage, logger } from "@/lib/log";
 import { paymentError } from "@/lib/payments/errors";
 import { razorpaySettings, RazorpayConfigError, type RazorpaySettings } from "@/lib/payments/razorpay";
 import { createPaymentOrder } from "@/lib/payments/store";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ const log = logger("payments.order");
 // once (an existing order is returned). Someone else's appointment 404; nothing to pay (free / at the clinic /
 // confirmed) 409; already paid 409; expired 410.
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!paymentsEnabled()) return paymentError("payments_disabled");
   const { id } = await params;
   const session = await requireGuardian();
   if (session instanceof Response) return session;

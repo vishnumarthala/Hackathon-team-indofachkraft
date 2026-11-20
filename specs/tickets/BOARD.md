@@ -117,6 +117,9 @@ Decision record: [specs/grill/doctornearme-mvp.md](../grill/doctornearme-mvp.md)
 | 051 | Voice cost guard (no anonymous voice, quotas, platform budget) | done | solo | alongside |
 | 052 | Clear next steps (family home, provider Today, what happens next) | done | solo | waits for 043, 044, 045, 051 |
 | 053 | Design-system alignment (teal primary actions, shared UI primitives) | done | solo | waits for 043-052 |
+| 054 | Paediatrician referral kit (QR poster, "referred by" check-in) | done | solo | alongside |
+| 055 | Free pilot mode (payments off by default) | done | solo | alongside |
+| 056 | Pilot readiness: Google-only sign-in until DLT, go/no-go card, centre setup checklist, runbook | done | solo | waits for 055 |
 
 ## Critical path (DoctorNearMe)
 

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { CaseList } from "@/components/dashboard/CaseList";
+import { SetupChecklist } from "@/components/dashboard/SetupChecklist";
 import { StatCards, TodayPanel } from "@/components/dashboard/TodayPanel";
 import { getActiveOrgIds, requireProviderPage } from "@/lib/authz";
 import { caseHref, defaultCaseTab, loadCaseTabFacts } from "@/lib/cases/default-tab";
 import { parseCaseFilter } from "@/lib/dashboard/cases-filter";
+import { loadSetupFacts, setupSteps } from "@/lib/dashboard/setup";
 import { greetingPart, listCasesWithoutParent, loadDashboardToday, providerDisplayName } from "@/lib/dashboard/today";
 import { getFormatter, getT, getTimeZone } from "@/lib/i18n/server";
 import { listCases } from "@/lib/queries/cases";
@@ -26,12 +28,14 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const filter = parseCaseFilter(rawFilter);
   const q = typeof rawQ === "string" ? rawQ.slice(0, 100) : "";
 
-  const [cases, today, invite, displayName] = await Promise.all([
+  const [cases, today, invite, displayName, setupFacts] = await Promise.all([
     orgIds.length > 0 ? listCases(user.id) : Promise.resolve([]),
     loadDashboardToday(user.id, { timeZone }),
     orgIds.length > 0 ? listCasesWithoutParent(user.id) : Promise.resolve([]),
     providerDisplayName(user.id),
+    orgIds.length > 0 ? loadSetupFacts(user.id) : Promise.resolve(null),
   ]);
+  const setup = setupFacts ? setupSteps(setupFacts, { firstCaseId: cases[0]?.id ?? null, caseWithoutParentId: invite[0]?.id ?? null }) : null;
   const tabFacts = await loadCaseTabFacts([...cases.map((c) => c.id), ...today.sessions.flatMap((s) => (s.case_id ? [s.case_id] : []))]);
   const caseLinks: Record<string, string> = {};
   for (const [id, facts] of tabFacts) caseLinks[id] = caseHref(id, defaultCaseTab(facts));
@@ -91,6 +95,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       ) : (
         <>
+          {setup ? <SetupChecklist steps={setup} /> : null}
           <StatCards stats={today.stats} />
           <TodayPanel today={today} userId={user.id} caseLinks={caseLinks} />
           <CaseList cases={cases} filter={filter} q={q} caseLinks={caseLinks} />

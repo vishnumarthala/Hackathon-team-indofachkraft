@@ -8,6 +8,7 @@ import { currentDocuments } from "@/lib/consent/records";
 import { getFormatter, getLocale, getT } from "@/lib/i18n/server";
 import { AGE_BAND_KEYS, HEADLINE_KEYS } from "@/components/screen/view";
 import { listChildCheckins } from "@/lib/screen/store";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -107,12 +108,15 @@ export default async function ChildOverviewPage({ params }: { params: Promise<{ 
         >
           {(await getT("followup"))("link")}
         </Link>
-        <Link
-          href={`/family/children/${child.id}/payments`}
-          className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
-        >
-          {(await getT("fees.family"))("link")}
-        </Link>
+        {/* 055: no Payments page in the free pilot. */}
+        {paymentsEnabled() ? (
+          <Link
+            href={`/family/children/${child.id}/payments`}
+            className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline"
+          >
+            {(await getT("fees.family"))("link")}
+          </Link>
+        ) : null}
         {/* 052 FR-3: questionnaires moved off the mobile nav into the child page and Account. */}
         <Link href="/family/assessments" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
           {(await getT("family.shell"))("assessments")}

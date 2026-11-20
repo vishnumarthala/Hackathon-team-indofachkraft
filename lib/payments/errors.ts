@@ -10,6 +10,8 @@ export const PAYMENT_ERRORS = {
   invalid_signature: { status: 400, error: "The payment could not be verified." },
   not_configured: { status: 503, error: "Online payment is not available right now. Please try again later." },
   gateway_error: { status: 502, error: "The payment could not be started. Please try again." },
+  // 055: PAYMENTS_ENABLED is not "true" (free pilot): bookings confirm without payment, no order is ever created.
+  payments_disabled: { status: 409, error: "Payments are off during the free pilot. Bookings are confirmed without payment." },
 } as const;
 
 export type PaymentErrorCode = keyof typeof PAYMENT_ERRORS;

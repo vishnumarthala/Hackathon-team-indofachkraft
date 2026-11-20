@@ -22,11 +22,14 @@ export function SignInMethods({
   view,
   appUrl,
   googleEnabled,
+  phoneEnabled = true,
   initialNotice,
 }: {
   view: SignInMethodsView;
   appUrl: string;
   googleEnabled: boolean;
+  /** Without an SMS provider a phone can't be added or changed; an already linked one can still be removed. */
+  phoneEnabled?: boolean;
   initialNotice: Notice;
 }) {
   const t = useT("family.settings");
@@ -139,7 +142,7 @@ export function SignInMethods({
               <p className="text-sm text-slate-600">{view.phoneMasked ?? t("notConnected")}</p>
             </div>
             <div className="flex flex-wrap gap-2">
-              {addingPhone ? null : (
+              {addingPhone || !phoneEnabled ? null : (
                 <button
                   type="button"
                   className={secondaryButtonClass}

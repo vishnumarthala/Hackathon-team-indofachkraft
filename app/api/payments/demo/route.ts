@@ -6,6 +6,7 @@ import { paymentError } from "@/lib/payments/errors";
 import { checkoutSignature, demoId, razorpaySettings } from "@/lib/payments/razorpay";
 import { getPaymentForAppointment, markPaymentFailed } from "@/lib/payments/store";
 import { getAppointment } from "@/lib/booking/store";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ const DemoSchema = z.object({ appointment_id: z.uuid(), outcome: z.enum(["succes
 // /api/payments/verify, exactly like a real payment. `failure` records a failed attempt (like payment.failed).
 // Only the booking guardian, only for an order that exists.
 export async function POST(req: Request) {
+  if (!paymentsEnabled()) return paymentError("payments_disabled");
   if (!env.DEMO_MODE) return paymentError("not_found");
   const session = await requireGuardian();
   if (session instanceof Response) return session;

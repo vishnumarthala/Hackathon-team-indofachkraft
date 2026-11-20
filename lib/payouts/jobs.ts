@@ -20,6 +20,7 @@ import { payoutConfig } from "./config";
 import { demoTransferEventBody, demoTransferOutcome, deliverDemoWebhook } from "./demo";
 import { previousMonthIst, reconDiff, TRANSFER_BACKOFF_SECONDS, TRANSFER_LEASE_SECONDS } from "./fees";
 import { runReversals, type ReversalResult } from "./reversals";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 const log = logger("payouts.jobs");
 
@@ -188,6 +189,8 @@ export async function runPayoutJobs(opts: { sql?: Sql; gateway?: PaymentGateway;
 
 /** Runs the payout jobs right after the current response (no-op outside a request; the cron picks the work up). */
 export function runPayoutJobsSoon(): void {
+  // 055: nothing to run in the free pilot.
+  if (!paymentsEnabled()) return;
   try {
     after(async () => {
       try {

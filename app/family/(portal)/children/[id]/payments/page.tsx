@@ -4,6 +4,8 @@ import { requireChildGuardianPage, requireGuardianPage } from "@/lib/authz";
 import { listChildAccounts, refreshBalanceLink } from "@/lib/fees/store";
 import { errorMessage, logger } from "@/lib/log";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { notFound } from "next/navigation";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +14,8 @@ export const dynamic = "force-dynamic";
 // for payment, the active package with sessions left and its expiry, and the history with receipts. Active guardian
 // link required (else 404).
 export default async function ChildPaymentsPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ paid?: string }> }) {
+  // 055: free pilot (PAYMENTS_ENABLED is not "true").
+  if (!paymentsEnabled()) notFound();
   await requireGuardianPage();
   const { id } = await params;
   const { child } = await requireChildGuardianPage(id);

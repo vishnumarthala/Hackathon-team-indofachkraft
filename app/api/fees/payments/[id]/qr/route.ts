@@ -4,6 +4,7 @@ import { staffCanSeeAccount } from "@/lib/fees/authz";
 import { linkQrSvg } from "@/lib/fees/qr";
 import { getPaymentScope } from "@/lib/fees/store";
 import { fail } from "@/lib/http";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,6 +12,8 @@ export const dynamic = "force-dynamic";
 // 045 FR-3 `Show QR`: an SVG QR code of an open payment link, for the desk screen. Staff with access to one of the
 // child's cases in the link's organisation; everyone else 404. NFR-3: the code holds the short URL only.
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const g = await requireProviderApi();
   if ("response" in g) return g.response;

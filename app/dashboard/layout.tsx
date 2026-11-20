@@ -4,6 +4,7 @@ import { SignOutButton } from "@/components/auth/SignOutButton";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { getUserRole, requirePageUser } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <>
-      <div className="border-b border-slate-200 bg-white">
+      <div className="border-b border-slate-200 bg-white print:hidden">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-2">
           <p className="truncate text-sm text-slate-600">
             Signed in as <span className="font-medium text-slate-900">{user.email}</span>
@@ -43,9 +44,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/register">
               {ta("nav")}
             </Link>
-            <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/fees">
-              {tf("nav")}
-            </Link>
+            {/* 055: fees and payouts only once payments are on. */}
+            {paymentsEnabled() ? (
+              <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/fees">
+                {tf("nav")}
+              </Link>
+            ) : null}
             <Link className="text-sm font-medium text-slate-700 underline" href="/dashboard/ratings">
               {tr("provider.nav")}
             </Link>

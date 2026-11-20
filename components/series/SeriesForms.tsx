@@ -147,8 +147,16 @@ function TherapistServiceFields(props: {
 
 const weekdaysOf = (f: FormData) => f.getAll("weekdays").map((v) => Number(v));
 
-/** FR-6 new series form on the case page (therapist, service, weekdays, time, start/end date, billing mode). */
-export function NewSeriesForm(props: { caseId: string; therapists: TherapistOption[]; hasGuardian: boolean; today: string; timeZone: string }) {
+/** FR-6 new series form on the case page (therapist, service, weekdays, time, start/end date, billing mode). 055: no
+ * billing mode in the free pilot (`showBilling` false; the series keeps the default, nothing is charged). */
+export function NewSeriesForm(props: {
+  caseId: string;
+  therapists: TherapistOption[];
+  hasGuardian: boolean;
+  today: string;
+  timeZone: string;
+  showBilling?: boolean;
+}) {
   const t = useT("series.timetable");
   const id = useId();
   const { busy, run, feedback, bad } = useAction();
@@ -194,14 +202,16 @@ export function NewSeriesForm(props: { caseId: string; therapists: TherapistOpti
         <input id={`${id}-time`} name="start_time" type="time" required defaultValue="10:00" className={inputClass} aria-invalid={bad("start_time")} aria-describedby={`${id}-tz`} />
         <p id={`${id}-tz`} className="mt-1 text-xs text-slate-600">{t("timeZoneNote", { zone: props.timeZone })}</p>
       </div>
-      <div>
-        <label htmlFor={`${id}-billing`} className={labelClass}>{t("billing")}</label>
-        <select id={`${id}-billing`} name="billing_mode" defaultValue="per_session" className={selectClass}>
-          {(["per_session", "package", "free"] as const).map((m) => (
-            <option key={m} value={m}>{t(`billingModes.${m}`)}</option>
-          ))}
-        </select>
-      </div>
+      {props.showBilling !== false ? (
+        <div>
+          <label htmlFor={`${id}-billing`} className={labelClass}>{t("billing")}</label>
+          <select id={`${id}-billing`} name="billing_mode" defaultValue="per_session" className={selectClass}>
+            {(["per_session", "package", "free"] as const).map((m) => (
+              <option key={m} value={m}>{t(`billingModes.${m}`)}</option>
+            ))}
+          </select>
+        </div>
+      ) : null}
       <div>
         <label htmlFor={`${id}-starts`} className={labelClass}>{t("startsOn")}</label>
         <input id={`${id}-starts`} name="starts_on" type="date" required min={props.today} defaultValue={props.today} className={inputClass} aria-invalid={bad("starts_on")} />

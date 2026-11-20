@@ -6,6 +6,7 @@
 import { addDays, todayIn } from "@/lib/booking/time";
 import { mondayOf } from "@/lib/home-program/adherence";
 import { intakeAttemptPath } from "@/lib/intake/attempt-token";
+import { paymentsEnabled } from "@/lib/payments/mode";
 import { pg } from "@/lib/pg";
 
 export type IntakeAttemptFact = { id: string; status: "issued" | "started" | "completed"; path: string | null };
@@ -159,7 +160,8 @@ export function pickNextStep(facts: FamilyFacts, now: Date = new Date()): NextSt
     };
   }
 
-  if (facts.payments.length) {
+  // 055: never a payment step in the free pilot.
+  if (paymentsEnabled() && facts.payments.length) {
     const payment = [...facts.payments].sort((a, b) => PAYMENT_ORDER[a.kind] - PAYMENT_ORDER[b.kind] || b.amount_paise - a.amount_paise)[0];
     return { rule: "pay", payment };
   }
@@ -244,6 +246,8 @@ export async function loadFamilyFacts(userId: string, opts: { timeZone: string; 
   const since = addDays(today, -STREAK_LOOKBACK_DAYS);
   const sql = await pg();
 
+  // 055: no balances or package offers in the free pilot (no queries either).
+  const paymentsOn = paymentsEnabled();
   const [visitRows, balanceRows, packageRows, activityRows, logRows, threadRows, teamRows, updateRows] = await Promise.all([
     sql`
       select a.id, a.child_id, a.status, lower(a.slot) as starts_at, upper(a.slot) as ends_at, a.provider_profile_id,
@@ -262,15 +266,19 @@ export async function loadFamilyFacts(userId: string, opts: { timeZone: string; 
         and (a.status = 'confirmed' or (a.status = 'pending_payment' and a.hold_expires_at > ${now}))
       order by lower(a.slot), a.id
       limit ${MAX_VISITS}`,
-    sql`
+    paymentsOn
+      ? sql`
       select x.org_id, x.child_id, coalesce(o.public_name, o.name) as org_name, public.fees_balance(x.org_id, x.child_id) as balance
       from (select distinct org_id, child_id from public.family_ledger where child_id = any(${ids}::uuid[])) x
-      join public.organizations o on o.id = x.org_id`,
-    sql`
+      join public.organizations o on o.id = x.org_id`
+      : [],
+    paymentsOn
+      ? sql`
       select cp.id, cp.child_id, cp.price_paise, coalesce(o.public_name, o.name) as org_name
       from public.child_packages cp join public.organizations o on o.id = cp.org_id
       where cp.child_id = any(${ids}::uuid[]) and cp.status = 'pending_payment' and cp.offer_expires_at > ${now}
-      order by cp.created_at`,
+      order by cp.created_at`
+      : [],
     // 026: active activities of each program's latest guardian-visible publication (as getGuardianHomePrograms).
     sql`
       select p.child_id, (x ->> 'id')::uuid as activity_id, greatest(coalesce((x ->> 'frequency_per_week')::int, 1), 1) as frequency
@@ -360,7 +368,7 @@ export async function loadFamilyFacts(userId: string, opts: { timeZone: string; 
     };
   });
 
-  const payments: PaymentFact[] = [
+  const payments: PaymentFact[] = !paymentsOn ? [] : [
     ...visits
       .filter((v) => v.status === "pending_payment" && v.fee_inr > 0)
       .map((v) => ({

@@ -33,6 +33,8 @@ type Props = {
   initialHold: FlowHold | null;
   /** 048 FR-10: a slot chip on the check-in result (`?service=&start=`) opens the flow with that time selected. */
   initialSlot?: { serviceId: string; start: string; end: string } | null;
+  /** 055: payments are off (PAYMENTS_ENABLED not "true"): every booking is free and confirms directly. */
+  freePilot?: boolean;
 };
 
 type ErrorCode =
@@ -73,7 +75,7 @@ function useCountdown(expiresAt: string | null): number {
 
 // FR-7 booking flow: service -> date strip -> time -> Continue (10-minute hold with countdown) -> sign in if needed
 // (the hold id stays in the URL and the anonymous hold is attached at confirm) -> child -> disclosure -> confirm.
-export function BookingFlow({ profile, services, viewer, initialHold, initialSlot = null }: Props) {
+export function BookingFlow({ profile, services, viewer, initialHold, initialSlot = null, freePilot = false }: Props) {
   const t = useT("booking");
   const locale = useLocale();
   const viewerTz = useTimeZone();
@@ -135,8 +137,8 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
     setBusy(false);
     if (res.ok) {
       const status = (res.json.appointment as { status: string } | undefined)?.status;
-      // 031: online services continue on the checkout page.
-      if (status === "pending_payment") {
+      // 031: online services continue on the checkout page (never in the free pilot, 055).
+      if (status === "pending_payment" && !freePilot) {
         router.push(`/book/${profile.id}/pay/${hold.id}`);
         return;
       }
@@ -164,9 +166,9 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
   }
 
   const timeText = (start: string) => `${format.date(start, "long")}, ${slotTimeLabel(start, locale, viewerTz, clinicTz, (key, vars) => t(key, vars))}`;
-  // 042 FR-2a: demo bookings are never paid.
-  const paymentMode = demo ? "free" : service.payment_mode;
-  const fee = demo ? null : feeLabel(service.fee_inr, service.payment_mode, format.inr);
+  // 042 FR-2a: demo bookings are never paid. 055: nor is anything in the free pilot.
+  const paymentMode = demo || freePilot ? "free" : service.payment_mode;
+  const fee = demo || freePilot ? null : feeLabel(service.fee_inr, service.payment_mode, format.inr);
   const providerLabel = service.mode === "in_clinic" && service.location_name ? `${profile.name} (${service.location_name})` : profile.name;
   const errorBox = error ? (
     <Alert as="p" tone="danger" role="alert">
@@ -201,7 +203,9 @@ export function BookingFlow({ profile, services, viewer, initialHold, initialSlo
       </div>
       <div>
         <dt className="font-semibold text-slate-900">{t("flow.fee")}</dt>
-        <dd className="text-slate-700">{demo ? t("flow.demoFee") : fee ? `${fee} · ${t(`payment.${paymentMode}`)}` : t("payment.free")}</dd>
+        <dd className="text-slate-700" data-testid="booking-fee">
+          {demo ? t("flow.demoFee") : freePilot ? t("flow.freePilot") : fee ? `${fee} · ${t(`payment.${paymentMode}`)}` : t("payment.free")}
+        </dd>
       </div>
     </dl>
   );

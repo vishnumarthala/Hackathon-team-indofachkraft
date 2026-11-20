@@ -98,6 +98,8 @@ describe.skipIf(!enabled)("booking state machine (database, route handlers)", { 
   beforeAll(async () => {
     vi.stubEnv("CRON_SECRET", "test-cron-030");
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     sql = postgres(process.env.DATABASE_URL as string, { max: 4, prepare: false, onnotice: () => {} });
     const db = (await import("@/lib/db")).supabaseAdmin();
     world = bookingWorld(sql, db, "t030s");
@@ -328,6 +330,34 @@ describe.skipIf(!enabled)("booking state machine (database, route handlers)", { 
       expect(left).toBeGreaterThan(14 * 60_000);
       expect(left).toBeLessThanOrEqual(15 * 60_000 + 5_000);
       expect(await outbox(h.json.appointment_id as string)).toEqual([]);
+    });
+
+    it("055 free pilot: paid in-clinic and video services confirm directly and stay free; no payment order", async () => {
+      vi.stubEnv("PAYMENTS_ENABLED", "");
+      try {
+        const onlineVideo = await world.service(providerA, { mode: "video", duration: 30, payment: "online", fee: 800 });
+        const order = await import("@/app/api/appointments/[id]/payment-order/route");
+        for (const [serviceId, hours] of [[online30, 80], [onlineVideo, 82]] as const) {
+          as(guardianA.user);
+          const h = await hold(serviceId, futureSlot(hours));
+          expect(h.status, JSON.stringify(h.json)).toBe(201);
+          const id = h.json.appointment_id as string;
+          const c = await confirm(id, guardianA.childId);
+          expect(c.status, JSON.stringify(c.json)).toBe(200);
+          expect((c.json.appointment as Json).status).toBe("confirmed");
+          const [row] = await sql<{ status: string; hold_expires_at: Date | null; service_snapshot: Json }[]>`
+            select status, hold_expires_at, service_snapshot from appointments where id = ${id}`;
+          expect(row).toMatchObject({ status: "confirmed", hold_expires_at: null });
+          // Booked in the pilot = free for good (no charge at attendance even after payments are switched on).
+          expect(row.service_snapshot).toMatchObject({ payment_mode: "free", fee_inr: 0, free_pilot: true });
+          expect((await outbox(id)).map((e) => e.topic)).toContain("appointment.confirmed");
+          const res = await call(order.POST, post(`http://localhost/api/appointments/${id}/payment-order`, {}), { id });
+          expect(res.status).toBe(409);
+          expect(res.json.code).toBe("payments_disabled");
+        }
+      } finally {
+        vi.stubEnv("PAYMENTS_ENABLED", "true");
+      }
     });
 
     it("video free service confirms directly; .ics download for the guardian and the provider only", async () => {

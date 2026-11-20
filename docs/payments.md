@@ -10,6 +10,63 @@ Code: `lib/payments/**`, `app/api/appointments/[id]/payment-order`, `app/api/pay
 `app/api/webhooks/razorpay`, `app/api/cron/payments`, `app/book/[profileId]/pay/[appointmentId]`,
 `components/payments/PayPanel.tsx`. Migration: `supabase/migrations/20261113003100_payments.sql`.
 
+## Free pilot mode (ticket 055)
+
+The first pilot centre and its families use DoctorNearMe **for free**. Live Razorpay, the platform fee rate, GST / CA
+review, payouts and licences come later. One server-side switch decides:
+
+| `PAYMENTS_ENABLED` | Mode |
+|--------------------|------|
+| unset / empty / anything except `true` (**default**) | Free pilot: no payment, fee, package, payout or payment message anywhere |
+| exactly `true` | Payments on: everything in this document, 045 and 046 works as specified |
+
+It is read only through `env.PAYMENTS_ENABLED` / `paymentsEnabled()` (`lib/env.ts`, `lib/payments/mode.ts`). It is
+**not** inferred from missing Razorpay keys and is independent of `DEMO_MODE`. No code or migration was removed.
+
+What the free pilot changes:
+
+- **Booking (030/031):** `confirmHold` calls `booking_confirm(..., p_require_payment => false)` (migration
+  `20261120005500_free_pilot_mode.sql`): every booking, in-clinic or video, paid service or not, is `confirmed`
+  directly (never `pending_payment`), gets its confirmation and reminders, and its frozen service snapshot becomes
+  `payment_mode: free, fee_inr: 0, free_pilot: true`, so a pilot booking stays free after payments are switched on.
+  Paid services are bookable and publishable without payout setup (`payouts_ready` is always true, no
+  `PayoutSetupNotice`). The booking flow shows "Free during the pilot" and "Confirm booking"; the voice booking tools
+  return `payment_mode: free, fee_inr: 0` and tell the agent there is no fee. Video still needs the guardian's Google
+  identity (037).
+- **Checkout:** `/book/[profileId]/pay/[appointmentId]` redirects to `/family/appointments/[id]`.
+  `POST /api/appointments/[id]/payment-order`, `/api/payments/verify` and `/api/payments/demo` answer
+  `409 { code: "payments_disabled" }`; `/api/payments/links/**` answers 404. The Razorpay webhook stays (it only acts on
+  existing payments).
+- **Attendance (044) and fees (045):** marking still works (register, case tab, schedule buttons). `attendance_mark(...,
+  p_payments_enabled => false)` and `payments_set_enabled(false)` (transaction-local `app.payments_enabled`, set by
+  `setPaymentsMode()` before 030's complete / cancel) make every marking `billable = false`; 045's billing trigger does
+  nothing, so there is no ledger charge, package session, adjustment or refund. The billing rules form and the
+  Billable / Not billable labels are hidden.
+- **Pages and APIs:** `/dashboard/fees`, `/dashboard/settings/packages`, `/cases/[id]/fees`,
+  `/family/children/[id]/payments`, `/dashboard/payouts`, `/admin/payouts`, `/pay/done`, `/pay/demo/[linkId]` are 404;
+  `app/api/fees/**`, `app/api/cases/[id]/fees/**`, `app/api/orgs/[id]/{packages,payouts}/**`,
+  `app/api/admin/payouts/**` answer `404 { code: "payments_disabled" }`. Their links are gone (dashboard top bar, admin
+  nav, settings, case tabs, the child page, series billing mode, payment labels on the schedule and
+  `/family/appointments`).
+- **Jobs:** `/api/cron/payments` and `/api/cron/payouts` answer `200 { skipped: "payments_disabled" }` (still behind
+  `CRON_SECRET`); `run*JobsSoon()` and `npm run outbox:run` skip them. `/api/cron/booking` is unchanged.
+- **Next steps (052):** no Pay step on the family home or in "What happens next", no balances on provider Today.
+- **Notifications:** payment, fee and payout kinds (`payment_refunded`, `payment_request`, `payment_receipt`,
+  `balance_reminder`, `package_reminder`, `fees_refunded`, `payout_*`) are not enqueued (`enqueue` returns
+  `SUPPRESSED_EVENT_ID`). Payment events that SQL triggers enqueue, and payment notifications fanned out before the
+  switch was turned off, are **not claimed** by the worker (`paymentWorkToSkip()` passes skip lists to
+  `outbox_claim_events` / `notifications_claim` / `outbox_has_due_work`, migration
+  `20261120005600_outbox_skip_payment_work.sql`): they stay `pending`, are never sent in the free pilot, and are
+  delivered by a worker once payments are on. A worker with payments on claims everything as before.
+- **`/for-centres`:** pilot copy (`landing.daily.pilotTitle` / `pilotText`, a family app and an intake call instead of
+  packages and payouts, `who.introPilot`, `who.centreTagPilot`, `faq.a1Pilot`); no platform fee.
+
+**Turning payments on later:** finish the open items (live Razorpay keys and review, platform fee rate, GST / CA
+sign-off, payout accounts, licences), then set `PAYMENTS_ENABLED=true` and redeploy. No migration is needed: the SQL
+defaults (`p_require_payment`, `p_payments_enabled`, an unset `app.payments_enabled`) already mean "payments on".
+Appointments booked during the pilot stay free; weekly-series sessions created during the pilot are charged per their
+billing mode once marked after the switch. Billing rules (044) and packages (045) can be set up before the switch.
+
 ## Flow
 
 ```

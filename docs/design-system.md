@@ -125,14 +125,14 @@ journey timeline and payment labels (status colours defined in `lib/`), and the 
 
 ## 5. Screens → routes
 
-There are 74 screens. Every route in the first four tables exists in `app/`; the pilot-readiness routes arrive with tickets 043–053.
+There are 80 screens. Every route in the first four tables exists in `app/`, and so do the pilot-readiness routes (tickets 043–056).
 
 ### Public & parents (mobile 390 unless marked)
 
 | Route | Screen | Figma |
 |---|---|---|
-| `/` | Parents' home: free tap check-in first, voice after sign-in, Indian statistics (ticket 050; 390 first, en/hi/te) | [12:11](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-11) |
-| `/for-centres` | Landing for therapists and centres (the former `/`, Book a demo; ticket 050) | [12:11](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-11) (designer task: own frame in "Screens · Public & parents") |
+| `/` | Parents' home: free tap check-in first, voice after sign-in, clinic-code entry in the hero (journey #1), Indian statistics (ticket 050; 390 first, en/hi/te) | [43:847](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=43-847) (mobile) · [12:11](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-11) (desktop) |
+| `/for-centres` | Landing for centres: the daily system (import, timetable, attendance, packages, payouts, AI notes, home program), no subscription, Book a demo (ticket 050) | [44:947](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=44-947) (desktop) |
 | `/find` | Find near me | [12:164](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-164) |
 | `/p/[slug]` | Provider profile | [12:319](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-319) |
 | `/book/[profileId]` | Choose a time | [12:411](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=12-411) |
@@ -214,7 +214,7 @@ There are 74 screens. Every route in the first four tables exists in `app/`; the
 | `/admin/ops` | Operations health | [22:580](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=22-580) |
 | `/admin/audit` | Audit log | [22:651](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=22-651) |
 
-### Pilot readiness (tickets 043–053; routes land as the tickets merge)
+### Pilot readiness (tickets 043–056)
 
 | Route | Screen | Figma | Ticket |
 |---|---|---|---|
@@ -226,16 +226,41 @@ There are 74 screens. Every route in the first four tables exists in `app/`; the
 | `/dashboard/import` | Import children (desktop) | [31:495](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=31-495) | 047 |
 | `/cases/[id]` | Timetable & fees tabs (desktop) | [31:616](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=31-616) | 043, 045 |
 | `/admin/payouts + /admin/ops` | Payouts & voice usage (desktop) | [31:777](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=31-777) | 046, 051 |
+| `/screen?ref=[slug]` | Check-in start with "Referred by Dr X" note (mobile 390) | [47:761](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=47-761) | 054 |
+| `/dashboard/profile/poster` | Waiting-room QR poster, printable A4 (en/te/hi) + 30-day check-in count (desktop) | [47:793](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=47-793) | 054 |
+| `/dashboard` | "Set up your centre" first-run checklist (desktop) | [50:926](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=50-926) | 056 |
+| `/family/login` | Google-only sign-in until phone codes (DLT) are available (mobile) | [50:1009](https://www.figma.com/design/TC6dXgwufo6XhhHh871wKo/?node-id=50-1009) | 056 |
+
+**Free pilot (055):** with `PAYMENTS_ENABLED` off, the payment screens (Payments 30:84, Payouts 31:340, the fees half of
+31:616, admin payouts in 31:777) are hidden in the app; their frames stay for when payments are switched on.
 
 ## 6. How the product fits together
 
-The [FigJam board](https://www.figma.com/board/RfeKYhTAT8MDj5kMbG7hfy) has five diagrams, titled on the board. The current ones are
-**Family journey v2** (free tap check-in, voice after sign-in, one-tap booking, Next step card), the **Clinician
-workflow**, and **Money flow v2** (the family pays on DoctorNearMe; after each delivered consultation Razorpay Route
-pays the centre, minus the platform fee and GST; [decision record](../specs/grill/doctornearme-mvp.md) decision 8).
+The [FigJam board](https://www.figma.com/board/RfeKYhTAT8MDj5kMbG7hfy) has seven diagrams, titled on the board. The current ones are:
+
+- **Journey #1: Centre-invited family v2** (the pilot's main path, from the
+  [PMF check](../specs/grill/doctornearme-pmf-check.md)): the centre imports children, shares a clinic code on
+  WhatsApp, the parent signs in and enters it, gives permissions (or the centre records paper consent), does the
+  intake call, then weekly sessions → attendance → AI session note and goal progress → plan and home program →
+  practice logs → Next step card. In the free first pilot (055) there is no payment step; after it, "package or
+  payment on DoctorNearMe" follows attendance.
+- **Paediatrician referral** (ticket 054): a QR poster in the waiting room opens the check-in "referred by Dr X"; the
+  family then books and continues as journey #1. The poster page counts check-ins per poster (pilot metric).
+- **Cold-path family journey v2** (secondary; free tap check-in, voice after sign-in, one-tap booking, Next step card).
+- The **Clinician workflow**, and **Money flow v2** (the family pays on DoctorNearMe; after each delivered
+  consultation Razorpay Route pays the centre, minus the platform fee and GST;
+  [decision record](../specs/grill/doctornearme-mvp.md) decision 8). Money flow v2 is deferred: the first pilot is
+  free ([pilot runbook](pilot-runbook.md)).
+
 The two v1 diagrams are marked superseded.
 
-**Family journey: Discover → Book → Prepare → Ongoing care.**
+**Centre-invited family (journey #1).** "Set up your centre" on `/dashboard` (056) → `/dashboard/import` → clinic
+code (`/family/children/claim`, also linked from the hero of `/`; families sign in with Google until phone codes are
+available) → `/family/children/[id]/privacy` or `/cases/[id]/consent/paper` → `/intake/[token]` → weekly series and
+`/dashboard/register` → session note, `/family/children/[id]/plan` and `/family/children/[id]/home-program` → Next
+step card on `/family`. With payments on, `/family/children/[id]/payments` joins after attendance.
+
+**Cold-path family journey: Discover → Book → Prepare → Ongoing care.**
 
 1. **Discover.** Parents' home page (`/`), then the check-in (`/screen`; tap free, voice after sign-in). A red flag stops the call and
    shows 108/112. Otherwise the result leads to **Find near me** (`/find`), as a list plus map or through
@@ -286,9 +311,9 @@ Everything published shows up in the **family portal**.
 
 | Area | Docs |
 |---|---|
-| Platform | [system-design](system-design.md) · [team-workflow](team-workflow.md) · [i18n](i18n.md) |
+| Platform | [system-design](system-design.md) · [team-workflow](team-workflow.md) · [i18n](i18n.md) · [pilot runbook](pilot-runbook.md) |
 | Families | [next steps (home, bottom nav, timeline, provider Today)](next-steps.md) · [guardian-auth](guardian-auth.md) · [consent](consent.md) · [health-profile](health-profile.md) · [documents](documents.md) · [sharing](sharing.md) |
-| Directory and booking | [providers](providers.md) · [maps](maps.md) · [booking](booking.md) · [payments](payments.md) · [google-meet](google-meet.md) · [ratings](ratings.md) · [pilot-seeding](pilot-seeding.md) |
+| Directory and booking | [providers](providers.md) · [referral kit (QR poster)](referrals.md) · [maps](maps.md) · [booking](booking.md) · [payments](payments.md) · [google-meet](google-meet.md) · [ratings](ratings.md) · [pilot-seeding](pilot-seeding.md) |
 | Clinical | [assessments](assessments.md) · [scribe](scribe.md) · [iep](iep.md) · [home-program](home-program.md) · [prescriptions](prescriptions.md) · [messaging](messaging.md) · [notifications](notifications.md) |
 | Voice agents | [screen](elevenlabs-screen-agent.md) · [intake](elevenlabs-agent.md) · [generic intake](elevenlabs-generic-intake-agent.md) · [booking](elevenlabs-booking-agent.md) · [follow-up](elevenlabs-followup-agent.md) |
 | Privacy | [processors](privacy/processors.md) · [retention](privacy/retention.md) · [incident response](privacy/incident-response.md) |

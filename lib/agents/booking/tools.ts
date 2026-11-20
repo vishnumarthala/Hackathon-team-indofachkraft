@@ -15,6 +15,7 @@ import { pg } from "@/lib/pg";
 import { confirmUrl, MAX_PROVIDERS, MAX_SLOTS, partOfDayOf, SLOT_SEARCH_DAYS } from "./constants";
 import type { GetSlotsInput, HoldSlotInput, SearchProvidersInput } from "./schemas";
 import { setSessionHold, type AgentSession } from "./session";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export type ToolResult = { status: number; body: Record<string, unknown> };
 
@@ -128,8 +129,9 @@ export async function getSlotsTool(input: GetSlotsInput): Promise<ToolResult> {
         end: slot.end,
         local_time: spokenTime(slot.start, service.time_zone),
         time_zone: service.time_zone,
-        payment_mode: service.payment_mode,
-        fee_inr: service.fee_inr,
+        // 055: every booking is free during the pilot.
+        payment_mode: paymentsEnabled() ? service.payment_mode : "free",
+        fee_inr: paymentsEnabled() ? service.fee_inr : 0,
       });
     }
   }
@@ -139,7 +141,7 @@ export async function getSlotsTool(input: GetSlotsInput): Promise<ToolResult> {
     provider_name: profile.display_name,
     slots,
     message: slots.length
-      ? `${input.service_mode === "video" ? "Video bookings need the parent to sign in with Google on the booking page, so hold_slot cannot hold these; offer in-clinic times if possible. " : ""}Offer these ${label} times (local_time) and ask which one to hold. Mention the fee (fee_inr, in rupees; payment_mode online = paid online after confirming, at_clinic = paid at the clinic, free = no fee). Use the exact service_id and start in hold_slot.`
+      ? `${input.service_mode === "video" ? "Video bookings need the parent to sign in with Google on the booking page, so hold_slot cannot hold these; offer in-clinic times if possible. " : ""}Offer these ${label} times (local_time) and ask which one to hold. ${paymentsEnabled() ? "Mention the fee (fee_inr, in rupees; payment_mode online = paid online after confirming, at_clinic = paid at the clinic, free = no fee)." : "Booking is free during the pilot: say there is no fee and never ask for any payment."} Use the exact service_id and start in hold_slot.`
       : `No free ${label} times in the ${SLOT_SEARCH_DAYS} days from ${input.date_from}${input.part_of_day ? ` in the ${input.part_of_day}` : ""}. Offer another day or part of the day.`,
   });
 }
@@ -201,8 +203,10 @@ export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Prom
     // 031: online services move to pending_payment at confirm and the 030 page continues to the payment step.
     // 042: demo bookings are free (no payment, no real consultation).
     const demo = profile.is_synthetic;
+    // 055: free pilot = no payment step and no fee.
+    const free = demo || !paymentsEnabled();
     const payNext =
-      !demo && service.payment_mode === "online" && service.fee_inr > 0
+      !free && service.payment_mode === "online" && service.fee_inr > 0
         ? ` After confirming, the parent pays the fee of ${service.fee_inr} rupees online on the next screen to complete the booking.`
         : "";
     return ok({
@@ -213,8 +217,8 @@ export async function holdSlotTool(input: HoldSlotInput, ctx: ToolContext): Prom
       provider_name: profile.display_name,
       start,
       local_time: spokenTime(start, service.time_zone),
-      payment_mode: demo ? "free" : service.payment_mode,
-      fee_inr: demo ? 0 : service.fee_inr,
+      payment_mode: free ? "free" : service.payment_mode,
+      fee_inr: free ? 0 : service.fee_inr,
       ...(demo ? { demo: true } : {}),
       message: `The time is held for 10 minutes, not booked yet.${demo ? ` This is a demo booking: ${DEMO_PROFILE_NOTICE}` : ""} Tell the parent to tap 'Sign in and confirm' on their screen to finish.${payNext} You cannot confirm the booking yourself.`,
     });

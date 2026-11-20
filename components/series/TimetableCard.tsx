@@ -7,6 +7,7 @@ import { minutesToTime, todayIn, utcToWall } from "@/lib/booking/time";
 import { formatDate } from "@/lib/i18n/format";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { Badge, type BadgeTone } from "@/components/ui/Badge";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 /** Next sessions listed openly per series; the rest of the 8 weeks sit behind `Show all`. */
 const VISIBLE_SESSIONS = 6;
@@ -63,6 +64,8 @@ export async function TimetableCard({ caseId, userId }: { caseId: string; userId
   const today = todayIn(zone);
   // Dates (no time) are calendar days: formatted at noon UTC so no viewer zone shifts them.
   const day = (date: string) => formatDate(`${date}T12:00:00Z`, format.locale, "long", "UTC");
+  // 055: no billing mode in the free pilot.
+  const showBilling = paymentsEnabled();
 
   return (
     <section aria-labelledby="timetable" className="space-y-4 rounded border border-slate-200 bg-white p-4" data-testid="timetable-card">
@@ -107,8 +110,10 @@ export async function TimetableCard({ caseId, userId }: { caseId: string; userId
                     {[
                       s.service_name,
                       s.mode === "video" ? tb("modes.video") : [tb("modes.in_clinic"), s.location_name].filter(Boolean).join(" · "),
-                      t("billingLabel", { mode: t(`billingModes.${s.billing_mode}`) }),
-                    ].join(" · ")}
+                      showBilling ? t("billingLabel", { mode: t(`billingModes.${s.billing_mode}`) }) : null,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </p>
                   <p className="text-sm text-slate-700">
                     {[t("fromDate", { date: day(s.starts_on) }), s.ends_on ? t("endsOnLabel", { date: day(s.ends_on) }) : null].filter(Boolean).join(" · ")}
@@ -173,7 +178,7 @@ export async function TimetableCard({ caseId, userId }: { caseId: string; userId
         })}
       </ul>
       {options.therapists.length ? (
-        <NewSeriesForm caseId={caseId} therapists={options.therapists} hasGuardian={options.hasGuardian} today={today} timeZone={zone} />
+        <NewSeriesForm caseId={caseId} therapists={options.therapists} hasGuardian={options.hasGuardian} today={today} timeZone={zone} showBilling={showBilling} />
       ) : (
         <p className="text-sm text-slate-600">{t("noTherapists")}</p>
       )}

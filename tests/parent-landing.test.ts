@@ -66,6 +66,9 @@ describe("/ (parents)", () => {
     const hero = markup.slice(markup.indexOf('id="parent-hero-title"'));
     expect(hero.indexOf('href="/screen"')).toBeGreaterThan(0);
     expect(hero.indexOf('href="/screen"')).toBeLessThan(hero.indexOf('href="/find"'));
+    // Journey #1 (centre-invited family): the clinic-code entry is in the hero, after the main actions.
+    expect(hero.indexOf('href="/family/children/claim"')).toBeGreaterThan(hero.indexOf('href="/find"'));
+    expect(hero.indexOf('href="/family/children/claim"')).toBeLessThan(hero.indexOf('id="how-title"'));
     expect(links).toContain("/family/login?next=%2Fscreen%3Fvoice%3D1");
     expect(text).toContain("Prefer to talk? Sign in to use voice (free)");
     // The parents' page is not the therapist pitch.
@@ -120,6 +123,41 @@ describe("/for-centres (the former landing)", () => {
     const meta = await centresMetadata();
     expect(meta.title).toBe(en.landing.meta.title);
     expect(meta.alternates?.canonical).toBe("https://doctornearme.example/for-centres");
+  });
+
+  it("leads with the centre's daily system and the no-subscription money model (PMF check 3c, decision 8)", async () => {
+    // 055: the paid model shows only with payments on.
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
+    const text = decode(await html(ForCentres));
+    for (const key of ["import", "timetable", "packages", "payouts", "notes", "home"] as const) {
+      expect(text).toContain(en.landing.daily[`${key}Title`]);
+    }
+    expect(text).toContain(en.landing.daily.moneyTitle);
+    expect(text.toLowerCase()).not.toMatch(/centres subscribe|subscribes:/);
+  });
+
+  it.each(["en", "hi", "te"] as const)("%s: free pilot (055, the default): pilot copy, no packages, payouts or platform fee", async (locale) => {
+    m.locale = locale;
+    const catalogue = { en, hi, te }[locale];
+    const text = decode(await html(ForCentres));
+    for (const key of ["import", "timetable", "family", "intake", "notes", "home"] as const) {
+      expect(text).toContain(catalogue.landing.daily[`${key}Title`]);
+    }
+    for (const key of ["packagesTitle", "payoutsTitle", "moneyTitle", "moneyText", "intro"] as const) {
+      expect(text).not.toContain(catalogue.landing.daily[key]);
+    }
+    expect(text).toContain(catalogue.landing.daily.pilotTitle);
+    expect(text).toContain(catalogue.landing.daily.pilotText);
+    expect(text).toContain(catalogue.landing.who.introPilot);
+    expect(text).toContain(catalogue.landing.who.centreTagPilot);
+    expect(text).toContain(catalogue.landing.faq.a1Pilot);
+    expect(text).not.toContain(catalogue.landing.who.intro);
+    expect(text).not.toContain(catalogue.landing.who.centreTag);
+    expect(text).not.toContain(catalogue.landing.faq.a1);
+    if (locale === "en") {
+      expect(text.toLowerCase()).not.toContain("platform fee");
+      expect(text).not.toContain("Razorpay");
+    }
   });
 
   it("the parents' nav also links to For centres", async () => {

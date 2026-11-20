@@ -4,6 +4,7 @@ import { runFeeJobsSoon } from "@/lib/fees/jobs";
 import { runPaymentJobsSoon } from "@/lib/payments/jobs";
 import { feesRouteError, RefundSchema, requestRefund } from "@/lib/fees/store";
 import { ok, parseJson } from "@/lib/http";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,6 +14,8 @@ export const dynamic = "force-dynamic";
 // 201 { fee_refund_id, payment_id, amount_paise, via }. The refund job sends it to Razorpay; a `refund` ledger row is
 // added when it is processed.
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const g = await requireFeesCaseApi(id, { manage: true });
   if ("response" in g) return g.response;

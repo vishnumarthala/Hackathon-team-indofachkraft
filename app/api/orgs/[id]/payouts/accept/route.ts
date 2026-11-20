@@ -2,6 +2,7 @@ import { auditActorOf } from "@/lib/audit";
 import { parseJson, ok } from "@/lib/http";
 import { requirePayoutsOrgApi } from "@/lib/payouts/authz";
 import { AcceptSchema, acceptFeePolicy, payoutsRouteError } from "@/lib/payouts/store";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,6 +11,8 @@ export const dynamic = "force-dynamic";
 // `payouts.fee_policy_accepted`). { policy_version } must be the version shown, else 409 policy_changed. Admins and
 // members 403, other organisations 404.
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const g = await requirePayoutsOrgApi(id, { owner: true });
   if ("response" in g) return g.response;

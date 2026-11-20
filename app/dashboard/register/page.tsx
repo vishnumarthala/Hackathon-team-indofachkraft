@@ -6,6 +6,7 @@ import { requireProviderPage } from "@/lib/authz";
 import { loadRegister } from "@/lib/booking/attendance";
 import { addDays } from "@/lib/booking/time";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -121,18 +122,22 @@ export default async function RegisterPage({ searchParams }: Props) {
         }))}
         manage={org.manage}
         now={new Date().toISOString()}
+        showBilling={paymentsEnabled()}
       />
 
-      <section aria-labelledby="attendance-policy" className="space-y-3 rounded border border-slate-200 bg-white p-4">
-        <h2 id="attendance-policy" className="text-lg font-semibold text-slate-900">
-          {t("policy.title")}
-        </h2>
-        <p className="text-sm text-slate-700">{t("policy.intro")}</p>
-        <p className="text-sm text-slate-800" data-testid="policy-summary">
-          {t("policy.summary", { absent: charged(policy.bill_absent), late: charged(policy.bill_late_cancel), hours: policy.late_cancel_hours })}
-        </p>
-        {org.manage ? <PolicyForm orgId={org.id} policy={policy} /> : <p className="text-sm text-slate-600">{t("policy.readOnly")}</p>}
-      </section>
+      {/* 055: the billing rules only matter once payments are on. */}
+      {paymentsEnabled() ? (
+        <section aria-labelledby="attendance-policy" className="space-y-3 rounded border border-slate-200 bg-white p-4">
+          <h2 id="attendance-policy" className="text-lg font-semibold text-slate-900">
+            {t("policy.title")}
+          </h2>
+          <p className="text-sm text-slate-700">{t("policy.intro")}</p>
+          <p className="text-sm text-slate-800" data-testid="policy-summary">
+            {t("policy.summary", { absent: charged(policy.bill_absent), late: charged(policy.bill_late_cancel), hours: policy.late_cancel_hours })}
+          </p>
+          {org.manage ? <PolicyForm orgId={org.id} policy={policy} /> : <p className="text-sm text-slate-600">{t("policy.readOnly")}</p>}
+        </section>
+      ) : null}
     </div>
   );
 }

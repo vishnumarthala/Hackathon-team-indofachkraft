@@ -5,6 +5,7 @@ import { env } from "@/lib/env";
 import { findLinkPayment } from "@/lib/fees/store";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { Alert } from "@/components/ui/Alert";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
 // 045 DEMO_MODE only: stands in for Razorpay's hosted payment link page (the QR at the desk and the family's `Pay`
 // button open it). Public like the real one; it shows the amount and the centre, never the child.
 export default async function DemoLinkPage({ params }: { params: Promise<{ linkId: string }> }) {
+  // 055: free pilot (PAYMENTS_ENABLED is not "true").
+  if (!paymentsEnabled()) notFound();
   if (!env.DEMO_MODE) notFound();
   const { linkId } = await params;
   if (!/^plink_[A-Za-z0-9]{6,40}$/.test(linkId)) notFound();

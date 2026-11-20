@@ -47,8 +47,8 @@ export type StartDeps = {
 };
 
 /**
- * POST /api/screen/sessions (048: with the parent's worries as codes; 049: voice with the call language), then (voice
- * only) the microphone prompt.
+ * POST /api/screen/sessions (048: with the parent's worries as codes; 049: voice with the call language; 054: the
+ * poster's referral slug), then (voice only) the microphone prompt.
  */
 export async function startScreen(
   ageBand: QuestionAgeBand,
@@ -56,13 +56,21 @@ export async function startScreen(
   deps: StartDeps,
   concerns: readonly ScreenConcern[] = [],
   language?: Locale,
+  /** 054: the referring provider's public slug from the poster link; the server checks it. */
+  ref?: string | null,
 ): Promise<StartOutcome> {
   let res: Response;
   try {
     res = await deps.fetchFn("/api/screen/sessions", {
       method: "POST",
       headers: voiceStartHeaders(mode === "voice" ? deps.turnstileToken : null),
-      body: JSON.stringify({ age_band: ageBand, mode, concerns, ...(mode === "voice" && language ? { language } : {}) }),
+      body: JSON.stringify({
+        age_band: ageBand,
+        mode,
+        concerns,
+        ...(mode === "voice" && language ? { language } : {}),
+        ...(ref ? { ref } : {}),
+      }),
     });
   } catch {
     return { kind: "error", error: "failed" };

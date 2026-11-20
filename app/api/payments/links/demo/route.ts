@@ -3,6 +3,7 @@ import { env } from "@/lib/env";
 import { findLinkPayment } from "@/lib/fees/store";
 import { fail, ok, parseJson } from "@/lib/http";
 import { demoId, paymentLinkSignature, razorpaySettings } from "@/lib/payments/razorpay";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,6 +14,8 @@ const DemoSchema = z.object({ link_id: z.string().regex(/^plink_[A-Za-z0-9]{6,40
 // returns the signed redirect Razorpay would send (the page follows it to /api/payments/links/callback, the same path
 // as a real payment); `failure` does nothing to the link (a real failed attempt leaves it open too).
 export async function POST(req: Request) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   if (!env.DEMO_MODE) return fail(404, "Not found");
   const parsed = await parseJson(req, DemoSchema);
   if ("response" in parsed) return parsed.response;

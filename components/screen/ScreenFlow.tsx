@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { useTurnstile } from "@/components/security/Turnstile";
+import { Alert } from "@/components/ui/Alert";
 import { CallLanguageNote, VoiceLanguageChoice } from "@/components/voice/VoiceLanguageChoice";
 import { planVoiceLanguage } from "@/lib/agents/languages";
 import type { ScreenDemoScript } from "@/lib/agents/screen/demo-script";
@@ -19,6 +20,7 @@ import {
   type ScreenQuestion,
   type ScreenResult,
 } from "@/lib/screen/questions";
+import { referralPath } from "@/lib/referrals/link";
 import { voiceSignInHref } from "@/lib/voice/constants";
 import { Over8Notice, Under18Guidance } from "./AgeGuidance";
 import { DemoVoiceCheckin } from "./DemoVoiceCheckin";
@@ -31,6 +33,9 @@ import { VoiceCheckin } from "./VoiceCheckin";
 import { AGE_BAND_KEYS, primaryButton, secondaryButton } from "./view";
 
 type Notice = "demo" | "mic" | "voiceFailed" | "silence" | null;
+
+/** 054: a verified + listed provider whose waiting-room poster brought the parent here (resolved by the page). */
+export type ScreenReferral = { slug: string; name: string; typeLabel: string | null };
 type Step =
   | { kind: "intro" }
   | {
@@ -92,6 +97,8 @@ const GUARD_ERRORS = new Set(["quotaDay", "quotaMonth", "paused", "concurrent", 
 // here with `?voice=1`. Quota, budget and bot-check refusals keep the tap option on screen.
 // 049: voice speaks the page language when the agent has it (`voiceLanguages`); otherwise the page offers "Voice in
 // English" or tapping in the page language (FR-4). DEMO_MODE runs the scripted voice check-in in the call language.
+// 054: `/screen?ref=<slug>` from a provider's poster shows a calm "Referred by" note; the slug goes with the start
+// request (the server resolves it again) and survives the voice sign-in round trip.
 export function ScreenFlow({
   viewer,
   localities,
@@ -99,6 +106,7 @@ export function ScreenFlow({
   voiceLanguages = ["en"],
   turnstileSiteKey = null,
   voiceIntent = false,
+  referral = null,
 }: {
   viewer: SaveViewer;
   localities: LocalityOption[];
@@ -109,6 +117,8 @@ export function ScreenFlow({
   turnstileSiteKey?: string | null;
   /** 051: back from signing in to use voice (`/screen?voice=1`). */
   voiceIntent?: boolean;
+  /** 054: the referring provider (`/screen?ref=<slug>`), or null. */
+  referral?: ScreenReferral | null;
 }) {
   const t = useT("screen");
   const tf = useT("voiceAgents.fallback");
@@ -172,6 +182,7 @@ export function ScreenFlow({
       },
       concerns.filter((c) => offeredConcerns.includes(c)),
       mode === "voice" ? language : undefined,
+      referral?.slug ?? null,
     );
     if (mode === "voice") turnstile.reset();
     setStarting(null);
@@ -214,6 +225,12 @@ export function ScreenFlow({
   return (
     <div className="space-y-6">
       <header className="space-y-3">
+        {referral ? (
+          <Alert as="p" role="note" tone="info" data-testid="screen-referral">
+            {t("referredBy", { name: referral.name })}
+            {referral.typeLabel ? <span className="text-sky-800"> · {referral.typeLabel}</span> : null}
+          </Alert>
+        ) : null}
         <h1 className="text-3xl font-bold text-slate-900">{t("title")}</h1>
         {step.kind === "intro" ? <p className="text-lg text-slate-800">{t("intro")}</p> : null}
       </header>
@@ -333,7 +350,7 @@ export function ScreenFlow({
                       {turnstile.widget}
                     </>
                   ) : (
-                    <Link href={voiceSignInHref("/screen?voice=1")} className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline underline-offset-4">
+                    <Link href={voiceSignInHref(referral ? `${referralPath(referral.slug)}&voice=1` : "/screen?voice=1")} className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline underline-offset-4">
                       {t("voiceSignIn")}
                     </Link>
                   )}

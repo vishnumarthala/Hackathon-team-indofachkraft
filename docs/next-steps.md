@@ -2,6 +2,10 @@
 
 Each role gets one obvious next action (Figma `/family — Home` 15:11 and `/dashboard — Cases` 18:11).
 
+**Free pilot mode (055):** unless `PAYMENTS_ENABLED=true`, there is no `pay` step (no balance, package or booking-hold
+queries), "What happens next" has no Pay action and provider Today shows no balances. See
+[payments.md](payments.md#free-pilot-mode-ticket-055).
+
 ## Family home (`/family`)
 
 `app/family/(portal)/page.tsx` renders, top to bottom:

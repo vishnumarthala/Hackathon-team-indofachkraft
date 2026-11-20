@@ -205,6 +205,8 @@ describe.skipIf(!enabled)("appointment intake (database, route handlers, outbox)
 
   beforeAll(async () => {
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     vi.stubEnv("INTAKE_LINK_SECRET", "test-intake-link-secret-035");
     vi.stubEnv("ELEVENLABS_WEBHOOK_SECRET", SECRET);
     vi.stubEnv("ELEVENLABS_AGENT_ID", CHILD_DEV_AGENT);

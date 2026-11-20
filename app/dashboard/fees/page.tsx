@@ -4,6 +4,8 @@ import { requireProviderPage } from "@/lib/authz";
 import { listBalancesDue } from "@/lib/fees/store";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { canManage, listMemberships } from "@/lib/orgs";
+import { notFound } from "next/navigation";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
 // 045 FR-7 / FR-8: balances due and ending packages across the organisations the user manages (owner/admin), with the
 // `Overdue` (unpaid 3 days after a session) and `Package ending` (<= 2 sessions or <= 7 days) badges.
 export default async function FeesDashboardPage() {
+  // 055: free pilot (PAYMENTS_ENABLED is not "true").
+  if (!paymentsEnabled()) notFound();
   const { user } = await requireProviderPage();
   const t = await getT("fees.dashboard");
   const tc = await getT("fees.caseTab");

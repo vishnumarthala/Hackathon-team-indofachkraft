@@ -11,8 +11,7 @@ Hyderabad pilot launch (launch checklist item).
 Copy rules in every language: no word for "diagnose" or "diagnosis" except "not a diagnosis" (`निदान नहीं` /
 `నిర్ధారణ కాదు`); never "HIPAA compliant"; `DoctorNearMe`, `CareThread`, `ISAA` stay in Latin script.
 
-Rows: 3292. Not yet approved: 3292.
-Rows: 3363. Not yet approved: 3363.
+Rows: 3591. Not yet approved: 3591.
 
 | key | en | hi | te | reviewer | status |
 | --- | --- | --- | --- | --- | --- |
@@ -485,7 +484,8 @@ Rows: 3363. Not yet approved: 3363.
 | `landing.who.eyebrow` | Who it's for | यह किसके लिए है | ఇది ఎవరి కోసం |  | pending |
 | `landing.who.title` | Built for therapists. | थेरेपिस्ट के लिए बना। | థెరపిస్టుల కోసం తయారైంది. |  | pending |
 | `landing.who.titleEm` | Simple for everyone around them. | उनके आसपास सबके लिए आसान। | వారి చుట్టూ ఉన్న అందరికీ సులభం. |  | pending |
-| `landing.who.intro` | Therapists log in and do the work. Centres subscribe. Families and specialists join free, by link. | थेरेपिस्ट लॉग इन करके काम करते हैं। सेंटर सब्सक्राइब करते हैं। परिवार और स्पेशलिस्ट लिंक से मुफ़्त जुड़ते हैं। | థెరపిస్టులు లాగిన్ అయి పని చేస్తారు. సెంటర్లు సబ్‌స్క్రైబ్ చేస్తాయి. కుటుంబాలు మరియు స్పెషలిస్టులు లింక్ ద్వారా ఉచితంగా చేరతారు. |  | pending |
+| `landing.who.intro` | Therapists log in and do the work. Centres pay no subscription, only a platform fee per paid session. Families join free with a clinic code, specialists by link. | थेरेपिस्ट लॉग इन करके काम करते हैं। सेंटर कोई सब्सक्रिप्शन नहीं देते, सिर्फ़ हर भुगतान वाले सेशन पर प्लेटफ़ॉर्म फ़ीस। परिवार क्लिनिक कोड से और स्पेशलिस्ट लिंक से मुफ़्त जुड़ते हैं। | థెరపిస్టులు లాగిన్ అయి పని చేస్తారు. సెంటర్లకు సబ్‌స్క్రిప్షన్ లేదు, చెల్లించిన ప్రతి సెషన్‌పై ప్లాట్‌ఫామ్ ఫీజు మాత్రమే. కుటుంబాలు క్లినిక్ కోడ్‌తో, స్పెషలిస్టులు లింక్ ద్వారా ఉచితంగా చేరతారు. |  | pending |
+| `landing.who.introPilot` | Therapists log in and do the work. During the pilot it is free for centres. Families join free with a clinic code, specialists by link. | थेरेपिस्ट लॉग इन करके काम करते हैं। पायलट के दौरान सेंटरों के लिए यह मुफ़्त है। परिवार क्लिनिक कोड से और स्पेशलिस्ट लिंक से मुफ़्त जुड़ते हैं। | థెరపిస్టులు లాగిన్ అయి పని చేస్తారు. పైలట్ సమయంలో సెంటర్లకు ఇది ఉచితం. కుటుంబాలు క్లినిక్ కోడ్‌తో, స్పెషలిస్టులు లింక్ ద్వారా ఉచితంగా చేరతారు. |  | pending |
 | `landing.who.today` | Today | आज | ఈరోజు |  | pending |
 | `landing.who.withUs` | With DoctorNearMe | DoctorNearMe के साथ | DoctorNearMe తో |  | pending |
 | `landing.who.therapistLogin` | Therapist log in | थेरेपिस्ट लॉग इन | థెరపిస్ట్ లాగిన్ |  | pending |
@@ -494,7 +494,8 @@ Rows: 3363. Not yet approved: 3363.
 | `landing.who.therapistPain` | Fills a 40-item form while watching the child. Writes reports after hours. | बच्चे को देखते हुए 40 आइटम का फ़ॉर्म भरती हैं। काम के बाद रिपोर्ट लिखती हैं। | పిల్లలను గమనిస్తూనే 40 అంశాల ఫారమ్ నింపుతారు. పని వేళల తర్వాత రిపోర్టులు రాస్తారు. |  | pending |
 | `landing.who.therapistGain` | Arrives with a brief. The form fills itself, she confirms every item. | ब्रीफ़ के साथ आती हैं। फ़ॉर्म अपने आप भरता है, वे हर आइटम की पुष्टि करती हैं। | బ్రీఫ్‌తో వస్తారు. ఫారమ్ దానంతట అదే నిండుతుంది, ప్రతి అంశాన్ని వారు ధృవీకరిస్తారు. |  | pending |
 | `landing.who.centreWho` | The centre | सेंटर | సెంటర్ |  | pending |
-| `landing.who.centreTag` | Subscribes: one plan per clinician | सब्सक्राइब करता है: हर क्लिनिशियन के लिए एक प्लान | సబ్‌స్క్రైబ్ చేస్తుంది: ప్రతి క్లినీషియన్‌కు ఒక ప్లాన్ |  | pending |
+| `landing.who.centreTag` | No subscription: a platform fee per paid session | कोई सब्सक्रिप्शन नहीं: हर भुगतान वाले सेशन पर प्लेटफ़ॉर्म फ़ीस | సబ్‌స్క్రిప్షన్ లేదు: చెల్లించిన ప్రతి సెషన్‌పై ప్లాట్‌ఫామ్ ఫీజు |  | pending |
+| `landing.who.centreTagPilot` | Free during the pilot | पायलट के दौरान मुफ़्त | పైలట్ సమయంలో ఉచితం |  | pending |
 | `landing.who.centrePain` | Therapist burnout and churn. Records differ from centre to centre. | थेरेपिस्ट की थकान और नौकरी छोड़ना। हर सेंटर का रिकॉर्ड अलग। | థెరపిస్టుల అలసట, ఉద్యోగం వదిలేయడం. సెంటర్‌కు సెంటర్‌కు రికార్డులు వేరు. |  | pending |
 | `landing.who.centreGain` | More assessments per therapist and one standard, evidence-backed record with an audit log. | हर थेरेपिस्ट से ज़्यादा आकलन और ऑडिट लॉग के साथ एक जैसा, सबूत पर आधारित रिकॉर्ड। | ప్రతి థెరపిస్టుకు ఎక్కువ అసెస్‌మెంట్లు, ఆడిట్ లాగ్‌తో ఒకే ప్రామాణిక, ఆధారాలతో కూడిన రికార్డ్. |  | pending |
 | `landing.who.familyWho` | The family | परिवार | కుటుంబం |  | pending |
@@ -547,7 +548,8 @@ Rows: 3363. Not yet approved: 3363.
 | `landing.faq.title` | Questions, answered. | आपके सवाल, हमारे जवाब। | మీ ప్రశ్నలకు జవాబులు. |  | pending |
 | `landing.faq.intro` | Something else on your mind? Ask us on the demo call. | कुछ और पूछना है? डेमो कॉल पर हमसे पूछें। | ఇంకేమైనా అడగాలా? డెమో కాల్‌లో మమ్మల్ని అడగండి. |  | pending |
 | `landing.faq.q1` | Who uses DoctorNearMe? | DoctorNearMe कौन इस्तेमाल करता है? | DoctorNearMe ని ఎవరు ఉపయోగిస్తారు? |  | pending |
-| `landing.faq.a1` | Early intervention therapists and child psychologists use it every day. Centres subscribe for their team. Parents and specialists never need an account: they get a link from the therapist. | अर्ली इंटरवेंशन थेरेपिस्ट और चाइल्ड साइकोलॉजिस्ट इसे हर दिन इस्तेमाल करते हैं। सेंटर अपनी टीम के लिए सब्सक्राइब करते हैं। माता-पिता और स्पेशलिस्ट को अकाउंट की ज़रूरत नहीं होती: उन्हें थेरेपिस्ट से एक लिंक मिलता है। | ఎర్లీ ఇంటర్వెన్షన్ థెరపిస్టులు మరియు చైల్డ్ సైకాలజిస్టులు ప్రతిరోజూ ఉపయోగిస్తారు. సెంటర్లు తమ బృందం కోసం సబ్‌స్క్రైబ్ చేస్తాయి. తల్లిదండ్రులు మరియు స్పెషలిస్టులకు అకౌంట్ అవసరం లేదు: వారికి థెరపిస్ట్ నుండి ఒక లింక్ వస్తుంది. |  | pending |
+| `landing.faq.a1` | Early intervention therapists and child psychologists use it every day, and centres run their timetable, attendance and payments on it. Families join free with a clinic code from their centre; specialists open a referral by link. | अर्ली इंटरवेंशन थेरेपिस्ट और बाल मनोवैज्ञानिक इसे रोज़ इस्तेमाल करते हैं, और सेंटर इस पर अपना टाइमटेबल, उपस्थिति और भुगतान चलाते हैं। परिवार अपने सेंटर के क्लिनिक कोड से मुफ़्त जुड़ते हैं; स्पेशलिस्ट रेफ़रल लिंक से खोलते हैं। | ఎర్లీ ఇంటర్వెన్షన్ థెరపిస్టులు మరియు చైల్డ్ సైకాలజిస్టులు దీన్ని ప్రతిరోజూ వాడతారు, సెంటర్లు దీనిలో తమ టైమ్‌టేబుల్, హాజరు మరియు చెల్లింపులు నడుపుతాయి. కుటుంబాలు తమ సెంటర్ క్లినిక్ కోడ్‌తో ఉచితంగా చేరతాయి; స్పెషలిస్టులు రెఫరల్ లింక్‌తో తెరుస్తారు. |  | pending |
+| `landing.faq.a1Pilot` | Early intervention therapists and child psychologists use it every day, and centres run their timetable and attendance on it. Families join free with a clinic code from their centre; specialists open a referral by link. | अर्ली इंटरवेंशन थेरेपिस्ट और बाल मनोवैज्ञानिक इसे रोज़ इस्तेमाल करते हैं, और सेंटर इस पर अपना टाइमटेबल और उपस्थिति चलाते हैं। परिवार अपने सेंटर के क्लिनिक कोड से मुफ़्त जुड़ते हैं; स्पेशलिस्ट रेफ़रल लिंक से खोलते हैं। | ఎర్లీ ఇంటర్వెన్షన్ థెరపిస్టులు మరియు చైల్డ్ సైకాలజిస్టులు దీన్ని ప్రతిరోజూ వాడతారు, సెంటర్లు దీనిలో తమ టైమ్‌టేబుల్ మరియు హాజరు నడుపుతాయి. కుటుంబాలు తమ సెంటర్ క్లినిక్ కోడ్‌తో ఉచితంగా చేరతాయి; స్పెషలిస్టులు రెఫరల్ లింక్‌తో తెరుస్తారు. |  | pending |
 | `landing.faq.q2` | Who makes the clinical decision? | क्लिनिकल फ़ैसला कौन लेता है? | క్లినికల్ నిర్ణయం ఎవరు తీసుకుంటారు? |  | pending |
 | `landing.faq.a2` | Always the clinician. DoctorNearMe is not a diagnosis. It documents what was said and suggests ratings with evidence. The clinician reviews, edits and decides every item. | हमेशा क्लिनिशियन। DoctorNearMe निदान नहीं है। यह लिखता है कि क्या कहा गया और सबूत के साथ रेटिंग सुझाता है। क्लिनिशियन हर आइटम को देखते, बदलते और तय करते हैं। | ఎప్పుడూ క్లినీషియనే. DoctorNearMe నిర్ధారణ కాదు. చెప్పిన విషయాలను ఇది నమోదు చేసి, ఆధారాలతో రేటింగ్‌లు సూచిస్తుంది. క్లినీషియన్ ప్రతి అంశాన్ని చూసి, సవరించి, నిర్ణయిస్తారు. |  | pending |
 | `landing.faq.q3` | What happens in the AI intake call? | AI इनटेक कॉल में क्या होता है? | AI ఇన్‌టేక్ కాల్‌లో ఏమి జరుగుతుంది? |  | pending |
@@ -564,6 +566,31 @@ Rows: 3363. Not yet approved: 3363.
 | `landing.cta.text` | See DoctorNearMe on a sample case in a short call. If it fits, we set up your centre's workspace and send your team their logins. | एक छोटी कॉल में सैंपल केस पर DoctorNearMe देखें। अगर सही लगे, तो हम आपके सेंटर का वर्कस्पेस सेट करते हैं और आपकी टीम को लॉग-इन भेजते हैं। | ఒక చిన్న కాల్‌లో నమూనా కేసుపై DoctorNearMe ని చూడండి. సరిపోతే, మీ సెంటర్ వర్క్‌స్పేస్ సెటప్ చేసి, మీ బృందానికి లాగిన్‌లు పంపుతాము. |  | pending |
 | `landing.cta.bookDemo` | Book a demo | डेमो बुक करें | డెమో బుక్ చేయండి |  | pending |
 | `landing.cta.logIn` | Log in to your workspace | अपने वर्कस्पेस में लॉग इन करें | మీ వర్క్‌స్పేస్‌లోకి లాగిన్ అవ్వండి |  | pending |
+| `landing.daily.eyebrow` | Your centre's daily system | आपके सेंटर का रोज़ का सिस्टम | మీ సెంటర్ రోజువారీ వ్యవస్థ |  | pending |
+| `landing.daily.title` | Run the whole centre | पूरा सेंटर चलाइए | మొత్తం సెంటర్‌ను నడపండి |  | pending |
+| `landing.daily.titleEm` | in one place. | एक ही जगह से। | ఒకే చోట నుండి. |  | pending |
+| `landing.daily.intro` | The jobs you do every day, not just the assessment. Families pay on DoctorNearMe, and your team's records stay in one place. | सिर्फ़ आकलन नहीं, रोज़ के सारे काम। परिवार DoctorNearMe पर भुगतान करते हैं, और आपकी टीम के रिकॉर्ड एक ही जगह रहते हैं। | అసెస్‌మెంట్ మాత్రమే కాదు, ప్రతిరోజూ చేసే అన్ని పనులు. కుటుంబాలు DoctorNearMeలో చెల్లిస్తాయి, మీ టీమ్ రికార్డులు ఒకే చోట ఉంటాయి. |  | pending |
+| `landing.daily.introPilot` | The jobs you do every day, not just the assessment. Your team's records stay in one place. | सिर्फ़ आकलन नहीं, रोज़ के सारे काम। आपकी टीम के रिकॉर्ड एक ही जगह रहते हैं। | అసెస్‌మెంట్ మాత్రమే కాదు, ప్రతిరోజూ చేసే అన్ని పనులు. మీ టీమ్ రికార్డులు ఒకే చోట ఉంటాయి. |  | pending |
+| `landing.daily.importTitle` | Import your children | अपने बच्चों की सूची इम्पोर्ट करें | మీ పిల్లల జాబితాను ఇంపోర్ట్ చేయండి |  | pending |
+| `landing.daily.importText` | Upload your list from Excel or Google Sheets, then share clinic codes with families on WhatsApp. | Excel या Google Sheets से अपनी सूची अपलोड करें, फिर परिवारों को WhatsApp पर क्लिनिक कोड भेजें। | Excel లేదా Google Sheets నుండి మీ జాబితాను అప్‌లోడ్ చేయండి, తర్వాత కుటుంబాలకు WhatsAppలో క్లినిక్ కోడ్ పంపండి. |  | pending |
+| `landing.daily.timetableTitle` | Weekly timetable and attendance | साप्ताहिक टाइमटेबल और उपस्थिति | వారపు టైమ్‌టేబుల్ మరియు హాజరు |  | pending |
+| `landing.daily.timetableText` | Repeat sessions (Mon/Wed/Fri) and mark attended or no-show from the front desk on a phone. | सेशन दोहराएँ (सोम/बुध/शुक्र) और फ़्रंट डेस्क से फ़ोन पर आए या नहीं आए दर्ज करें। | సెషన్లను పునరావృతం చేయండి (సోమ/బుధ/శుక్ర), ఫ్రంట్ డెస్క్ నుండి ఫోన్‌లోనే హాజరు లేదా గైర్హాజరు నమోదు చేయండి. |  | pending |
+| `landing.daily.packagesTitle` | Packages, payment links and receipts | पैकेज, पेमेंट लिंक और रसीदें | ప్యాకేజీలు, పేమెంట్ లింకులు మరియు రసీదులు |  | pending |
+| `landing.daily.packagesText` | Sell monthly packages or charge per session. Families pay by UPI or card; receipts go out on WhatsApp. | मासिक पैकेज बेचें या हर सेशन का शुल्क लें। परिवार UPI या कार्ड से भुगतान करते हैं; रसीदें WhatsApp पर जाती हैं। | నెలవారీ ప్యాకేజీలు అమ్మండి లేదా ప్రతి సెషన్‌కు ఛార్జ్ చేయండి. కుటుంబాలు UPI లేదా కార్డ్‌తో చెల్లిస్తాయి; రసీదులు WhatsAppలో వెళ్తాయి. |  | pending |
+| `landing.daily.payoutsTitle` | Payouts after every session | हर सेशन के बाद भुगतान | ప్రతి సెషన్ తర్వాత చెల్లింపు |  | pending |
+| `landing.daily.payoutsText` | Razorpay Route pays your centre after each delivered session, minus the platform fee. A monthly statement is included. | हर पूरे हुए सेशन के बाद Razorpay Route आपके सेंटर को भुगतान करता है, प्लेटफ़ॉर्म फ़ीस घटाकर। मासिक स्टेटमेंट शामिल है। | పూర్తయిన ప్రతి సెషన్ తర్వాత Razorpay Route మీ సెంటర్‌కు చెల్లిస్తుంది, ప్లాట్‌ఫామ్ ఫీజు తీసివేసి. నెలవారీ స్టేట్‌మెంట్ కూడా ఉంటుంది. |  | pending |
+| `landing.daily.familyTitle` | A family app in their language | उनकी भाषा में परिवार के लिए ऐप | వారి భాషలో కుటుంబాల కోసం యాప్ |  | pending |
+| `landing.daily.familyText` | Families see visits, the plan, home activities and messages in Telugu, Hindi or English, with a clinic code from you. | आपके दिए क्लिनिक कोड से परिवार विज़िट, प्लान, घर की गतिविधियाँ और संदेश तेलुगु, हिंदी या अंग्रेज़ी में देखते हैं। | మీరు ఇచ్చే క్లినిక్ కోడ్‌తో కుటుంబాలు విజిట్‌లు, ప్లాన్, ఇంటి కార్యకలాపాలు మరియు సందేశాలను తెలుగు, హిందీ లేదా ఇంగ్లీష్‌లో చూస్తాయి. |  | pending |
+| `landing.daily.intakeTitle` | An intake call before the first session | पहले सेशन से पहले इनटेक कॉल | మొదటి సెషన్‌కు ముందు ఇన్‌టేక్ కాల్ |  | pending |
+| `landing.daily.intakeText` | Parents talk to the assistant in their language; you start session 1 with a brief. | माता-पिता अपनी भाषा में असिस्टेंट से बात करते हैं; आप पहला सेशन एक ब्रीफ़ के साथ शुरू करते हैं। | తల్లిదండ్రులు తమ భాషలో అసిస్టెంట్‌తో మాట్లాడతారు; మీరు మొదటి సెషన్‌ను ఒక బ్రీఫ్‌తో ప్రారంభిస్తారు. |  | pending |
+| `landing.daily.notesTitle` | AI session notes and goal progress | AI सेशन नोट्स और लक्ष्य की प्रगति | AI సెషన్ నోట్స్ మరియు లక్ష్యాల పురోగతి |  | pending |
+| `landing.daily.notesText` | Record the session, then confirm the draft note and goal progress. Families see only what you publish. | सेशन रिकॉर्ड करें, फिर ड्राफ़्ट नोट और लक्ष्य की प्रगति की पुष्टि करें। परिवार सिर्फ़ वही देखते हैं जो आप प्रकाशित करते हैं। | సెషన్‌ను రికార్డ్ చేయండి, తర్వాత డ్రాఫ్ట్ నోట్ మరియు లక్ష్యాల పురోగతిని ధృవీకరించండి. మీరు ప్రచురించినదే కుటుంబాలు చూస్తాయి. |  | pending |
+| `landing.daily.homeTitle` | A home program families use | होम प्रोग्राम जिसे परिवार सच में इस्तेमाल करते हैं | కుటుంబాలు నిజంగా వాడే హోమ్ ప్రోగ్రామ్ |  | pending |
+| `landing.daily.homeText` | Send home activities; parents log practice, so progress continues between sessions. | घर की गतिविधियाँ भेजें; माता-पिता अभ्यास दर्ज करते हैं, ताकि सेशन के बीच भी प्रगति जारी रहे। | ఇంటి కార్యకలాపాలు పంపండి; తల్లిదండ్రులు అభ్యాసాన్ని నమోదు చేస్తారు, కాబట్టి సెషన్ల మధ్య కూడా పురోగతి కొనసాగుతుంది. |  | pending |
+| `landing.daily.moneyTitle` | No subscription. | कोई सब्सक्रिप्शन नहीं। | సబ్‌స్క్రిప్షన్ లేదు. |  | pending |
+| `landing.daily.moneyText` | Families pay on DoctorNearMe. After each delivered session we pay your centre through Razorpay Route, minus a platform fee, with a monthly statement. | परिवार DoctorNearMe पर भुगतान करते हैं। हर पूरे हुए सेशन के बाद हम Razorpay Route से आपके सेंटर को भुगतान करते हैं, प्लेटफ़ॉर्म फ़ीस घटाकर, मासिक स्टेटमेंट के साथ। | కుటుంబాలు DoctorNearMeలో చెల్లిస్తాయి. పూర్తయిన ప్రతి సెషన్ తర్వాత మేము Razorpay Route ద్వారా మీ సెంటర్‌కు చెల్లిస్తాము, ప్లాట్‌ఫామ్ ఫీజు తీసివేసి, నెలవారీ స్టేట్‌మెంట్‌తో. |  | pending |
+| `landing.daily.pilotTitle` | Free for pilot centres. | पायलट सेंटरों के लिए मुफ़्त। | పైలట్ సెంటర్లకు ఉచితం. |  | pending |
+| `landing.daily.pilotText` | During the Hyderabad pilot, DoctorNearMe is free for your centre and your families: no subscription, no fees, no card needed. | हैदराबाद पायलट के दौरान DoctorNearMe आपके सेंटर और आपके परिवारों के लिए मुफ़्त है: कोई सब्सक्रिप्शन नहीं, कोई फ़ीस नहीं, कार्ड की ज़रूरत नहीं। | హైదరాబాద్ పైలట్ సమయంలో DoctorNearMe మీ సెంటర్‌కు, మీ కుటుంబాలకు ఉచితం: సబ్‌స్క్రిప్షన్ లేదు, ఫీజులు లేవు, కార్డు అవసరం లేదు. |  | pending |
 | `bookDemo.meta.title` | Book a demo - DoctorNearMe | डेमो बुक करें - DoctorNearMe | డెమో బుక్ చేయండి - DoctorNearMe |  | pending |
 | `bookDemo.meta.description` | See DoctorNearMe on a sample case and join the pilot for early intervention centres. | सैंपल केस पर DoctorNearMe देखें और अर्ली इंटरवेंशन सेंटर के पायलट से जुड़ें। | నమూనా కేసుపై DoctorNearMe ని చూడండి, ఎర్లీ ఇంటర్వెన్షన్ సెంటర్ల పైలట్‌లో చేరండి. |  | pending |
 | `bookDemo.eyebrow` | Book a demo | डेमो बुक करें | డెమో బుక్ చేయండి |  | pending |
@@ -698,6 +725,8 @@ Rows: 3363. Not yet approved: 3363.
 | `family.login.clinician` | Are you a clinician? Sign in here | क्या आप क्लिनिशियन हैं? यहां साइन इन करें | మీరు క్లినీషియనా? ఇక్కడ సైన్ ఇన్ చేయండి |  | pending |
 | `family.login.privacy` | We use your number only to sign you in and send appointment updates. | हम आपका नंबर सिर्फ़ साइन इन कराने और अपॉइंटमेंट की जानकारी भेजने के लिए इस्तेमाल करते हैं। | మీ నంబర్‌ను సైన్ ఇన్ కోసం మరియు అపాయింట్‌మెంట్ సమాచారం పంపడానికి మాత్రమే ఉపయోగిస్తాము. |  | pending |
 | `family.login.botCheck` | Please complete the quick check, then send the code again. | कृपया छोटी जाँच पूरी करें, फिर कोड दोबारा भेजें। | దయచేసి చిన్న తనిఖీ పూర్తి చేసి, ఆపై కోడ్‌ను మళ్ళీ పంపండి. |  | pending |
+| `family.login.phoneUnavailable` | Phone sign-in is not available yet. For now, please continue with Google. | फ़ोन से साइन इन अभी उपलब्ध नहीं है। फ़िलहाल कृपया Google से जारी रखें। | ఫోన్‌తో సైన్ ఇన్ ఇంకా అందుబాటులో లేదు. ప్రస్తుతానికి దయచేసి Googleతో కొనసాగండి. |  | pending |
+| `family.login.noMethods` | Sign-in is not available right now. Please ask your centre for help. | अभी साइन इन उपलब्ध नहीं है। कृपया मदद के लिए अपने सेंटर से पूछें। | ప్రస్తుతం సైన్ ఇన్ అందుబాటులో లేదు. దయచేసి సహాయం కోసం మీ సెంటర్‌ను అడగండి. |  | pending |
 | `family.shell.navLabel` | Family account | परिवार खाता | కుటుంబ ఖాతా |  | pending |
 | `family.shell.home` | Home | होम | హోమ్ |  | pending |
 | `family.shell.children` | Children | बच्चे | పిల్లలు |  | pending |
@@ -716,8 +745,8 @@ Rows: 3363. Not yet approved: 3363.
 | `family.shell.unread_one` | {count} unread message | {count} बिना पढ़ा संदेश | {count} చదవని సందేశం |  | pending |
 | `family.shell.unread_other` | {count} unread messages | {count} बिना पढ़े संदेश | {count} చదవని సందేశాలు |  | pending |
 | `family.shell.records` | Your records | आपके रिकॉर्ड | మీ రికార్డులు |  | pending |
-| `family.home.greeting` | Namaste, {name} | नमस्ते, {name} | నమస్తే, {name} |  | pending |
 | `family.home.there` | there | जी | గారు |  | pending |
+| `family.home.greeting` | Namaste, {name} | नमस्ते, {name} | నమస్తే, {name} |  | pending |
 | `family.home.thisWeek` | Here is what's happening with {children} this week | इस हफ़्ते {children} के साथ क्या हो रहा है | ఈ వారం {children} తో ఏమి జరుగుతోంది |  | pending |
 | `family.home.thisWeekNone` | Let's set up your child's care. It takes two minutes. | चलिए, आपके बच्चे की देखभाल शुरू करते हैं। इसमें दो मिनट लगते हैं। | మీ బిడ్డ సంరక్షణను ప్రారంభిద్దాం. దీనికి రెండు నిమిషాలు పడుతుంది. |  | pending |
 | `family.home.nextStep` | Next step | अगला कदम | తదుపరి అడుగు |  | pending |
@@ -1850,6 +1879,33 @@ Rows: 3363. Not yet approved: 3363.
 | `privacy.admin.ops.voiceCapSaved` | Saved. | सेव हो गया। | సేవ్ అయింది. |  | pending |
 | `privacy.admin.ops.voiceCapFailed` | Could not save. Please try again. | सेव नहीं हो सका। कृपया फिर से कोशिश करें। | సేవ్ చేయలేకపోయాం. దయచేసి మళ్ళీ ప్రయత్నించండి. |  | pending |
 | `privacy.admin.ops.voiceCapInUse` | In use: {daily} per day, {monthly} per month | लागू: {daily} प्रति दिन, {monthly} प्रति माह | అమలులో: రోజుకు {daily}, నెలకు {monthly} |  | pending |
+| `privacy.admin.ops.readiness.title` | Pilot readiness | पायलट की तैयारी | పైలట్ సన్నద్ధత |  | pending |
+| `privacy.admin.ops.readiness.intro` | Configuration checks before real families use DoctorNearMe. Fix every blocker; warnings can wait; payments and licences are deferred. | असली परिवारों के DoctorNearMe इस्तेमाल करने से पहले कॉन्फ़िगरेशन जाँच। हर रुकावट ठीक करें; चेतावनियाँ इंतज़ार कर सकती हैं; भुगतान और लाइसेंस बाद में। | నిజమైన కుటుంబాలు DoctorNearMe వాడే ముందు కాన్ఫిగరేషన్ తనిఖీలు. ప్రతి అడ్డంకిని సరిచేయండి; హెచ్చరికలు వేచి ఉండవచ్చు; చెల్లింపులు, లైసెన్సులు తర్వాత. |  | pending |
+| `privacy.admin.ops.readiness.ready` | Ready | तैयार | సిద్ధం |  | pending |
+| `privacy.admin.ops.readiness.blocked` | Blocked | रुका हुआ | ఆగింది |  | pending |
+| `privacy.admin.ops.readiness.ok` | OK | ठीक | సరే |  | pending |
+| `privacy.admin.ops.readiness.level.block` | Blocker | रुकावट | అడ్డంకి |  | pending |
+| `privacy.admin.ops.readiness.level.warn` | Warning | चेतावनी | హెచ్చరిక |  | pending |
+| `privacy.admin.ops.readiness.level.deferred` | Deferred | बाद में | తర్వాత |  | pending |
+| `privacy.admin.ops.readiness.checks.demoModeOff` | Demo mode is off | डेमो मोड बंद है | డెమో మోడ్ ఆఫ్‌లో ఉంది |  | pending |
+| `privacy.admin.ops.readiness.checks.syntheticHidden` | Demo provider profiles are hidden (SHOW_SYNTHETIC_LISTINGS=false) | डेमो प्रोवाइडर प्रोफ़ाइल छिपी हैं (SHOW_SYNTHETIC_LISTINGS=false) | డెమో ప్రొవైడర్ ప్రొఫైల్‌లు దాచబడ్డాయి (SHOW_SYNTHETIC_LISTINGS=false) |  | pending |
+| `privacy.admin.ops.readiness.checks.appUrlHttps` | The app URL uses https | ऐप URL https का इस्तेमाल करता है | యాప్ URL https వాడుతుంది |  | pending |
+| `privacy.admin.ops.readiness.checks.cronSecret` | Scheduled jobs can run (CRON_SECRET) | तय समय वाले जॉब चल सकते हैं (CRON_SECRET) | షెడ్యూల్ చేసిన జాబ్‌లు నడవగలవు (CRON_SECRET) |  | pending |
+| `privacy.admin.ops.readiness.checks.email` | Email is sent from a verified domain | ईमेल सत्यापित डोमेन से भेजा जाता है | ఈమెయిల్ ధృవీకరించిన డొమైన్ నుండి వెళ్తుంది |  | pending |
+| `privacy.admin.ops.readiness.checks.privacyReviewed` | The privacy notice is reviewed | प्राइवेसी नोटिस की समीक्षा हो चुकी है | ప్రైవసీ నోటీసు సమీక్షించబడింది |  | pending |
+| `privacy.admin.ops.readiness.checks.grievanceOfficer` | A grievance officer email is set | शिकायत अधिकारी का ईमेल सेट है | ఫిర్యాదుల అధికారి ఈమెయిల్ సెట్ చేయబడింది |  | pending |
+| `privacy.admin.ops.readiness.checks.familySignIn` | Families can sign in (Google or phone) | परिवार साइन इन कर सकते हैं (Google या फ़ोन) | కుటుంబాలు సైన్ ఇన్ కాగలవు (Google లేదా ఫోన్) |  | pending |
+| `privacy.admin.ops.readiness.checks.intakeVoice` | The intake call is configured (ElevenLabs) | इनटेक कॉल कॉन्फ़िगर है (ElevenLabs) | ఇన్‌టేక్ కాల్ కాన్ఫిగర్ చేయబడింది (ElevenLabs) |  | pending |
+| `privacy.admin.ops.readiness.checks.aiNotes` | AI session notes are configured (Gemini) | AI सेशन नोट्स कॉन्फ़िगर हैं (Gemini) | AI సెషన్ నోట్స్ కాన్ఫిగర్ చేయబడ్డాయి (Gemini) |  | pending |
+| `privacy.admin.ops.readiness.checks.paymentsConsistent` | If payments are on, Razorpay is configured | अगर भुगतान चालू है, तो Razorpay कॉन्फ़िगर है | చెల్లింపులు ఆన్‌లో ఉంటే, Razorpay కాన్ఫిగర్ చేయబడింది |  | pending |
+| `privacy.admin.ops.readiness.checks.whatsapp` | WhatsApp messages are configured | WhatsApp संदेश कॉन्फ़िगर हैं | WhatsApp సందేశాలు కాన్ఫిగర్ చేయబడ్డాయి |  | pending |
+| `privacy.admin.ops.readiness.checks.phoneSignIn` | Phone sign-in works (SMS provider, DLT) | फ़ोन से साइन इन काम करता है (SMS प्रदाता, DLT) | ఫోన్‌తో సైన్ ఇన్ పని చేస్తుంది (SMS ప్రొవైడర్, DLT) |  | pending |
+| `privacy.admin.ops.readiness.checks.voiceLanguages` | Voice agents speak Telugu | वॉइस एजेंट तेलुगु बोलते हैं | వాయిస్ ఏజెంట్లు తెలుగు మాట్లాడతాయి |  | pending |
+| `privacy.admin.ops.readiness.checks.botCheck` | Bot check is configured (Turnstile) | बॉट जाँच कॉन्फ़िगर है (Turnstile) | బాట్ తనిఖీ కాన్ఫిగర్ చేయబడింది (Turnstile) |  | pending |
+| `privacy.admin.ops.readiness.checks.syntheticSeedOff` | Synthetic seeding is not allowed | सिंथेटिक सीडिंग की अनुमति नहीं है | సింథటిక్ సీడింగ్‌కు అనుమతి లేదు |  | pending |
+| `privacy.admin.ops.readiness.checks.dedicatedSecrets` | Dedicated secrets for intake links, consent and tokens | इनटेक लिंक, सहमति और टोकन के लिए अलग सीक्रेट | ఇన్‌టేక్ లింకులు, సమ్మతి, టోకెన్ల కోసం ప్రత్యేక సీక్రెట్లు |  | pending |
+| `privacy.admin.ops.readiness.checks.paymentsDeferred` | Payments are off: free pilot | भुगतान बंद है: मुफ़्त पायलट | చెల్లింపులు ఆఫ్: ఉచిత పైలట్ |  | pending |
+| `privacy.admin.ops.readiness.checks.mchatDeferred` | M-CHAT-R/F is off until licensed | लाइसेंस मिलने तक M-CHAT-R/F बंद है | లైసెన్స్ వచ్చే వరకు M-CHAT-R/F ఆఫ్ |  | pending |
 | `booking.book` | Book | बुक करें | బుక్ చేయండి |  | pending |
 | `booking.modes.in_clinic` | In clinic | क्लिनिक में | క్లినిక్‌లో |  | pending |
 | `booking.modes.video` | Video consultation | वीडियो परामर्श | వీడియో సంప్రదింపు |  | pending |
@@ -1902,6 +1958,7 @@ Rows: 3363. Not yet approved: 3363.
 | `booking.flow.disclosure` | Booking shares {child}'s name and age with {provider}. | बुकिंग से {child} का नाम और उम्र {provider} के साथ साझा होती है। | బుకింగ్ చేస్తే {child} పేరు, వయస్సు {provider} తో పంచుకోబడతాయి. |  | pending |
 | `booking.flow.summary` | Summary | सारांश | సారాంశం |  | pending |
 | `booking.flow.fee` | Fee | फ़ीस | ఫీజు |  | pending |
+| `booking.flow.freePilot` | Free during the pilot | पायलट के दौरान मुफ़्त | పైలట్ సమయంలో ఉచితం |  | pending |
 | `booking.flow.confirm` | Confirm booking | बुकिंग पक्की करें | బుకింగ్‌ను ధృవీకరించండి |  | pending |
 | `booking.flow.continueToPayment` | Continue to payment | भुगतान पर आगे बढ़ें | చెల్లింపుకు కొనసాగించండి |  | pending |
 | `booking.flow.changeTime` | Pick another time | दूसरा समय चुनें | వేరే సమయం ఎంచుకోండి |  | pending |
@@ -2305,6 +2362,7 @@ Rows: 3363. Not yet approved: 3363.
 | `screen.metaDescription` | A free 5-minute developmental check-in for parents in Hyderabad, by voice or by tapping. This is a developmental check-in, not a diagnosis. | हैदराबाद के माता-पिता के लिए 5 मिनट की मुफ़्त विकास जाँच, आवाज़ से या टैप करके। यह विकास की एक जाँच है, निदान नहीं। | హైదరాబాద్ తల్లిదండ్రుల కోసం 5 నిమిషాల ఉచిత అభివృద్ధి పరిశీలన, మాట ద్వారా లేదా ట్యాప్ చేసి. ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. |  | pending |
 | `screen.title` | Developmental check-in | विकास जाँच | అభివృద్ధి పరిశీలన |  | pending |
 | `screen.intro` | About 5 minutes, for children up to 8 years. This is a developmental check-in, not a diagnosis. Only a qualified professional can assess your child. | लगभग 5 मिनट, 8 साल तक के बच्चों के लिए। यह विकास की एक जाँच है, निदान नहीं। केवल एक योग्य विशेषज्ञ ही आपके बच्चे का आकलन कर सकते हैं। | సుమారు 5 నిమిషాలు, 8 సంవత్సరాల వరకు పిల్లల కోసం. ఇది అభివృద్ధి పరిశీలన మాత్రమే, నిర్ధారణ కాదు. అర్హత ఉన్న నిపుణులు మాత్రమే మీ బిడ్డను అంచనా వేయగలరు. |  | pending |
+| `screen.referredBy` | Referred by {name} | {name} द्वारा रेफ़र किया गया | {name} సిఫార్సు చేశారు |  | pending |
 | `screen.aiDisclosure` | You will talk to an AI assistant. Your voice is processed by ElevenLabs (USA) and is not stored by DoctorNearMe. | आप एक AI सहायक से बात करेंगे। आपकी आवाज़ ElevenLabs (USA) द्वारा प्रोसेस की जाती है और DoctorNearMe उसे नहीं रखता। | మీరు ఒక AI సహాయకుడితో మాట్లాడతారు. మీ గొంతును ElevenLabs (USA) ప్రాసెస్ చేస్తుంది, DoctorNearMe దాన్ని నిల్వ చేయదు. |  | pending |
 | `screen.noPersonal` | Please do not say or type your child's name, your name or contact details. We keep only your answers, without any name, and delete them after 30 days unless you save them to your child's profile. | कृपया अपने बच्चे का नाम, अपना नाम या संपर्क जानकारी न बोलें और न लिखें। हम बिना किसी नाम के सिर्फ़ आपके जवाब रखते हैं और 30 दिन बाद हटा देते हैं, जब तक आप उन्हें अपने बच्चे की प्रोफ़ाइल में सेव न करें। | దయచేసి మీ బిడ్డ పేరు, మీ పేరు లేదా సంప్రదింపు వివరాలు చెప్పకండి, టైప్ చేయకండి. మేము ఏ పేరూ లేకుండా మీ సమాధానాలను మాత్రమే ఉంచుతాము, మీరు వాటిని మీ బిడ్డ ప్రొఫైల్‌లో సేవ్ చేయకపోతే 30 రోజుల తర్వాత తొలగిస్తాము. |  | pending |
 | `screen.ageLabel` | Child's age | बच्चे की उम्र | బిడ్డ వయస్సు |  | pending |
@@ -3502,6 +3560,22 @@ Rows: 3363. Not yet approved: 3363.
 | `dashboard.languages.en` | English | अंग्रेज़ी | ఇంగ్లీష్ |  | pending |
 | `dashboard.languages.hi` | Hindi | हिंदी | హిందీ |  | pending |
 | `dashboard.languages.te` | Telugu | तेलुगु | తెలుగు |  | pending |
+| `dashboard.setup.title` | Set up your centre | अपना सेंटर सेट अप करें | మీ సెంటర్‌ను సెటప్ చేయండి |  | pending |
+| `dashboard.setup.intro` | Your first week on DoctorNearMe. Each step ticks itself when it is done. | DoctorNearMe पर आपका पहला हफ़्ता। हर कदम पूरा होते ही अपने-आप टिक हो जाता है। | DoctorNearMeలో మీ మొదటి వారం. ప్రతి దశ పూర్తయినప్పుడు దానంతట అదే టిక్ అవుతుంది. |  | pending |
+| `dashboard.setup.progress` | {done} of {total} done | {total} में से {done} पूरे | {total}లో {done} పూర్తయ్యాయి |  | pending |
+| `dashboard.setup.doneLabel` | (done) | (पूरा) | (పూర్తయింది) |  | pending |
+| `dashboard.setup.steps.team.title` | Invite your team | अपनी टीम को आमंत्रित करें | మీ టీమ్‌ను ఆహ్వానించండి |  | pending |
+| `dashboard.setup.steps.team.text` | Add therapists and front-desk staff so everyone works in one place. | थेरेपिस्ट और फ़्रंट-डेस्क स्टाफ़ जोड़ें, ताकि सब एक ही जगह काम करें। | థెరపిస్టులను, ఫ్రంట్ డెస్క్ సిబ్బందిని చేర్చండి, అందరూ ఒకే చోట పని చేస్తారు. |  | pending |
+| `dashboard.setup.steps.children.title` | Add your children | अपने बच्चों को जोड़ें | మీ పిల్లలను చేర్చండి |  | pending |
+| `dashboard.setup.steps.children.text` | Import your list from Excel or Google Sheets, or add a child by hand. | Excel या Google Sheets से अपनी सूची इम्पोर्ट करें, या बच्चे को हाथ से जोड़ें। | Excel లేదా Google Sheets నుండి మీ జాబితాను ఇంపోర్ట్ చేయండి, లేదా పిల్లలను చేతితో చేర్చండి. |  | pending |
+| `dashboard.setup.steps.family.title` | Connect a family | एक परिवार को जोड़ें | ఒక కుటుంబాన్ని కలపండి |  | pending |
+| `dashboard.setup.steps.family.text` | Create a clinic code and share it on WhatsApp; the parent signs in and enters it. | क्लिनिक कोड बनाएँ और WhatsApp पर भेजें; माता-पिता साइन इन करके कोड डालते हैं। | క్లినిక్ కోడ్ సృష్టించి WhatsAppలో పంపండి; తల్లిదండ్రులు సైన్ ఇన్ అయి దానిని ఎంటర్ చేస్తారు. |  | pending |
+| `dashboard.setup.steps.timetable.title` | Set a weekly timetable | साप्ताहिक टाइमटेबल बनाएँ | వారపు టైమ్‌టేబుల్ సెట్ చేయండి |  | pending |
+| `dashboard.setup.steps.timetable.text` | Repeat sessions for a child and mark attendance from the front desk. | बच्चे के सेशन दोहराएँ और फ़्रंट डेस्क से उपस्थिति दर्ज करें। | పిల్లల సెషన్లను పునరావృతం చేయండి, ఫ్రంట్ డెస్క్ నుండి హాజరు నమోదు చేయండి. |  | pending |
+| `dashboard.setup.steps.note.title` | Write your first session note | अपना पहला सेशन नोट लिखें | మీ మొదటి సెషన్ నోట్ రాయండి |  | pending |
+| `dashboard.setup.steps.note.text` | Record or upload a session and confirm the AI draft. | सेशन रिकॉर्ड या अपलोड करें और AI ड्राफ़्ट की पुष्टि करें। | సెషన్‌ను రికార్డ్ లేదా అప్‌లోడ్ చేసి, AI డ్రాఫ్ట్‌ను ధృవీకరించండి. |  | pending |
+| `dashboard.setup.steps.homeProgram.title` | Publish a home program | होम प्रोग्राम प्रकाशित करें | హోమ్ ప్రోగ్రామ్ ప్రచురించండి |  | pending |
+| `dashboard.setup.steps.homeProgram.text` | Send activities so the family can practise between sessions. | गतिविधियाँ भेजें, ताकि परिवार सेशन के बीच अभ्यास कर सके। | కుటుంబం సెషన్ల మధ్య అభ్యాసం చేయడానికి కార్యకలాపాలు పంపండి. |  | pending |
 | `caseSessions.goalsTitle` | Goal progress | लक्ष्य की प्रगति | లక్ష్యాల పురోగతి |  | pending |
 | `caseSessions.goalsAction` | Open goals | लक्ष्य खोलें | లక్ష్యాలు తెరవండి |  | pending |
 | `caseSessions.goalsEmpty` | No active goals yet. | अभी कोई सक्रिय लक्ष्य नहीं है। | ఇంకా యాక్టివ్ లక్ష్యాలు లేవు. |  | pending |
@@ -3515,3 +3589,20 @@ Rows: 3363. Not yet approved: 3363.
 | `caseSessions.emptyAction` | Record the first session | पहला सत्र रिकॉर्ड करें | మొదటి సెషన్‌ను రికార్డ్ చేయండి |  | pending |
 | `caseSessions.session` | Session {number} | सत्र {number} | సెషన్ {number} |  | pending |
 | `caseSessions.open` | Open | खोलें | తెరవండి |  | pending |
+| `referrals.metaTitle` | Waiting-room poster | वेटिंग रूम पोस्टर | వెయిటింగ్ రూమ్ పోస్టర్ |  | pending |
+| `referrals.title` | Waiting-room poster | वेटिंग रूम पोस्टर | వెయిటింగ్ రూమ్ పోస్టర్ |  | pending |
+| `referrals.intro` | Print this poster for your waiting room. Parents scan the QR code to start a free check-in in English, Hindi or Telugu, and you see how many started from your poster. | यह पोस्टर अपने वेटिंग रूम के लिए प्रिंट करें। माता-पिता QR कोड स्कैन करके अंग्रेज़ी, हिंदी या तेलुगु में मुफ़्त जाँच शुरू करते हैं, और आप देख सकते हैं कि आपके पोस्टर से कितनी जाँचें शुरू हुईं। | ఈ పోస్టర్‌ను మీ వెయిటింగ్ రూమ్ కోసం ప్రింట్ చేయండి. తల్లిదండ్రులు QR కోడ్‌ను స్కాన్ చేసి ఇంగ్లీష్, హిందీ లేదా తెలుగులో ఉచిత పరిశీలన ప్రారంభిస్తారు. మీ పోస్టర్ నుండి ఎన్ని ప్రారంభమయ్యాయో మీరు చూడవచ్చు. |  | pending |
+| `referrals.notAvailable` | The waiting-room poster is available once your profile is verified and listed in the directory. | वेटिंग रूम पोस्टर तब मिलेगा जब आपकी प्रोफ़ाइल सत्यापित हो जाए और डायरेक्टरी में दिखे। | మీ ప్రొఫైల్ ధృవీకరించబడి, డైరెక్టరీలో కనిపించిన తర్వాత వెయిటింగ్ రూమ్ పోస్టర్ అందుబాటులో ఉంటుంది. |  | pending |
+| `referrals.backToProfile` | Back to your profile | अपनी प्रोफ़ाइल पर वापस जाएँ | మీ ప్రొఫైల్‌కు తిరిగి వెళ్ళండి |  | pending |
+| `referrals.print` | Print poster | पोस्टर प्रिंट करें | పోస్టర్ ప్రింట్ చేయండి |  | pending |
+| `referrals.count` | Check-ins started from your poster in the last 30 days: {count} | पिछले 30 दिनों में आपके पोस्टर से शुरू हुई जाँचें: {count} | గత 30 రోజుల్లో మీ పోస్టర్ నుండి ప్రారంభమైన పరిశీలనలు: {count} |  | pending |
+| `referrals.countHint` | Only a total is shown: no names, no answers. | सिर्फ़ कुल संख्या दिखाई जाती है: कोई नाम नहीं, कोई जवाब नहीं। | మొత్తం సంఖ్య మాత్రమే చూపిస్తాం: పేర్లు లేవు, సమాధానాలు లేవు. |  | pending |
+| `referrals.profileLink` | Waiting-room poster (QR code) | वेटिंग रूम पोस्टर (QR कोड) | వెయిటింగ్ రూమ్ పోస్టర్ (QR కోడ్) |  | pending |
+| `referrals.profileHint` | A printable poster in English, Telugu and Hindi that sends worried parents to a free check-in, referred by you. | अंग्रेज़ी, तेलुगु और हिंदी में प्रिंट करने लायक पोस्टर, जो चिंतित माता-पिता को आपके रेफ़रल के साथ मुफ़्त जाँच तक ले जाता है। | ఇంగ్లీష్, తెలుగు, హిందీలో ప్రింట్ చేయగల పోస్టర్. ఆందోళనలో ఉన్న తల్లిదండ్రులను మీ సిఫార్సుతో ఉచిత పరిశీలనకు పంపుతుంది. |  | pending |
+| `referrals.poster.headline` | Worried about your child's speech, play or development? | क्या आप अपने बच्चे की बोली, खेल या विकास को लेकर चिंतित हैं? | మీ పిల్లల మాటలు, ఆటలు లేదా ఎదుగుదల గురించి ఆందోళనగా ఉందా? |  | pending |
+| `referrals.poster.cta` | Take a free 5-minute check-in | 5 मिनट की मुफ़्त जाँच करें | 5 నిమిషాల ఉచిత పరిశీలన చేయండి |  | pending |
+| `referrals.poster.scan` | Scan with your phone camera | अपने फ़ोन के कैमरे से स्कैन करें | మీ ఫోన్ కెమెరాతో స్కాన్ చేయండి |  | pending |
+| `referrals.poster.orType` | or type this link: | या यह लिंक टाइप करें: | లేదా ఈ లింక్ టైప్ చేయండి: |  | pending |
+| `referrals.poster.referredBy` | Referred by {name} | {name} द्वारा रेफ़र किया गया | {name} సిఫార్సు చేశారు |  | pending |
+| `referrals.poster.footer` | Free · no sign-in needed · Not a diagnosis · In an emergency call 108 or 112 | मुफ़्त · साइन इन की ज़रूरत नहीं · निदान नहीं · आपात स्थिति में 108 या 112 पर कॉल करें | ఉచితం · సైన్ ఇన్ అవసరం లేదు · నిర్ధారణ కాదు · అత్యవసర పరిస్థితిలో 108 లేదా 112 కు కాల్ చేయండి |  | pending |
+| `referrals.poster.qrLabel` | QR code: opens the free check-in on DoctorNearMe | QR कोड: DoctorNearMe पर मुफ़्त जाँच खोलता है | QR కోడ్: DoctorNearMe లో ఉచిత పరిశీలనను తెరుస్తుంది |  | pending |

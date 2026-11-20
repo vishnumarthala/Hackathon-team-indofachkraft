@@ -2,10 +2,13 @@ import Link from "next/link";
 import { getT } from "@/lib/i18n/server";
 import { canManage, getMembershipRole } from "@/lib/orgs";
 import { payoutReadiness } from "@/lib/payouts/store";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 // 046 FR-2: "Finish payout setup to accept payments" on the services editor, for organisations of the provider that
 // cannot publish paid services yet (payout account not active, or the platform fee not accepted).
+// 055: never in the free pilot (paid services do not need payout setup there).
 export async function PayoutSetupNotice({ userId, orgIds }: { userId: string; orgIds: string[] }) {
+  if (!paymentsEnabled()) return null;
   const blocked: { id: string; manage: boolean }[] = [];
   for (const id of orgIds) {
     const r = await payoutReadiness(id);

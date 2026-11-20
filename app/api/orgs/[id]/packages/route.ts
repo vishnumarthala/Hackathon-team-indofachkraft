@@ -4,6 +4,7 @@ import { isUuid } from "@/lib/cases/validation";
 import { createPackage, feesRouteError, listPackages, PackageInputSchema } from "@/lib/fees/store";
 import { fail, ok, parseJson } from "@/lib/http";
 import { canManage, getMembershipRole } from "@/lib/orgs";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,6 +21,8 @@ async function gate(id: string) {
 // 045 FR-7 org settings `Packages`: members read the catalogue; owner/admin add packages (members 403, other
 // organisations 404). { name, session_count 1-60, price_inr, validity_days 7-180, service_ids (this org's), active }.
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const g = await gate(id);
   if ("response" in g) return g.response;
@@ -27,6 +30,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const g = await gate(id);
   if ("response" in g) return g.response;

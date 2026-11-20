@@ -178,6 +178,12 @@ export const env = {
   get RETENTION_AUDIO_DAYS() {
     return read("RETENTION_AUDIO_DAYS");
   },
+  // 055: free pilot mode. Payments (031 online booking payments, 045 fees/packages, 046 payouts) run only when this is
+  // exactly "true". Unset (the default) = free pilot: bookings confirm directly, attendance creates no charges, the fee /
+  // payout pages and APIs are 404 and payment notifications are not sent (lib/payments/mode.ts, docs/payments.md).
+  get PAYMENTS_ENABLED() {
+    return process.env.PAYMENTS_ENABLED === "true";
+  },
   // 031: Razorpay (test mode only; lib/payments/razorpay.ts refuses any key id that does not start with rzp_test_).
   // Optional with DEMO_MODE=true (the demo gateway simulates payments); required for real test-mode checkout.
   get RAZORPAY_KEY_ID() {

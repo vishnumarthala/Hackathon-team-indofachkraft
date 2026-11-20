@@ -532,6 +532,40 @@ export function getTopic(name: string): AnyTopicDefinition | null {
   return isTopic(name) ? (TOPICS[name] as unknown as AnyTopicDefinition) : null;
 }
 
+// 055: payment, fee and payout messages (031, 045, 046). While payments are off (free pilot, PAYMENTS_ENABLED not
+// "true") they are not enqueued (lib/notify/outbox.ts) and the worker does not claim them (`paymentWorkToSkip`), so they
+// wait for a worker with payments on; `topicEnabled` / `paymentNotificationSuppressed` are the in-process backstops.
+export const PAYMENT_TEMPLATES: ReadonlySet<string> = new Set<TemplateName>([
+  "payment_refunded",
+  "payment_request",
+  "payment_receipt",
+  "balance_reminder",
+  "package_reminder",
+  "fees_refunded",
+  "payout_transfer_failed",
+  "payout_reconciliation_alert",
+  "payout_invoice_issued",
+]);
+
+/** True for a payment template, or a topic that renders one, while payments are off. */
+export function paymentNotificationSuppressed(topicOrTemplate: string): boolean {
+  if (env.PAYMENTS_ENABLED) return false;
+  const def = getTopic(topicOrTemplate);
+  return PAYMENT_TEMPLATES.has(def ? def.template : topicOrTemplate);
+}
+
+/**
+ * Work the outbox worker must not claim while payments are off (null = claim everything): payment events and
+ * notifications stay pending for a worker with payments on instead of being consumed (migration
+ * 20261120005600_outbox_skip_payment_work.sql).
+ */
+export function paymentWorkToSkip(): { topics: string[]; templates: string[] } | null {
+  if (env.PAYMENTS_ENABLED) return null;
+  const topics = (Object.keys(TOPICS) as Topic[]).filter((t) => PAYMENT_TEMPLATES.has((TOPICS[t] as unknown as AnyTopicDefinition).template));
+  return { topics, templates: [...PAYMENT_TEMPLATES] };
+}
+
 export function topicEnabled(def: AnyTopicDefinition): boolean {
+  if (!env.PAYMENTS_ENABLED && PAYMENT_TEMPLATES.has(def.template)) return false;
   return !def.devOnly || env.DEMO_MODE || process.env.NODE_ENV !== "production";
 }

@@ -10,6 +10,7 @@ import { addDays, todayIn, wallToUtc } from "@/lib/booking/time";
 import { listBalancesDue } from "@/lib/fees/store";
 import { mondayOf } from "@/lib/home-program/adherence";
 import { canManage, listMemberships, type Membership } from "@/lib/orgs";
+import { paymentsEnabled } from "@/lib/payments/mode";
 import { pg, type Queryable } from "@/lib/pg";
 
 if (typeof window !== "undefined") {
@@ -174,7 +175,8 @@ export async function loadDashboardToday(userId: string, opts: { timeZone: strin
     sql`select coalesce(sum(t.unread), 0)::int as n from public.list_message_threads(${userId}) t where t.archived_at is null`,
     listNeedsAttention(userId, { limit: 1 }),
     listManageableConflicts(userId),
-    manageIds.length ? listBalancesDue(manageIds) : Promise.resolve(null),
+    // 055: no balances in the free pilot.
+    manageIds.length && paymentsEnabled() ? listBalancesDue(manageIds) : Promise.resolve(null),
   ]);
 
   const sessions: TodaySession[] = sessionRows.map((r) => ({

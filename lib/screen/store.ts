@@ -4,6 +4,8 @@
 // audit rows: an audit row would attach a hashed IP to the session (FR-5: no IP).
 // 048: the session also stores its instrument (ISAA-derived or M-CHAT-R/F, fixed at the start) and the parent's
 // worries (codes); results carry the provider-type recommendation (lib/screen/recommend.ts).
+// 054: `referred_by_profile_id` = the verified + listed provider whose poster (`/screen?ref=<slug>`) started the
+// check-in, resolved by the server from the slug (never a client-supplied id). It is the provider's id, not the family's.
 import { auditStrict } from "@/lib/audit";
 import { isUuid } from "@/lib/cases/validation";
 import { score } from "@/lib/clinical/instruments";
@@ -56,6 +58,7 @@ export type ScreenRow = {
   saved_by: string | null;
   instrument: ScreenInstrument;
   concerns: ScreenConcern[];
+  referred_by_profile_id: string | null;
 };
 
 type Locked = ScreenRow & { expired: boolean };
@@ -74,12 +77,13 @@ export function sessionStatus(row: Pick<ScreenRow, "result_band" | "red_flag_cod
 export async function createScreenSession(
   ageBand: QuestionAgeBand,
   mode: ScreenMode,
-  opts: { instrument?: ScreenInstrument; concerns?: readonly ScreenConcern[] } = {},
+  opts: { instrument?: ScreenInstrument; concerns?: readonly ScreenConcern[]; referredByProfileId?: string | null } = {},
 ): Promise<{ id: string; expires_at: Date }> {
   const sql = await pg();
   const [row] = await sql<{ id: string; expires_at: Date }[]>`
-    insert into public.screen_sessions (age_band, mode, instrument, concerns)
-    values (${ageBand}, ${mode}, ${opts.instrument ?? "ISAA_PARENT_CHECKIN"}, ${[...(opts.concerns ?? [])]}::text[])
+    insert into public.screen_sessions (age_band, mode, instrument, concerns, referred_by_profile_id)
+    values (${ageBand}, ${mode}, ${opts.instrument ?? "ISAA_PARENT_CHECKIN"}, ${[...(opts.concerns ?? [])]}::text[],
+            ${opts.referredByProfileId ?? null})
     returning id, expires_at`;
   return row;
 }

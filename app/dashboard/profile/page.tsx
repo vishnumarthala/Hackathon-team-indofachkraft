@@ -14,6 +14,7 @@ import { getFormatter, getT } from "@/lib/i18n/server";
 import { canManage } from "@/lib/orgs";
 import { getProfileByUserId, listProfileLocations, listUserOrgsWithLocations, photoUrl } from "@/lib/providers";
 import { Badge, type BadgeTone } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,7 @@ export default async function ProfileEditorPage() {
   if ((await getUserRole(user.id)) === "guardian") redirect("/family");
 
   const t = await getT("providers");
+  const tr = await getT("referrals");
   const format = await getFormatter();
   const profile = await getProfileByUserId(user.id);
 
@@ -149,6 +151,13 @@ export default async function ProfileEditorPage() {
           </p>
         ) : null}
         <VerificationForm profileId={profile.id} status={status} hasRegistration={Boolean(profile.registration_number)} />
+      </Section>
+
+      {/* 054: the waiting-room QR poster (the page explains when it is not available yet). */}
+      <Section title={tr("profileLink")} intro={tr("profileHint")}>
+        <Button href="/dashboard/profile/poster" variant="secondary">
+          {tr("title")}
+        </Button>
       </Section>
 
       {orgs

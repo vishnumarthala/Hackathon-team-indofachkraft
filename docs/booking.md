@@ -9,6 +9,10 @@ Code: `lib/booking/**`, `app/api/appointments/**`, `app/api/public/providers/[pr
 `app/family/(portal)/appointments/**`, `app/dashboard/schedule`, `components/booking/**`.
 Migration: `supabase/migrations/20261113003000_booking.sql`.
 
+**Free pilot mode (055):** unless `PAYMENTS_ENABLED=true`, `booking_confirm` is called with `p_require_payment = false`:
+every booking confirms directly (never `pending_payment`) and its snapshot is made free (`free_pilot: true`); paid
+services do not need payout setup; marking attendance is never billable. See [payments.md](payments.md#free-pilot-mode-ticket-055).
+
 ## Data model
 
 | Table | What |

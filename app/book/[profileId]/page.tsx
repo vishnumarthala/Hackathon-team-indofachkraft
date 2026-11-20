@@ -10,6 +10,7 @@ import { ageLabel } from "@/lib/children/age";
 import { listGuardianChildren } from "@/lib/children";
 import { hasGoogleIdentity } from "@/lib/google/meet";
 import { getT } from "@/lib/i18n/server";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -90,8 +91,9 @@ export default async function BookPage({ params, searchParams }: Props) {
           name: s.name,
           mode: s.mode,
           duration_min: s.duration_min,
-          fee_inr: s.fee_inr,
-          payment_mode: s.payment_mode,
+          // 055: free during the pilot.
+          fee_inr: paymentsEnabled() ? s.fee_inr : 0,
+          payment_mode: paymentsEnabled() ? s.payment_mode : "free",
           location_name: s.location_name,
           location_address: s.location_address,
           time_zone: s.time_zone,
@@ -104,6 +106,7 @@ export default async function BookPage({ params, searchParams }: Props) {
         }}
         initialHold={initialHold}
         initialSlot={initialSlot}
+        freePilot={!paymentsEnabled()}
       />
     </div>
   );

@@ -258,6 +258,9 @@ export const CreateSessionSchema = z.object({
     .transform((list) => SCREEN_CONCERNS.filter((c) => list.includes(c))),
   // 049 FR-1: the call language (voice only; the viewer's UI locale, or `en` after "Voice in English").
   language: z.enum(LOCALES, { error: "language must be en, hi or te" }).optional(),
+  // 054: the referring provider's public slug from a poster (`/screen?ref=<slug>`). The server resolves it itself; a
+  // malformed value is dropped, never a 400 (an unknown referral must not block a check-in).
+  ref: z.string().max(200).optional().catch(undefined),
 });
 
 /** 048 FR-3: the M-CHAT-R/F Follow-Up answers (all at once). */

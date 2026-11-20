@@ -227,6 +227,8 @@ describe.skipIf(!enabled)("booking agent tools (database, route handlers)", { ti
 
   beforeAll(async () => {
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     vi.stubEnv("ELEVENLABS_TOOL_SECRET", SECRET);
     vi.stubEnv("GOOGLE_MAPS_SERVER_KEY", "");
     vi.stubEnv("SHOW_SYNTHETIC_LISTINGS", "true");

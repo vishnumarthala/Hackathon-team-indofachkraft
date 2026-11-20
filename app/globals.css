@@ -24,3 +24,15 @@ html:is([lang^="hi"], [lang^="te"]) [class*="tracking-"],
 html:is([lang^="hi"], [lang^="te"]) .lp-display {
   letter-spacing: normal !important;
 }
+
+/* 054: the waiting-room poster prints on one A4 sheet (a named page, so other printouts keep the browser defaults). */
+@page poster {
+  size: A4 portrait;
+  margin: 12mm;
+}
+
+@media print {
+  .poster-sheet {
+    page: poster;
+  }
+}

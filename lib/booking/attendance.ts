@@ -9,6 +9,7 @@ import { z } from "zod";
 import { auditStrict, type SessionAuditActor } from "@/lib/audit";
 import { pg, type Queryable } from "@/lib/pg";
 import { canManage, listMemberships, type Membership } from "@/lib/orgs";
+import { paymentsEnabled } from "@/lib/payments/mode";
 import { ATTENDANCE_VALUES, NEEDS_ATTENTION_HOURS, MEMBER_WINDOW_DAYS, type Attendance } from "./attendance-display";
 import { BOOKING_ERRORS, isBookingErrorCode, type BookingErrorCode } from "./errors";
 import { addDays, todayIn, wallToUtc } from "./time";
@@ -95,8 +96,10 @@ type MarkActor = SessionAuditActor & { actorUserId: string };
 export async function markAttendance(appointmentId: string, actor: MarkActor, attendance: Attendance, reason?: string | null): Promise<MarkResult> {
   const sql = await pg();
   return sql.begin(async (tx) => {
+    // 055: in the free pilot the marking is never billable (no charge, no package session, no refund).
     const [row] = await tx<{ r: MarkResult }[]>`
-      select public.attendance_mark(${appointmentId}::uuid, ${actor.actorUserId}::uuid, ${attendance}, ${reason ?? null}) as r`;
+      select public.attendance_mark(${appointmentId}::uuid, ${actor.actorUserId}::uuid, ${attendance}, ${reason ?? null},
+        ${paymentsEnabled()}) as r`;
     const r = row.r;
     if (r.result !== "unchanged") {
       await auditStrict(

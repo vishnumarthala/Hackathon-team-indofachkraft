@@ -11,7 +11,7 @@ import { icsUid } from "./ics";
 import { failureDecision, MAX_ATTEMPTS, sanitizeError } from "./retry";
 import { getJob, runJob } from "./jobs";
 import { getTemplate } from "./templates";
-import { getTopic, topicEnabled } from "./topics";
+import { getTopic, paymentNotificationSuppressed, paymentWorkToSkip, topicEnabled } from "./topics";
 import { NotifyError, type Channel, type OutboxEventRow, type Rendered, type SendOutcome } from "./types";
 import { deliverWhatsApp } from "./whatsapp";
 
@@ -91,10 +91,13 @@ function appUrlOf(opts: RunOptions): string {
 }
 
 const idArray = (sql: Queryable, ids: string[] | undefined) => (ids ? sql`${ids}::bigint[]` : sql`null::bigint[]`);
+const textArray = (sql: Queryable, values: string[] | undefined) => (values ? sql`${values}::text[]` : sql`null::text[]`);
 
 /** FR-4 cost control: one indexed `exists` query; the cron route returns right away when this is false. */
 export async function hasDueWork(sql: Queryable): Promise<boolean> {
-  const [row] = await sql<{ due: boolean }[]>`select public.outbox_has_due_work() as due`;
+  const skip = paymentWorkToSkip();
+  const [row] = await sql<{ due: boolean }[]>`
+    select public.outbox_has_due_work(${textArray(sql, skip?.topics)}, ${textArray(sql, skip?.templates)}) as due`;
   return row.due;
 }
 
@@ -170,7 +173,8 @@ export async function fanOutDue(sql: Sql, opts: RunOptions = {}): Promise<{ even
   let notifications = 0;
   await sql.begin(async (tx) => {
     const claimed = await tx<OutboxEventRow[]>`
-      select * from public.outbox_claim_events(${opts.eventBatch ?? 50}, ${idArray(tx, opts.eventIds)})`;
+      select * from public.outbox_claim_events(${opts.eventBatch ?? 50}, ${idArray(tx, opts.eventIds)},
+        ${textArray(tx, paymentWorkToSkip()?.topics)})`;
     for (const event of claimed) {
       try {
         notifications += await tx.savepoint((sp) => fanOutEvent(sp, event, appUrl));
@@ -234,6 +238,12 @@ async function deliverOne(
     tally.skipped += 1;
     return;
   }
+  // 055: a payment message fanned out before the switch was turned off is not sent in the free pilot.
+  if (paymentNotificationSuppressed(n.template)) {
+    await complete(sql, n, "skipped", { error: "payments_disabled" });
+    tally.skipped += 1;
+    return;
+  }
   try {
     const locale: Locale = isLocale(n.locale) ? n.locale : "en";
     const rendered = template.render({ payload: event.payload, locale, role: contact.role, appUrl: ctx.appUrl, event });
@@ -267,7 +277,7 @@ export async function sendDue(sql: Sql, opts: RunOptions = {}): Promise<Tally & 
   const claimed = await sql<ClaimedNotification[]>`
     select id, event_id, recipient_user_id, channel, template, locale, attempts, locked_until
     from public.notifications_claim(${opts.sendBatch ?? 50}, ${opts.leaseSeconds ?? 120}, ${idArray(sql, opts.eventIds)},
-      ${MAX_ATTEMPTS})`;
+      ${MAX_ATTEMPTS}, ${textArray(sql, paymentWorkToSkip()?.templates)})`;
   if (claimed.length === 0) return { ...tally, claimed: 0 };
 
   const eventIds = [...new Set(claimed.map((n) => n.event_id))];

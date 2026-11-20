@@ -4,6 +4,8 @@ import { requireFeesCasePage } from "@/lib/fees/authz";
 import { listOpenLinks, listPackages, listRefundableSessions, loadAccount, packageSeriesWithoutCover } from "@/lib/fees/store";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { Alert } from "@/components/ui/Alert";
+import { notFound } from "next/navigation";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +13,8 @@ export const dynamic = "force-dynamic";
 // and, for owner/admin, `Offer package`, `Request payment`, `Show QR`, `Adjustment` and refunds. Case access (022) is
 // checked here (layouts are not a gate); other organisations 404.
 export default async function CaseFeesPage({ params }: { params: Promise<{ id: string }> }) {
+  // 055: free pilot (PAYMENTS_ENABLED is not "true").
+  if (!paymentsEnabled()) notFound();
   const { id } = await params;
   const { scope, access } = await requireFeesCasePage(id);
   const t = await getT("fees");

@@ -1,7 +1,7 @@
 // Ticket 052: pure checks. FR-1 next-step priority table (one case per rule, several children at once), FR-6 journey
 // steps, the practice streak, FR-3 bottom-nav matching, FR-4 case filters, FR-5 case default tab, the confirmation
 // text steps (outbox template) and "no Coming soon left" in the catalogues.
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import en from "@/messages/en.json";
 import hi from "@/messages/hi.json";
 import te from "@/messages/te.json";
@@ -81,6 +81,10 @@ const balance = (childId: string, paise: number): PaymentFact => ({
   org_name: "Centre",
   href: `/family/children/${childId}/payments`,
 });
+
+// 055: the pay rules below need payments on; the free pilot (the default) is covered at the end.
+beforeEach(() => vi.stubEnv("PAYMENTS_ENABLED", "true"));
+afterEach(() => vi.unstubAllEnvs());
 
 describe("FR-1 next step priority (pickNextStep)", () => {
   it("lists the rules in the ticket's order", () => {
@@ -345,5 +349,30 @@ describe("catalogues", () => {
     }
     // The old family home badge (`family.home.comingSoon`: "जल्द आ रहा है" / "త్వరలో వస్తుంది") is gone in every language.
     for (const catalogue of [en, hi, te]) expect(flattenMessages(catalogue)["family.home.comingSoon"]).toBeUndefined();
+  });
+});
+
+describe("055 free pilot (PAYMENTS_ENABLED not \"true\")", () => {
+  beforeEach(() => vi.stubEnv("PAYMENTS_ENABLED", ""));
+
+  it("never picks a pay step: balances, package offers and booking holds are ignored", () => {
+    const hold: PaymentFact = { kind: "appointment", child_id: "a", child_name: "Child a", amount_paise: 50000, org_name: null, href: "/book/p1/pay/v9" };
+    expect(pickNextStep(facts({ payments: [balance("b", 120000), hold] }), NOW).rule).toBe("all_set");
+    expect(pickNextStep(facts({ visits: [visit("v1", "a", 3)], payments: [balance("a", 500)] }), NOW)).toMatchObject({ rule: "visit", day: "today" });
+  });
+
+  it("an old payment hold gets no Pay now action in what happens next", () => {
+    const steps = journeySteps(
+      {
+        appointment: { id: "v1", status: "pending_payment", starts_at: at(72), ends_at: at(73), attendance: null, provider_profile_id: "p1", child_id: "c1", mode: "in_clinic", has_intake: false },
+        intake_consent: false,
+        attempt: null,
+        home_program: false,
+        timeZone: TZ,
+      },
+      NOW,
+    );
+    expect(steps.some((s) => s.action?.href.includes("/pay/"))).toBe(false);
+    expect(steps.find((s) => s.key === "visit")).toMatchObject({ status: "upcoming", action: null });
   });
 });

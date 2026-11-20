@@ -124,6 +124,8 @@ describe.skipIf(!enabled)("attendance register (database, route handlers)", { ti
 
   beforeAll(async () => {
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     sql = postgres(process.env.DATABASE_URL as string, { max: 4, prepare: false, onnotice: () => {} });
     const db = (await import("@/lib/db")).supabaseAdmin();
     world = bookingWorld(sql, db, "t044");

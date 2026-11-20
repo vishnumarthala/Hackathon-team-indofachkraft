@@ -9,6 +9,7 @@ import { getAppointment, type AppointmentView } from "@/lib/booking/store";
 import { isUuid } from "@/lib/cases/validation";
 import { env } from "@/lib/env";
 import { getFormatter, getT } from "@/lib/i18n/server";
+import { paymentsEnabled } from "@/lib/payments/mode";
 import { getPaymentForAppointment, type PaymentRow } from "@/lib/payments/store";
 
 export const dynamic = "force-dynamic";
@@ -33,10 +34,13 @@ function stateOf(a: AppointmentView, payment: PaymentRow | null): PayState {
 // 031 FR-4 checkout page (`Continue to payment` in the booking flow, `Pay now` in /family/appointments). Only the
 // guardian who booked the appointment (anyone else 404). Shows the amount, the time left on the 15-minute hold and the
 // cancellation/refund policy before payment (FR-7). The Razorpay checkout script is allowed on this route only
-// (lib/csp.ts); DEMO_MODE simulates the payment instead.
+// (lib/csp.ts); DEMO_MODE simulates the payment instead. Only with PAYMENTS_ENABLED=true (055).
 export default async function PayPage({ params }: Props) {
   const { profileId, appointmentId } = await params;
   if (!isUuid(profileId) || !isUuid(appointmentId)) notFound();
+  // 055: no checkout in the free pilot; bookings are confirmed directly, so the appointment page is the confirmation
+  // (it does its own guardian check).
+  if (!paymentsEnabled()) redirect(`/family/appointments/${appointmentId}`);
   const user = await getAuthenticatedUser();
   if (!user) redirect(`${FAMILY_LOGIN_PATH}?next=${encodeURIComponent(`/book/${profileId}/pay/${appointmentId}`)}`);
   if ((await getUserRole(user.id)) !== "guardian") notFound();

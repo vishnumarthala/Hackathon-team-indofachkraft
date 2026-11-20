@@ -5,7 +5,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getAuthenticatedUser, getUserRole } from "@/lib/auth";
 import { homeForRole, safeRelativePath } from "@/lib/auth-access";
 import { env } from "@/lib/env";
-import { isGoogleAuthEnabled } from "@/lib/family/auth-settings";
+import { isGoogleAuthEnabled, isPhoneAuthEnabled } from "@/lib/family/auth-settings";
 import { getT } from "@/lib/i18n/server";
 import { turnstileSiteKey } from "@/lib/turnstile";
 
@@ -37,6 +37,7 @@ export default async function FamilyLoginPage({
           appUrl={env.NEXT_PUBLIC_APP_URL}
           nextPath={nextPath}
           googleEnabled={await isGoogleAuthEnabled()}
+          phoneEnabled={await isPhoneAuthEnabled()}
           initialError={error === "oauth" ? "oauth" : null}
           turnstileSiteKey={turnstileSiteKey()}
         />

@@ -55,6 +55,8 @@ describe.skipIf(!enabled)("052 family home next step (database)", { timeout: 180
 
   beforeAll(async () => {
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     sql = postgres(process.env.DATABASE_URL as string, { max: 4, prepare: false, onnotice: () => {} });
     const db = (await import("@/lib/db")).supabaseAdmin();
     world = bookingWorld(sql, db, "t052f");

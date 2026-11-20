@@ -3,6 +3,7 @@ import { requirePlatformAdminApi } from "@/lib/authz";
 import { isUuid } from "@/lib/cases/validation";
 import { fail, ok, parseJson } from "@/lib/http";
 import { AccountInputSchema, payoutsRouteError, setPayoutAccount } from "@/lib/payouts/store";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,6 +12,8 @@ export const dynamic = "force-dynamic";
 // Razorpay dashboard - a human step). DEMO_MODE fakes the account id when none is given. Strict audit
 // `payouts.account_changed`. Other roles 403.
 export async function PUT(req: Request, { params }: { params: Promise<{ orgId: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { orgId } = await params;
   const gate = await requirePlatformAdminApi();
   if ("response" in gate) return gate.response;

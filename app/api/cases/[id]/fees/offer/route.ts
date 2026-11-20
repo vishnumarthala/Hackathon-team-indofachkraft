@@ -2,6 +2,7 @@ import { auditActorOf } from "@/lib/audit";
 import { requireFeesCaseApi } from "@/lib/fees/authz";
 import { feesRouteError, OfferSchema, offerPackage } from "@/lib/fees/store";
 import { ok, parseJson } from "@/lib/http";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,6 +11,8 @@ export const dynamic = "force-dynamic";
 // link (test mode / demo gateway), sent to the guardian (in-app + WhatsApp `payment_request`). 201 { child_package_id,
 // payment_id, url, amount_paise }. Unpaid offers expire after 7 days.
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const g = await requireFeesCaseApi(id, { manage: true });
   if ("response" in g) return g.response;

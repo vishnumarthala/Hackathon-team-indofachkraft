@@ -3,6 +3,7 @@ import { fail } from "@/lib/http";
 import { requirePayoutsOrgApi } from "@/lib/payouts/authz";
 import { payoutCsv } from "@/lib/payouts/csv";
 import { listPayoutItems } from "@/lib/payouts/store";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,6 +13,8 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // 046 FR-7: the payout items as CSV (owner/admin; members 403, other organisations 404). ?from=&to= (YYYY-MM-DD,
 // session dates). Formula-like cells are neutralised.
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const g = await requirePayoutsOrgApi(id);
   if ("response" in g) return g.response;

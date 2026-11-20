@@ -4,6 +4,7 @@ import { isUuid } from "@/lib/cases/validation";
 import { fail, ok } from "@/lib/http";
 import { runPayoutJobsSoon } from "@/lib/payouts/jobs";
 import { payoutsRouteError, retryPayoutItem } from "@/lib/payouts/store";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,6 +12,8 @@ export const dynamic = "force-dynamic";
 // 046 FR-3 / FR-9 `Retry`: a failed transfer (or one waiting for the payout account) is tried again now with fresh
 // retries (strict audit `payouts.transfer_retried`); the transfer runs right after the response.
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const gate = await requirePlatformAdminApi();
   if ("response" in gate) return gate.response;

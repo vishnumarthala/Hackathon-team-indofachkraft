@@ -7,6 +7,8 @@ import { requirePayoutsPage } from "@/lib/payouts/authz";
 import type { FeePolicy } from "@/lib/payouts/fees";
 import { invoiceMonthLabel } from "@/lib/payouts/invoice";
 import { listInvoices, listPayoutItems, payoutReadiness, payoutStatement, type PayoutItemRow } from "@/lib/payouts/store";
+import { notFound } from "next/navigation";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +42,8 @@ function statusLabel(t: T, i: PayoutItemRow): string {
 // payout account status with setup steps, the fee notice to accept, this month's and week's totals, every payout
 // item, monthly platform-fee invoices and the payout settings.
 export default async function PayoutsPage({ searchParams }: { searchParams: Promise<{ org?: string }> }) {
+  // 055: free pilot (PAYMENTS_ENABLED is not "true").
+  if (!paymentsEnabled()) notFound();
   const { orgs, org } = await requirePayoutsPage((await searchParams).org);
   const t = await getT("payouts");
   const format = await getFormatter();

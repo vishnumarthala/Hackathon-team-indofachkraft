@@ -5,6 +5,8 @@ import { listPackages } from "@/lib/fees/store";
 import { getFormatter, getT } from "@/lib/i18n/server";
 import { canManage, listMemberships } from "@/lib/orgs";
 import { pg } from "@/lib/pg";
+import { notFound } from "next/navigation";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +18,8 @@ export async function generateMetadata(): Promise<Metadata> {
 // 045 FR-7 org settings `Packages`: owner/admin of an organisation edit its packages. The organisation comes from the
 // user's own memberships (an unknown `org` falls back to the first one).
 export default async function PackagesSettingsPage({ searchParams }: { searchParams: Promise<{ org?: string }> }) {
+  // 055: free pilot (PAYMENTS_ENABLED is not "true").
+  if (!paymentsEnabled()) notFound();
   const { user } = await requireProviderPage();
   const t = await getT("fees.settings");
   const format = await getFormatter();

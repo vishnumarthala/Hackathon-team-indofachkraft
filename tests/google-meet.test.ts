@@ -341,6 +341,8 @@ describe.skipIf(!enabled)("Google Meet (database, route handlers, outbox worker,
 
   beforeAll(async () => {
     vi.stubEnv("DEMO_MODE", "true");
+    // 055: these flows need payments on (the default is the free pilot).
+    vi.stubEnv("PAYMENTS_ENABLED", "true");
     vi.stubEnv("TOKEN_ENCRYPTION_KEY", KEY);
     vi.stubEnv("GOOGLE_OAUTH_CLIENT_ID", CLIENT_ID);
     vi.stubEnv("GOOGLE_OAUTH_CLIENT_SECRET", CLIENT_SECRET);

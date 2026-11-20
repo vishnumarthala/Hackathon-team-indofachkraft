@@ -2,6 +2,7 @@ import { auditActorOf } from "@/lib/audit";
 import { ok, parseJson } from "@/lib/http";
 import { requirePayoutsOrgApi } from "@/lib/payouts/authz";
 import { payoutsRouteError, setPayoutSettings, SettingsSchema } from "@/lib/payouts/store";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,6 +10,8 @@ export const dynamic = "force-dynamic";
 // 046 FR-6 / FR-7: owner/admin set the package expiry policy (`pay_centre` | `refund_family`) and the centre's GSTIN
 // for the platform-fee invoice. Strict audit `payouts.settings_changed`. Members 403, other organisations 404.
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id } = await params;
   const g = await requirePayoutsOrgApi(id);
   if ("response" in g) return g.response;

@@ -3,6 +3,7 @@ import { fail } from "@/lib/http";
 import { requirePayoutsOrgApi } from "@/lib/payouts/authz";
 import { invoiceFileName, renderInvoicePdf } from "@/lib/payouts/invoice";
 import { getInvoice } from "@/lib/payouts/store";
+import { paymentsGate } from "@/lib/payments/mode";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,6 +11,8 @@ export const dynamic = "force-dynamic";
 // 046 FR-7: a monthly platform-fee tax invoice (PDF) of this organisation. Owner/admin; members 403; another
 // organisation's invoice id or another organisation 404.
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string; invoiceId: string }> }) {
+  const disabled = paymentsGate();
+  if (disabled) return disabled;
   const { id, invoiceId } = await params;
   const g = await requirePayoutsOrgApi(id);
   if ("response" in g) return g.response;

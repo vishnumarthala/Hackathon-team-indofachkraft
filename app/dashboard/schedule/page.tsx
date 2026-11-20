@@ -18,6 +18,7 @@ import { defaultIntakeKind } from "@/lib/booking/intake-defaults";
 import { createFormatter } from "@/lib/i18n/format";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { PAYMENT_LABEL_STYLE, paymentLabel } from "@/lib/payments/display";
+import { paymentsEnabled } from "@/lib/payments/mode";
 import { listPaymentsForAppointments } from "@/lib/payments/store";
 import { Alert } from "@/components/ui/Alert";
 
@@ -73,9 +74,10 @@ export default async function SchedulePage({ searchParams }: Props) {
   const intakes = await agendaIntakeStatus(agenda.map((a) => a.id));
   // 037: Meet link state of the video appointments on the agenda (Join video call / Add a video link).
   const meet = await getMeetInfo(agenda.filter((a) => a.service_snapshot.mode === "video").map((a) => a.id));
-  // 031 FR-8: `Paid online` / `Pay at clinic` on the agenda.
+  // 031 FR-8: `Paid online` / `Pay at clinic` on the agenda (055: none in the free pilot).
   const tpay = await getT("payments");
-  const payments = await listPaymentsForAppointments(agenda.map((a) => a.id));
+  const showPayments = paymentsEnabled();
+  const payments = showPayments ? await listPaymentsForAppointments(agenda.map((a) => a.id)) : new Map();
   const days = Array.from({ length: span }, (_, i) => addDays(first, i));
   const dayOf = (iso: string) => todayIn(tz, new Date(iso));
   const nav = (date: string, v = view) => `/dashboard/schedule?view=${v}&date=${date}`;
@@ -136,7 +138,7 @@ export default async function SchedulePage({ searchParams }: Props) {
                               </span>
                             ) : null}
                             {(() => {
-                              const pay = paymentLabel(a, payments.get(a.id), "provider");
+                              const pay = showPayments ? paymentLabel(a, payments.get(a.id), "provider") : null;
                               return pay ? (
                                 <span data-testid="payment-label" className={`rounded-full px-3 py-1 text-xs font-semibold ${PAYMENT_LABEL_STYLE[pay]}`}>
                                   {tpay(`labels.${pay}`)}
@@ -184,7 +186,7 @@ export default async function SchedulePage({ searchParams }: Props) {
 
       <section aria-labelledby="services" className="space-y-3">
         <h2 id="services" className={h2}>{t("schedule.services.title")}</h2>
-        {(await atClinicNoticeDue(ctx.profile.id)) ? <AtClinicNotice /> : null}
+        {showPayments && (await atClinicNoticeDue(ctx.profile.id)) ? <AtClinicNotice /> : null}
         <PayoutSetupNotice userId={actor.user.id} orgIds={ctx.orgs.map((o) => o.id)} />
         {locations.length === 0 ? <p className="text-sm text-slate-600">{t("schedule.noLocations")}</p> : null}
         <ServicesEditor services={services} locations={locations} orgs={ctx.orgs} defaultIntakeKind={defaultIntakeKind(ctx.profile.provider_type)} />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n/server";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 const LINKS = [
   { href: "/admin/users", key: "users" },
@@ -11,12 +12,12 @@ const LINKS = [
   { href: "/admin/ratings", key: "ratings" },
 ] as const;
 
-// 041: platform admin navigation for the privacy/audit/ops pages.
+// 041: platform admin navigation for the privacy/audit/ops pages. 055: no Payouts link in the free pilot.
 export async function AdminNav({ current }: { current: (typeof LINKS)[number]["key"] }) {
   const t = await getT("privacy.admin.nav");
   return (
     <nav aria-label="Admin" className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-      {LINKS.map((l) => (
+      {LINKS.filter((l) => l.key !== "payouts" || paymentsEnabled()).map((l) => (
         <Link
           key={l.key}
           href={l.href}

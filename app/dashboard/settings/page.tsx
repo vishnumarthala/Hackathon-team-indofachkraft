@@ -4,6 +4,7 @@ import { NotificationPreferencesForm } from "@/components/notifications/Notifica
 import { requireProviderPage } from "@/lib/authz";
 import { getT } from "@/lib/i18n/server";
 import { getPreferences } from "@/lib/notify/inbox";
+import { paymentsEnabled } from "@/lib/payments/mode";
 
 export const dynamic = "force-dynamic";
 
@@ -30,18 +31,20 @@ export default async function ProviderSettingsPage() {
           <NotificationPreferencesForm initial={preferences} />
         </div>
       </section>
-      {/* 045 FR-7: the organisation's session packages. */}
-      <section aria-labelledby="packages-heading" className="space-y-2">
-        <h2 id="packages-heading" className="text-lg font-semibold text-slate-900">
-          {tp("link")}
-        </h2>
-        <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-sm text-slate-700">{tp("linkIntro")}</p>
-          <Link href="/dashboard/settings/packages" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
-            {tp("title")}
-          </Link>
-        </div>
-      </section>
+      {/* 045 FR-7: the organisation's session packages (055: not in the free pilot). */}
+      {paymentsEnabled() ? (
+        <section aria-labelledby="packages-heading" className="space-y-2">
+          <h2 id="packages-heading" className="text-lg font-semibold text-slate-900">
+            {tp("link")}
+          </h2>
+          <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-4">
+            <p className="text-sm text-slate-700">{tp("linkIntro")}</p>
+            <Link href="/dashboard/settings/packages" className="inline-flex min-h-11 items-center font-semibold text-teal-800 underline">
+              {tp("title")}
+            </Link>
+          </div>
+        </section>
+      ) : null}
       {/* 037: Google Calendar / Meet connection. */}
       <section aria-labelledby="integrations-heading" className="space-y-2">
         <h2 id="integrations-heading" className="text-lg font-semibold text-slate-900">
