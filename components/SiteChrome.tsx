@@ -36,7 +36,7 @@ export function chromeFor(pathname: string): ChromeKind {
  * Site header (and, on public pages, the footer) around every page. The yellow demo banner shows only in DEMO_MODE,
  * where "sample data only" is true; a real pilot deployment has no banner.
  */
-export function SiteChrome({ children, demo, footer, fontVars }: { children: ReactNode; demo: boolean; footer: ReactNode; fontVars: string }) {
+export function SiteChrome({ children, demo, footer, fontVars }: { children?: ReactNode; demo: boolean; footer: ReactNode; fontVars: string }) {
   const pathname = usePathname();
   const t = useT();
   const kind = chromeFor(pathname);

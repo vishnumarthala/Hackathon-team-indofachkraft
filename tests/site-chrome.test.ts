@@ -28,7 +28,7 @@ describe("site chrome", () => {
     const render = (pathname: string, demo: boolean) => {
       nav.pathname = pathname;
       return renderToStaticMarkup(
-        withI18n(createElement(SiteChrome, { demo, footer: createElement("footer", null, "FOOTER"), fontVars: "fv", children: createElement("p", null, "PAGE") })),
+        withI18n(createElement(SiteChrome, { demo, footer: createElement("footer", null, "FOOTER"), fontVars: "fv" }, createElement("p", null, "PAGE"))),
       );
     };
     const screen = render("/screen", false);
